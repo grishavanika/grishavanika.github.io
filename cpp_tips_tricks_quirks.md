@@ -2,8 +2,6 @@
 
 -----------------------------------------------------------
 
-- for loop for map (pair K,V va pair const K,V)
-- declare method with using F = void(int); F foo;
 - protected/private override
 - try catch for function/ctor arguments
 - omiting public / access specifier when deriving; struct vs class
@@ -100,3 +98,84 @@
 - https://theorangeduck.com/page/delta-time-frame-behind
 - https://www.reddit.com/r/unrealengine/s/ZvVB2DkX4c
 - 
+
+#### pitfall of `for (const pair<K, V>& p : my_map)`
+
+Here, `p` is a copy instead of const reference since std::meow_map `value_type`
+is `std::pair<const Key, T>`, notice **const Key**.
+
+```
+// wrong
+for (const std::pair<std::string, int>& p : my_map)
+    // ...
+```
+
+Proper version:
+
+```
+// correct
+for (const std::pair<const std::string, int>& p : my_map)
+    // ...
+```
+
+Note, [AAA style (Almost Always Auto)](https://herbsutter.com/2013/08/12/gotw-94-solution-aaa-style-almost-always-auto/)
+recomments to go with `const auto&` that also solves the problem:
+
+```
+// correct
+for (const auto& p : my_map)
+    // ...
+```
+
+with C++17 structured binding, it's also:
+
+```
+// correct
+for (const auto& [key, value] : my_map)
+    // ...
+```
+
+See [/u/STL](https://www.reddit.com/user/STL/) [comments](https://www.reddit.com/r/cpp/comments/1fhncm2/comment/lndnk8m/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button). Note on /u/STL [meow](https://brevzin.github.io/c++/2023/03/14/prefer-views-meow/).
+
+#### declare function with typedef/using
+
+Surprisingly, you can declare a function with using declaration:
+
+```
+using MyFunction = void (int);
+
+// same as `void Foo(int)`
+MyFunction Foo;
+
+// actual definition
+void Foo(int V)
+{
+}
+```
+Notice, Foo is **not** a variable, but function declaration.
+Running the code above with `clang -Xclang -ast-dump`, shows:
+
+```
+`-FunctionDecl 0xcc10e50 <line:3:1, col:12> col:12 Foo 'MyFunction':'void (int)'
+  `-ParmVarDecl 0xcc10f10 <col:12> col:12 implicit 'int'
+```
+
+Same can be done to declare a method:
+
+```
+struct MyClass
+{
+    using MyMethod = void (int, char);
+    // member function declaration
+    MyMethod Bar;
+    // equivalent too:
+    // void Bar(int);
+};
+
+// actual definition
+void MyClass::Bar(int v)
+{
+}
+```
+
+Mentioned at least [there](https://www.reddit.com/r/C_Programming/comments/2pkwvf/comment/cmxlx0e/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button).
