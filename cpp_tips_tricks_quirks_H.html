@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>C++ tips, tricks and quirks.</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        background-color: #ffffff;
+        color: #a0a0a0;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+    div.sourceCode
+      { color: #1f1c1b; background-color: #ffffff; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #1f1c1b; } /* Normal */
+    code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+    code span.an { color: #ca60ca; } /* Annotation */
+    code span.at { color: #0057ae; } /* Attribute */
+    code span.bn { color: #b08000; } /* BaseN */
+    code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+    code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #924c9d; } /* Char */
+    code span.cn { color: #aa5500; } /* Constant */
+    code span.co { color: #898887; } /* Comment */
+    code span.cv { color: #0095ff; } /* CommentVar */
+    code span.do { color: #607880; } /* Documentation */
+    code span.dt { color: #0057ae; } /* DataType */
+    code span.dv { color: #b08000; } /* DecVal */
+    code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+    code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+    code span.fl { color: #b08000; } /* Float */
+    code span.fu { color: #644a9b; } /* Function */
+    code span.im { color: #ff5500; } /* Import */
+    code span.in { color: #b08000; } /* Information */
+    code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+    code span.op { color: #1f1c1b; } /* Operator */
+    code span.ot { color: #006e28; } /* Other */
+    code span.pp { color: #006e28; } /* Preprocessor */
+    code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+    code span.sc { color: #3daee9; } /* SpecialChar */
+    code span.ss { color: #ff5500; } /* SpecialString */
+    code span.st { color: #bf0303; } /* String */
+    code span.va { color: #0057ae; } /* Variable */
+    code span.vs { color: #bf0303; } /* VerbatimString */
+    code span.wa { color: #bf0303; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">C++ tips, tricks and quirks.</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#pitfall-of-for-const-pairk-v-kv-my_map"
+id="toc-pitfall-of-for-const-pairk-v-kv-my_map"><span
+class="toc-section-number">1</span> pitfall of
+<code>for (const pair&lt;K, V&gt;&amp; kv : my_map)</code></a></li>
+<li><a href="#declare-function-with-typedefusing"
+id="toc-declare-function-with-typedefusing"><span
+class="toc-section-number">2</span> declare function with
+typedef/using</a></li>
+<li><a href="#protectedprivate-virtual-functions-override"
+id="toc-protectedprivate-virtual-functions-override"><span
+class="toc-section-number">3</span> protected/private virtual functions
+override</a></li>
+</ul>
+</nav>
+<p>To generate .html:</p>
+<pre><code>pandoc -s --toc --toc-depth=4 ^
+  --number-sections ^
+  --highlight=kate ^
+  cpp_tips_tricks_quirks.md ^
+  -o cpp_tips_tricks_quirks_H.html </code></pre>
+<hr />
+<p><mark>TODO</mark></p>
+<ul>
+<li>try catch for function/ctor arguments</li>
+<li>omiting public / access specifier when deriving; struct vs
+class</li>
+<li>(void)0 to force ; for macros</li>
+<li>base template classes and the need for this-&gt; or Base</li>
+<li>#line and file renaming</li>
+<li>=default on implementation</li>
+<li>=delete for free functions</li>
+<li>friend injection</li>
+<li>(go thru idioms, shwartz counter,
+https://en.m.wikibooks.org/wiki/More_C++_Idioms)</li>
+<li>(go thru shortcuts, like immediately invoked lambda)</li>
+<li>see also https://github.com/shafik/cpp_blogs quiz questions</li>
+<li>(and https://cppquiz.org/)</li>
+<li>identity to disable template argument deduction</li>
+<li>hierarhical tag dispatch (see artur,
+https://quuxplusone.github.io/blog/2021/07/09/priority-tag/)</li>
+<li>cout and stdout synchronization</li>
+<li>initializer list crap (no move only)</li>
+<li>std::function crap (no move only)</li>
+<li>shared_ptr aliasing ctor</li>
+<li>shared_ptr delete base, no need for virtual</li>
+<li>non-trivial types in union</li>
+<li>+[]()</li>
+<li>no capture needed for globals/const for lambda</li>
+<li>extern template</li>
+<li>operator-&gt; and non pointer return type recursion</li>
+<li>operator Type for perfect forward construction</li>
+<li>overload struct for variant visit (inherit from lambda)</li>
+<li>pseudo destructors (~int)</li>
+<li>reference collapsing (even pre c++11)</li>
+<li>map and modifying keys ub</li>
+<li>picewise construct</li>
+<li>map[x]</li>
+<li>emplace back with placement new pre c++11</li>
+<li>unreal conditionaldestroy uobject</li>
+<li>unreal assign null (??)</li>
+<li>instanced structs</li>
+<li>const_cast mayers</li>
+<li>mayers singletong</li>
+<li>universal references, mayers</li>
+<li>https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01</li>
+<li>https://jorenar.com/blog/less-known-c</li>
+<li>http://www.danielvik.com/2010/05/c-language-quirks.html</li>
+<li>https://codeforces.com/blog/entry/74684</li>
+<li>inherit multiple classes from template, with tags</li>
+<li>variadic templates default argument emulation</li>
+<li>mixing variadic templates and variadic c</li>
+<li>type promotion passing custom type/float to variadic c</li>
+<li>shared_ptr void</li>
+<li>dynamic_cast void</li>
+<li>dynamic cast reference/pointer</li>
+<li>https://andreasfertig.blog/2021/07/cpp20-a-neat-trick-with-consteval/</li>
+<li>templates sfinae/enable_if/checks/void_t</li>
+<li>https://en.cppreference.com/w/cpp/meta</li>
+<li>https://landelare.github.io/2023/01/07/cpp-speedrun.html</li>
+<li>https://andreasfertig.com/courses/programming-with-cpp11-to-cpp17/</li>
+<li>x-macro</li>
+<li>https://www.foonathan.net/2020/05/fold-tricks/</li>
+<li>rdbuf, read whole file</li>
+<li>rdbuf, redirect:
+https://stackoverflow.com/questions/10150468/how-to-redirect-cin-and-cout-to-files</li>
+<li>allocconsole, reopen</li>
+<li>https://chromium.googlesource.com/chromium/src/base/+/master/strings/stringprintf.h</li>
+<li>see chromium/base</li>
+<li>see boost/base</li>
+<li>see abseil</li>
+<li>forcing constexpr to be compile time</li>
+<li>type id / magic enum (parsing <code>__PRETTY_FUNCTION__</code>)</li>
+</ul>
+<hr />
+<p><mark>TODO Unreal</mark></p>
+<ul>
+<li>https://erikbern.com/2024/09/27/its-hard-to-write-code-for-humans.html</li>
+<li>https://itscai.us/blog/post/ue-physics-framework/</li>
+<li>https://github.com/mtmucha/coros</li>
+<li>https://achavezmixco.com/blog/f/how-to-write-c-blueprint-friendly-code-in-unreal-engine</li>
+<li>https://isaratech.com/all-articles/</li>
+<li>https://jasperdelaat.com/unreal-engine/damage-1/</li>
+<li>https://github.com/landelare/ue5coro</li>
+<li>https://landelare.github.io/2022/09/27/tips-and-tricks.html</li>
+<li>https://zomgmoz.tv/unreal/Unreal-Insights</li>
+<li>https://www.stevestreeting.com/2021/09/14/ue4-editor-visualisation-helper/</li>
+<li>https://www.stevestreeting.com/2020/11/02/ue4-c-interfaces-hints-n-tips/</li>
+<li>https://www.foonathan.net/2020/05/fold-tricks/</li>
+<li>https://tamir.dev/posts/that-overloaded-trick-overloading-lambdas-in-cpp17/</li>
+<li>http://mikejsavage.co.uk/cpp-tricks-type-id/</li>
+<li>https://andreasfertig.com/courses/programming-with-cpp11-to-cpp17/</li>
+<li>https://www.scs.stanford.edu/~dm/blog/param-pack.html</li>
+<li>https://www.modernescpp.com/index.php/smart-tricks-with-fold-expressions/</li>
+<li>https://andreasfertig.com/books/notebookcpp-tips-and-tricks-with-templates/</li>
+<li>https://abseil.io/tips/</li>
+<li>https://github.com/tip-of-the-week/cpp</li>
+<li>https://stackoverflow.com/questions/75538/hidden-features-of-c</li>
+<li>https://www.reddit.com/r/cpp_questions/comments/161wfp1/do_you_know_some_lesser_known_cc_tricks_or/</li>
+<li>https://learn.microsoft.com/en-us/shows/pure-virtual-cpp-2022/cute-cpp-tricks-part-2-of-n-more-code-you-should-learn-from-and-never-write</li>
+<li>https://prajwalshetty.com/ue5/Useful-Unreal-Links/</li>
+<li>https://www.codeproject.com/Tips/5249485/The-Most-Essential-Cplusplus-Advice</li>
+<li>https://jorenar.com/blog/less-known-c</li>
+<li>https://theorangeduck.com/page/delta-time-frame-behind</li>
+<li>https://www.reddit.com/r/unrealengine/s/ZvVB2DkX4c</li>
+<li></li>
+</ul>
+<h4 data-number="1" id="pitfall-of-for-const-pairk-v-kv-my_map"><span
+class="header-section-number">1</span> pitfall of
+<code>for (const pair&lt;K, V&gt;&amp; kv : my_map)</code></h4>
+<p>Here, <code>kv</code> is a copy instead of const reference since
+std::meow_map <code>value_type</code> is
+<code>std::pair&lt;const Key, T&gt;</code>, notice <strong>const
+Key</strong>.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">// wrong</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>pair<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">,</span> <span class="dt">int</span><span class="op">&gt;&amp;</span> kv <span class="op">:</span> my_map<span class="op">)</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>    <span class="co">// ...</span></span></code></pre></div>
+<p><code>pair&lt;std::string, int&gt;</code> is copy-constructed from
+<code>pair&lt;const std::string, int&gt;</code> . Proper version:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1"></a><span class="co">// correct</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>pair<span class="op">&lt;</span><span class="at">const</span> <span class="bu">std::</span>string<span class="op">,</span> <span class="dt">int</span><span class="op">&gt;&amp;</span> kv <span class="op">:</span> my_map<span class="op">)</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>    <span class="co">// ...</span></span></code></pre></div>
+<p>Note, <a
+href="https://herbsutter.com/2013/08/12/gotw-94-solution-aaa-style-almost-always-auto/">AAA
+style (Almost Always Auto)</a> recommends to go with
+<code>const auto&amp;</code> that also solves the problem (sadly, with
+the loss of explicitly written types):</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1"></a><span class="co">// correct</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="kw">auto</span><span class="op">&amp;</span> kv <span class="op">:</span> my_map<span class="op">)</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>    <span class="co">// ...</span></span></code></pre></div>
+<p>with C++17 structured binding, it’s also:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1"></a><span class="co">// correct</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="kw">auto</span><span class="op">&amp;</span> <span class="op">[</span>key<span class="op">,</span> value<span class="op">]</span> <span class="op">:</span> my_map<span class="op">)</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a>    <span class="co">// ...</span></span></code></pre></div>
+<p>See <a href="https://www.reddit.com/user/STL/">/u/STL</a> <a
+href="https://www.reddit.com/r/cpp/comments/1fhncm2/comment/lndnk8m/">comments</a>.
+Note on /u/STL <a
+href="https://brevzin.github.io/c++/2023/03/14/prefer-views-meow/">meow</a>.</p>
+<h4 data-number="2" id="declare-function-with-typedefusing"><span
+class="header-section-number">2</span> declare function with
+typedef/using</h4>
+<p>Surprisingly, you can declare a function with using declaration:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">using</span> MyFunction <span class="op">=</span> <span class="dt">void</span> <span class="op">(</span><span class="dt">int</span><span class="op">);</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="co">// same as `void Foo(int)`</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>MyFunction Foo<span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co">// actual definition</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="dt">void</span> Foo<span class="op">(</span><span class="dt">int</span> V<span class="op">)</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="op">{</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="op">}</span></span></code></pre></div>
+<p>Notice, Foo is <strong>not</strong> a variable, but function
+declaration. Running the code above with
+<code>clang -Xclang -ast-dump</code>, shows:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb7-1"><a href="#cb7-1"></a>`-FunctionDecl 0xcc10e50 &lt;line:3:1, col:12&gt; col:12 Foo &#39;MyFunction&#39;:&#39;void (int)&#39;</span>
+<span id="cb7-2"><a href="#cb7-2"></a>  `-ParmVarDecl 0xcc10f10 &lt;col:12&gt; col:12 implicit &#39;int&#39;</span></code></pre></div>
+<p>Same can be done to declare a method:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">struct</span> MyClass</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="op">{</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a>    <span class="kw">using</span> MyMethod <span class="op">=</span> <span class="dt">void</span> <span class="op">(</span><span class="dt">int</span><span class="op">,</span> <span class="dt">char</span><span class="op">);</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a>    <span class="co">// member function declaration</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a>    MyMethod Bar<span class="op">;</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a>    <span class="co">// equivalent too:</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>    <span class="co">// void Bar(int);</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="op">};</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a></span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="co">// actual definition</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="dt">void</span> MyClass<span class="op">::</span>Bar<span class="op">(</span><span class="dt">int</span> v<span class="op">)</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="op">{</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a><span class="op">}</span></span></code></pre></div>
+<p>Mentioned at least <a
+href="https://www.reddit.com/r/C_Programming/comments/2pkwvf/comment/cmxlx0e">there</a>.
+See also:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">typedef</span> <span class="dt">double</span> MyFunction<span class="op">(</span><span class="dt">int</span><span class="op">,</span> <span class="dt">double</span><span class="op">,</span> <span class="dt">float</span><span class="op">);</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>MyFunction foo<span class="op">,</span> bar<span class="op">,</span> baz<span class="op">;</span> <span class="co">// functions declarations</span></span></code></pre></div>
+<h4 data-number="3"
+id="protectedprivate-virtual-functions-override"><span
+class="header-section-number">3</span> protected/private virtual
+functions override</h4>
+<p>Access rights are resolved at compile-time, virtual function target -
+at run-time. It’s perfectly fine to move virtual-override to private
+section:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">class</span> MyBase</span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="op">{</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a>    <span class="kw">virtual</span> <span class="dt">void</span> Foo<span class="op">(</span><span class="dt">int</span> v<span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb10-5"><a href="#cb10-5"></a>    <span class="co">// ...</span></span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="op">};</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a></span>
+<span id="cb10-8"><a href="#cb10-8"></a><span class="kw">class</span> MyDerived <span class="op">:</span> <span class="kw">public</span> MyBase</span>
+<span id="cb10-9"><a href="#cb10-9"></a><span class="op">{</span></span>
+<span id="cb10-10"><a href="#cb10-10"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb10-11"><a href="#cb10-11"></a>    <span class="co">// note: Foo is private now</span></span>
+<span id="cb10-12"><a href="#cb10-12"></a>    <span class="kw">virtual</span> <span class="dt">void</span> Foo<span class="op">(</span><span class="dt">int</span> v<span class="op">)</span> <span class="kw">override</span> <span class="op">{}</span></span>
+<span id="cb10-13"><a href="#cb10-13"></a><span class="op">};</span></span>
+<span id="cb10-14"><a href="#cb10-14"></a></span>
+<span id="cb10-15"><a href="#cb10-15"></a><span class="dt">void</span> Use<span class="op">(</span><span class="at">const</span> MyBase<span class="op">&amp;</span> base<span class="op">)</span></span>
+<span id="cb10-16"><a href="#cb10-16"></a><span class="op">{</span></span>
+<span id="cb10-17"><a href="#cb10-17"></a>    base<span class="op">.</span>Foo<span class="op">(</span><span class="dv">42</span><span class="op">);</span> <span class="co">// calls override, if any</span></span>
+<span id="cb10-18"><a href="#cb10-18"></a><span class="op">}</span></span>
+<span id="cb10-19"><a href="#cb10-19"></a></span>
+<span id="cb10-20"><a href="#cb10-20"></a>Use<span class="op">(</span>MyDerived<span class="op">{});</span></span></code></pre></div>
+<p>It (a) clean-ups derived classes public API/interface (b) explicitly
+signals that function is expected to be invoked from within
+framework/base class and (c) does not break Liskov substitution
+principle.</p>
+<p>In heavy OOP frameworks that rely on inheritance (Unreal Engine, as
+an example), it makes sense to make virtual-overrides protected instead
+of private so derived class could invoke Super:: version in the
+implementation.</p>
+</body>
+</html>

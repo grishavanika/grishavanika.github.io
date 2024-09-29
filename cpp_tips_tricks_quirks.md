@@ -9,7 +9,7 @@ pandoc -s --toc --toc-depth=4 ^
   --number-sections ^
   --highlight=kate ^
   cpp_tips_tricks_quirks.md ^
-  -o cpp_tips_tricks_quirks.html 
+  -o cpp_tips_tricks_quirks_H.html 
 ```
 
 -----------------------------------------------------------
