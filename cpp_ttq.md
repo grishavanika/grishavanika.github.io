@@ -8,8 +8,8 @@ To generate .html:
 pandoc -s --toc --toc-depth=4 ^
   --number-sections ^
   --highlight=kate ^
-  cpp_tips_tricks_quirks.md ^
-  -o cpp_tips_tricks_quirks_H.html 
+  cpp_ttq.md ^
+  -o cpp_ttq_H.html 
 ```
 
 -----------------------------------------------------------
