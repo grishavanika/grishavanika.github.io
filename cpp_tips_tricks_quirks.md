@@ -178,4 +178,9 @@ void MyClass::Bar(int v)
 }
 ```
 
-Mentioned at least [there](https://www.reddit.com/r/C_Programming/comments/2pkwvf/comment/cmxlx0e/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button).
+Mentioned at least [there](https://www.reddit.com/r/C_Programming/comments/2pkwvf/comment/cmxlx0e/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button):
+
+```
+typedef double MyFunction(int, double, float);
+MyFunction foo, bar, baz; // functions declarations
+```
