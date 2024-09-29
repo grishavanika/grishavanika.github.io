@@ -13,6 +13,8 @@
 - friend injection
 - (go thru idioms, shwartz counter, https://en.m.wikibooks.org/wiki/More_C++_Idioms)
 - (go thru shortcuts, like immediately invoked lambda)
+- see also https://github.com/shafik/cpp_blogs quiz questions
+- (and https://cppquiz.org/)
 - identity to disable template argument deduction
 - hierarhical tag dispatch (see artur, https://quuxplusone.github.io/blog/2021/07/09/priority-tag/)
 - cout and stdout synchronization
@@ -135,7 +137,8 @@ for (const auto& [key, value] : my_map)
     // ...
 ```
 
-See [/u/STL](https://www.reddit.com/user/STL/) [comments](https://www.reddit.com/r/cpp/comments/1fhncm2/comment/lndnk8m/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button). Note on /u/STL [meow](https://brevzin.github.io/c++/2023/03/14/prefer-views-meow/).
+See [/u/STL](https://www.reddit.com/user/STL/) [comments](https://www.reddit.com/r/cpp/comments/1fhncm2/comment/lndnk8m/).
+Note on /u/STL [meow](https://brevzin.github.io/c++/2023/03/14/prefer-views-meow/).
 
 #### declare function with typedef/using
 
@@ -152,6 +155,7 @@ void Foo(int V)
 {
 }
 ```
+
 Notice, Foo is **not** a variable, but function declaration.
 Running the code above with `clang -Xclang -ast-dump`, shows:
 
@@ -178,7 +182,7 @@ void MyClass::Bar(int v)
 }
 ```
 
-Mentioned at least [there](https://www.reddit.com/r/C_Programming/comments/2pkwvf/comment/cmxlx0e/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button):
+Mentioned at least [there](https://www.reddit.com/r/C_Programming/comments/2pkwvf/comment/cmxlx0e):
 
 ```
 typedef double MyFunction(int, double, float);
