@@ -16,7 +16,6 @@ pandoc -s --toc --toc-depth=4 ^
 
 [TODO]{.mark}
 
-- protected/private override
 - try catch for function/ctor arguments
 - omiting public / access specifier when deriving; struct vs class
 - (void)0 to force ; for macros
@@ -128,8 +127,8 @@ for (const std::pair<std::string, int>& kv : my_map)
     // ...
 ```
 
-`pair<std::string, int>` is copy-constructed from `pair<const std::string, int>`.
-Proper version:
+`pair<std::string, int>` is copy-constructed from `pair<const std::string, int>`
+. Proper version:
 
 ``` cpp {.numberLines}
 // correct
@@ -207,3 +206,41 @@ See also:
 typedef double MyFunction(int, double, float);
 MyFunction foo, bar, baz; // functions declarations
 ```
+
+#### protected/private virtual functions override
+
+Access rights are resolved at compile-time, virtual function target - at
+run-time. It's perfectly fine to move virtual-override to private section:
+
+``` cpp {.numberLines}
+class MyBase
+{
+public:
+    virtual void Foo(int v) {}
+    // ...
+};
+
+class MyDerived : public MyBase
+{
+private:
+    // note: Foo is private now
+    virtual void Foo(int v) override {}
+};
+
+void Use(const MyBase& base)
+{
+    base.Foo(42); // calls override, if any
+}
+
+Use(MyDerived{});
+```
+
+It (a) clean-ups derived classes public API/interface (b) explicitly signals
+that function is expected to be invoked from within framework/base class and 
+(c) does not break Liskov substitution principle.
+
+In heavy OOP frameworks that rely on inheritance (Unreal Engine, as an example),
+it makes sense to make virtual-overrides protected instead of private so derived
+class could invoke Super:: version in the implementation.
+
+
