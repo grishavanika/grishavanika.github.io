@@ -244,3 +244,38 @@ it makes sense to make virtual-overrides protected instead of private so derived
 class could invoke Super:: version in the implementation.
 
 
+#### function try block
+
+See [cppreference](https://en.cppreference.com/w/cpp/language/try#Function_try_block).
+Specifically, to handle exceptions for constructor initializer:
+
+``` cpp {.numberLines}
+int Bar()
+{
+    throw 42;
+}
+
+struct MyFoo
+{
+    int data;
+ 
+    MyFoo() try : data(Bar()) {}
+    catch (...)
+    {
+        // handles the exception
+    }
+};
+```
+
+but also works just fine for regular functions to handle arguments construction exceptions:
+
+``` cpp {.numberLines}
+void Foo(std::string) try
+{
+    // function body
+}
+catch (...)
+{
+    // exception handling for arguments
+}
+```
