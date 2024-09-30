@@ -255,6 +255,14 @@ class="toc-section-number">3</span> protected/private virtual functions
 override</a></li>
 <li><a href="#function-try-block" id="toc-function-try-block"><span
 class="toc-section-number">4</span> function try block</a></li>
+<li><a href="#omiting-public-when-deriving"
+id="toc-omiting-public-when-deriving"><span
+class="toc-section-number">5</span> omiting <code>public</code> when
+deriving</a></li>
+<li><a href="#void0-to-force-for-macros"
+id="toc-void0-to-force-for-macros"><span
+class="toc-section-number">6</span> <code>(void)0</code> to force
+<code>;</code> for macros</a></li>
 </ul>
 </nav>
 <p>To generate .html:</p>
@@ -266,10 +274,6 @@ class="toc-section-number">4</span> function try block</a></li>
 <hr />
 <p><mark>TODO</mark></p>
 <ul>
-<li>try catch for function/ctor arguments</li>
-<li>omiting public / access specifier when deriving; struct vs
-class</li>
-<li>(void)0 to force ; for macros</li>
 <li>base template classes and the need for this-&gt; or Base</li>
 <li>#line and file renaming</li>
 <li>=default on implementation</li>
@@ -411,18 +415,18 @@ typedef/using</h4>
 <div class="sourceCode" id="cb6"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">using</span> MyFunction <span class="op">=</span> <span class="dt">void</span> <span class="op">(</span><span class="dt">int</span><span class="op">);</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="co">// same as `void Foo(int)`</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="co">// same as `void Foo(int);`</span></span>
 <span id="cb6-4"><a href="#cb6-4"></a>MyFunction Foo<span class="op">;</span></span>
 <span id="cb6-5"><a href="#cb6-5"></a></span>
 <span id="cb6-6"><a href="#cb6-6"></a><span class="co">// actual definition</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a><span class="dt">void</span> Foo<span class="op">(</span><span class="dt">int</span> V<span class="op">)</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="dt">void</span> Foo<span class="op">(</span><span class="dt">int</span><span class="op">)</span></span>
 <span id="cb6-8"><a href="#cb6-8"></a><span class="op">{</span></span>
 <span id="cb6-9"><a href="#cb6-9"></a><span class="op">}</span></span></code></pre></div>
 <p>Notice, Foo is <strong>not</strong> a variable, but function
 declaration. Running the code above with
 <code>clang -Xclang -ast-dump</code>, shows:</p>
 <div class="sourceCode" id="cb7"><pre
-class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb7-1"><a href="#cb7-1"></a>`-FunctionDecl 0xcc10e50 &lt;line:3:1, col:12&gt; col:12 Foo &#39;MyFunction&#39;:&#39;void (int)&#39;</span>
+class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb7-1"><a href="#cb7-1"></a>`-FunctionDecl 0xcc10e50 &lt;line:4:1, col:12&gt; col:12 Foo &#39;MyFunction&#39;:&#39;void (int)&#39;</span>
 <span id="cb7-2"><a href="#cb7-2"></a>  `-ParmVarDecl 0xcc10f10 &lt;col:12&gt; col:12 implicit &#39;int&#39;</span></code></pre></div>
 <p>Same can be done to declare a method:</p>
 <div class="sourceCode" id="cb8"><pre
@@ -436,7 +440,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb8-8"><a href="#cb8-8"></a><span class="op">};</span></span>
 <span id="cb8-9"><a href="#cb8-9"></a></span>
 <span id="cb8-10"><a href="#cb8-10"></a><span class="co">// actual definition</span></span>
-<span id="cb8-11"><a href="#cb8-11"></a><span class="dt">void</span> MyClass<span class="op">::</span>Bar<span class="op">(</span><span class="dt">int</span> v<span class="op">)</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="dt">void</span> MyClass<span class="op">::</span>Bar<span class="op">(</span><span class="dt">int</span><span class="op">)</span></span>
 <span id="cb8-12"><a href="#cb8-12"></a><span class="op">{</span></span>
 <span id="cb8-13"><a href="#cb8-13"></a><span class="op">}</span></span></code></pre></div>
 <p>Mentioned at least <a
@@ -456,7 +460,7 @@ section:</p>
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">class</span> MyBase</span>
 <span id="cb10-2"><a href="#cb10-2"></a><span class="op">{</span></span>
 <span id="cb10-3"><a href="#cb10-3"></a><span class="kw">public</span><span class="op">:</span></span>
-<span id="cb10-4"><a href="#cb10-4"></a>    <span class="kw">virtual</span> <span class="dt">void</span> Foo<span class="op">(</span><span class="dt">int</span> v<span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a>    <span class="kw">virtual</span> <span class="dt">void</span> Foo<span class="op">(</span><span class="dt">int</span><span class="op">)</span> <span class="op">{}</span></span>
 <span id="cb10-5"><a href="#cb10-5"></a>    <span class="co">// ...</span></span>
 <span id="cb10-6"><a href="#cb10-6"></a><span class="op">};</span></span>
 <span id="cb10-7"><a href="#cb10-7"></a></span>
@@ -513,5 +517,29 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb12-6"><a href="#cb12-6"></a><span class="op">{</span></span>
 <span id="cb12-7"><a href="#cb12-7"></a>    <span class="co">// exception handling for arguments</span></span>
 <span id="cb12-8"><a href="#cb12-8"></a><span class="op">}</span></span></code></pre></div>
+<h4 data-number="5" id="omiting-public-when-deriving"><span
+class="header-section-number">5</span> omiting <code>public</code> when
+deriving</h4>
+<p>Minor, still, see <a
+href="https://en.cppreference.com/w/cpp/language/derived_class">cppreference,
+access-specifier</a>:</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">struct</span> MyBase <span class="op">{};</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="kw">struct</span> MyDerived1 <span class="op">:</span> MyBase <span class="op">{};</span> <span class="co">// same as : public  MyBase</span></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="kw">class</span>  MyDerived2 <span class="op">:</span> MyBase <span class="op">{};</span> <span class="co">// same as : private MyBase</span></span></code></pre></div>
+<h4 data-number="6" id="void0-to-force-for-macros"><span
+class="header-section-number">6</span> <code>(void)0</code> to force
+<code>;</code> for macros</h4>
+<p>To be consistent and force the user of the macro to put
+<code>;</code> at the line end:</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb14-1"><a href="#cb14-1"></a><span class="pp">#define MY_FOO</span><span class="op">(</span>MY_INPUT<span class="op">)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="pp">    </span><span class="cf">while</span><span class="pp"> </span><span class="op">(</span><span class="kw">true</span><span class="op">)</span><span class="pp"> </span><span class="op">{</span><span class="pp">       </span><span class="op">\</span></span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="pp">        </span>MY_INPUT<span class="op">;</span><span class="pp">        </span><span class="op">\</span></span>
+<span id="cb14-4"><a href="#cb14-4"></a><span class="pp">        </span><span class="cf">break</span><span class="op">;</span><span class="pp">           </span><span class="op">\</span></span>
+<span id="cb14-5"><a href="#cb14-5"></a><span class="pp">    </span><span class="op">}</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="dv">0</span></span>
+<span id="cb14-6"><a href="#cb14-6"></a>    <span class="co">// ^^^^^^</span></span>
+<span id="cb14-7"><a href="#cb14-7"></a>MY_FOO<span class="op">(</span>puts<span class="op">(</span><span class="st">&quot;X&quot;</span><span class="op">));</span></span>
+<span id="cb14-8"><a href="#cb14-8"></a>MY_FOO<span class="op">(</span>puts<span class="op">(</span><span class="st">&quot;Y&quot;</span><span class="op">));</span></span></code></pre></div>
 </body>
 </html>

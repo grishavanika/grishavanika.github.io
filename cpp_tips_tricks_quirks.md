@@ -16,9 +16,6 @@ pandoc -s --toc --toc-depth=4 ^
 
 [TODO]{.mark}
 
-- try catch for function/ctor arguments
-- omiting public / access specifier when deriving; struct vs class
-- (void)0 to force ; for macros
 - base template classes and the need for this-> or Base
 - #line and file renaming
 - =default on implementation
@@ -164,11 +161,11 @@ Surprisingly, you can declare a function with using declaration:
 ``` cpp {.numberLines}
 using MyFunction = void (int);
 
-// same as `void Foo(int)`
+// same as `void Foo(int);`
 MyFunction Foo;
 
 // actual definition
-void Foo(int V)
+void Foo(int)
 {
 }
 ```
@@ -177,7 +174,7 @@ Notice, Foo is **not** a variable, but function declaration.
 Running the code above with `clang -Xclang -ast-dump`, shows:
 
 ``` {.numberLines}
-`-FunctionDecl 0xcc10e50 <line:3:1, col:12> col:12 Foo 'MyFunction':'void (int)'
+`-FunctionDecl 0xcc10e50 <line:4:1, col:12> col:12 Foo 'MyFunction':'void (int)'
   `-ParmVarDecl 0xcc10f10 <col:12> col:12 implicit 'int'
 ```
 
@@ -194,7 +191,7 @@ struct MyClass
 };
 
 // actual definition
-void MyClass::Bar(int v)
+void MyClass::Bar(int)
 {
 }
 ```
@@ -216,7 +213,7 @@ run-time. It's perfectly fine to move virtual-override to private section:
 class MyBase
 {
 public:
-    virtual void Foo(int v) {}
+    virtual void Foo(int) {}
     // ...
 };
 
@@ -267,7 +264,8 @@ struct MyFoo
 };
 ```
 
-but also works just fine for regular functions to handle arguments construction exceptions:
+but also works just fine for regular functions to handle arguments construction
+exceptions:
 
 ``` cpp {.numberLines}
 void Foo(std::string) try
@@ -279,3 +277,29 @@ catch (...)
     // exception handling for arguments
 }
 ```
+
+#### omiting `public` when deriving
+
+Minor, still, see [cppreference, access-specifier](https://en.cppreference.com/w/cpp/language/derived_class):
+
+``` cpp {.numberLines}
+struct MyBase {};
+struct MyDerived1 : MyBase {}; // same as : public  MyBase
+class  MyDerived2 : MyBase {}; // same as : private MyBase
+```
+
+#### `(void)0` to force `;` for macros
+
+To be consistent and force the user of the macro to put `;` at the line end:
+
+``` cpp {.numberLines}
+#define MY_FOO(MY_INPUT) \
+    while (true) {       \
+        MY_INPUT;        \
+        break;           \
+    } (void)0
+    // ^^^^^^
+MY_FOO(puts("X"));
+MY_FOO(puts("Y"));
+```
+
