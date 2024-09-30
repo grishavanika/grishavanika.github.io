@@ -279,6 +279,8 @@ functions</a></li>
 id="toc-line-and-file-renaming"><span
 class="toc-section-number">10</span> <code>#line</code> and file
 renaming</a></li>
+<li><a href="#meyers-cons_cast" id="toc-meyers-cons_cast"><span
+class="toc-section-number">11</span> Meyers cons_cast</a></li>
 </ul>
 </nav>
 <p>To generate .html:</p>
@@ -320,7 +322,6 @@ https://quuxplusone.github.io/blog/2021/07/09/priority-tag/)</li>
 <li>unreal conditionaldestroy uobject</li>
 <li>unreal assign null (??)</li>
 <li>instanced structs</li>
-<li>const_cast mayers</li>
 <li>mayers singletong</li>
 <li>universal references, mayers</li>
 <li>https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01</li>
@@ -622,7 +623,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 class="header-section-number">10</span> <code>#line</code> and file
 renaming</h4>
 <p>See <a
-href="https://en.cppreference.com/w/c/preprocessor/line">cppreference</a>.</p>
+href="https://en.cppreference.com/w/c/preprocessor/line">cppreference</a>:</p>
 <div class="sourceCode" id="cb20"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb20-1"><a href="#cb20-1"></a><span class="co">// main.cpp</span></span>
 <span id="cb20-2"><a href="#cb20-2"></a><span class="pp">#include </span><span class="im">&lt;assert.h&gt;</span></span>
@@ -638,5 +639,29 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 </blockquote>
 <p>Note: this could break .pdb(s).<br />
 Bonus: what happens if you do <code>#line 4294967295</code>?</p>
+<h4 data-number="11" id="meyers-cons_cast"><span
+class="header-section-number">11</span> Meyers cons_cast</h4>
+<p>To not repeat code inside const and non-const function, <a
+href="https://stackoverflow.com/a/123995">see SO</a>:</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw">struct</span> MyArray</span>
+<span id="cb21-2"><a href="#cb21-2"></a><span class="op">{</span></span>
+<span id="cb21-3"><a href="#cb21-3"></a>    <span class="dt">char</span> data<span class="op">[</span><span class="dv">4</span><span class="op">]{};</span></span>
+<span id="cb21-4"><a href="#cb21-4"></a></span>
+<span id="cb21-5"><a href="#cb21-5"></a>    <span class="at">const</span> <span class="dt">char</span><span class="op">&amp;</span> get<span class="op">(</span><span class="dt">unsigned</span> i<span class="op">)</span> <span class="at">const</span></span>
+<span id="cb21-6"><a href="#cb21-6"></a>    <span class="op">{</span></span>
+<span id="cb21-7"><a href="#cb21-7"></a>        <span class="ot">assert</span><span class="op">(</span>i <span class="op">&lt;</span> <span class="dv">4</span><span class="op">);</span></span>
+<span id="cb21-8"><a href="#cb21-8"></a>        <span class="cf">return</span> data<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb21-9"><a href="#cb21-9"></a>    <span class="op">}</span></span>
+<span id="cb21-10"><a href="#cb21-10"></a>    <span class="dt">char</span><span class="op">&amp;</span> get<span class="op">(</span><span class="dt">unsigned</span> i<span class="op">)</span></span>
+<span id="cb21-11"><a href="#cb21-11"></a>    <span class="op">{</span></span>
+<span id="cb21-12"><a href="#cb21-12"></a>        <span class="cf">return</span> <span class="kw">const_cast</span><span class="op">&lt;</span><span class="dt">char</span><span class="op">&amp;&gt;(</span><span class="kw">static_cast</span><span class="op">&lt;</span><span class="at">const</span> MyArray<span class="op">&amp;&gt;(*</span><span class="kw">this</span><span class="op">).</span>get<span class="op">(</span>i<span class="op">));</span></span>
+<span id="cb21-13"><a href="#cb21-13"></a>    <span class="op">}</span></span>
+<span id="cb21-14"><a href="#cb21-14"></a><span class="op">};</span></span></code></pre></div>
+<p>Note: mutable <code>get()</code> is implented in terms of const
+version, not the other way around (which would be UB).</p>
+<p>Kind-a outdated with <a
+href="https://devblogs.microsoft.com/cppblog/cpp23-deducing-this/">C++23’s
+Deducing this</a> or is it? (template, compile time, .h vs .cpp).</p>
 </body>
 </html>

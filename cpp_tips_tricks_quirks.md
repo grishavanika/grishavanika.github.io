@@ -44,7 +44,6 @@ pandoc -s --toc --toc-depth=4 ^
 - unreal conditionaldestroy uobject
 - unreal assign null (??)
 - instanced structs
-- const_cast mayers
 - mayers singletong
 - universal references, mayers
 - https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01
@@ -394,3 +393,30 @@ wich outputs:
 
 Note: this could break .pdb(s).  
 Bonus: what happens if you do `#line 4294967295`?
+
+#### Meyers cons_cast
+
+To not repeat code inside const and non-const function, [see SO](https://stackoverflow.com/a/123995):
+
+``` cpp {.numberLines}
+struct MyArray
+{
+    char data[4]{};
+
+    const char& get(unsigned i) const
+    {
+        assert(i < 4);
+        return data[i];
+    }
+    char& get(unsigned i)
+    {
+        return const_cast<char&>(static_cast<const MyArray&>(*this).get(i));
+    }
+};
+```
+
+Note: mutable `get()` is implented in terms of const version, not the other way
+around (which would be UB).
+
+Kind-a outdated with [C++23’s Deducing this](https://devblogs.microsoft.com/cppblog/cpp23-deducing-this/)
+or is it? (template, compile time, .h vs .cpp).
