@@ -16,7 +16,6 @@ pandoc -s --toc --toc-depth=4 ^
 
 [TODO]{.mark}
 
-- #line and file renaming
 - friend injection
 - (go thru idioms, shwartz counter, https://en.m.wikibooks.org/wiki/More_C++_Idioms)
 - (go thru shortcuts, like immediately invoked lambda)
@@ -348,6 +347,21 @@ user-defined. Sometimes it's not a desired side effect. However, it's nice
 in case you want to change the body of constructor later or put breakpoint
 (since you don't need to change header and recompile dependencies, only .cpp file).
 
+Another use-case is to move destructor to .cpp file so you don't delete
+incomplete types:
+
+``` cpp {.numberLines}
+struct MyInterface; // forward-declare
+struct MyClass
+{
+    std::unique_ptr<MyInterface> my_ptr;
+    ~MyClass();
+};
+// myclass.cpp
+#include "MyInterface.h" // include only now
+MyClass::~MyClass() = default; // generate a call to my_ptr.~unique_ptr()
+```
+
 #### `= delete` for free functions
 
 You can delete unneeded function overload anywhere:
@@ -359,3 +373,24 @@ void MyHandle(int);
 
 `MyHandle('x')` does not compile now.
 
+
+#### `#line` and file renaming
+
+See [cppreference](https://en.cppreference.com/w/c/preprocessor/line):
+
+``` cpp {.numberLines}
+// main.cpp
+#include <assert.h>
+int main()
+{
+#line 777 "any_filename.x"
+    assert(false);
+}
+```
+
+wich outputs:
+
+> output.s: any_filename.x:777: int main(): Assertion `false` failed.
+
+Note: this could break .pdb(s).  
+Bonus: what happens if you do `#line 4294967295`?
