@@ -263,6 +263,18 @@ deriving</a></li>
 id="toc-void0-to-force-for-macros"><span
 class="toc-section-number">6</span> <code>(void)0</code> to force
 <code>;</code> for macros</a></li>
+<li><a href="#call-a-method-of-a-template-base-class"
+id="toc-call-a-method-of-a-template-base-class"><span
+class="toc-section-number">7</span> call a method of a template base
+class</a></li>
+<li><a href="#default-on-implementation"
+id="toc-default-on-implementation"><span
+class="toc-section-number">8</span> <code>= default</code> on
+implementation</a></li>
+<li><a href="#delete-for-free-functions"
+id="toc-delete-for-free-functions"><span
+class="toc-section-number">9</span> <code>= delete</code> for free
+functions</a></li>
 </ul>
 </nav>
 <p>To generate .html:</p>
@@ -274,10 +286,7 @@ class="toc-section-number">6</span> <code>(void)0</code> to force
 <hr />
 <p><mark>TODO</mark></p>
 <ul>
-<li>base template classes and the need for this-&gt; or Base</li>
 <li>#line and file renaming</li>
-<li>=default on implementation</li>
-<li>=delete for free functions</li>
 <li>friend injection</li>
 <li>(go thru idioms, shwartz counter,
 https://en.m.wikibooks.org/wiki/More_C++_Idioms)</li>
@@ -339,6 +348,7 @@ https://stackoverflow.com/questions/10150468/how-to-redirect-cin-and-cout-to-fil
 <li>see abseil</li>
 <li>forcing constexpr to be compile time</li>
 <li>type id / magic enum (parsing <code>__PRETTY_FUNCTION__</code>)</li>
+<li>injected class name recursion</li>
 </ul>
 <hr />
 <p><mark>TODO Unreal</mark></p>
@@ -541,5 +551,57 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb14-6"><a href="#cb14-6"></a>    <span class="co">// ^^^^^^</span></span>
 <span id="cb14-7"><a href="#cb14-7"></a>MY_FOO<span class="op">(</span>puts<span class="op">(</span><span class="st">&quot;X&quot;</span><span class="op">));</span></span>
 <span id="cb14-8"><a href="#cb14-8"></a>MY_FOO<span class="op">(</span>puts<span class="op">(</span><span class="st">&quot;Y&quot;</span><span class="op">));</span></span></code></pre></div>
+<h4 data-number="7" id="call-a-method-of-a-template-base-class"><span
+class="header-section-number">7</span> call a method of a template base
+class</h4>
+<p>See also <a
+href="https://yunmingzhang.wordpress.com/2019/01/26/accessing-template-base-class-members-in-c/">Accessing
+template base class members in C++</a>.</p>
+<p>Given standard code like this:</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">struct</span> MyBase <span class="op">{</span> <span class="dt">void</span> Foo<span class="op">();</span> <span class="op">};</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="kw">struct</span> MyDerived <span class="op">:</span> MyBase</span>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="op">{</span></span>
+<span id="cb15-4"><a href="#cb15-4"></a>    <span class="dt">void</span> Bar<span class="op">()</span> <span class="op">{</span> Foo<span class="op">();</span> <span class="op">}</span></span>
+<span id="cb15-5"><a href="#cb15-5"></a><span class="op">};</span></span></code></pre></div>
+<p>we can call <code>Base::Foo()</code> with no issues. However, in case
+when we use templates, Foo() can’t be found. The trick is to use
+<code>this-&gt;Foo()</code>. Or <code>MyBase&lt;U&gt;::Foo()</code>:</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="kw">struct</span> MyBase <span class="op">{</span> <span class="dt">void</span> Foo<span class="op">();</span> <span class="op">};</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> U<span class="op">&gt;</span></span>
+<span id="cb16-4"><a href="#cb16-4"></a><span class="kw">struct</span> MyDerived <span class="op">:</span> MyBase<span class="op">&lt;</span>U<span class="op">&gt;</span></span>
+<span id="cb16-5"><a href="#cb16-5"></a><span class="op">{</span></span>
+<span id="cb16-6"><a href="#cb16-6"></a>    <span class="dt">void</span> Bar<span class="op">()</span> <span class="op">{</span> <span class="kw">this</span><span class="op">-&gt;</span>Foo<span class="op">();</span> <span class="op">}</span></span>
+<span id="cb16-7"><a href="#cb16-7"></a><span class="op">};</span></span></code></pre></div>
+<p><code>this-&gt;Foo()</code> becomes <a
+href="https://en.cppreference.com/w/cpp/language/dependent_name">type-dependent
+expression</a>.</p>
+<h4 data-number="8" id="default-on-implementation"><span
+class="header-section-number">8</span> <code>= default</code> on
+implementation</h4>
+<p>You can default special member functions in the .cpp/out of line
+definition:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">struct</span> MyClass</span>
+<span id="cb17-2"><a href="#cb17-2"></a><span class="op">{</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a>    MyClass<span class="op">();</span></span>
+<span id="cb17-4"><a href="#cb17-4"></a><span class="op">};</span></span>
+<span id="cb17-5"><a href="#cb17-5"></a><span class="co">// myclass.cpp, for instance:</span></span>
+<span id="cb17-6"><a href="#cb17-6"></a>MyClass<span class="op">::</span>MyClass<span class="op">()</span> <span class="op">=</span> <span class="cf">default</span><span class="op">;</span></span></code></pre></div>
+<p>Note, this is almost the same as = default in-place, but makes
+constructor user-defined. Sometimes it’s not desired side effect.
+However, it’s nice in case you want to change the body of constructor
+later or put breakpoint (since you don’t need to change header and
+recompile dependencies, only .cpp file).</p>
+<h4 data-number="9" id="delete-for-free-functions"><span
+class="header-section-number">9</span> <code>= delete</code> for free
+functions</h4>
+<p>You can delete unneeded function overload anywhere:</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb18-1"><a href="#cb18-1"></a><span class="dt">void</span> MyHandle<span class="op">(</span><span class="dt">char</span><span class="op">)</span> <span class="op">=</span> <span class="kw">delete</span><span class="op">;</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="dt">void</span> MyHandle<span class="op">(</span><span class="dt">int</span><span class="op">);</span></span></code></pre></div>
+<p><code>MyHandle('x')</code> does not compile now.</p>
 </body>
 </html>

@@ -16,10 +16,7 @@ pandoc -s --toc --toc-depth=4 ^
 
 [TODO]{.mark}
 
-- base template classes and the need for this-> or Base
 - #line and file renaming
-- =default on implementation
-- =delete for free functions
 - friend injection
 - (go thru idioms, shwartz counter, https://en.m.wikibooks.org/wiki/More_C++_Idioms)
 - (go thru shortcuts, like immediately invoked lambda)
@@ -78,6 +75,7 @@ pandoc -s --toc --toc-depth=4 ^
 - see abseil
 - forcing constexpr to be compile time
 - type id / magic enum (parsing `__PRETTY_FUNCTION__`)
+- injected class name recursion
 
 -----------------------------------------------------------
 
@@ -302,4 +300,62 @@ To be consistent and force the user of the macro to put `;` at the line end:
 MY_FOO(puts("X"));
 MY_FOO(puts("Y"));
 ```
+
+#### call a method of a template base class
+
+See also [Accessing template base class members in C++](https://yunmingzhang.wordpress.com/2019/01/26/accessing-template-base-class-members-in-c/).
+
+Given standard code like this:
+
+``` cpp {.numberLines}
+struct MyBase { void Foo(); };
+struct MyDerived : MyBase
+{
+    void Bar() { Foo(); }
+};
+```
+
+we can call `Base::Foo()` with no issues. However, in case when we use templates,
+Foo() can't be found. The trick is to use `this->Foo()`. Or `MyBase<U>::Foo()`:
+
+``` cpp {.numberLines}
+template<typename T>
+struct MyBase { void Foo(); };
+template<typename U>
+struct MyDerived : MyBase<U>
+{
+    void Bar() { this->Foo(); }
+};
+```
+
+`this->Foo()` becomes [type-dependent expression](https://en.cppreference.com/w/cpp/language/dependent_name).
+
+#### `= default` on implementation
+
+You can default special member functions in the .cpp/out of line definition:
+
+``` cpp {.numberLines}
+struct MyClass
+{
+    MyClass();
+};
+// myclass.cpp, for instance:
+MyClass::MyClass() = default;
+```
+
+Note, this is almost the same as = default in-place, but makes constructor
+user-defined. Sometimes it's not a desired side effect. However, it's nice
+in case you want to change the body of constructor later or put breakpoint
+(since you don't need to change header and recompile dependencies, only .cpp file).
+
+#### `= delete` for free functions
+
+You can delete unneeded function overload anywhere:
+
+``` cpp {.numberLines}
+void MyHandle(char) = delete;
+void MyHandle(int);
+```
+
+`MyHandle('x')` does not compile now.
 
