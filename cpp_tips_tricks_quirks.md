@@ -9,8 +9,8 @@ pandoc -s --toc --toc-depth=4
   --number-sections
   --highlight=kate
   -f markdown -t html
-  cpp_tips_tricks_quirks.mdі
-  -o cpp_tips_tricks_quirks.html 
+  cpp_tips_tricks_quirks.md
+  -o cpp_tips_tricks_quirks.html
 ```
 
 Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/blog/less-known-c).
@@ -899,3 +899,44 @@ auto p = new auto('c');             // creates a single object of type char. p i
 auto q = new std::integral auto(1); // OK: q is an int*
 auto r = new std::pair(1, true);    // OK: r is a std::pair<int, bool>*
 ```
+
+#### `std::forward` use in a special case
+
+Most of the times, we say that std::forward should be used in the context
+of forwarding references that, _usually_, look like this:
+
+``` cpp {.numberLines}
+template<typename T>
+void Process(T&& v)
+{
+    Handle(std::forward<T>(v));
+}
+```
+
+v is [forwarding reference](https://en.cppreference.com/w/cpp/language/reference#Forwarding_references)
+specifically because T&& is used and T **is** template parameter of Process
+function template.
+
+However, classic example would be std::function call operator() implementation:
+
+``` cpp {.numberLines}
+template<typename Ret, typename... Types>
+class function<Ret (Types...)>
+{
+    Ret operator()(Types... Args) const
+    {
+        return Do_call(std::forward<Types>(Args)...);
+    }
+};
+
+// usage
+function<void (int&&, char)> f;
+f(10, 'x');
+```
+
+where user specifies `Types` at function instantiation time that has nothing to
+do with `operator()` call which is not even a template now.
+
+If you run [reference collapsing](https://en.cppreference.com/w/cpp/language/reference)
+rules over possible `Types` and `Args`, `std::forward` is just right.
+

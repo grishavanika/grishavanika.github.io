@@ -348,6 +348,10 @@ class="toc-section-number">29</span> priority_tag for tag
 dispatch</a></li>
 <li><a href="#new-auto10" id="toc-new-auto10"><span
 class="toc-section-number">30</span> new auto(10)</a></li>
+<li><a href="#stdforward-use-in-a-special-case"
+id="toc-stdforward-use-in-a-special-case"><span
+class="toc-section-number">31</span> <code>std::forward</code> use in a
+special case</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -356,8 +360,8 @@ href="https://raw.githubusercontent.com/grishavanika/grishavanika.github.io/refs
   --number-sections
   --highlight=kate
   -f markdown -t html
-  cpp_tips_tricks_quirks.mdі
-  -o cpp_tips_tricks_quirks.html </code></pre>
+  cpp_tips_tricks_quirks.md
+  -o cpp_tips_tricks_quirks.html</code></pre>
 <p>Inspired by <a href="https://jorenar.com/blog/less-known-c">Lesser
 known tricks, quirks and features of C</a>.</p>
 <hr />
@@ -1180,7 +1184,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 class="header-section-number">30</span> new auto(10)</h4>
 <p>You can leave type dedcution to the compiler when using new:</p>
 <div class="sourceCode" id="cb44"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb44-1"><a href="#cb44-1"></a><span class="kw">auto</span> ptr1 <span class="op">=</span> <span class="kw">new</span> <span class="kw">auto</span><span class="op">(</span><span class="dv">10</span><span class="op">);</span> <span class="co">// works</span></span>
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb44-1"><a href="#cb44-1"></a><span class="kw">auto</span> ptr1 <span class="op">=</span> <span class="kw">new</span> <span class="kw">auto</span><span class="op">(</span><span class="dv">10</span><span class="op">);</span> <span class="co">// works -&gt; int*</span></span>
 <span id="cb44-2"><a href="#cb44-2"></a><span class="dt">int</span><span class="op">*</span> ptr2 <span class="op">=</span> <span class="kw">new</span> <span class="kw">auto</span><span class="op">(</span><span class="dv">10</span><span class="op">);</span> <span class="co">// works</span></span></code></pre></div>
 <p>From <a
 href="https://en.cppreference.com/w/cpp/language/new">cppreference</a>:</p>
@@ -1189,5 +1193,43 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb45-2"><a href="#cb45-2"></a><span class="kw">auto</span> p <span class="op">=</span> <span class="kw">new</span> <span class="kw">auto</span><span class="op">(</span><span class="ch">&#39;c&#39;</span><span class="op">);</span>             <span class="co">// creates a single object of type char. p is a char*</span></span>
 <span id="cb45-3"><a href="#cb45-3"></a><span class="kw">auto</span> q <span class="op">=</span> <span class="kw">new</span> <span class="bu">std::</span>integral <span class="kw">auto</span><span class="op">(</span><span class="dv">1</span><span class="op">);</span> <span class="co">// OK: q is an int*</span></span>
 <span id="cb45-4"><a href="#cb45-4"></a><span class="kw">auto</span> r <span class="op">=</span> <span class="kw">new</span> <span class="bu">std::</span>pair<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="kw">true</span><span class="op">);</span>    <span class="co">// OK: r is a std::pair&lt;int, bool&gt;*</span></span></code></pre></div>
+<h4 data-number="31" id="stdforward-use-in-a-special-case"><span
+class="header-section-number">31</span> <code>std::forward</code> use in
+a special case</h4>
+<p>Most of the times, we say that std::forward should be used in the
+context of forwarding references that, <em>usually</em>, look like
+this:</p>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb46-1"><a href="#cb46-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb46-2"><a href="#cb46-2"></a><span class="dt">void</span> Process<span class="op">(</span>T<span class="op">&amp;&amp;</span> v<span class="op">)</span></span>
+<span id="cb46-3"><a href="#cb46-3"></a><span class="op">{</span></span>
+<span id="cb46-4"><a href="#cb46-4"></a>    Handle<span class="op">(</span><span class="bu">std::</span>forward<span class="op">&lt;</span>T<span class="op">&gt;(</span>v<span class="op">));</span></span>
+<span id="cb46-5"><a href="#cb46-5"></a><span class="op">}</span></span></code></pre></div>
+<p>v is <a
+href="https://en.cppreference.com/w/cpp/language/reference#Forwarding_references">forwarding
+reference</a> specifically because T&amp;&amp; is used and T
+<strong>is</strong> template parameter of Process function template.</p>
+<p>However, classic example would be std::function call operator()
+implementation:</p>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb47-1"><a href="#cb47-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> Ret<span class="op">,</span> <span class="kw">typename</span><span class="op">...</span> Types<span class="op">&gt;</span></span>
+<span id="cb47-2"><a href="#cb47-2"></a><span class="kw">class</span> function<span class="op">&lt;</span>Ret <span class="op">(</span>Types<span class="op">...)&gt;</span></span>
+<span id="cb47-3"><a href="#cb47-3"></a><span class="op">{</span></span>
+<span id="cb47-4"><a href="#cb47-4"></a>    Ret <span class="kw">operator</span><span class="op">()(</span>Types<span class="op">...</span> Args<span class="op">)</span> <span class="at">const</span></span>
+<span id="cb47-5"><a href="#cb47-5"></a>    <span class="op">{</span></span>
+<span id="cb47-6"><a href="#cb47-6"></a>        <span class="cf">return</span> Do_call<span class="op">(</span><span class="bu">std::</span>forward<span class="op">&lt;</span>Types<span class="op">&gt;(</span>Args<span class="op">)...);</span></span>
+<span id="cb47-7"><a href="#cb47-7"></a>    <span class="op">}</span></span>
+<span id="cb47-8"><a href="#cb47-8"></a><span class="op">};</span></span>
+<span id="cb47-9"><a href="#cb47-9"></a></span>
+<span id="cb47-10"><a href="#cb47-10"></a><span class="co">// usage</span></span>
+<span id="cb47-11"><a href="#cb47-11"></a>function<span class="op">&lt;</span><span class="dt">void</span> <span class="op">(</span><span class="dt">int</span><span class="op">&amp;&amp;,</span> <span class="dt">char</span><span class="op">)&gt;</span> f<span class="op">;</span></span>
+<span id="cb47-12"><a href="#cb47-12"></a>f<span class="op">(</span><span class="dv">10</span><span class="op">,</span> <span class="ch">&#39;x&#39;</span><span class="op">);</span></span></code></pre></div>
+<p>where user specifies <code>Types</code> at function instantiation
+time that has nothing to do with <code>operator()</code> call which is
+not even a template now.</p>
+<p>If you run <a
+href="https://en.cppreference.com/w/cpp/language/reference">reference
+collapsing</a> rules over possible <code>Types</code> and
+<code>Args</code>, <code>std::forward</code> is just right.</p>
 </body>
 </html>
