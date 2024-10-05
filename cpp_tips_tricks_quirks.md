@@ -741,3 +741,60 @@ int main()
 
 This will print `MyBase` 2 times since we explicitly call MyBase::Foo().
 
+#### perfect construct with factory function
+
+See `class rvalue` trick discussed [there](https://akrzemi1.wordpress.com/2018/05/16/rvalues-redefined/);
+see same trick discussed in [guaranteed copy elision in C++17](https://groups.google.com/a/isocpp.org/g/std-proposals/c/hQ654zTNyiM).
+
+In short, we can return non-copyable/non-movable type from a function:
+
+``` cpp {.numberLines}
+struct Widget
+{
+    explicit Widget(int) {}
+    Widget(const Widget&) = delete;
+    Widget& operator=(const Widget&) = delete;
+    Widget(Widget&&) = delete;
+    Widget& operator=(Widget&&) = delete;
+};
+
+Widget MakeWidget()
+{
+    return Widget{68}; // works
+}
+
+int main()
+{
+    Widget w = MakeWidget(); // works
+}
+```
+
+However, how to construct, let say `std::optional<Widget>`? That does not work:
+
+``` cpp {.numberLines}
+int main()
+{
+    std::optional<Widget> o1{MakeWidget()}; // does not compile
+    std::optional<Widget> o2;
+    o2.emplace(MakeWidget()); // does not compile
+}
+```
+
+The trick is to use any type that has [implicit conversion operator](https://en.cppreference.com/w/cpp/language/cast_operator):
+
+``` cpp {.numberLines}
+struct WidgetFactory
+{
+    operator Widget()
+    {
+        return MakeWidget();
+    }
+};
+
+int main()
+{
+    std::optional<Widget> o;
+    o.emplace(WidgetFactory{}); // works
+}
+```
+

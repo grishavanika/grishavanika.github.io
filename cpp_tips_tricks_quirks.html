@@ -334,6 +334,10 @@ class="toc-section-number">25</span> injected-class-name</a></li>
 id="toc-invoke-base-virtual-function-directly"><span
 class="toc-section-number">26</span> invoke base virtual function
 directly</a></li>
+<li><a href="#perfect-construct-with-factory-function"
+id="toc-perfect-construct-with-factory-function"><span
+class="toc-section-number">27</span> perfect construct with factory
+function</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -1027,5 +1031,60 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb37-19"><a href="#cb37-19"></a><span class="op">}</span></span></code></pre></div>
 <p>This will print <code>MyBase</code> 2 times since we explicitly call
 MyBase::Foo().</p>
+<h4 data-number="27" id="perfect-construct-with-factory-function"><span
+class="header-section-number">27</span> perfect construct with factory
+function</h4>
+<p>See <code>class rvalue</code> trick discussed <a
+href="https://akrzemi1.wordpress.com/2018/05/16/rvalues-redefined/">there</a>;
+see same trick discussed in <a
+href="https://groups.google.com/a/isocpp.org/g/std-proposals/c/hQ654zTNyiM">guaranteed
+copy elision in C++17</a>.</p>
+<p>In short, we can return non-copyable/non-movable type from a
+function:</p>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb38-1"><a href="#cb38-1"></a><span class="kw">struct</span> Widget</span>
+<span id="cb38-2"><a href="#cb38-2"></a><span class="op">{</span></span>
+<span id="cb38-3"><a href="#cb38-3"></a>    <span class="kw">explicit</span> Widget<span class="op">(</span><span class="dt">int</span><span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb38-4"><a href="#cb38-4"></a>    Widget<span class="op">(</span><span class="at">const</span> Widget<span class="op">&amp;)</span> <span class="op">=</span> <span class="kw">delete</span><span class="op">;</span></span>
+<span id="cb38-5"><a href="#cb38-5"></a>    Widget<span class="op">&amp;</span> <span class="kw">operator</span><span class="op">=(</span><span class="at">const</span> Widget<span class="op">&amp;)</span> <span class="op">=</span> <span class="kw">delete</span><span class="op">;</span></span>
+<span id="cb38-6"><a href="#cb38-6"></a>    Widget<span class="op">(</span>Widget<span class="op">&amp;&amp;)</span> <span class="op">=</span> <span class="kw">delete</span><span class="op">;</span></span>
+<span id="cb38-7"><a href="#cb38-7"></a>    Widget<span class="op">&amp;</span> <span class="kw">operator</span><span class="op">=(</span>Widget<span class="op">&amp;&amp;)</span> <span class="op">=</span> <span class="kw">delete</span><span class="op">;</span></span>
+<span id="cb38-8"><a href="#cb38-8"></a><span class="op">};</span></span>
+<span id="cb38-9"><a href="#cb38-9"></a></span>
+<span id="cb38-10"><a href="#cb38-10"></a>Widget MakeWidget<span class="op">()</span></span>
+<span id="cb38-11"><a href="#cb38-11"></a><span class="op">{</span></span>
+<span id="cb38-12"><a href="#cb38-12"></a>    <span class="cf">return</span> Widget<span class="op">{</span><span class="dv">68</span><span class="op">};</span> <span class="co">// works</span></span>
+<span id="cb38-13"><a href="#cb38-13"></a><span class="op">}</span></span>
+<span id="cb38-14"><a href="#cb38-14"></a></span>
+<span id="cb38-15"><a href="#cb38-15"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb38-16"><a href="#cb38-16"></a><span class="op">{</span></span>
+<span id="cb38-17"><a href="#cb38-17"></a>    Widget w <span class="op">=</span> MakeWidget<span class="op">();</span> <span class="co">// works</span></span>
+<span id="cb38-18"><a href="#cb38-18"></a><span class="op">}</span></span></code></pre></div>
+<p>However, how to construct, let say
+<code>std::optional&lt;Widget&gt;</code>? That does not work:</p>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb39-1"><a href="#cb39-1"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb39-2"><a href="#cb39-2"></a><span class="op">{</span></span>
+<span id="cb39-3"><a href="#cb39-3"></a>    <span class="bu">std::</span>optional<span class="op">&lt;</span>Widget<span class="op">&gt;</span> o1<span class="op">{</span>MakeWidget<span class="op">()};</span> <span class="co">// does not compile</span></span>
+<span id="cb39-4"><a href="#cb39-4"></a>    <span class="bu">std::</span>optional<span class="op">&lt;</span>Widget<span class="op">&gt;</span> o2<span class="op">;</span></span>
+<span id="cb39-5"><a href="#cb39-5"></a>    o2<span class="op">.</span>emplace<span class="op">(</span>MakeWidget<span class="op">());</span> <span class="co">// does not compile</span></span>
+<span id="cb39-6"><a href="#cb39-6"></a><span class="op">}</span></span></code></pre></div>
+<p>The trick is to use any type that has <a
+href="https://en.cppreference.com/w/cpp/language/cast_operator">implicit
+conversion operator</a>:</p>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb40-1"><a href="#cb40-1"></a><span class="kw">struct</span> WidgetFactory</span>
+<span id="cb40-2"><a href="#cb40-2"></a><span class="op">{</span></span>
+<span id="cb40-3"><a href="#cb40-3"></a>    <span class="kw">operator</span> Widget<span class="op">()</span></span>
+<span id="cb40-4"><a href="#cb40-4"></a>    <span class="op">{</span></span>
+<span id="cb40-5"><a href="#cb40-5"></a>        <span class="cf">return</span> MakeWidget<span class="op">();</span></span>
+<span id="cb40-6"><a href="#cb40-6"></a>    <span class="op">}</span></span>
+<span id="cb40-7"><a href="#cb40-7"></a><span class="op">};</span></span>
+<span id="cb40-8"><a href="#cb40-8"></a></span>
+<span id="cb40-9"><a href="#cb40-9"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb40-10"><a href="#cb40-10"></a><span class="op">{</span></span>
+<span id="cb40-11"><a href="#cb40-11"></a>    <span class="bu">std::</span>optional<span class="op">&lt;</span>Widget<span class="op">&gt;</span> o<span class="op">;</span></span>
+<span id="cb40-12"><a href="#cb40-12"></a>    o<span class="op">.</span>emplace<span class="op">(</span>WidgetFactory<span class="op">{});</span> <span class="co">// works</span></span>
+<span id="cb40-13"><a href="#cb40-13"></a><span class="op">}</span></span></code></pre></div>
 </body>
 </html>
