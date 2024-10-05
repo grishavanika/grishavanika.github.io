@@ -900,7 +900,7 @@ auto q = new std::integral auto(1); // OK: q is an int*
 auto r = new std::pair(1, true);    // OK: r is a std::pair<int, bool>*
 ```
 
-#### `std::forward` use in a special case
+#### `std::forward` use in std::function-like case
 
 Most of the times, we say that std::forward should be used in the context
 of forwarding references that, _usually_, look like this:
@@ -930,12 +930,12 @@ class function<Ret (Types...)>
 };
 
 // usage
-function<void (int&&, char)> f;
-f(10, 'x');
+function<void (int&&, char)> f; // (1)
+f(10, 'x');                     // (2)
 ```
 
-where user specifies `Types` at function instantiation time that has nothing to
-do with `operator()` call which is not even a template now.
+where user specifies `Types` at (1) that has nothing to
+do with `operator()` call at (2) which is not even a function template now.
 
 If you run [reference collapsing](https://en.cppreference.com/w/cpp/language/reference)
 rules over possible `Types` and `Args`, `std::forward` is just right.
