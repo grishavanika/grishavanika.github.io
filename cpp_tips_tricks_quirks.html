@@ -289,6 +289,10 @@ it still compiles (ADL)</a></li>
 id="toc-why-stl-is-using-stdmove-everywhere"><span
 class="toc-section-number">13</span> why STL is using
 <code>::std::move</code> everywhere?</a></li>
+<li><a href="#stdshared_ptr-aliasing-constructor"
+id="toc-stdshared_ptr-aliasing-constructor"><span
+class="toc-section-number">14</span> <code>std::shared_ptr</code>
+aliasing constructor</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -671,7 +675,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb21-12"><a href="#cb21-12"></a>        <span class="cf">return</span> <span class="kw">const_cast</span><span class="op">&lt;</span><span class="dt">char</span><span class="op">&amp;&gt;(</span><span class="kw">static_cast</span><span class="op">&lt;</span><span class="at">const</span> MyArray<span class="op">&amp;&gt;(*</span><span class="kw">this</span><span class="op">).</span>get<span class="op">(</span>i<span class="op">));</span></span>
 <span id="cb21-13"><a href="#cb21-13"></a>    <span class="op">}</span></span>
 <span id="cb21-14"><a href="#cb21-14"></a><span class="op">};</span></span></code></pre></div>
-<p>Note: mutable <code>get()</code> is implented in terms of const
+<p>Note: mutable <code>get()</code> is implemented in terms of const
 version, not the other way around (which would be UB).</p>
 <p>Kind-a outdated with <a
 href="https://devblogs.microsoft.com/cppblog/cpp23-deducing-this/">C++23’s
@@ -689,9 +693,9 @@ ADL will be performed to find std::sort and use it. ADL = <a
 href="https://en.cppreference.com/w/cpp/language/adl">Argument-dependent
 lookup (ADL), also known as Koenig lookup</a>.</p>
 <p>(*) Note, iterator could be just raw pointer (<code>int*</code>) and
-it’s implementation defined where or not this is the case. Meaning the
-code above is not portable (across different implementations of
-STL).</p>
+it’s implementation defined (?) where or not iterator is inside std.
+Meaning the code above is not portable (across different implementations
+of STL).</p>
 <h4 data-number="13" id="why-stl-is-using-stdmove-everywhere"><span
 class="header-section-number">13</span> why STL is using
 <code>::std::move</code> everywhere?</h4>
@@ -701,9 +705,26 @@ implementation of the C++ Standard Library</a>:</p>
 <div class="sourceCode" id="cb23" data-startFrom="452"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp" style="counter-reset: source-line 451;"><span id="cb23-452"><a href="#cb23-452"></a>_STD _Seek_wrapped<span class="op">(</span>_First<span class="op">,</span> _STD move<span class="op">(</span>_UResult<span class="op">.</span>in<span class="op">));</span></span>
 <span id="cb23-453"><a href="#cb23-453"></a><span class="cf">return</span> <span class="op">{</span>_STD move<span class="op">(</span>_First<span class="op">),</span> _STD move<span class="op">(</span>_UResult<span class="op">.</span>fun<span class="op">)};</span></span></code></pre></div>
-<p>where _STD is <code>#define _STD ::std::</code>. So ::std::move is
-used to <strong>disable</strong> ADL and make sure implementation move
-from namespace <code>std</code> is choosen. Who knows what user-defined
-custom type could bring?</p>
+<p>where _STD is <code>#define _STD ::std::</code>.<br />
+So <code>::std::move</code> is used to <strong>disable</strong> ADL and
+make sure implementation of <code>move</code> from namespace
+<code>std</code> is choosen. Who knows what user-defined custom type
+could bring into the table?</p>
+<h4 data-number="14" id="stdshared_ptr-aliasing-constructor"><span
+class="header-section-number">14</span> <code>std::shared_ptr</code>
+aliasing constructor</h4>
+<p>See <a
+href="https://en.cppreference.com/w/cpp/memory/shared_ptr/shared_ptr">aliasing
+constructor</a>:</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb24-1"><a href="#cb24-1"></a><span class="kw">struct</span> MyType</span>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="op">{</span></span>
+<span id="cb24-3"><a href="#cb24-3"></a>    <span class="dt">int</span> data<span class="op">;</span></span>
+<span id="cb24-4"><a href="#cb24-4"></a><span class="op">};</span></span>
+<span id="cb24-5"><a href="#cb24-5"></a></span>
+<span id="cb24-6"><a href="#cb24-6"></a><span class="bu">std::</span>shared_ptr<span class="op">&lt;</span>MyType<span class="op">&gt;</span> v1 <span class="op">=</span> <span class="bu">std::</span>make_shared<span class="op">&lt;</span>MyType<span class="op">&gt;();</span></span>
+<span id="cb24-7"><a href="#cb24-7"></a><span class="bu">std::</span>shared_ptr<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> v2<span class="op">{</span>v1<span class="op">,</span> <span class="op">&amp;</span>v1<span class="op">-&gt;</span>data<span class="op">};</span></span></code></pre></div>
+<p>v2 and v1 now share the same control block. You can also put a
+pointer to unrelative data (is there real-life use-case?).</p>
 </body>
 </html>

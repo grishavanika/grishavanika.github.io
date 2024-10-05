@@ -419,7 +419,7 @@ struct MyArray
 };
 ```
 
-Note: mutable `get()` is implented in terms of const version, not the other way
+Note: mutable `get()` is implemented in terms of const version, not the other way
 around (which would be UB).
 
 Kind-a outdated with [C++23’s Deducing this](https://devblogs.microsoft.com/cppblog/cpp23-deducing-this/)
@@ -439,8 +439,8 @@ to find std::sort and use it. ADL = [Argument-dependent lookup (ADL),
 also known as Koenig lookup](https://en.cppreference.com/w/cpp/language/adl).
 
 (\*) Note, iterator could be just raw pointer (`int*`) and it's implementation
-defined where or not this is the case. Meaning the code above is not portable
-(across different implementations of STL).
+defined (?) where or not iterator is inside std. Meaning the code above
+is not portable (across different implementations of STL).
 
 #### why STL is using `::std::move` everywhere?
 
@@ -451,7 +451,25 @@ _STD _Seek_wrapped(_First, _STD move(_UResult.in));
 return {_STD move(_First), _STD move(_UResult.fun)};
 ```
 
-where \_STD is `#define _STD ::std::`. So ::std::move is used to **disable** ADL
-and make sure implementation move from namespace `std` is choosen. Who knows
-what user-defined custom type could bring?
+where \_STD is `#define _STD ::std::`.  
+So `::std::move` is used to **disable** ADL and make sure
+implementation of `move` from namespace `std` is choosen.
+Who knows what user-defined custom type could bring into the table?
+
+#### `std::shared_ptr` aliasing constructor
+
+See [aliasing constructor](https://en.cppreference.com/w/cpp/memory/shared_ptr/shared_ptr):
+
+``` cpp {.numberLines}
+struct MyType
+{
+    int data;
+};
+
+std::shared_ptr<MyType> v1 = std::make_shared<MyType>();
+std::shared_ptr<int> v2{v1, &v1->data};
+```
+
+v2 and v1 now share the same control block.
+You can also put a pointer to unrelative data (is there real-life use-case?).
 
