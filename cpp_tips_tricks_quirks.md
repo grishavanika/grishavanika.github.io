@@ -592,7 +592,7 @@ int MyClass::Foo()
 }
 ```
 
-See also extern templates.
+See also [extern templates](#extern-templates).
 
 #### double-template syntax
 
@@ -637,9 +637,9 @@ int main()
 ```
 
 Overall, see also [std::uninitialized_*](https://en.cppreference.com/w/cpp/memory/uninitialized_copy)
-dynamic memory management and [std::copy](https://en.cppreference.com/w/cpp/algorithm/copy)
-algorithm and/or analogs that are already optimized
-for trivial/pod types by your standard library implementation for you.
+memory management and [std::copy algorithm](https://en.cppreference.com/w/cpp/algorithm/copy)
+and/or analogs that are already optimized for trivial/pod types
+by your standard library implementation for you.
 
 #### pseudo destructors (~int)
 
