@@ -5,11 +5,11 @@ title: C++ tips, tricks and quirks.
 To generate this .html out of [cpp_tips_tricks_quirks.md](https://raw.githubusercontent.com/grishavanika/grishavanika.github.io/refs/heads/master/cpp_tips_tricks_quirks.md):
 
 ```
-pandoc -s --toc --toc-depth=4 ^
-  --number-sections ^
-  --highlight=kate ^
-  -f markdown -t html ^
-  cpp_tips_tricks_quirks.md ^
+pandoc -s --toc --toc-depth=4
+  --number-sections
+  --highlight=kate
+  -f markdown -t html
+  cpp_tips_tricks_quirks.mdі
   -o cpp_tips_tricks_quirks.html 
 ```
 
@@ -19,8 +19,6 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 
 [TODO]{.mark}
 
-- identity to disable template argument deduction
-- hierarhical tag dispatch (see artur, https://quuxplusone.github.io/blog/2021/07/09/priority-tag/)
 - cout and stdout synchronization
 - initializer list crap (no move only)
 - std::function crap (no move only)
@@ -798,3 +796,106 @@ int main()
 }
 ```
 
+#### disable template argument deduction
+
+See, for instance, [What's the deal with std::type_identity?](https://devblogs.microsoft.com/oldnewthing/20240607-00/?p=109865)
+or [dont_deduce\<T\>](https://artificial-mind.net/blog/2020/09/26/dont-deduce).
+In short, this will not compile:
+
+``` cpp {.numberLines}
+template<typename T>
+void Process(std::function<void (T)> f, T v)
+{
+    f(v);
+}
+
+int main()
+{
+    Process([](int) {}, 64);
+}
+```
+
+We try to pass a lambda that has unique type X which has nothing to do with
+`std::function<void (T)>`. Compiler does not know how to deduce T from X.
+
+Here, we want to ask compiler to not deduce anything for parameter `f`:
+
+``` cpp {.numberLines}
+template<typename T>
+void Process(std::type_identity_t<std::function<void (T)>> f, T v)
+{
+    f(v);
+}
+
+int main()
+{
+    Process([](int){}, 64);
+}
+```
+
+T is deduced from 2nd argument, std::function is constructed from a given lamda
+as it is.
+
+#### priority_tag for tag dispatch
+
+From [priority_tag for ad-hoc tag dispatch](https://quuxplusone.github.io/blog/2021/07/09/priority-tag/)
+and [CppCon 2017: Arthur O'Dwyer "A Soupcon of SFINAE"](https://youtu.be/ybaE9qlhHvw?t=56m36s).
+
+Here, we convert x to string trying first `x.stringify()` if that exists,
+otherwise `std::to_string(x)` if that works and finally fallback to ostringstream
+as a final resort:
+
+``` cpp {.numberLines}
+#include <string>
+#include <sstream>
+
+template<unsigned I> struct priority_tag : priority_tag<I - 1> {};
+template<> struct priority_tag<0> {};
+
+template<typename T>
+auto stringify_impl(const T& x, priority_tag<2>)
+    -> decltype(x.stringify())
+{
+    return x.stringify();
+}
+
+template<typename T>
+auto stringify_impl(const T& x, priority_tag<1>)
+    -> decltype(std::to_string(x))
+{
+    return std::to_string(x);
+}
+
+template<typename T>
+auto stringify_impl(const T& x, priority_tag<0>)
+    -> decltype(std::move(std::declval<std::ostream&>() << x).str())
+{
+    std::ostringstream s;
+    s << x;
+    return std::move(s).str();
+}
+
+template<typename T>
+auto stringify(const T& x)
+{
+    return stringify_impl(x, priority_tag<2>());
+}
+```
+
+#### new auto(10)
+
+You can leave type dedcution to the compiler when using new:
+
+``` cpp {.numberLines}
+auto ptr1 = new auto(10); // works -> int*
+int* ptr2 = new auto(10); // works
+```
+
+From [cppreference](https://en.cppreference.com/w/cpp/language/new):
+
+``` cpp {.numberLines}
+double* p = new double[]{1, 2, 3};  // creates an array of type double[3]
+auto p = new auto('c');             // creates a single object of type char. p is a char*
+auto q = new std::integral auto(1); // OK: q is an int*
+auto r = new std::pair(1, true);    // OK: r is a std::pair<int, bool>*
+```

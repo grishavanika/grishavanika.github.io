@@ -338,24 +338,31 @@ directly</a></li>
 id="toc-perfect-construct-with-factory-function"><span
 class="toc-section-number">27</span> perfect construct with factory
 function</a></li>
+<li><a href="#disable-template-argument-deduction"
+id="toc-disable-template-argument-deduction"><span
+class="toc-section-number">28</span> disable template argument
+deduction</a></li>
+<li><a href="#priority_tag-for-tag-dispatch"
+id="toc-priority_tag-for-tag-dispatch"><span
+class="toc-section-number">29</span> priority_tag for tag
+dispatch</a></li>
+<li><a href="#new-auto10" id="toc-new-auto10"><span
+class="toc-section-number">30</span> new auto(10)</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
 href="https://raw.githubusercontent.com/grishavanika/grishavanika.github.io/refs/heads/master/cpp_tips_tricks_quirks.md">cpp_tips_tricks_quirks.md</a>:</p>
-<pre><code>pandoc -s --toc --toc-depth=4 ^
-  --number-sections ^
-  --highlight=kate ^
-  -f markdown -t html ^
-  cpp_tips_tricks_quirks.md ^
+<pre><code>pandoc -s --toc --toc-depth=4
+  --number-sections
+  --highlight=kate
+  -f markdown -t html
+  cpp_tips_tricks_quirks.mdі
   -o cpp_tips_tricks_quirks.html </code></pre>
 <p>Inspired by <a href="https://jorenar.com/blog/less-known-c">Lesser
 known tricks, quirks and features of C</a>.</p>
 <hr />
 <p><mark>TODO</mark></p>
 <ul>
-<li>identity to disable template argument deduction</li>
-<li>hierarhical tag dispatch (see artur,
-https://quuxplusone.github.io/blog/2021/07/09/priority-tag/)</li>
 <li>cout and stdout synchronization</li>
 <li>initializer list crap (no move only)</li>
 <li>std::function crap (no move only)</li>
@@ -1086,5 +1093,101 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb40-11"><a href="#cb40-11"></a>    <span class="bu">std::</span>optional<span class="op">&lt;</span>Widget<span class="op">&gt;</span> o<span class="op">;</span></span>
 <span id="cb40-12"><a href="#cb40-12"></a>    o<span class="op">.</span>emplace<span class="op">(</span>WidgetFactory<span class="op">{});</span> <span class="co">// works</span></span>
 <span id="cb40-13"><a href="#cb40-13"></a><span class="op">}</span></span></code></pre></div>
+<h4 data-number="28" id="disable-template-argument-deduction"><span
+class="header-section-number">28</span> disable template argument
+deduction</h4>
+<p>See, for instance, <a
+href="https://devblogs.microsoft.com/oldnewthing/20240607-00/?p=109865">What’s
+the deal with std::type_identity?</a> or <a
+href="https://artificial-mind.net/blog/2020/09/26/dont-deduce">dont_deduce&lt;T&gt;</a>.
+In short, this will not compile:</p>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb41-1"><a href="#cb41-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb41-2"><a href="#cb41-2"></a><span class="dt">void</span> Process<span class="op">(</span><span class="bu">std::</span>function<span class="op">&lt;</span><span class="dt">void</span> <span class="op">(</span>T<span class="op">)&gt;</span> f<span class="op">,</span> T v<span class="op">)</span></span>
+<span id="cb41-3"><a href="#cb41-3"></a><span class="op">{</span></span>
+<span id="cb41-4"><a href="#cb41-4"></a>    f<span class="op">(</span>v<span class="op">);</span></span>
+<span id="cb41-5"><a href="#cb41-5"></a><span class="op">}</span></span>
+<span id="cb41-6"><a href="#cb41-6"></a></span>
+<span id="cb41-7"><a href="#cb41-7"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb41-8"><a href="#cb41-8"></a><span class="op">{</span></span>
+<span id="cb41-9"><a href="#cb41-9"></a>    Process<span class="op">([](</span><span class="dt">int</span><span class="op">)</span> <span class="op">{},</span> <span class="dv">64</span><span class="op">);</span></span>
+<span id="cb41-10"><a href="#cb41-10"></a><span class="op">}</span></span></code></pre></div>
+<p>We try to pass a lambda that has unique type X which has nothing to
+do with <code>std::function&lt;void (T)&gt;</code>. Compiler does not
+know how to deduce T from X.</p>
+<p>Here, we want to ask compiler to not deduce anything for parameter
+<code>f</code>:</p>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb42-1"><a href="#cb42-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb42-2"><a href="#cb42-2"></a><span class="dt">void</span> Process<span class="op">(</span><span class="bu">std::</span>type_identity_t<span class="op">&lt;</span><span class="bu">std::</span>function<span class="op">&lt;</span><span class="dt">void</span> <span class="op">(</span>T<span class="op">)&gt;&gt;</span> f<span class="op">,</span> T v<span class="op">)</span></span>
+<span id="cb42-3"><a href="#cb42-3"></a><span class="op">{</span></span>
+<span id="cb42-4"><a href="#cb42-4"></a>    f<span class="op">(</span>v<span class="op">);</span></span>
+<span id="cb42-5"><a href="#cb42-5"></a><span class="op">}</span></span>
+<span id="cb42-6"><a href="#cb42-6"></a></span>
+<span id="cb42-7"><a href="#cb42-7"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb42-8"><a href="#cb42-8"></a><span class="op">{</span></span>
+<span id="cb42-9"><a href="#cb42-9"></a>    Process<span class="op">([](</span><span class="dt">int</span><span class="op">){},</span> <span class="dv">64</span><span class="op">);</span></span>
+<span id="cb42-10"><a href="#cb42-10"></a><span class="op">}</span></span></code></pre></div>
+<p>T is deduced from 2nd argument, std::function is constructed from a
+given lamda as it is.</p>
+<h4 data-number="29" id="priority_tag-for-tag-dispatch"><span
+class="header-section-number">29</span> priority_tag for tag
+dispatch</h4>
+<p>From <a
+href="https://quuxplusone.github.io/blog/2021/07/09/priority-tag/">priority_tag
+for ad-hoc tag dispatch</a> and <a
+href="https://youtu.be/ybaE9qlhHvw?t=56m36s">CppCon 2017: Arthur O’Dwyer
+“A Soupcon of SFINAE”</a>.</p>
+<p>Here, we convert x to string trying first <code>x.stringify()</code>
+if that exists, otherwise <code>std::to_string(x)</code> if that works
+and finally fallback to ostringstream as a final resort:</p>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb43-1"><a href="#cb43-1"></a><span class="pp">#include </span><span class="im">&lt;string&gt;</span></span>
+<span id="cb43-2"><a href="#cb43-2"></a><span class="pp">#include </span><span class="im">&lt;sstream&gt;</span></span>
+<span id="cb43-3"><a href="#cb43-3"></a></span>
+<span id="cb43-4"><a href="#cb43-4"></a><span class="kw">template</span><span class="op">&lt;</span><span class="dt">unsigned</span> I<span class="op">&gt;</span> <span class="kw">struct</span> priority_tag <span class="op">:</span> priority_tag<span class="op">&lt;</span>I <span class="op">-</span> <span class="dv">1</span><span class="op">&gt;</span> <span class="op">{};</span></span>
+<span id="cb43-5"><a href="#cb43-5"></a><span class="kw">template</span><span class="op">&lt;&gt;</span> <span class="kw">struct</span> priority_tag<span class="op">&lt;</span><span class="dv">0</span><span class="op">&gt;</span> <span class="op">{};</span></span>
+<span id="cb43-6"><a href="#cb43-6"></a></span>
+<span id="cb43-7"><a href="#cb43-7"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb43-8"><a href="#cb43-8"></a><span class="kw">auto</span> stringify_impl<span class="op">(</span><span class="at">const</span> T<span class="op">&amp;</span> x<span class="op">,</span> priority_tag<span class="op">&lt;</span><span class="dv">2</span><span class="op">&gt;)</span></span>
+<span id="cb43-9"><a href="#cb43-9"></a>    <span class="op">-&gt;</span> <span class="kw">decltype</span><span class="op">(</span>x<span class="op">.</span>stringify<span class="op">())</span></span>
+<span id="cb43-10"><a href="#cb43-10"></a><span class="op">{</span></span>
+<span id="cb43-11"><a href="#cb43-11"></a>    <span class="cf">return</span> x<span class="op">.</span>stringify<span class="op">();</span></span>
+<span id="cb43-12"><a href="#cb43-12"></a><span class="op">}</span></span>
+<span id="cb43-13"><a href="#cb43-13"></a></span>
+<span id="cb43-14"><a href="#cb43-14"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb43-15"><a href="#cb43-15"></a><span class="kw">auto</span> stringify_impl<span class="op">(</span><span class="at">const</span> T<span class="op">&amp;</span> x<span class="op">,</span> priority_tag<span class="op">&lt;</span><span class="dv">1</span><span class="op">&gt;)</span></span>
+<span id="cb43-16"><a href="#cb43-16"></a>    <span class="op">-&gt;</span> <span class="kw">decltype</span><span class="op">(</span><span class="bu">std::</span>to_string<span class="op">(</span>x<span class="op">))</span></span>
+<span id="cb43-17"><a href="#cb43-17"></a><span class="op">{</span></span>
+<span id="cb43-18"><a href="#cb43-18"></a>    <span class="cf">return</span> <span class="bu">std::</span>to_string<span class="op">(</span>x<span class="op">);</span></span>
+<span id="cb43-19"><a href="#cb43-19"></a><span class="op">}</span></span>
+<span id="cb43-20"><a href="#cb43-20"></a></span>
+<span id="cb43-21"><a href="#cb43-21"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb43-22"><a href="#cb43-22"></a><span class="kw">auto</span> stringify_impl<span class="op">(</span><span class="at">const</span> T<span class="op">&amp;</span> x<span class="op">,</span> priority_tag<span class="op">&lt;</span><span class="dv">0</span><span class="op">&gt;)</span></span>
+<span id="cb43-23"><a href="#cb43-23"></a>    <span class="op">-&gt;</span> <span class="kw">decltype</span><span class="op">(</span><span class="bu">std::</span>move<span class="op">(</span><span class="bu">std::</span>declval<span class="op">&lt;</span><span class="bu">std::</span>ostream<span class="op">&amp;&gt;()</span> <span class="op">&lt;&lt;</span> x<span class="op">).</span>str<span class="op">())</span></span>
+<span id="cb43-24"><a href="#cb43-24"></a><span class="op">{</span></span>
+<span id="cb43-25"><a href="#cb43-25"></a>    <span class="bu">std::</span>ostringstream s<span class="op">;</span></span>
+<span id="cb43-26"><a href="#cb43-26"></a>    s <span class="op">&lt;&lt;</span> x<span class="op">;</span></span>
+<span id="cb43-27"><a href="#cb43-27"></a>    <span class="cf">return</span> <span class="bu">std::</span>move<span class="op">(</span>s<span class="op">).</span>str<span class="op">();</span></span>
+<span id="cb43-28"><a href="#cb43-28"></a><span class="op">}</span></span>
+<span id="cb43-29"><a href="#cb43-29"></a></span>
+<span id="cb43-30"><a href="#cb43-30"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb43-31"><a href="#cb43-31"></a><span class="kw">auto</span> stringify<span class="op">(</span><span class="at">const</span> T<span class="op">&amp;</span> x<span class="op">)</span></span>
+<span id="cb43-32"><a href="#cb43-32"></a><span class="op">{</span></span>
+<span id="cb43-33"><a href="#cb43-33"></a>    <span class="cf">return</span> stringify_impl<span class="op">(</span>x<span class="op">,</span> priority_tag<span class="op">&lt;</span><span class="dv">2</span><span class="op">&gt;());</span></span>
+<span id="cb43-34"><a href="#cb43-34"></a><span class="op">}</span></span></code></pre></div>
+<h4 data-number="30" id="new-auto10"><span
+class="header-section-number">30</span> new auto(10)</h4>
+<p>You can leave type dedcution to the compiler when using new:</p>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb44-1"><a href="#cb44-1"></a><span class="kw">auto</span> ptr1 <span class="op">=</span> <span class="kw">new</span> <span class="kw">auto</span><span class="op">(</span><span class="dv">10</span><span class="op">);</span> <span class="co">// works</span></span>
+<span id="cb44-2"><a href="#cb44-2"></a><span class="dt">int</span><span class="op">*</span> ptr2 <span class="op">=</span> <span class="kw">new</span> <span class="kw">auto</span><span class="op">(</span><span class="dv">10</span><span class="op">);</span> <span class="co">// works</span></span></code></pre></div>
+<p>From <a
+href="https://en.cppreference.com/w/cpp/language/new">cppreference</a>:</p>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb45-1"><a href="#cb45-1"></a><span class="dt">double</span><span class="op">*</span> p <span class="op">=</span> <span class="kw">new</span> <span class="dt">double</span><span class="op">[]{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">};</span>  <span class="co">// creates an array of type double[3]</span></span>
+<span id="cb45-2"><a href="#cb45-2"></a><span class="kw">auto</span> p <span class="op">=</span> <span class="kw">new</span> <span class="kw">auto</span><span class="op">(</span><span class="ch">&#39;c&#39;</span><span class="op">);</span>             <span class="co">// creates a single object of type char. p is a char*</span></span>
+<span id="cb45-3"><a href="#cb45-3"></a><span class="kw">auto</span> q <span class="op">=</span> <span class="kw">new</span> <span class="bu">std::</span>integral <span class="kw">auto</span><span class="op">(</span><span class="dv">1</span><span class="op">);</span> <span class="co">// OK: q is an int*</span></span>
+<span id="cb45-4"><a href="#cb45-4"></a><span class="kw">auto</span> r <span class="op">=</span> <span class="kw">new</span> <span class="bu">std::</span>pair<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="kw">true</span><span class="op">);</span>    <span class="co">// OK: r is a std::pair&lt;int, bool&gt;*</span></span></code></pre></div>
 </body>
 </html>
