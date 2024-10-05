@@ -17,18 +17,11 @@ pandoc -s --toc --toc-depth=4 ^
 
 [TODO]{.mark}
 
-- friend injection
-- (go thru idioms, shwartz counter, https://en.m.wikibooks.org/wiki/More_C++_Idioms)
-- (go thru shortcuts, like immediately invoked lambda)
-- see also https://github.com/shafik/cpp_blogs quiz questions
-- (and https://cppquiz.org/)
 - identity to disable template argument deduction
 - hierarhical tag dispatch (see artur, https://quuxplusone.github.io/blog/2021/07/09/priority-tag/)
 - cout and stdout synchronization
 - initializer list crap (no move only)
 - std::function crap (no move only)
-- shared_ptr aliasing ctor
-- shared_ptr delete base, no need for virtual
 - non-trivial types in union
 - +\[]()
 - no capture needed for globals/const for lambda
@@ -77,6 +70,11 @@ pandoc -s --toc --toc-depth=4 ^
 - swap idiom (unqualified call to swap in generic context)
 - https://en.wikipedia.org/wiki/Barton%E2%80%93Nackman_trick
 - https://en.wikipedia.org/wiki/Category:C%2B%2B
+- http://www.gotw.ca/gotw/076.htm
+- (go thru idioms, shwartz counter, https://en.m.wikibooks.org/wiki/More_C++_Idioms)
+- (go thru shortcuts, like immediately invoked lambda)
+- see also https://github.com/shafik/cpp_blogs quiz questions
+- (and https://cppquiz.org/)
 
 -----------------------------------------------------------
 
@@ -450,7 +448,8 @@ _STD _Seek_wrapped(_First, _STD move(_UResult.in));
 return {_STD move(_First), _STD move(_UResult.fun)};
 ```
 
-where \_STD is `#define _STD ::std::`.  
+\_STD is `#define _STD ::std::`. Why?  
+
 So `::std::move` is used to **disable** ADL and make sure
 implementation of `move` from namespace `std` is choosen.
 Who knows what user-defined custom type could bring into the table?
@@ -472,7 +471,7 @@ std::shared_ptr<int> v2{v1, &v1->data};
 v2 and v1 now share the same control block.
 You can also put a pointer to unrelative data (is there real-life use-case?).
 
-#### `dynamic_cast<void*>`
+#### `dynamic_cast<void*>` to get most-derived object
 
 From anywhere in the hierarhy of polimorphic type, you can restore a pointer
 to most-derived instance (i.e., the one created by `new` initially):
@@ -491,3 +490,68 @@ assert(void_ptr == original_ptr);
 
 See [cppreference](https://en.cppreference.com/w/cpp/language/dynamic_cast).
 Most-likely useful to interop with C library/external code.
+
+#### `std::shared_ptr<base>` with no virtual destructor
+
+Usually, if you delete pointer-to-base, destructor needs to be declared virtual
+so proper destructor is invoked. Hovewer, for std::shared_ptr this is not requred:
+
+``` cpp {.numberLines}
+struct MyBase { ~MyBase(); }; // no virtual!
+struct MyDerived : MyBase
+{
+    ~MyDerived() { std::puts("~MyDerived()"); }
+};
+
+{
+    std::shared_ptr<MyBase> ptr = std::make_shared<MyDerived>();    
+} // invokes ~MyDerived()
+```
+
+`std::shared_ptr<MyBase>` holds `MyBase*` pointer, but has [type-erased](https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Type_Erasure)
+destroy function that remembers the actual type it was created with.
+
+#### stateful metaprogramming
+
+See, for instance, [Revisiting Stateful Metaprogramming in C++20](https://mc-deltat.github.io/articles/stateful-metaprogramming-cpp20):
+
+ * [constant-expression counter](https://b.atch.se/posts/constexpr-counter/)
+ * [compile-time list](https://b.atch.se/posts/constexpr-meta-container/)
+ * [nonconstant constant expressions](https://b.atch.se/posts/non-constant-constant-expressions/)
+ * [stateful metaprogramming via friend injection](https://www.open-std.org/jtc1/sc22/wg21/docs/cwg%5Factive.html#2118)
+ * [hack C++ with templates and friends](https://www.worldcadaccess.com/blog/2020/05/how-to-hack-c-with-templates-and-friends.html)
+
+So this [works](https://b.atch.se/posts/constexpr-counter/):
+
+``` cpp {.numberLines}
+int main () {
+  int constexpr a = f ();
+  int constexpr b = f ();
+
+  static_assert(a != b);
+}
+```
+
+See the links above for more examples.
+
+#### access private members
+
+See [this](https://github.com/martong/access_private) for more details and explanations.
+Similar to stateful metaprogramming.
+
+Example [from C++20 version](https://github.com/schaumb/access_private_20):
+
+``` cpp {.numberLines}
+class A {
+  int m_i = 3;
+  int m_f(int p) { return 14 * p; }
+};
+
+template struct access_private::access<&A::m_i>;
+
+void foo() {
+  A a;
+  auto &i = access_private::accessor<"m_i">(a);
+  assert(i == 3);
+}
+```

@@ -293,9 +293,22 @@ class="toc-section-number">13</span> why STL is using
 id="toc-stdshared_ptr-aliasing-constructor"><span
 class="toc-section-number">14</span> <code>std::shared_ptr</code>
 aliasing constructor</a></li>
-<li><a href="#dynamic_castvoid" id="toc-dynamic_castvoid"><span
+<li><a href="#dynamic_castvoid-to-get-most-derived-object"
+id="toc-dynamic_castvoid-to-get-most-derived-object"><span
 class="toc-section-number">15</span>
-<code>dynamic_cast&lt;void*&gt;</code></a></li>
+<code>dynamic_cast&lt;void*&gt;</code> to get most-derived
+object</a></li>
+<li><a href="#stdshared_ptrbase-with-no-virtual-destructor"
+id="toc-stdshared_ptrbase-with-no-virtual-destructor"><span
+class="toc-section-number">16</span>
+<code>std::shared_ptr&lt;base&gt;</code> with no virtual
+destructor</a></li>
+<li><a href="#stateful-metaprogramming"
+id="toc-stateful-metaprogramming"><span
+class="toc-section-number">17</span> stateful metaprogramming</a></li>
+<li><a href="#access-private-members"
+id="toc-access-private-members"><span
+class="toc-section-number">18</span> access private members</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -309,20 +322,12 @@ href="https://raw.githubusercontent.com/grishavanika/grishavanika.github.io/refs
 <hr />
 <p><mark>TODO</mark></p>
 <ul>
-<li>friend injection</li>
-<li>(go thru idioms, shwartz counter,
-https://en.m.wikibooks.org/wiki/More_C++_Idioms)</li>
-<li>(go thru shortcuts, like immediately invoked lambda)</li>
-<li>see also https://github.com/shafik/cpp_blogs quiz questions</li>
-<li>(and https://cppquiz.org/)</li>
 <li>identity to disable template argument deduction</li>
 <li>hierarhical tag dispatch (see artur,
 https://quuxplusone.github.io/blog/2021/07/09/priority-tag/)</li>
 <li>cout and stdout synchronization</li>
 <li>initializer list crap (no move only)</li>
 <li>std::function crap (no move only)</li>
-<li>shared_ptr aliasing ctor</li>
-<li>shared_ptr delete base, no need for virtual</li>
 <li>non-trivial types in union</li>
 <li>+[]()</li>
 <li>no capture needed for globals/const for lambda</li>
@@ -372,6 +377,12 @@ https://stackoverflow.com/questions/10150468/how-to-redirect-cin-and-cout-to-fil
 <li>swap idiom (unqualified call to swap in generic context)</li>
 <li>https://en.wikipedia.org/wiki/Barton%E2%80%93Nackman_trick</li>
 <li>https://en.wikipedia.org/wiki/Category:C%2B%2B</li>
+<li>http://www.gotw.ca/gotw/076.htm</li>
+<li>(go thru idioms, shwartz counter,
+https://en.m.wikibooks.org/wiki/More_C++_Idioms)</li>
+<li>(go thru shortcuts, like immediately invoked lambda)</li>
+<li>see also https://github.com/shafik/cpp_blogs quiz questions</li>
+<li>(and https://cppquiz.org/)</li>
 </ul>
 <hr />
 <p><mark>TODO Unreal</mark></p>
@@ -707,9 +718,9 @@ implementation of the C++ Standard Library</a>:</p>
 <div class="sourceCode" id="cb23" data-startFrom="452"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp" style="counter-reset: source-line 451;"><span id="cb23-452"><a href="#cb23-452"></a>_STD _Seek_wrapped<span class="op">(</span>_First<span class="op">,</span> _STD move<span class="op">(</span>_UResult<span class="op">.</span>in<span class="op">));</span></span>
 <span id="cb23-453"><a href="#cb23-453"></a><span class="cf">return</span> <span class="op">{</span>_STD move<span class="op">(</span>_First<span class="op">),</span> _STD move<span class="op">(</span>_UResult<span class="op">.</span>fun<span class="op">)};</span></span></code></pre></div>
-<p>where _STD is <code>#define _STD ::std::</code>.<br />
-So <code>::std::move</code> is used to <strong>disable</strong> ADL and
-make sure implementation of <code>move</code> from namespace
+<p>_STD is <code>#define _STD ::std::</code>. Why?</p>
+<p>So <code>::std::move</code> is used to <strong>disable</strong> ADL
+and make sure implementation of <code>move</code> from namespace
 <code>std</code> is choosen. Who knows what user-defined custom type
 could bring into the table?</p>
 <h4 data-number="14" id="stdshared_ptr-aliasing-constructor"><span
@@ -728,9 +739,10 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb24-7"><a href="#cb24-7"></a><span class="bu">std::</span>shared_ptr<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> v2<span class="op">{</span>v1<span class="op">,</span> <span class="op">&amp;</span>v1<span class="op">-&gt;</span>data<span class="op">};</span></span></code></pre></div>
 <p>v2 and v1 now share the same control block. You can also put a
 pointer to unrelative data (is there real-life use-case?).</p>
-<h4 data-number="15" id="dynamic_castvoid"><span
+<h4 data-number="15"
+id="dynamic_castvoid-to-get-most-derived-object"><span
 class="header-section-number">15</span>
-<code>dynamic_cast&lt;void*&gt;</code></h4>
+<code>dynamic_cast&lt;void*&gt;</code> to get most-derived object</h4>
 <p>From anywhere in the hierarhy of polimorphic type, you can restore a
 pointer to most-derived instance (i.e., the one created by
 <code>new</code> initially):</p>
@@ -747,5 +759,77 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>See <a
 href="https://en.cppreference.com/w/cpp/language/dynamic_cast">cppreference</a>.
 Most-likely useful to interop with C library/external code.</p>
+<h4 data-number="16"
+id="stdshared_ptrbase-with-no-virtual-destructor"><span
+class="header-section-number">16</span>
+<code>std::shared_ptr&lt;base&gt;</code> with no virtual destructor</h4>
+<p>Usually, if you delete pointer-to-base, destructor needs to be
+declared virtual so proper destructor is invoked. Hovewer, for
+std::shared_ptr this is not requred:</p>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb26-1"><a href="#cb26-1"></a><span class="kw">struct</span> MyBase <span class="op">{</span> <span class="op">~</span>MyBase<span class="op">();</span> <span class="op">};</span> <span class="co">// no virtual!</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="kw">struct</span> MyDerived <span class="op">:</span> MyBase</span>
+<span id="cb26-3"><a href="#cb26-3"></a><span class="op">{</span></span>
+<span id="cb26-4"><a href="#cb26-4"></a>    <span class="op">~</span>MyDerived<span class="op">()</span> <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;~MyDerived()&quot;</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb26-5"><a href="#cb26-5"></a><span class="op">};</span></span>
+<span id="cb26-6"><a href="#cb26-6"></a></span>
+<span id="cb26-7"><a href="#cb26-7"></a><span class="op">{</span></span>
+<span id="cb26-8"><a href="#cb26-8"></a>    <span class="bu">std::</span>shared_ptr<span class="op">&lt;</span>MyBase<span class="op">&gt;</span> ptr <span class="op">=</span> <span class="bu">std::</span>make_shared<span class="op">&lt;</span>MyDerived<span class="op">&gt;();</span>    </span>
+<span id="cb26-9"><a href="#cb26-9"></a><span class="op">}</span> <span class="co">// invokes ~MyDerived()</span></span></code></pre></div>
+<p><code>std::shared_ptr&lt;MyBase&gt;</code> holds <code>MyBase*</code>
+pointer, but has <a
+href="https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Type_Erasure">type-erased</a>
+destroy function that remembers the actual type it was created with.</p>
+<h4 data-number="17" id="stateful-metaprogramming"><span
+class="header-section-number">17</span> stateful metaprogramming</h4>
+<p>See, for instance, <a
+href="https://mc-deltat.github.io/articles/stateful-metaprogramming-cpp20">Revisiting
+Stateful Metaprogramming in C++20</a>:</p>
+<ul>
+<li><a
+href="https://b.atch.se/posts/constexpr-counter/">constant-expression
+counter</a></li>
+<li><a
+href="https://b.atch.se/posts/constexpr-meta-container/">compile-time
+list</a></li>
+<li><a
+href="https://b.atch.se/posts/non-constant-constant-expressions/">nonconstant
+constant expressions</a></li>
+<li><a
+href="https://www.open-std.org/jtc1/sc22/wg21/docs/cwg%5Factive.html#2118">stateful
+metaprogramming via friend injection</a></li>
+<li><a
+href="https://www.worldcadaccess.com/blog/2020/05/how-to-hack-c-with-templates-and-friends.html">hack
+C++ with templates and friends</a></li>
+</ul>
+<p>So this <a
+href="https://b.atch.se/posts/constexpr-counter/">works</a>:</p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb27-1"><a href="#cb27-1"></a><span class="dt">int</span> main <span class="op">()</span> <span class="op">{</span></span>
+<span id="cb27-2"><a href="#cb27-2"></a>  <span class="dt">int</span> <span class="kw">constexpr</span> a <span class="op">=</span> f <span class="op">();</span></span>
+<span id="cb27-3"><a href="#cb27-3"></a>  <span class="dt">int</span> <span class="kw">constexpr</span> b <span class="op">=</span> f <span class="op">();</span></span>
+<span id="cb27-4"><a href="#cb27-4"></a></span>
+<span id="cb27-5"><a href="#cb27-5"></a>  <span class="kw">static_assert</span><span class="op">(</span>a <span class="op">!=</span> b<span class="op">);</span></span>
+<span id="cb27-6"><a href="#cb27-6"></a><span class="op">}</span></span></code></pre></div>
+<p>See the links above for more examples.</p>
+<h4 data-number="18" id="access-private-members"><span
+class="header-section-number">18</span> access private members</h4>
+<p>See <a href="https://github.com/martong/access_private">this</a> for
+more details and explanations. Similar to stateful metaprogramming.</p>
+<p>Example <a href="https://github.com/schaumb/access_private_20">from
+C++20 version</a>:</p>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb28-1"><a href="#cb28-1"></a><span class="kw">class</span> A <span class="op">{</span></span>
+<span id="cb28-2"><a href="#cb28-2"></a>  <span class="dt">int</span> <span class="va">m_i</span> <span class="op">=</span> <span class="dv">3</span><span class="op">;</span></span>
+<span id="cb28-3"><a href="#cb28-3"></a>  <span class="dt">int</span> <span class="va">m_f</span><span class="op">(</span><span class="dt">int</span> p<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="dv">14</span> <span class="op">*</span> p<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb28-4"><a href="#cb28-4"></a><span class="op">};</span></span>
+<span id="cb28-5"><a href="#cb28-5"></a></span>
+<span id="cb28-6"><a href="#cb28-6"></a><span class="kw">template</span> <span class="kw">struct</span> access_private<span class="op">::</span>access<span class="op">&lt;&amp;</span>A<span class="op">::</span><span class="va">m_i</span><span class="op">&gt;;</span></span>
+<span id="cb28-7"><a href="#cb28-7"></a></span>
+<span id="cb28-8"><a href="#cb28-8"></a><span class="dt">void</span> foo<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb28-9"><a href="#cb28-9"></a>  A a<span class="op">;</span></span>
+<span id="cb28-10"><a href="#cb28-10"></a>  <span class="kw">auto</span> <span class="op">&amp;</span>i <span class="op">=</span> access_private<span class="op">::</span>accessor<span class="op">&lt;</span><span class="st">&quot;m_i&quot;</span><span class="op">&gt;(</span>a<span class="op">);</span></span>
+<span id="cb28-11"><a href="#cb28-11"></a>  <span class="ot">assert</span><span class="op">(</span>i <span class="op">==</span> <span class="dv">3</span><span class="op">);</span></span>
+<span id="cb28-12"><a href="#cb28-12"></a><span class="op">}</span></span></code></pre></div>
 </body>
 </html>
