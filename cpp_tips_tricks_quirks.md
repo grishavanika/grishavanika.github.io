@@ -25,7 +25,6 @@ pandoc -s --toc --toc-depth=4 ^
 - non-trivial types in union
 - +\[]()
 - no capture needed for globals/const for lambda
-- extern template
 - operator-> and non pointer return type recursion
 - operator Type for perfect forward construction
 - overload struct for variant visit (inherit from lambda)
@@ -555,3 +554,35 @@ void foo() {
   assert(i == 3);
 }
 ```
+
+#### extern templates
+
+See, [this](https://isocpp.org/wiki/faq/cpp11-language-templates#extern-templates) or [cppreference](https://en.cppreference.com/w/cpp/language/class_template).
+
+Allows to declare some set of template instantiations and actually intantiate
+them in another place. Usually, you extern template in the header and instantiate
+in **your own**/library .cpp file:
+
+```
+// myvector.h
+template<typename T>
+class MyVector { /**/ };
+
+// declare frequently used instantiations
+extern template class MyVector<int>;
+extern template class MyVector<float>;
+extern template class MyVector<char>;
+
+// myvector.cpp
+#include "myvector.h"
+
+// instantiate frequent cases **once**;
+// client needs to link with myvector.o
+template class MyVector<int>;
+template class MyVector<float>;
+template class MyVector<char>;
+```
+
+C++ had also never implemeted C++98 [export keyword](https://en.cppreference.com/w/cpp/keyword/export)
+(C++98, nothing to do with [modules](https://en.cppreference.com/w/cpp/language/modules)).
+
