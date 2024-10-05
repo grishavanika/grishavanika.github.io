@@ -13,6 +13,8 @@ pandoc -s --toc --toc-depth=4 ^
   -o cpp_tips_tricks_quirks.html 
 ```
 
+Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/blog/less-known-c).
+
 -----------------------------------------------------------
 
 [TODO]{.mark}
@@ -34,9 +36,6 @@ pandoc -s --toc --toc-depth=4 ^
 - picewise construct
 - map[x]
 - emplace back with placement new pre c++11
-- unreal conditionaldestroy uobject
-- unreal assign null (??)
-- instanced structs
 - mayers singletong
 - universal references, mayers
 - https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01
@@ -76,38 +75,6 @@ pandoc -s --toc --toc-depth=4 ^
 - (and https://cppquiz.org/)
 
 -----------------------------------------------------------
-
-[TODO Unreal]{.mark}
-
-- https://erikbern.com/2024/09/27/its-hard-to-write-code-for-humans.html
-- https://itscai.us/blog/post/ue-physics-framework/
-- https://github.com/mtmucha/coros
-- https://achavezmixco.com/blog/f/how-to-write-c-blueprint-friendly-code-in-unreal-engine
-- https://isaratech.com/all-articles/
-- https://jasperdelaat.com/unreal-engine/damage-1/
-- https://github.com/landelare/ue5coro
-- https://landelare.github.io/2022/09/27/tips-and-tricks.html
-- https://zomgmoz.tv/unreal/Unreal-Insights
-- https://www.stevestreeting.com/2021/09/14/ue4-editor-visualisation-helper/
-- https://www.stevestreeting.com/2020/11/02/ue4-c-interfaces-hints-n-tips/
-- https://www.foonathan.net/2020/05/fold-tricks/
-- https://tamir.dev/posts/that-overloaded-trick-overloading-lambdas-in-cpp17/
-- http://mikejsavage.co.uk/cpp-tricks-type-id/
-- https://andreasfertig.com/courses/programming-with-cpp11-to-cpp17/
-- https://www.scs.stanford.edu/~dm/blog/param-pack.html
-- https://www.modernescpp.com/index.php/smart-tricks-with-fold-expressions/
-- https://andreasfertig.com/books/notebookcpp-tips-and-tricks-with-templates/
-- https://abseil.io/tips/
-- https://github.com/tip-of-the-week/cpp
-- https://stackoverflow.com/questions/75538/hidden-features-of-c
-- https://www.reddit.com/r/cpp_questions/comments/161wfp1/do_you_know_some_lesser_known_cc_tricks_or/
-- https://learn.microsoft.com/en-us/shows/pure-virtual-cpp-2022/cute-cpp-tricks-part-2-of-n-more-code-you-should-learn-from-and-never-write
-- https://prajwalshetty.com/ue5/Useful-Unreal-Links/
-- https://www.codeproject.com/Tips/5249485/The-Most-Essential-Cplusplus-Advice
-- https://jorenar.com/blog/less-known-c
-- https://theorangeduck.com/page/delta-time-frame-behind
-- https://www.reddit.com/r/unrealengine/s/ZvVB2DkX4c
-- 
 
 #### pitfall of `for (const pair<K, V>& kv : my_map)`
 
@@ -493,7 +460,7 @@ Most-likely useful to interop with C library/external code.
 #### `std::shared_ptr<base>` with no virtual destructor
 
 Usually, if you delete pointer-to-base, destructor needs to be declared virtual
-so proper destructor is invoked. Hovewer, for std::shared_ptr this is not requred:
+so proper destructor is invoked. Hovewer, for std::shared_ptr this is not required:
 
 ``` cpp {.numberLines}
 struct MyBase { ~MyBase(); }; // no virtual!
@@ -512,6 +479,18 @@ destroy function that remembers the actual type it was created with.
 
 #### stateful metaprogramming
 
+This [works](https://b.atch.se/posts/constexpr-counter/) and a and b
+have different values:
+
+``` cpp {.numberLines}
+int main () {
+  constexpr int a = f();
+  constexpr int b = f();
+
+  static_assert(a != b);
+}
+```
+
 See, for instance, [Revisiting Stateful Metaprogramming in C++20](https://mc-deltat.github.io/articles/stateful-metaprogramming-cpp20):
 
  * [constant-expression counter](https://b.atch.se/posts/constexpr-counter/)
@@ -519,19 +498,6 @@ See, for instance, [Revisiting Stateful Metaprogramming in C++20](https://mc-del
  * [nonconstant constant expressions](https://b.atch.se/posts/non-constant-constant-expressions/)
  * [stateful metaprogramming via friend injection](https://www.open-std.org/jtc1/sc22/wg21/docs/cwg%5Factive.html#2118)
  * [hack C++ with templates and friends](https://www.worldcadaccess.com/blog/2020/05/how-to-hack-c-with-templates-and-friends.html)
-
-So this [works](https://b.atch.se/posts/constexpr-counter/):
-
-``` cpp {.numberLines}
-int main () {
-  int constexpr a = f ();
-  int constexpr b = f ();
-
-  static_assert(a != b);
-}
-```
-
-See the links above for more examples.
 
 #### access private members
 
@@ -563,7 +529,7 @@ Allows to declare some set of template instantiations and actually intantiate
 them in another place. Usually, you extern template in the header and instantiate
 in **your own**/library .cpp file:
 
-```
+``` cpp {.numberLines}
 // myvector.h
 template<typename T>
 class MyVector { /**/ };
@@ -585,4 +551,65 @@ template class MyVector<char>;
 
 C++ had also never implemeted C++98 [export keyword](https://en.cppreference.com/w/cpp/keyword/export)
 (C++98, nothing to do with [modules](https://en.cppreference.com/w/cpp/language/modules)).
+
+#### templates in .cpp file
+
+It's usually stated that templates could only be defined in header file.
+However, you just need to define them anywhere so definition is visible at the
+point of use/instantiation.
+
+For intance, this works just fine:
+
+``` cpp {.numberLines}
+// myclass.h
+class MyClass
+{
+public:
+    int Foo();
+
+private:
+    template<typename T>
+    int Bar();
+};
+
+// myclass.cpp
+// template class, defined in this .cpp file
+template<typename U>
+struct MyHelper {};
+
+template<typename T>
+int MyClass::Bar()
+{
+    // definition of member-function-template Bar();
+    // also, the use of MyHelper template above,
+    // visible only to this transtlation unit
+    return sizeof(MyHelper<T>{});
+}
+
+int MyClass::Foo()
+{
+    // use of function template
+    return Bar<char>();
+}
+```
+
+See also extern templates.
+
+#### double-template syntax
+
+If you have template class that has template member function
+and you want to define such function out-of-class, you need:
+
+``` cpp {.numberLines}
+template<typename T1, typename T2>
+class MyClass
+{
+    template<typename U>
+    void Foo(U v);
+};
+
+template<typename T1, typename T2>  // for MyClass
+template<typename U>                // for Foo
+void MyClass<T1, T2>::Foo(U v) {}
+```
 

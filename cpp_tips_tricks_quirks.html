@@ -309,6 +309,14 @@ class="toc-section-number">17</span> stateful metaprogramming</a></li>
 <li><a href="#access-private-members"
 id="toc-access-private-members"><span
 class="toc-section-number">18</span> access private members</a></li>
+<li><a href="#extern-templates" id="toc-extern-templates"><span
+class="toc-section-number">19</span> extern templates</a></li>
+<li><a href="#templates-in-.cpp-file"
+id="toc-templates-in-.cpp-file"><span
+class="toc-section-number">20</span> templates in .cpp file</a></li>
+<li><a href="#double-template-syntax"
+id="toc-double-template-syntax"><span
+class="toc-section-number">21</span> double-template syntax</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -319,6 +327,8 @@ href="https://raw.githubusercontent.com/grishavanika/grishavanika.github.io/refs
   -f markdown -t html ^
   cpp_tips_tricks_quirks.md ^
   -o cpp_tips_tricks_quirks.html </code></pre>
+<p>Inspired by <a href="https://jorenar.com/blog/less-known-c">Lesser
+known tricks, quirks and features of C</a>.</p>
 <hr />
 <p><mark>TODO</mark></p>
 <ul>
@@ -331,7 +341,6 @@ https://quuxplusone.github.io/blog/2021/07/09/priority-tag/)</li>
 <li>non-trivial types in union</li>
 <li>+[]()</li>
 <li>no capture needed for globals/const for lambda</li>
-<li>extern template</li>
 <li>operator-&gt; and non pointer return type recursion</li>
 <li>operator Type for perfect forward construction</li>
 <li>overload struct for variant visit (inherit from lambda)</li>
@@ -341,9 +350,6 @@ https://quuxplusone.github.io/blog/2021/07/09/priority-tag/)</li>
 <li>picewise construct</li>
 <li>map[x]</li>
 <li>emplace back with placement new pre c++11</li>
-<li>unreal conditionaldestroy uobject</li>
-<li>unreal assign null (??)</li>
-<li>instanced structs</li>
 <li>mayers singletong</li>
 <li>universal references, mayers</li>
 <li>https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01</li>
@@ -385,38 +391,6 @@ https://en.m.wikibooks.org/wiki/More_C++_Idioms)</li>
 <li>(and https://cppquiz.org/)</li>
 </ul>
 <hr />
-<p><mark>TODO Unreal</mark></p>
-<ul>
-<li>https://erikbern.com/2024/09/27/its-hard-to-write-code-for-humans.html</li>
-<li>https://itscai.us/blog/post/ue-physics-framework/</li>
-<li>https://github.com/mtmucha/coros</li>
-<li>https://achavezmixco.com/blog/f/how-to-write-c-blueprint-friendly-code-in-unreal-engine</li>
-<li>https://isaratech.com/all-articles/</li>
-<li>https://jasperdelaat.com/unreal-engine/damage-1/</li>
-<li>https://github.com/landelare/ue5coro</li>
-<li>https://landelare.github.io/2022/09/27/tips-and-tricks.html</li>
-<li>https://zomgmoz.tv/unreal/Unreal-Insights</li>
-<li>https://www.stevestreeting.com/2021/09/14/ue4-editor-visualisation-helper/</li>
-<li>https://www.stevestreeting.com/2020/11/02/ue4-c-interfaces-hints-n-tips/</li>
-<li>https://www.foonathan.net/2020/05/fold-tricks/</li>
-<li>https://tamir.dev/posts/that-overloaded-trick-overloading-lambdas-in-cpp17/</li>
-<li>http://mikejsavage.co.uk/cpp-tricks-type-id/</li>
-<li>https://andreasfertig.com/courses/programming-with-cpp11-to-cpp17/</li>
-<li>https://www.scs.stanford.edu/~dm/blog/param-pack.html</li>
-<li>https://www.modernescpp.com/index.php/smart-tricks-with-fold-expressions/</li>
-<li>https://andreasfertig.com/books/notebookcpp-tips-and-tricks-with-templates/</li>
-<li>https://abseil.io/tips/</li>
-<li>https://github.com/tip-of-the-week/cpp</li>
-<li>https://stackoverflow.com/questions/75538/hidden-features-of-c</li>
-<li>https://www.reddit.com/r/cpp_questions/comments/161wfp1/do_you_know_some_lesser_known_cc_tricks_or/</li>
-<li>https://learn.microsoft.com/en-us/shows/pure-virtual-cpp-2022/cute-cpp-tricks-part-2-of-n-more-code-you-should-learn-from-and-never-write</li>
-<li>https://prajwalshetty.com/ue5/Useful-Unreal-Links/</li>
-<li>https://www.codeproject.com/Tips/5249485/The-Most-Essential-Cplusplus-Advice</li>
-<li>https://jorenar.com/blog/less-known-c</li>
-<li>https://theorangeduck.com/page/delta-time-frame-behind</li>
-<li>https://www.reddit.com/r/unrealengine/s/ZvVB2DkX4c</li>
-<li></li>
-</ul>
 <h4 data-number="1" id="pitfall-of-for-const-pairk-v-kv-my_map"><span
 class="header-section-number">1</span> pitfall of
 <code>for (const pair&lt;K, V&gt;&amp; kv : my_map)</code></h4>
@@ -765,7 +739,7 @@ class="header-section-number">16</span>
 <code>std::shared_ptr&lt;base&gt;</code> with no virtual destructor</h4>
 <p>Usually, if you delete pointer-to-base, destructor needs to be
 declared virtual so proper destructor is invoked. Hovewer, for
-std::shared_ptr this is not requred:</p>
+std::shared_ptr this is not required:</p>
 <div class="sourceCode" id="cb26"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb26-1"><a href="#cb26-1"></a><span class="kw">struct</span> MyBase <span class="op">{</span> <span class="op">~</span>MyBase<span class="op">();</span> <span class="op">};</span> <span class="co">// no virtual!</span></span>
 <span id="cb26-2"><a href="#cb26-2"></a><span class="kw">struct</span> MyDerived <span class="op">:</span> MyBase</span>
@@ -782,6 +756,15 @@ href="https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Type_Erasure">type-erase
 destroy function that remembers the actual type it was created with.</p>
 <h4 data-number="17" id="stateful-metaprogramming"><span
 class="header-section-number">17</span> stateful metaprogramming</h4>
+<p>This <a href="https://b.atch.se/posts/constexpr-counter/">works</a>
+and a and b have different values:</p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb27-1"><a href="#cb27-1"></a><span class="dt">int</span> main <span class="op">()</span> <span class="op">{</span></span>
+<span id="cb27-2"><a href="#cb27-2"></a>  <span class="kw">constexpr</span> <span class="dt">int</span> a <span class="op">=</span> f<span class="op">();</span></span>
+<span id="cb27-3"><a href="#cb27-3"></a>  <span class="kw">constexpr</span> <span class="dt">int</span> b <span class="op">=</span> f<span class="op">();</span></span>
+<span id="cb27-4"><a href="#cb27-4"></a></span>
+<span id="cb27-5"><a href="#cb27-5"></a>  <span class="kw">static_assert</span><span class="op">(</span>a <span class="op">!=</span> b<span class="op">);</span></span>
+<span id="cb27-6"><a href="#cb27-6"></a><span class="op">}</span></span></code></pre></div>
 <p>See, for instance, <a
 href="https://mc-deltat.github.io/articles/stateful-metaprogramming-cpp20">Revisiting
 Stateful Metaprogramming in C++20</a>:</p>
@@ -802,16 +785,6 @@ metaprogramming via friend injection</a></li>
 href="https://www.worldcadaccess.com/blog/2020/05/how-to-hack-c-with-templates-and-friends.html">hack
 C++ with templates and friends</a></li>
 </ul>
-<p>So this <a
-href="https://b.atch.se/posts/constexpr-counter/">works</a>:</p>
-<div class="sourceCode" id="cb27"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb27-1"><a href="#cb27-1"></a><span class="dt">int</span> main <span class="op">()</span> <span class="op">{</span></span>
-<span id="cb27-2"><a href="#cb27-2"></a>  <span class="dt">int</span> <span class="kw">constexpr</span> a <span class="op">=</span> f <span class="op">();</span></span>
-<span id="cb27-3"><a href="#cb27-3"></a>  <span class="dt">int</span> <span class="kw">constexpr</span> b <span class="op">=</span> f <span class="op">();</span></span>
-<span id="cb27-4"><a href="#cb27-4"></a></span>
-<span id="cb27-5"><a href="#cb27-5"></a>  <span class="kw">static_assert</span><span class="op">(</span>a <span class="op">!=</span> b<span class="op">);</span></span>
-<span id="cb27-6"><a href="#cb27-6"></a><span class="op">}</span></span></code></pre></div>
-<p>See the links above for more examples.</p>
 <h4 data-number="18" id="access-private-members"><span
 class="header-section-number">18</span> access private members</h4>
 <p>See <a href="https://github.com/martong/access_private">this</a> for
@@ -831,5 +804,90 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb28-10"><a href="#cb28-10"></a>  <span class="kw">auto</span> <span class="op">&amp;</span>i <span class="op">=</span> access_private<span class="op">::</span>accessor<span class="op">&lt;</span><span class="st">&quot;m_i&quot;</span><span class="op">&gt;(</span>a<span class="op">);</span></span>
 <span id="cb28-11"><a href="#cb28-11"></a>  <span class="ot">assert</span><span class="op">(</span>i <span class="op">==</span> <span class="dv">3</span><span class="op">);</span></span>
 <span id="cb28-12"><a href="#cb28-12"></a><span class="op">}</span></span></code></pre></div>
+<h4 data-number="19" id="extern-templates"><span
+class="header-section-number">19</span> extern templates</h4>
+<p>See, <a
+href="https://isocpp.org/wiki/faq/cpp11-language-templates#extern-templates">this</a>
+or <a
+href="https://en.cppreference.com/w/cpp/language/class_template">cppreference</a>.</p>
+<p>Allows to declare some set of template instantiations and actually
+intantiate them in another place. Usually, you extern template in the
+header and instantiate in <strong>your own</strong>/library .cpp
+file:</p>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb29-1"><a href="#cb29-1"></a><span class="co">// myvector.h</span></span>
+<span id="cb29-2"><a href="#cb29-2"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb29-3"><a href="#cb29-3"></a><span class="kw">class</span> MyVector <span class="op">{</span> <span class="co">/**/</span> <span class="op">};</span></span>
+<span id="cb29-4"><a href="#cb29-4"></a></span>
+<span id="cb29-5"><a href="#cb29-5"></a><span class="co">// declare frequently used instantiations</span></span>
+<span id="cb29-6"><a href="#cb29-6"></a><span class="at">extern</span> <span class="kw">template</span> <span class="kw">class</span> MyVector<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;;</span></span>
+<span id="cb29-7"><a href="#cb29-7"></a><span class="at">extern</span> <span class="kw">template</span> <span class="kw">class</span> MyVector<span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;;</span></span>
+<span id="cb29-8"><a href="#cb29-8"></a><span class="at">extern</span> <span class="kw">template</span> <span class="kw">class</span> MyVector<span class="op">&lt;</span><span class="dt">char</span><span class="op">&gt;;</span></span>
+<span id="cb29-9"><a href="#cb29-9"></a></span>
+<span id="cb29-10"><a href="#cb29-10"></a><span class="co">// myvector.cpp</span></span>
+<span id="cb29-11"><a href="#cb29-11"></a><span class="pp">#include </span><span class="im">&quot;myvector.h&quot;</span></span>
+<span id="cb29-12"><a href="#cb29-12"></a></span>
+<span id="cb29-13"><a href="#cb29-13"></a><span class="co">// instantiate frequent cases **once**;</span></span>
+<span id="cb29-14"><a href="#cb29-14"></a><span class="co">// client needs to link with myvector.o</span></span>
+<span id="cb29-15"><a href="#cb29-15"></a><span class="kw">template</span> <span class="kw">class</span> MyVector<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;;</span></span>
+<span id="cb29-16"><a href="#cb29-16"></a><span class="kw">template</span> <span class="kw">class</span> MyVector<span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;;</span></span>
+<span id="cb29-17"><a href="#cb29-17"></a><span class="kw">template</span> <span class="kw">class</span> MyVector<span class="op">&lt;</span><span class="dt">char</span><span class="op">&gt;;</span></span></code></pre></div>
+<p>C++ had also never implemeted C++98 <a
+href="https://en.cppreference.com/w/cpp/keyword/export">export
+keyword</a> (C++98, nothing to do with <a
+href="https://en.cppreference.com/w/cpp/language/modules">modules</a>).</p>
+<h4 data-number="20" id="templates-in-.cpp-file"><span
+class="header-section-number">20</span> templates in .cpp file</h4>
+<p>It’s usually stated that templates could only be defined in header
+file. However, you just need to define them anywhere so definition is
+visible at the point of use/instantiation.</p>
+<p>For intance, this works just fine:</p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb30-1"><a href="#cb30-1"></a><span class="co">// myclass.h</span></span>
+<span id="cb30-2"><a href="#cb30-2"></a><span class="kw">class</span> MyClass</span>
+<span id="cb30-3"><a href="#cb30-3"></a><span class="op">{</span></span>
+<span id="cb30-4"><a href="#cb30-4"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb30-5"><a href="#cb30-5"></a>    <span class="dt">int</span> Foo<span class="op">();</span></span>
+<span id="cb30-6"><a href="#cb30-6"></a></span>
+<span id="cb30-7"><a href="#cb30-7"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb30-8"><a href="#cb30-8"></a>    <span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb30-9"><a href="#cb30-9"></a>    <span class="dt">int</span> Bar<span class="op">();</span></span>
+<span id="cb30-10"><a href="#cb30-10"></a><span class="op">};</span></span>
+<span id="cb30-11"><a href="#cb30-11"></a></span>
+<span id="cb30-12"><a href="#cb30-12"></a><span class="co">// myclass.cpp</span></span>
+<span id="cb30-13"><a href="#cb30-13"></a><span class="co">// template class, defined in this .cpp file</span></span>
+<span id="cb30-14"><a href="#cb30-14"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> U<span class="op">&gt;</span></span>
+<span id="cb30-15"><a href="#cb30-15"></a><span class="kw">struct</span> MyHelper <span class="op">{};</span></span>
+<span id="cb30-16"><a href="#cb30-16"></a></span>
+<span id="cb30-17"><a href="#cb30-17"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb30-18"><a href="#cb30-18"></a><span class="dt">int</span> MyClass<span class="op">::</span>Bar<span class="op">()</span></span>
+<span id="cb30-19"><a href="#cb30-19"></a><span class="op">{</span></span>
+<span id="cb30-20"><a href="#cb30-20"></a>    <span class="co">// definition of member-function-template Bar();</span></span>
+<span id="cb30-21"><a href="#cb30-21"></a>    <span class="co">// also, the use of MyHelper template above,</span></span>
+<span id="cb30-22"><a href="#cb30-22"></a>    <span class="co">// visible only to this transtlation unit</span></span>
+<span id="cb30-23"><a href="#cb30-23"></a>    <span class="cf">return</span> <span class="kw">sizeof</span><span class="op">(</span>MyHelper<span class="op">&lt;</span>T<span class="op">&gt;{});</span></span>
+<span id="cb30-24"><a href="#cb30-24"></a><span class="op">}</span></span>
+<span id="cb30-25"><a href="#cb30-25"></a></span>
+<span id="cb30-26"><a href="#cb30-26"></a><span class="dt">int</span> MyClass<span class="op">::</span>Foo<span class="op">()</span></span>
+<span id="cb30-27"><a href="#cb30-27"></a><span class="op">{</span></span>
+<span id="cb30-28"><a href="#cb30-28"></a>    <span class="co">// use of function template</span></span>
+<span id="cb30-29"><a href="#cb30-29"></a>    <span class="cf">return</span> Bar<span class="op">&lt;</span><span class="dt">char</span><span class="op">&gt;();</span></span>
+<span id="cb30-30"><a href="#cb30-30"></a><span class="op">}</span></span></code></pre></div>
+<p>See also extern templates.</p>
+<h4 data-number="21" id="double-template-syntax"><span
+class="header-section-number">21</span> double-template syntax</h4>
+<p>If you have template class that has template member function and you
+want to define such function out-of-class, you need:</p>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb31-1"><a href="#cb31-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T1<span class="op">,</span> <span class="kw">typename</span> T2<span class="op">&gt;</span></span>
+<span id="cb31-2"><a href="#cb31-2"></a><span class="kw">class</span> MyClass</span>
+<span id="cb31-3"><a href="#cb31-3"></a><span class="op">{</span></span>
+<span id="cb31-4"><a href="#cb31-4"></a>    <span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> U<span class="op">&gt;</span></span>
+<span id="cb31-5"><a href="#cb31-5"></a>    <span class="dt">void</span> Foo<span class="op">(</span>U v<span class="op">);</span></span>
+<span id="cb31-6"><a href="#cb31-6"></a><span class="op">};</span></span>
+<span id="cb31-7"><a href="#cb31-7"></a></span>
+<span id="cb31-8"><a href="#cb31-8"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T1<span class="op">,</span> <span class="kw">typename</span> T2<span class="op">&gt;</span>  <span class="co">// for MyClass</span></span>
+<span id="cb31-9"><a href="#cb31-9"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> U<span class="op">&gt;</span>                <span class="co">// for Foo</span></span>
+<span id="cb31-10"><a href="#cb31-10"></a><span class="dt">void</span> MyClass<span class="op">&lt;</span>T1<span class="op">,</span> T2<span class="op">&gt;::</span>Foo<span class="op">(</span>U v<span class="op">)</span> <span class="op">{}</span></span></code></pre></div>
 </body>
 </html>
