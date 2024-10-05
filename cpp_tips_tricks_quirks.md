@@ -2,12 +2,13 @@
 title: C++ tips, tricks and quirks.
 ---
 
-To generate .html:
+To generate this .html out of [cpp_tips_tricks_quirks.md](https://raw.githubusercontent.com/grishavanika/grishavanika.github.io/refs/heads/master/cpp_tips_tricks_quirks.md):
 
 ```
 pandoc -s --toc --toc-depth=4 ^
   --number-sections ^
   --highlight=kate ^
+  -f markdown -t html ^
   cpp_tips_tricks_quirks.md ^
   -o cpp_tips_tricks_quirks.html 
 ```
@@ -74,6 +75,9 @@ pandoc -s --toc --toc-depth=4 ^
 - forcing constexpr to be compile time
 - type id / magic enum (parsing `__PRETTY_FUNCTION__`)
 - injected class name recursion
+- swap idiom (unqualified call to swap in generic context)
+- https://en.wikipedia.org/wiki/Barton%E2%80%93Nackman_trick
+- https://en.wikipedia.org/wiki/Category:C%2B%2B
 
 -----------------------------------------------------------
 
@@ -420,3 +424,34 @@ around (which would be UB).
 
 Kind-a outdated with [C++23’s Deducing this](https://devblogs.microsoft.com/cppblog/cpp23-deducing-this/)
 or is it? (template, compile time, .h vs .cpp).
+
+#### missing `std::` and why it still compiles (ADL)
+
+Notice, that code below will compile (most of the time):
+
+``` cpp {.numberLines}
+std::vector<int> vs{6, 5, 4, 3, 2, 1};
+sort(vs.begin(), vs.end()); // note: missing std:: when calling sort()
+```
+
+Since std::vector iterator lives in namespace `std::` (\*), ADL will be performed
+to find std::sort and use it. ADL = [Argument-dependent lookup (ADL),
+also known as Koenig lookup](https://en.cppreference.com/w/cpp/language/adl).
+
+(\*) Note, iterator could be just raw pointer (`int*`) and it's implementation
+defined where or not this is the case. Meaning the code above is not portable
+(across different implementations of STL).
+
+#### why STL is using `::std::move` everywhere?
+
+Take a look at [MSVC's implementation of the C++ Standard Library](https://github.com/microsoft/STL/blob/faccf0084ed9b8b58df103358174537233b178c7/stl/inc/algorithm#L452-L453):
+
+``` cpp {.numberLines startFrom="452"}
+_STD _Seek_wrapped(_First, _STD move(_UResult.in));
+return {_STD move(_First), _STD move(_UResult.fun)};
+```
+
+where \_STD is `#define _STD ::std::`. So ::std::move is used to **disable** ADL
+and make sure implementation move from namespace `std` is choosen. Who knows
+what user-defined custom type could bring?
+

@@ -281,12 +281,22 @@ class="toc-section-number">10</span> <code>#line</code> and file
 renaming</a></li>
 <li><a href="#meyers-cons_cast" id="toc-meyers-cons_cast"><span
 class="toc-section-number">11</span> Meyers cons_cast</a></li>
+<li><a href="#missing-std-and-why-it-still-compiles-adl"
+id="toc-missing-std-and-why-it-still-compiles-adl"><span
+class="toc-section-number">12</span> missing <code>std::</code> and why
+it still compiles (ADL)</a></li>
+<li><a href="#why-stl-is-using-stdmove-everywhere"
+id="toc-why-stl-is-using-stdmove-everywhere"><span
+class="toc-section-number">13</span> why STL is using
+<code>::std::move</code> everywhere?</a></li>
 </ul>
 </nav>
-<p>To generate .html:</p>
+<p>To generate this .html out of <a
+href="https://raw.githubusercontent.com/grishavanika/grishavanika.github.io/refs/heads/master/cpp_tips_tricks_quirks.md">cpp_tips_tricks_quirks.md</a>:</p>
 <pre><code>pandoc -s --toc --toc-depth=4 ^
   --number-sections ^
   --highlight=kate ^
+  -f markdown -t html ^
   cpp_tips_tricks_quirks.md ^
   -o cpp_tips_tricks_quirks.html </code></pre>
 <hr />
@@ -353,6 +363,9 @@ https://stackoverflow.com/questions/10150468/how-to-redirect-cin-and-cout-to-fil
 <li>forcing constexpr to be compile time</li>
 <li>type id / magic enum (parsing <code>__PRETTY_FUNCTION__</code>)</li>
 <li>injected class name recursion</li>
+<li>swap idiom (unqualified call to swap in generic context)</li>
+<li>https://en.wikipedia.org/wiki/Barton%E2%80%93Nackman_trick</li>
+<li>https://en.wikipedia.org/wiki/Category:C%2B%2B</li>
 </ul>
 <hr />
 <p><mark>TODO Unreal</mark></p>
@@ -663,5 +676,34 @@ version, not the other way around (which would be UB).</p>
 <p>Kind-a outdated with <a
 href="https://devblogs.microsoft.com/cppblog/cpp23-deducing-this/">C++23’s
 Deducing this</a> or is it? (template, compile time, .h vs .cpp).</p>
+<h4 data-number="12"
+id="missing-std-and-why-it-still-compiles-adl"><span
+class="header-section-number">12</span> missing <code>std::</code> and
+why it still compiles (ADL)</h4>
+<p>Notice, that code below will compile (most of the time):</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb22-1"><a href="#cb22-1"></a><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> vs<span class="op">{</span><span class="dv">6</span><span class="op">,</span> <span class="dv">5</span><span class="op">,</span> <span class="dv">4</span><span class="op">,</span> <span class="dv">3</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">1</span><span class="op">};</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>sort<span class="op">(</span>vs<span class="op">.</span>begin<span class="op">(),</span> vs<span class="op">.</span>end<span class="op">());</span> <span class="co">// note: missing std:: when calling sort()</span></span></code></pre></div>
+<p>Since std::vector iterator lives in namespace <code>std::</code> (*),
+ADL will be performed to find std::sort and use it. ADL = <a
+href="https://en.cppreference.com/w/cpp/language/adl">Argument-dependent
+lookup (ADL), also known as Koenig lookup</a>.</p>
+<p>(*) Note, iterator could be just raw pointer (<code>int*</code>) and
+it’s implementation defined where or not this is the case. Meaning the
+code above is not portable (across different implementations of
+STL).</p>
+<h4 data-number="13" id="why-stl-is-using-stdmove-everywhere"><span
+class="header-section-number">13</span> why STL is using
+<code>::std::move</code> everywhere?</h4>
+<p>Take a look at <a
+href="https://github.com/microsoft/STL/blob/faccf0084ed9b8b58df103358174537233b178c7/stl/inc/algorithm#L452-L453">MSVC’s
+implementation of the C++ Standard Library</a>:</p>
+<div class="sourceCode" id="cb23" data-startFrom="452"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp" style="counter-reset: source-line 451;"><span id="cb23-452"><a href="#cb23-452"></a>_STD _Seek_wrapped<span class="op">(</span>_First<span class="op">,</span> _STD move<span class="op">(</span>_UResult<span class="op">.</span>in<span class="op">));</span></span>
+<span id="cb23-453"><a href="#cb23-453"></a><span class="cf">return</span> <span class="op">{</span>_STD move<span class="op">(</span>_First<span class="op">),</span> _STD move<span class="op">(</span>_UResult<span class="op">.</span>fun<span class="op">)};</span></span></code></pre></div>
+<p>where _STD is <code>#define _STD ::std::</code>. So ::std::move is
+used to <strong>disable</strong> ADL and make sure implementation move
+from namespace <code>std</code> is choosen. Who knows what user-defined
+custom type could bring?</p>
 </body>
 </html>
