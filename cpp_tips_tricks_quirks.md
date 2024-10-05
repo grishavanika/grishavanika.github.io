@@ -30,7 +30,6 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 - operator-> and non pointer return type recursion
 - operator Type for perfect forward construction
 - overload struct for variant visit (inherit from lambda)
-- pseudo destructors (~int)
 - reference collapsing (even pre c++11)
 - map and modifying keys ub
 - picewise construct
@@ -613,3 +612,61 @@ template<typename U>                // for Foo
 void MyClass<T1, T2>::Foo(U v) {}
 ```
 
+#### when type T is bitcopyable?
+
+When implementors do use memcopy/memmove to construct/assign range of values
+for some user-defined type T? Use `std::is_trivially_*` [type traits](https://en.cppreference.com/w/cpp/meta)
+to query the property:
+
+``` cpp {.numberLines}
+struct MyType
+{
+    int data = -1;
+    char str[4]{};
+};
+
+int main()
+{
+    MyType v1{42};
+    MyType v2{66};
+
+    static_assert(std::is_trivially_copy_assignable<MyType>{});
+    std::memcpy(&v1, &v2, sizeof(v1)); // fine
+    assert(v1.data == 66);
+}
+```
+
+Overall, see also [std::uninitialized_*](https://en.cppreference.com/w/cpp/memory/uninitialized_copy)
+dynamic memory management and [std::copy](https://en.cppreference.com/w/cpp/algorithm/copy)
+algorithm and/or analogs that are already optimized
+for trivial/pod types by your standard library implementation for you.
+
+#### pseudo destructors (~int)
+
+In generic context, it's possible to invoke the destructor of int:
+
+``` cpp {.numberLines}
+using MyInt = int;
+MyInt v = 86;
+v.~MyInt();
+```
+
+which is no-op. See [destructor](https://en.cppreference.com/w/cpp/language/destructor#Notes)
+and [built-in member access operators](https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_member_access_operators).
+Exists so you don't need to special-case destructor call in generic/template code.
+
+#### manually invoke constructor
+
+In the same way you can call destructor manually, you can call constructor:
+
+``` cpp {.numberLines}
+alignas(T) unsigned char buffer[sizeof(T)];
+T* ptr = new(static_cast<void*>(buffer)) T; // call constructor
+ptr->~T();                                  // call destructor
+```
+
+which is [placement new](https://en.cppreference.com/w/cpp/lanzguage/new#Placement_new).
+
+Note on the use of `static_cast<void*>` - while not needed in this example, it's
+needed to be done in generic context to avoid invoking overloaded version of new,
+if any.

@@ -317,6 +317,17 @@ class="toc-section-number">20</span> templates in .cpp file</a></li>
 <li><a href="#double-template-syntax"
 id="toc-double-template-syntax"><span
 class="toc-section-number">21</span> double-template syntax</a></li>
+<li><a href="#when-type-t-is-bitcopyable"
+id="toc-when-type-t-is-bitcopyable"><span
+class="toc-section-number">22</span> when type T is
+bitcopyable?</a></li>
+<li><a href="#pseudo-destructors-int"
+id="toc-pseudo-destructors-int"><span
+class="toc-section-number">23</span> pseudo destructors (~int)</a></li>
+<li><a href="#manually-invoke-constructor"
+id="toc-manually-invoke-constructor"><span
+class="toc-section-number">24</span> manually invoke
+constructor</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -344,7 +355,6 @@ https://quuxplusone.github.io/blog/2021/07/09/priority-tag/)</li>
 <li>operator-&gt; and non pointer return type recursion</li>
 <li>operator Type for perfect forward construction</li>
 <li>overload struct for variant visit (inherit from lambda)</li>
-<li>pseudo destructors (~int)</li>
 <li>reference collapsing (even pre c++11)</li>
 <li>map and modifying keys ub</li>
 <li>picewise construct</li>
@@ -889,5 +899,62 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb31-8"><a href="#cb31-8"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T1<span class="op">,</span> <span class="kw">typename</span> T2<span class="op">&gt;</span>  <span class="co">// for MyClass</span></span>
 <span id="cb31-9"><a href="#cb31-9"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> U<span class="op">&gt;</span>                <span class="co">// for Foo</span></span>
 <span id="cb31-10"><a href="#cb31-10"></a><span class="dt">void</span> MyClass<span class="op">&lt;</span>T1<span class="op">,</span> T2<span class="op">&gt;::</span>Foo<span class="op">(</span>U v<span class="op">)</span> <span class="op">{}</span></span></code></pre></div>
+<h4 data-number="22" id="when-type-t-is-bitcopyable"><span
+class="header-section-number">22</span> when type T is bitcopyable?</h4>
+<p>When implementors do use memcopy/memmove to construct/assign range of
+values for some user-defined type T? Use
+<code>std::is_trivially_*</code> <a
+href="https://en.cppreference.com/w/cpp/meta">type traits</a> to query
+the property:</p>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb32-1"><a href="#cb32-1"></a><span class="kw">struct</span> MyType</span>
+<span id="cb32-2"><a href="#cb32-2"></a><span class="op">{</span></span>
+<span id="cb32-3"><a href="#cb32-3"></a>    <span class="dt">int</span> data <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb32-4"><a href="#cb32-4"></a>    <span class="dt">char</span> str<span class="op">[</span><span class="dv">4</span><span class="op">]{};</span></span>
+<span id="cb32-5"><a href="#cb32-5"></a><span class="op">};</span></span>
+<span id="cb32-6"><a href="#cb32-6"></a></span>
+<span id="cb32-7"><a href="#cb32-7"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb32-8"><a href="#cb32-8"></a><span class="op">{</span></span>
+<span id="cb32-9"><a href="#cb32-9"></a>    MyType v1<span class="op">{</span><span class="dv">42</span><span class="op">};</span></span>
+<span id="cb32-10"><a href="#cb32-10"></a>    MyType v2<span class="op">{</span><span class="dv">66</span><span class="op">};</span></span>
+<span id="cb32-11"><a href="#cb32-11"></a></span>
+<span id="cb32-12"><a href="#cb32-12"></a>    <span class="kw">static_assert</span><span class="op">(</span><span class="bu">std::</span>is_trivially_copy_assignable<span class="op">&lt;</span>MyType<span class="op">&gt;{});</span></span>
+<span id="cb32-13"><a href="#cb32-13"></a>    <span class="bu">std::</span>memcpy<span class="op">(&amp;</span>v1<span class="op">,</span> <span class="op">&amp;</span>v2<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span>v1<span class="op">));</span> <span class="co">// fine</span></span>
+<span id="cb32-14"><a href="#cb32-14"></a>    <span class="ot">assert</span><span class="op">(</span>v1<span class="op">.</span>data <span class="op">==</span> <span class="dv">66</span><span class="op">);</span></span>
+<span id="cb32-15"><a href="#cb32-15"></a><span class="op">}</span></span></code></pre></div>
+<p>Overall, see also <a
+href="https://en.cppreference.com/w/cpp/memory/uninitialized_copy">std::uninitialized_*</a>
+dynamic memory management and <a
+href="https://en.cppreference.com/w/cpp/algorithm/copy">std::copy</a>
+algorithm and/or analogs that are already optimized for trivial/pod
+types by your standard library implementation for you.</p>
+<h4 data-number="23" id="pseudo-destructors-int"><span
+class="header-section-number">23</span> pseudo destructors (~int)</h4>
+<p>In generic context, it’s possible to invoke the destructor of
+int:</p>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb33-1"><a href="#cb33-1"></a><span class="kw">using</span> MyInt <span class="op">=</span> <span class="dt">int</span><span class="op">;</span></span>
+<span id="cb33-2"><a href="#cb33-2"></a>MyInt v <span class="op">=</span> <span class="dv">86</span><span class="op">;</span></span>
+<span id="cb33-3"><a href="#cb33-3"></a>v<span class="op">.~</span>MyInt<span class="op">();</span></span></code></pre></div>
+<p>which is no-op. See <a
+href="https://en.cppreference.com/w/cpp/language/destructor#Notes">destructor</a>
+and <a
+href="https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_member_access_operators">built-in
+member access operators</a>. Exists so you don’t need to special-case
+destructor call in generic/template code.</p>
+<h4 data-number="24" id="manually-invoke-constructor"><span
+class="header-section-number">24</span> manually invoke constructor</h4>
+<p>In the same way you can call destructor manually, you can call
+constructor:</p>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb34-1"><a href="#cb34-1"></a><span class="kw">alignas</span><span class="op">(</span>T<span class="op">)</span> <span class="dt">unsigned</span> <span class="dt">char</span> buffer<span class="op">[</span><span class="kw">sizeof</span><span class="op">(</span>T<span class="op">)];</span></span>
+<span id="cb34-2"><a href="#cb34-2"></a>T<span class="op">*</span> ptr <span class="op">=</span> <span class="kw">new</span><span class="op">(</span><span class="kw">static_cast</span><span class="op">&lt;</span><span class="dt">void</span><span class="op">*&gt;(</span>buffer<span class="op">))</span> T<span class="op">;</span> <span class="co">// call constructor</span></span>
+<span id="cb34-3"><a href="#cb34-3"></a>ptr<span class="op">-&gt;~</span>T<span class="op">();</span>                                  <span class="co">// call destructor</span></span></code></pre></div>
+<p>which is <a
+href="https://en.cppreference.com/w/cpp/lanzguage/new#Placement_new">placement
+new</a>.</p>
+<p>Note on the use of <code>static_cast&lt;void*&gt;</code> - while not
+needed in this example, it’s needed to be done in generic context to
+avoid invoking overloaded version of new, if any.</p>
 </body>
 </html>
