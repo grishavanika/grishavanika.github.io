@@ -56,7 +56,6 @@ pandoc -s --toc --toc-depth=4 ^
 - mixing variadic templates and variadic c
 - type promotion passing custom type/float to variadic c
 - shared_ptr void
-- dynamic_cast void
 - dynamic cast reference/pointer
 - https://andreasfertig.blog/2021/07/cpp20-a-neat-trick-with-consteval/
 - templates sfinae/enable_if/checks/void_t
@@ -473,3 +472,22 @@ std::shared_ptr<int> v2{v1, &v1->data};
 v2 and v1 now share the same control block.
 You can also put a pointer to unrelative data (is there real-life use-case?).
 
+#### `dynamic_cast<void*>`
+
+From anywhere in the hierarhy of polimorphic type, you can restore a pointer
+to most-derived instance (i.e., the one created by `new` initially):
+
+``` cpp {.numberLines}
+struct MyBase { virtual ~MyBase() = default; };
+struct MyDerived : MyBase {};
+
+MyDerived* original_ptr = new MyDerived{};
+
+MyBase* base_ptr = original_ptr;
+void* void_ptr = dynamic_cast<void*>(base_ptr);
+
+assert(void_ptr == original_ptr);
+```
+
+See [cppreference](https://en.cppreference.com/w/cpp/language/dynamic_cast).
+Most-likely useful to interop with C library/external code.

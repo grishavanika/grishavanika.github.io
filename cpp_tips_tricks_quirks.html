@@ -293,6 +293,9 @@ class="toc-section-number">13</span> why STL is using
 id="toc-stdshared_ptr-aliasing-constructor"><span
 class="toc-section-number">14</span> <code>std::shared_ptr</code>
 aliasing constructor</a></li>
+<li><a href="#dynamic_castvoid" id="toc-dynamic_castvoid"><span
+class="toc-section-number">15</span>
+<code>dynamic_cast&lt;void*&gt;</code></a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -347,7 +350,6 @@ https://quuxplusone.github.io/blog/2021/07/09/priority-tag/)</li>
 <li>mixing variadic templates and variadic c</li>
 <li>type promotion passing custom type/float to variadic c</li>
 <li>shared_ptr void</li>
-<li>dynamic_cast void</li>
 <li>dynamic cast reference/pointer</li>
 <li>https://andreasfertig.blog/2021/07/cpp20-a-neat-trick-with-consteval/</li>
 <li>templates sfinae/enable_if/checks/void_t</li>
@@ -726,5 +728,24 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb24-7"><a href="#cb24-7"></a><span class="bu">std::</span>shared_ptr<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> v2<span class="op">{</span>v1<span class="op">,</span> <span class="op">&amp;</span>v1<span class="op">-&gt;</span>data<span class="op">};</span></span></code></pre></div>
 <p>v2 and v1 now share the same control block. You can also put a
 pointer to unrelative data (is there real-life use-case?).</p>
+<h4 data-number="15" id="dynamic_castvoid"><span
+class="header-section-number">15</span>
+<code>dynamic_cast&lt;void*&gt;</code></h4>
+<p>From anywhere in the hierarhy of polimorphic type, you can restore a
+pointer to most-derived instance (i.e., the one created by
+<code>new</code> initially):</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb25-1"><a href="#cb25-1"></a><span class="kw">struct</span> MyBase <span class="op">{</span> <span class="kw">virtual</span> <span class="op">~</span>MyBase<span class="op">()</span> <span class="op">=</span> <span class="cf">default</span><span class="op">;</span> <span class="op">};</span></span>
+<span id="cb25-2"><a href="#cb25-2"></a><span class="kw">struct</span> MyDerived <span class="op">:</span> MyBase <span class="op">{};</span></span>
+<span id="cb25-3"><a href="#cb25-3"></a></span>
+<span id="cb25-4"><a href="#cb25-4"></a>MyDerived<span class="op">*</span> original_ptr <span class="op">=</span> <span class="kw">new</span> MyDerived<span class="op">{};</span></span>
+<span id="cb25-5"><a href="#cb25-5"></a></span>
+<span id="cb25-6"><a href="#cb25-6"></a>MyBase<span class="op">*</span> base_ptr <span class="op">=</span> original_ptr<span class="op">;</span></span>
+<span id="cb25-7"><a href="#cb25-7"></a><span class="dt">void</span><span class="op">*</span> void_ptr <span class="op">=</span> <span class="kw">dynamic_cast</span><span class="op">&lt;</span><span class="dt">void</span><span class="op">*&gt;(</span>base_ptr<span class="op">);</span></span>
+<span id="cb25-8"><a href="#cb25-8"></a></span>
+<span id="cb25-9"><a href="#cb25-9"></a><span class="ot">assert</span><span class="op">(</span>void_ptr <span class="op">==</span> original_ptr<span class="op">);</span></span></code></pre></div>
+<p>See <a
+href="https://en.cppreference.com/w/cpp/language/dynamic_cast">cppreference</a>.
+Most-likely useful to interop with C library/external code.</p>
 </body>
 </html>
