@@ -63,7 +63,6 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 - see abseil
 - forcing constexpr to be compile time
 - type id / magic enum (parsing `__PRETTY_FUNCTION__`)
-- injected class name recursion
 - swap idiom (unqualified call to swap in generic context)
 - https://en.wikipedia.org/wiki/Barton%E2%80%93Nackman_trick
 - https://en.wikipedia.org/wiki/Category:C%2B%2B
@@ -72,6 +71,8 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 - (go thru shortcuts, like immediately invoked lambda)
 - see also https://github.com/shafik/cpp_blogs quiz questions
 - (and https://cppquiz.org/)
+- relocatable and faster then stl container implementations
+- 
 
 -----------------------------------------------------------
 
@@ -670,3 +671,73 @@ which is [placement new](https://en.cppreference.com/w/cpp/lanzguage/new#Placeme
 Note on the use of `static_cast<void*>` - while not needed in this example, it's
 needed to be done in generic context to avoid invoking overloaded version of new,
 if any.
+
+#### injected-class-name
+
+See [cppreference](https://en.cppreference.com/w/cpp/language/injected-class-name).
+In short, every class has its own name inside the class itself. Which happens to
+apply recursively. This leads to surprising syntax noone uses:
+
+``` cpp {.numberLines}
+struct MyClass
+{
+    int data = -1;
+    void Foo();
+};
+
+int main()
+{
+    MyClass m;
+    // access m.data
+    m.MyClass::data = 4;
+    assert(m.data == 4);
+    // now with recursion
+    m.MyClass::MyClass::MyClass::data = 7;
+    assert(m.data == 7);
+    // call a member function
+    MyClass* ptr = &m;
+    ptr->MyClass::Foo();
+}
+```
+
+For templates, this allows to reference class type without specifying
+template arguments.
+
+``` cpp {.numberLines}
+template<typename T, typename A>
+struct MyVector
+{
+    // same as Self = MyVector<T, A>
+    using Self = MyVector;
+};
+```
+
+#### invoke base virtual function directly
+
+Given an instance of derived class, one can skip invoking its own function
+override and call parent function directly (see [injected-class-name](#injected-class-name)):
+
+``` cpp {.numberLines}
+struct MyBase
+{
+    virtual void Foo()
+    { std::puts("MyBase"); }
+};
+
+struct MyDerived : MyBase
+{
+    virtual void Foo() override
+    { std::puts("MyDerived"); }
+};
+
+int main()
+{
+    MyDerived derived;
+    derived.MyBase::Foo();
+    MyDerived* ptr = &derived;
+    ptr->MyBase::Foo();
+}
+```
+
+This will print `MyBase` 2 times since we explicitly call MyBase::Foo().
+

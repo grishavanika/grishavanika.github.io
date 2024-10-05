@@ -328,6 +328,12 @@ class="toc-section-number">23</span> pseudo destructors (~int)</a></li>
 id="toc-manually-invoke-constructor"><span
 class="toc-section-number">24</span> manually invoke
 constructor</a></li>
+<li><a href="#injected-class-name" id="toc-injected-class-name"><span
+class="toc-section-number">25</span> injected-class-name</a></li>
+<li><a href="#invoke-base-virtual-function-directly"
+id="toc-invoke-base-virtual-function-directly"><span
+class="toc-section-number">26</span> invoke base virtual function
+directly</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -389,7 +395,6 @@ https://stackoverflow.com/questions/10150468/how-to-redirect-cin-and-cout-to-fil
 <li>see abseil</li>
 <li>forcing constexpr to be compile time</li>
 <li>type id / magic enum (parsing <code>__PRETTY_FUNCTION__</code>)</li>
-<li>injected class name recursion</li>
 <li>swap idiom (unqualified call to swap in generic context)</li>
 <li>https://en.wikipedia.org/wiki/Barton%E2%80%93Nackman_trick</li>
 <li>https://en.wikipedia.org/wiki/Category:C%2B%2B</li>
@@ -399,6 +404,8 @@ https://en.m.wikibooks.org/wiki/More_C++_Idioms)</li>
 <li>(go thru shortcuts, like immediately invoked lambda)</li>
 <li>see also https://github.com/shafik/cpp_blogs quiz questions</li>
 <li>(and https://cppquiz.org/)</li>
+<li>relocatable and faster then stl container implementations</li>
+<li></li>
 </ul>
 <hr />
 <h4 data-number="1" id="pitfall-of-for-const-pairk-v-kv-my_map"><span
@@ -956,5 +963,69 @@ new</a>.</p>
 <p>Note on the use of <code>static_cast&lt;void*&gt;</code> - while not
 needed in this example, it’s needed to be done in generic context to
 avoid invoking overloaded version of new, if any.</p>
+<h4 data-number="25" id="injected-class-name"><span
+class="header-section-number">25</span> injected-class-name</h4>
+<p>See <a
+href="https://en.cppreference.com/w/cpp/language/injected-class-name">cppreference</a>.
+In short, every class has its own name inside the class itself. Which
+happens to apply recursively. This leads to surprising syntax noone
+uses:</p>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb35-1"><a href="#cb35-1"></a><span class="kw">struct</span> MyClass</span>
+<span id="cb35-2"><a href="#cb35-2"></a><span class="op">{</span></span>
+<span id="cb35-3"><a href="#cb35-3"></a>    <span class="dt">int</span> data <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb35-4"><a href="#cb35-4"></a>    <span class="dt">void</span> Foo<span class="op">();</span></span>
+<span id="cb35-5"><a href="#cb35-5"></a><span class="op">};</span></span>
+<span id="cb35-6"><a href="#cb35-6"></a></span>
+<span id="cb35-7"><a href="#cb35-7"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb35-8"><a href="#cb35-8"></a><span class="op">{</span></span>
+<span id="cb35-9"><a href="#cb35-9"></a>    MyClass m<span class="op">;</span></span>
+<span id="cb35-10"><a href="#cb35-10"></a>    <span class="co">// access m.data</span></span>
+<span id="cb35-11"><a href="#cb35-11"></a>    m<span class="op">.</span>MyClass<span class="op">::</span>data <span class="op">=</span> <span class="dv">4</span><span class="op">;</span></span>
+<span id="cb35-12"><a href="#cb35-12"></a>    <span class="ot">assert</span><span class="op">(</span>m<span class="op">.</span>data <span class="op">==</span> <span class="dv">4</span><span class="op">);</span></span>
+<span id="cb35-13"><a href="#cb35-13"></a>    <span class="co">// now with recursion</span></span>
+<span id="cb35-14"><a href="#cb35-14"></a>    m<span class="op">.</span>MyClass<span class="op">::</span>MyClass<span class="op">::</span>MyClass<span class="op">::</span>data <span class="op">=</span> <span class="dv">7</span><span class="op">;</span></span>
+<span id="cb35-15"><a href="#cb35-15"></a>    <span class="ot">assert</span><span class="op">(</span>m<span class="op">.</span>data <span class="op">==</span> <span class="dv">7</span><span class="op">);</span></span>
+<span id="cb35-16"><a href="#cb35-16"></a>    <span class="co">// call a member function</span></span>
+<span id="cb35-17"><a href="#cb35-17"></a>    MyClass<span class="op">*</span> ptr <span class="op">=</span> <span class="op">&amp;</span>m<span class="op">;</span></span>
+<span id="cb35-18"><a href="#cb35-18"></a>    ptr<span class="op">-&gt;</span>MyClass<span class="op">::</span>Foo<span class="op">();</span></span>
+<span id="cb35-19"><a href="#cb35-19"></a><span class="op">}</span></span></code></pre></div>
+<p>For templates, this allows to reference class type without specifying
+template arguments.</p>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb36-1"><a href="#cb36-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">,</span> <span class="kw">typename</span> A<span class="op">&gt;</span></span>
+<span id="cb36-2"><a href="#cb36-2"></a><span class="kw">struct</span> MyVector</span>
+<span id="cb36-3"><a href="#cb36-3"></a><span class="op">{</span></span>
+<span id="cb36-4"><a href="#cb36-4"></a>    <span class="co">// same as Self = MyVector&lt;T, A&gt;</span></span>
+<span id="cb36-5"><a href="#cb36-5"></a>    <span class="kw">using</span> Self <span class="op">=</span> MyVector<span class="op">;</span></span>
+<span id="cb36-6"><a href="#cb36-6"></a><span class="op">};</span></span></code></pre></div>
+<h4 data-number="26" id="invoke-base-virtual-function-directly"><span
+class="header-section-number">26</span> invoke base virtual function
+directly</h4>
+<p>Given an instance of derived class, one can skip invoking its own
+function override and call parent function directly (see <a
+href="#injected-class-name">injected-class-name</a>):</p>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb37-1"><a href="#cb37-1"></a><span class="kw">struct</span> MyBase</span>
+<span id="cb37-2"><a href="#cb37-2"></a><span class="op">{</span></span>
+<span id="cb37-3"><a href="#cb37-3"></a>    <span class="kw">virtual</span> <span class="dt">void</span> Foo<span class="op">()</span></span>
+<span id="cb37-4"><a href="#cb37-4"></a>    <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;MyBase&quot;</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb37-5"><a href="#cb37-5"></a><span class="op">};</span></span>
+<span id="cb37-6"><a href="#cb37-6"></a></span>
+<span id="cb37-7"><a href="#cb37-7"></a><span class="kw">struct</span> MyDerived <span class="op">:</span> MyBase</span>
+<span id="cb37-8"><a href="#cb37-8"></a><span class="op">{</span></span>
+<span id="cb37-9"><a href="#cb37-9"></a>    <span class="kw">virtual</span> <span class="dt">void</span> Foo<span class="op">()</span> <span class="kw">override</span></span>
+<span id="cb37-10"><a href="#cb37-10"></a>    <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;MyDerived&quot;</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb37-11"><a href="#cb37-11"></a><span class="op">};</span></span>
+<span id="cb37-12"><a href="#cb37-12"></a></span>
+<span id="cb37-13"><a href="#cb37-13"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb37-14"><a href="#cb37-14"></a><span class="op">{</span></span>
+<span id="cb37-15"><a href="#cb37-15"></a>    MyDerived derived<span class="op">;</span></span>
+<span id="cb37-16"><a href="#cb37-16"></a>    derived<span class="op">.</span>MyBase<span class="op">::</span>Foo<span class="op">();</span></span>
+<span id="cb37-17"><a href="#cb37-17"></a>    MyDerived<span class="op">*</span> ptr <span class="op">=</span> <span class="op">&amp;</span>derived<span class="op">;</span></span>
+<span id="cb37-18"><a href="#cb37-18"></a>    ptr<span class="op">-&gt;</span>MyBase<span class="op">::</span>Foo<span class="op">();</span></span>
+<span id="cb37-19"><a href="#cb37-19"></a><span class="op">}</span></span></code></pre></div>
+<p>This will print <code>MyBase</code> 2 times since we explicitly call
+MyBase::Foo().</p>
 </body>
 </html>
