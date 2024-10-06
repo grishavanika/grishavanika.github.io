@@ -364,6 +364,22 @@ overloads</a></li>
 id="toc-change-base-class-member-access-rights"><span
 class="toc-section-number">34</span> change base class member access
 rights</a></li>
+<li><a href="#use-default-constructor-for-state-reset"
+id="toc-use-default-constructor-for-state-reset"><span
+class="toc-section-number">35</span> use default constructor for state
+reset</a></li>
+<li><a href="#default-constructor-is-a-must-for-modern-c"
+id="toc-default-constructor-is-a-must-for-modern-c"><span
+class="toc-section-number">36</span> default constructor is a must for
+modern C++</a></li>
+<li><a href="#default-constructor-must-do-no-work"
+id="toc-default-constructor-must-do-no-work"><span
+class="toc-section-number">37</span> default constructor must do no
+work</a></li>
+<li><a href="#constructors-should-do-no-work"
+id="toc-constructors-should-do-no-work"><span
+class="toc-section-number">38</span> constructors should do no
+work</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -431,7 +447,14 @@ https://en.m.wikibooks.org/wiki/More_C++_Idioms)</li>
 <li>see also https://github.com/shafik/cpp_blogs quiz questions</li>
 <li>(and https://cppquiz.org/)</li>
 <li>relocatable and faster then stl container implementations</li>
-<li></li>
+<li>https://www.foonathan.net/2016/05/final/</li>
+<li>https://www.foonathan.net/2020/10/tricks-default-template-argument/</li>
+<li>https://www.foonathan.net/2020/10/iife-metaprogramming/#content</li>
+<li><code>static_cast&lt;decltype(args)&gt;(args)...</code> -
+https://www.foonathan.net/2020/09/move-forward/#content</li>
+<li>Howard Hinnant special member function diagram -
+https://www.foonathan.net/2019/02/special-member-functions/#content</li>
+<li>modern C++ + value semantics = love</li>
 </ul>
 <hr />
 <h4 data-number="1" id="pitfall-of-for-const-pairk-v-kv-my_map"><span
@@ -1328,5 +1351,89 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb51-8"><a href="#cb51-8"></a><span class="kw">public</span><span class="op">:</span></span>
 <span id="cb51-9"><a href="#cb51-9"></a>    <span class="kw">using</span> MyBase<span class="op">::</span>data<span class="op">;</span> <span class="co">// make data public now</span></span>
 <span id="cb51-10"><a href="#cb51-10"></a><span class="op">};</span></span></code></pre></div>
+<h4 data-number="35" id="use-default-constructor-for-state-reset"><span
+class="header-section-number">35</span> use default constructor for
+state reset</h4>
+<p>It’s observed that, often, class API has .Reset() function (even more
+often when two phase initialization is used):</p>
+<div class="sourceCode" id="cb52"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb52-1"><a href="#cb52-1"></a><span class="kw">struct</span> MyClass</span>
+<span id="cb52-2"><a href="#cb52-2"></a><span class="op">{</span></span>
+<span id="cb52-3"><a href="#cb52-3"></a>    <span class="dt">int</span> data <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb52-4"><a href="#cb52-4"></a>    <span class="co">// ...</span></span>
+<span id="cb52-5"><a href="#cb52-5"></a>    <span class="dt">void</span> Reset<span class="op">()</span> <span class="op">{</span> data <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb52-6"><a href="#cb52-6"></a><span class="op">};</span></span></code></pre></div>
+<p>If your API is anything close to modern C++ and supports <a
+href="https://youtu.be/G9MxNwUoSt0?si=qbFFjdXYKT58ZThN">value
+semantics</a>, just have move assignment implemented with default
+constructor, which leads to:</p>
+<div class="sourceCode" id="cb53"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb53-1"><a href="#cb53-1"></a>MyClass instance<span class="op">;</span></span>
+<span id="cb53-2"><a href="#cb53-2"></a><span class="co">// ...</span></span>
+<span id="cb53-3"><a href="#cb53-3"></a>instance <span class="op">=</span> MyClass<span class="op">{};</span> <span class="co">// same as .Reset()</span></span></code></pre></div>
+<p>See also “default constructor is a must for modern C++”</p>
+<h4 data-number="36"
+id="default-constructor-is-a-must-for-modern-c"><span
+class="header-section-number">36</span> default constructor is a must
+for modern C++</h4>
+<p>What happens with the object after the move? The known answer for C++
+library types is that it’s in <a
+href="https://en.cppreference.com/w/cpp/utility/move">“valid but
+unspecified state”</a>. Note, that for most cases in practice, the
+object is in empty/null state (see <a
+href="https://gist.github.com/sean-parent/fed31bee69bc41d888f84f25743da9f1">Sean
+Parent comments</a>) or, to say it another way - you should put the
+object into empty state and be nice.</p>
+<p>Why it’s in “empty” state? Simply because destructor still runs after
+the move and we need to know whether or not it’s needed to free
+resources <strong>most of the times</strong>:</p>
+<div class="sourceCode" id="cb54"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb54-1"><a href="#cb54-1"></a><span class="kw">struct</span> MyFile</span>
+<span id="cb54-2"><a href="#cb54-2"></a><span class="op">{</span></span>
+<span id="cb54-3"><a href="#cb54-3"></a>    <span class="dt">int</span> handle <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb54-4"><a href="#cb54-4"></a>    <span class="co">// ...</span></span>
+<span id="cb54-5"><a href="#cb54-5"></a>    <span class="op">~</span>MyFile<span class="op">()</span></span>
+<span id="cb54-6"><a href="#cb54-6"></a>    <span class="op">{</span></span>
+<span id="cb54-7"><a href="#cb54-7"></a>        <span class="cf">if</span> <span class="op">(</span>handle <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb54-8"><a href="#cb54-8"></a>        <span class="op">{</span></span>
+<span id="cb54-9"><a href="#cb54-9"></a>            <span class="op">::</span>close<span class="op">(</span>handle<span class="op">);</span></span>
+<span id="cb54-10"><a href="#cb54-10"></a>            handle <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb54-11"><a href="#cb54-11"></a>        <span class="op">}</span></span>
+<span id="cb54-12"><a href="#cb54-12"></a>    <span class="op">}</span></span>
+<span id="cb54-13"><a href="#cb54-13"></a>    MyFile<span class="op">(</span>MyFile<span class="op">&amp;&amp;</span> rhs<span class="op">)</span> <span class="kw">noexcept</span></span>
+<span id="cb54-14"><a href="#cb54-14"></a>        <span class="op">:</span> handle<span class="op">(</span>rhs<span class="op">.</span>handle<span class="op">)</span></span>
+<span id="cb54-15"><a href="#cb54-15"></a>    <span class="op">{</span></span>
+<span id="cb54-16"><a href="#cb54-16"></a>        rhs<span class="op">.</span>handle <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span> <span class="co">// take ownership</span></span>
+<span id="cb54-17"><a href="#cb54-17"></a>    <span class="op">}</span></span>
+<span id="cb54-18"><a href="#cb54-18"></a><span class="op">}</span></span></code></pre></div>
+<p>For a user or even class author, it’s also often needed to check if
+the object was not moved to ensure correct use:</p>
+<div class="sourceCode" id="cb55"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb55-1"><a href="#cb55-1"></a><span class="dt">void</span> MyFile<span class="op">::</span>Read<span class="op">(...)</span></span>
+<span id="cb55-2"><a href="#cb55-2"></a><span class="op">{</span></span>
+<span id="cb55-3"><a href="#cb55-3"></a>    <span class="ot">assert</span><span class="op">(</span>handle <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">);</span> <span class="co">// hidden/implicit is_valid check</span></span>
+<span id="cb55-4"><a href="#cb55-4"></a><span class="op">}</span></span></code></pre></div>
+<p>Now, should the class expose <code>is_valid()</code> API? Maybe,
+maybe not; up to you. More elegant solution that requires smaller amount
+of exposed APIs could be just a pair of default construction and
+<code>operator==</code>:</p>
+<div class="sourceCode" id="cb56"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb56-1"><a href="#cb56-1"></a>MyFile file <span class="op">=</span> <span class="op">...;</span></span>
+<span id="cb56-2"><a href="#cb56-2"></a><span class="cf">if</span> <span class="op">(</span>file <span class="op">==</span> MyFile<span class="op">{})</span></span>
+<span id="cb56-3"><a href="#cb56-3"></a>    <span class="co">// empty, was moved from, can&#39;t invoke Read().</span></span></code></pre></div>
+<p>Leaving validity check alone, any time you support move, just expose
+such state with default constructor. More often then not it makes life
+easier. See also “state reset”.</p>
+<p>Relative: <a
+href="https://www.foonathan.net/2016/08/move-default-ctor/">Move
+Semantics and Default Constructors – Rule of Six?</a>.</p>
+<h4 data-number="37" id="default-constructor-must-do-no-work"><span
+class="header-section-number">37</span> default constructor must do no
+work</h4>
+<p><mark>TBD</mark></p>
+<h4 data-number="38" id="constructors-should-do-no-work"><span
+class="header-section-number">38</span> constructors should do no
+work</h4>
+<p><mark>TBD</mark></p>
 </body>
 </html>

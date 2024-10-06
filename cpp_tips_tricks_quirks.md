@@ -69,7 +69,12 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 - see also https://github.com/shafik/cpp_blogs quiz questions
 - (and https://cppquiz.org/)
 - relocatable and faster then stl container implementations
-- 
+- https://www.foonathan.net/2016/05/final/
+- https://www.foonathan.net/2020/10/tricks-default-template-argument/
+- https://www.foonathan.net/2020/10/iife-metaprogramming/#content
+- `static_cast<decltype(args)>(args)...` - https://www.foonathan.net/2020/09/move-forward/#content
+- Howard Hinnant special member function diagram - https://www.foonathan.net/2019/02/special-member-functions/#content
+- modern C++ + value semantics = love
 
 -----------------------------------------------------------
 
@@ -1027,4 +1032,93 @@ public:
 };
 ```
 
+#### use default constructor for state reset
 
+It's observed that, often, class API has .Reset() function (even more often
+when two phase initialization is used):
+
+``` cpp {.numberLines}
+struct MyClass
+{
+    int data = -1;
+    // ...
+    void Reset() { data = -1; }
+};
+```
+
+If your API is anything close to modern C++ and supports [value semantics](https://youtu.be/G9MxNwUoSt0?si=qbFFjdXYKT58ZThN),
+just have move assignment implemented with default constructor, which leads to:
+
+``` cpp {.numberLines}
+MyClass instance;
+// ...
+instance = MyClass{}; // same as .Reset()
+```
+
+See also "default constructor is a must for modern C++"
+
+#### default constructor is a must for modern C++
+
+What happens with the object after the move? The known answer for C++ library
+types is that it's in ["valid but unspecified state"](https://en.cppreference.com/w/cpp/utility/move).
+Note, that for most cases in practice, the object is in empty/null state
+(see [Sean Parent comments](https://gist.github.com/sean-parent/fed31bee69bc41d888f84f25743da9f1))
+or, to say it another way - you should put the object into empty state and be nice.
+
+Why it's in "empty" state? Simply because destructor still runs after the move and
+we need to know whether or not it's needed to free resources **most of the times**:
+
+``` cpp {.numberLines}
+struct MyFile
+{
+    int handle = -1;
+    // ...
+    ~MyFile()
+    {
+        if (handle >= 0)
+        {
+            ::close(handle);
+            handle = -1;
+        }
+    }
+    MyFile(MyFile&& rhs) noexcept
+        : handle(rhs.handle)
+    {
+        rhs.handle = -1; // take ownership
+    }
+}
+```
+
+For a user or even class author, it's also often needed to check if the
+object was not moved to ensure correct use:
+
+``` cpp {.numberLines}
+void MyFile::Read(...)
+{
+    assert(handle >= 0); // hidden/implicit is_valid check
+}
+```
+
+Now, should the class expose `is_valid()` API? Maybe, maybe not; up to you.
+More elegant solution that requires smaller amount of exposed APIs could be just
+a pair of default construction and `operator==`:
+
+``` cpp {.numberLines}
+MyFile file = ...;
+if (file == MyFile{})
+    // empty, was moved from, can't invoke Read().
+```
+
+Leaving validity check alone, any time you support move, just expose such state
+with default constructor. More often then not it makes life easier.
+See also "state reset".
+
+Relative: [Move Semantics and Default Constructors – Rule of Six?](https://www.foonathan.net/2016/08/move-default-ctor/).
+
+#### default constructor must do no work
+
+[TBD]{.mark}
+
+#### constructors should do no work
+
+[TBD]{.mark}
