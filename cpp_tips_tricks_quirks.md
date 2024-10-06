@@ -1119,6 +1119,8 @@ Relative: [Move Semantics and Default Constructors – Rule of Six?](https://www
 
 [TBD]{.mark}
 
+This also applies to debug builds (see MSVC STL debug iterators machinery).
+
 #### constructors should do no work
 
 [TBD]{.mark}
