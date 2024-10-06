@@ -352,6 +352,18 @@ class="toc-section-number">30</span> new auto(10)</a></li>
 id="toc-stdforward-use-in-stdfunction-like-case"><span
 class="toc-section-number">31</span> <code>std::forward</code> use in
 std::function-like case</a></li>
+<li><a href="#virtual-functions-default-arguments"
+id="toc-virtual-functions-default-arguments"><span
+class="toc-section-number">32</span> virtual functions default
+arguments</a></li>
+<li><a href="#virtual-functions-overloads"
+id="toc-virtual-functions-overloads"><span
+class="toc-section-number">33</span> virtual functions
+overloads</a></li>
+<li><a href="#change-base-class-member-access-rights"
+id="toc-change-base-class-member-access-rights"><span
+class="toc-section-number">34</span> change base class member access
+rights</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -376,7 +388,6 @@ known tricks, quirks and features of C</a>.</p>
 <li>operator-&gt; and non pointer return type recursion</li>
 <li>operator Type for perfect forward construction</li>
 <li>overload struct for variant visit (inherit from lambda)</li>
-<li>reference collapsing (even pre c++11)</li>
 <li>map and modifying keys ub</li>
 <li>picewise construct</li>
 <li>map[x]</li>
@@ -786,6 +797,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 pointer, but has <a
 href="https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Type_Erasure">type-erased</a>
 destroy function that remembers the actual type it was created with.</p>
+<p>See also <a href="http://www.gotw.ca/gotw/005.htm">GotW #5,
+Overriding Virtual Functions</a>:</p>
+<blockquote>
+<p>Make base class destructors virtual</p>
+</blockquote>
 <h4 data-number="17" id="stateful-metaprogramming"><span
 class="header-section-number">17</span> stateful metaprogramming</h4>
 <p>This <a href="https://b.atch.se/posts/constexpr-counter/">works</a>
@@ -1231,5 +1247,86 @@ template now.</p>
 href="https://en.cppreference.com/w/cpp/language/reference">reference
 collapsing</a> rules over possible <code>Types</code> and
 <code>Args</code>, <code>std::forward</code> is just right.</p>
+<h4 data-number="32" id="virtual-functions-default-arguments"><span
+class="header-section-number">32</span> virtual functions default
+arguments</h4>
+<p>See <a href="http://www.gotw.ca/gotw/005.htm">GotW #5, Overriding
+Virtual Functions</a>:</p>
+<blockquote>
+<p>Never change the default parameters of overridden inherited
+functions</p>
+</blockquote>
+<p>Going more strict: don’t have virtual functions with default
+arguments.</p>
+<div class="sourceCode" id="cb48"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb48-1"><a href="#cb48-1"></a><span class="kw">struct</span> MyBase</span>
+<span id="cb48-2"><a href="#cb48-2"></a><span class="op">{</span></span>
+<span id="cb48-3"><a href="#cb48-3"></a>    <span class="kw">virtual</span> <span class="dt">void</span> Foo<span class="op">(</span><span class="dt">int</span> v <span class="op">=</span> <span class="dv">34</span><span class="op">);</span></span>
+<span id="cb48-4"><a href="#cb48-4"></a><span class="op">};</span></span>
+<span id="cb48-5"><a href="#cb48-5"></a><span class="kw">struct</span> MyDerived <span class="op">:</span> MyBase</span>
+<span id="cb48-6"><a href="#cb48-6"></a><span class="op">{</span></span>
+<span id="cb48-7"><a href="#cb48-7"></a>    <span class="kw">virtual</span> <span class="dt">void</span> Foo<span class="op">(</span><span class="dt">int</span> v <span class="op">=</span> <span class="dv">43</span><span class="op">);</span></span>
+<span id="cb48-8"><a href="#cb48-8"></a><span class="op">};</span></span>
+<span id="cb48-9"><a href="#cb48-9"></a>MyBase<span class="op">*</span> ptr <span class="op">=</span> <span class="kw">new</span> MyDerived<span class="op">;</span></span>
+<span id="cb48-10"><a href="#cb48-10"></a>ptr<span class="op">-&gt;</span>Foo<span class="op">();</span> <span class="co">// calls MyDerived::Foo, but with v = 34 from MyBase</span></span></code></pre></div>
+<p>default arguments are resolved at compile time, override function
+target - at run-time; may lead to confusion.</p>
+<h4 data-number="33" id="virtual-functions-overloads"><span
+class="header-section-number">33</span> virtual functions overloads</h4>
+<p>See <a href="http://www.gotw.ca/gotw/005.htm">GotW #5, Overriding
+Virtual Functions</a>:</p>
+<blockquote>
+<p>When providing a function with the same name as an inherited
+function, be sure to bring the inherited functions into scope with a
+“using” declaration if you don’t want to hide them</p>
+</blockquote>
+<p>Going more strict: avoid providing overloads to virtual
+functions.<br />
+For modern C++: use <a
+href="https://en.cppreference.com/w/cpp/language/override">override
+specifier</a>.</p>
+<div class="sourceCode" id="cb49"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb49-1"><a href="#cb49-1"></a><span class="kw">struct</span> MyBase</span>
+<span id="cb49-2"><a href="#cb49-2"></a><span class="op">{</span></span>
+<span id="cb49-3"><a href="#cb49-3"></a>    <span class="kw">virtual</span> <span class="dt">int</span> Foo<span class="op">(</span><span class="dt">char</span> v<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="dv">1</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb49-4"><a href="#cb49-4"></a><span class="op">};</span></span>
+<span id="cb49-5"><a href="#cb49-5"></a><span class="kw">struct</span> MyDerived <span class="op">:</span> MyBase</span>
+<span id="cb49-6"><a href="#cb49-6"></a><span class="op">{</span></span>
+<span id="cb49-7"><a href="#cb49-7"></a>    <span class="kw">virtual</span> <span class="dt">int</span> Foo<span class="op">(</span><span class="dt">int</span> v<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="dv">2</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb49-8"><a href="#cb49-8"></a><span class="op">};</span></span>
+<span id="cb49-9"><a href="#cb49-9"></a></span>
+<span id="cb49-10"><a href="#cb49-10"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb49-11"><a href="#cb49-11"></a><span class="op">{</span></span>
+<span id="cb49-12"><a href="#cb49-12"></a>    MyDerived derived<span class="op">;</span></span>
+<span id="cb49-13"><a href="#cb49-13"></a>    <span class="cf">return</span> derived<span class="op">.</span>Foo<span class="op">(</span><span class="ch">&#39;x&#39;</span><span class="op">);</span></span>
+<span id="cb49-14"><a href="#cb49-14"></a><span class="op">}</span></span></code></pre></div>
+<p>main is going to return 2 since <code>MyDerived::Foo(int)</code> is
+used. To use <code>MyBase::Foo(char)</code>:</p>
+<div class="sourceCode" id="cb50"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb50-1"><a href="#cb50-1"></a><span class="kw">struct</span> MyDerived <span class="op">:</span> MyBase</span>
+<span id="cb50-2"><a href="#cb50-2"></a><span class="op">{</span></span>
+<span id="cb50-3"><a href="#cb50-3"></a>    <span class="kw">using</span> MyBase<span class="op">::</span>Foo<span class="op">;</span> <span class="co">// add char overload</span></span>
+<span id="cb50-4"><a href="#cb50-4"></a>    <span class="kw">virtual</span> <span class="dt">int</span> Foo<span class="op">(</span><span class="dt">int</span> v<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="dv">2</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb50-5"><a href="#cb50-5"></a><span class="op">};</span></span></code></pre></div>
+<p>Note: bringing base class method with using declation is,
+potentially, a breaking change (see above, <code>derived.Foo('x')</code>
+now returns 1 instead of 2).</p>
+<h4 data-number="34" id="change-base-class-member-access-rights"><span
+class="header-section-number">34</span> change base class member access
+rights</h4>
+<p>See <a
+href="https://en.cppreference.com/w/cpp/language/using_declaration">Using-declaration</a>.
+You can make protected member to be public in derived class:</p>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb51-1"><a href="#cb51-1"></a><span class="kw">struct</span> MyBase</span>
+<span id="cb51-2"><a href="#cb51-2"></a><span class="op">{</span></span>
+<span id="cb51-3"><a href="#cb51-3"></a><span class="kw">protected</span><span class="op">:</span></span>
+<span id="cb51-4"><a href="#cb51-4"></a>    <span class="dt">int</span> data <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb51-5"><a href="#cb51-5"></a><span class="op">};</span></span>
+<span id="cb51-6"><a href="#cb51-6"></a><span class="kw">struct</span> MyDerived <span class="op">:</span> MyBase</span>
+<span id="cb51-7"><a href="#cb51-7"></a><span class="op">{</span></span>
+<span id="cb51-8"><a href="#cb51-8"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb51-9"><a href="#cb51-9"></a>    <span class="kw">using</span> MyBase<span class="op">::</span>data<span class="op">;</span> <span class="co">// make data public now</span></span>
+<span id="cb51-10"><a href="#cb51-10"></a><span class="op">};</span></span></code></pre></div>
 </body>
 </html>

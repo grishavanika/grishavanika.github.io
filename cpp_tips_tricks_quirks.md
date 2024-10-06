@@ -28,7 +28,6 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 - operator-> and non pointer return type recursion
 - operator Type for perfect forward construction
 - overload struct for variant visit (inherit from lambda)
-- reference collapsing (even pre c++11)
 - map and modifying keys ub
 - picewise construct
 - map[x]
@@ -474,6 +473,10 @@ struct MyDerived : MyBase
 
 `std::shared_ptr<MyBase>` holds `MyBase*` pointer, but has [type-erased](https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Type_Erasure)
 destroy function that remembers the actual type it was created with.
+
+See also [GotW #5, Overriding Virtual Functions](http://www.gotw.ca/gotw/005.htm):
+
+> Make base class destructors virtual
 
 #### stateful metaprogramming
 
@@ -939,4 +942,89 @@ do with `operator()` call at (2) which is not even a function template now.
 
 If you run [reference collapsing](https://en.cppreference.com/w/cpp/language/reference)
 rules over possible `Types` and `Args`, `std::forward` is just right.
+
+#### virtual functions default arguments
+
+See [GotW #5, Overriding Virtual Functions](http://www.gotw.ca/gotw/005.htm):
+
+> Never change the default parameters of overridden inherited functions
+
+Going more strict: don't have virtual functions with default arguments.
+
+``` cpp {.numberLines}
+struct MyBase
+{
+    virtual void Foo(int v = 34);
+};
+struct MyDerived : MyBase
+{
+    virtual void Foo(int v = 43);
+};
+MyBase* ptr = new MyDerived;
+ptr->Foo(); // calls MyDerived::Foo, but with v = 34 from MyBase
+```
+
+default arguments are resolved at compile time, override function target - at
+run-time; may lead to confusion.
+
+#### virtual functions overloads
+
+See [GotW #5, Overriding Virtual Functions](http://www.gotw.ca/gotw/005.htm):
+
+> When providing a function with the same name as an inherited function,
+> be sure to bring the inherited functions into scope with a "using"
+> declaration if you don't want to hide them
+
+Going more strict: avoid providing overloads to virtual functions.  
+For modern C++: use [override specifier](https://en.cppreference.com/w/cpp/language/override).
+
+``` cpp {.numberLines}
+struct MyBase
+{
+    virtual int Foo(char v) { return 1; }
+};
+struct MyDerived : MyBase
+{
+    virtual int Foo(int v) { return 2; }
+};
+
+int main()
+{
+    MyDerived derived;
+    return derived.Foo('x');
+}
+```
+
+main is going to return 2 since `MyDerived::Foo(int)` is used.
+To use `MyBase::Foo(char)`:
+
+``` cpp {.numberLines}
+struct MyDerived : MyBase
+{
+    using MyBase::Foo; // add char overload
+    virtual int Foo(int v) { return 2; }
+};
+```
+
+Note: bringing base class method with using declation is, potentially,
+a breaking change (see above, `derived.Foo('x')` now returns 1 instead of 2).
+
+#### change base class member access rights
+
+See [Using-declaration](https://en.cppreference.com/w/cpp/language/using_declaration).
+You can make protected member to be public in derived class:
+
+``` cpp {.numberLines}
+struct MyBase
+{
+protected:
+    int data = -1;
+};
+struct MyDerived : MyBase
+{
+public:
+    using MyBase::data; // make data public now
+};
+```
+
 
