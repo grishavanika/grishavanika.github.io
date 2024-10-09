@@ -380,6 +380,22 @@ work</a></li>
 id="toc-constructors-should-do-no-work"><span
 class="toc-section-number">38</span> constructors should do no
 work</a></li>
+<li><a href="#stdunique_ptr-with-decltype-lambda"
+id="toc-stdunique_ptr-with-decltype-lambda"><span
+class="toc-section-number">39</span> <code>std::unique_ptr</code> with
+decltype lambda</a></li>
+<li><a href="#auto-vs-auto-for-pointers"
+id="toc-auto-vs-auto-for-pointers"><span
+class="toc-section-number">40</span> <code>auto</code> vs
+<code>auto*</code> for pointers</a></li>
+<li><a href="#stdtransform-and-lift-passing-overload-set"
+id="toc-stdtransform-and-lift-passing-overload-set"><span
+class="toc-section-number">41</span> std::transform and LIFT (passing
+overload set)</a></li>
+<li><a href="#tolower-is-not-an-addressible-function"
+id="toc-tolower-is-not-an-addressible-function"><span
+class="toc-section-number">42</span> <code>tolower</code> is not an
+addressible function</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -1437,5 +1453,78 @@ machinery).</p>
 class="header-section-number">38</span> constructors should do no
 work</h4>
 <p><mark>TBD</mark></p>
+<h4 data-number="39" id="stdunique_ptr-with-decltype-lambda"><span
+class="header-section-number">39</span> <code>std::unique_ptr</code>
+with decltype lambda</h4>
+<p>Since C++20, with <a
+href="https://andreasfertig.blog/2022/08/cpp-insights-lambdas-in-unevaluated-contexts/">Lambdas
+in unevaluated contexts</a>, you can have poor man’s scope exit as a
+side effect:</p>
+<div class="sourceCode" id="cb57"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb57-1"><a href="#cb57-1"></a><span class="kw">using</span> on_exit <span class="op">=</span> <span class="bu">std::</span>unique_ptr<span class="op">&lt;</span><span class="at">const</span> <span class="dt">char</span><span class="op">,</span></span>
+<span id="cb57-2"><a href="#cb57-2"></a>    <span class="kw">decltype</span><span class="op">([](</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> msg<span class="op">)</span> <span class="op">{</span> puts<span class="op">(</span>msg<span class="op">);</span> <span class="op">})&gt;;</span></span>
+<span id="cb57-3"><a href="#cb57-3"></a></span>
+<span id="cb57-4"><a href="#cb57-4"></a><span class="dt">void</span> Foo<span class="op">()</span></span>
+<span id="cb57-5"><a href="#cb57-5"></a><span class="op">{</span></span>
+<span id="cb57-6"><a href="#cb57-6"></a>    on_exit msg<span class="op">(</span><span class="st">&quot;Foo&quot;</span><span class="op">);</span></span>
+<span id="cb57-7"><a href="#cb57-7"></a><span class="op">}</span> <span class="co">// prints Foo on scope exit</span></span></code></pre></div>
+<p>from <a
+href="https://youtu.be/O2G3bwNP5p4?si=_2yfyq9BEoxF3etB">Creating a
+Sender/Receiver HTTP Server for Asynchronous Operations in C++</a>.</p>
+<h4 data-number="40" id="auto-vs-auto-for-pointers"><span
+class="header-section-number">40</span> <code>auto</code> vs
+<code>auto*</code> for pointers</h4>
+<p>Since auto type deduction comes from <a
+href="https://en.cppreference.com/w/cpp/language/template_argument_deduction#Other_contexts">template
+argument deduction</a>, it’s fine to have <code>auto*</code> in the same
+way it’s fine to have <code>T*</code> as a template parameter:</p>
+<div class="sourceCode" id="cb58"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb58-1"><a href="#cb58-1"></a><span class="kw">auto</span>  p1 <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">;</span>        <span class="co">// p1 = int*</span></span>
+<span id="cb58-2"><a href="#cb58-2"></a><span class="kw">auto</span><span class="op">*</span> p2 <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">;</span>        <span class="co">// p2 = int*</span></span>
+<span id="cb58-3"><a href="#cb58-3"></a><span class="at">const</span> <span class="kw">auto</span>  p3 <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">;</span>  <span class="co">// p3 = int* const</span></span>
+<span id="cb58-4"><a href="#cb58-4"></a><span class="at">const</span> <span class="kw">auto</span><span class="op">*</span> p4 <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">;</span>  <span class="co">// p4 = const int*</span></span></code></pre></div>
+<p>Still, note the difference for p3 vs p4 - const pointer to int vs
+just pointer to const int!</p>
+<h4 data-number="41"
+id="stdtransform-and-lift-passing-overload-set"><span
+class="header-section-number">41</span> std::transform and LIFT (passing
+overload set)</h4>
+<p>See <a
+href="https://blog.tartanllama.xyz/passing-overload-sets/">Passing
+overload sets to functions</a>:</p>
+<div class="sourceCode" id="cb59"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb59-1"><a href="#cb59-1"></a><span class="pp">#define FWD</span><span class="op">(...)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb59-2"><a href="#cb59-2"></a><span class="pp">    </span><span class="bu">std::</span>forward<span class="op">&lt;</span><span class="kw">decltype</span><span class="op">(</span><span class="ot">__VA_ARGS__</span><span class="op">)&gt;(</span><span class="ot">__VA_ARGS__</span><span class="op">)</span></span>
+<span id="cb59-3"><a href="#cb59-3"></a></span>
+<span id="cb59-4"><a href="#cb59-4"></a><span class="pp">#define LIFT</span><span class="op">(</span>X<span class="op">)</span><span class="pp"> </span><span class="op">[](</span><span class="kw">auto</span><span class="pp"> </span><span class="op">&amp;&amp;...</span><span class="pp"> </span>args<span class="op">)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb59-5"><a href="#cb59-5"></a><span class="pp">    </span><span class="kw">noexcept</span><span class="op">(</span><span class="kw">noexcept</span><span class="op">(</span>X<span class="op">(</span>FWD<span class="op">(</span>args<span class="op">)...)))</span><span class="pp">  </span><span class="op">\</span></span>
+<span id="cb59-6"><a href="#cb59-6"></a><span class="pp">    </span><span class="op">-&gt;</span><span class="pp"> </span><span class="kw">decltype</span><span class="op">(</span>X<span class="op">(</span>FWD<span class="op">(</span>args<span class="op">)...))</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb59-7"><a href="#cb59-7"></a><span class="op">{</span><span class="pp">  </span><span class="op">\</span></span>
+<span id="cb59-8"><a href="#cb59-8"></a><span class="pp">    </span><span class="cf">return</span><span class="pp"> </span>X<span class="op">(</span>FWD<span class="op">(</span>args<span class="op">)...);</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb59-9"><a href="#cb59-9"></a><span class="op">}</span></span>
+<span id="cb59-10"><a href="#cb59-10"></a></span>
+<span id="cb59-11"><a href="#cb59-11"></a><span class="co">// ...</span></span>
+<span id="cb59-12"><a href="#cb59-12"></a><span class="bu">std::</span>transform<span class="op">(</span>first<span class="op">,</span> last<span class="op">,</span> target<span class="op">,</span> LIFT<span class="op">(</span>foo<span class="op">));</span></span></code></pre></div>
+<h4 data-number="42" id="tolower-is-not-an-addressible-function"><span
+class="header-section-number">42</span> <code>tolower</code> is not an
+addressible function</h4>
+<p>You can’t take an adress of std:: function since function could be
+implemented differently with different STL(s) and/or in the feature the
+function may change, hence such code is not portable. From <a
+href="https://devblogs.microsoft.com/oldnewthing/20241007-00/?p=110345">A
+popular but wrong way to convert a string to uppercase or
+lowercase</a>:</p>
+<blockquote>
+<p>The standard imposes this limitation because the implementation may
+need to add default function parameters, template default parameters, or
+overloads in order to accomplish the various requirements of the
+standard.</p>
+</blockquote>
+<p>So, strictly speaking, ignoring facts from the article, this is not
+portable C++:</p>
+<div class="sourceCode" id="cb60"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb60-1"><a href="#cb60-1"></a><span class="bu">std::</span>wstring name<span class="op">;</span></span>
+<span id="cb60-2"><a href="#cb60-2"></a><span class="bu">std::</span>transform<span class="op">(</span>name<span class="op">.</span>begin<span class="op">(),</span> name<span class="op">.</span>end<span class="op">(),</span> name<span class="op">.</span>begin<span class="op">(),</span></span>
+<span id="cb60-3"><a href="#cb60-3"></a>    <span class="bu">std::</span>tolower<span class="op">);</span></span></code></pre></div>
 </body>
 </html>

@@ -1124,3 +1124,73 @@ This also applies to debug builds (see MSVC STL debug iterators machinery).
 #### constructors should do no work
 
 [TBD]{.mark}
+
+#### `std::unique_ptr` with decltype lambda
+
+Since C++20, with [Lambdas in unevaluated contexts](https://andreasfertig.blog/2022/08/cpp-insights-lambdas-in-unevaluated-contexts/),
+you can have poor man's scope exit as a side effect:
+
+``` cpp {.numberLines}
+using on_exit = std::unique_ptr<const char,
+    decltype([](const char* msg) { puts(msg); })>;
+
+void Foo()
+{
+    on_exit msg("Foo");
+} // prints Foo on scope exit
+```
+
+from [Creating a Sender/Receiver HTTP Server for Asynchronous Operations in C++](https://youtu.be/O2G3bwNP5p4?si=_2yfyq9BEoxF3etB).
+
+#### `auto` vs `auto*` for pointers
+
+Since auto type deduction comes from [template argument deduction](https://en.cppreference.com/w/cpp/language/template_argument_deduction#Other_contexts),
+it's fine to have `auto*` in the same way it's fine to have `T*` as a template
+parameter:
+
+``` cpp {.numberLines}
+auto  p1 = new int;        // p1 = int*
+auto* p2 = new int;        // p2 = int*
+const auto  p3 = new int;  // p3 = int* const
+const auto* p4 = new int;  // p4 = const int*
+```
+
+Still, note the difference for p3 vs p4 - const pointer to int vs just pointer 
+to const int!
+
+#### std::transform and LIFT (passing overload set)
+
+See [Passing overload sets to functions](https://blog.tartanllama.xyz/passing-overload-sets/):
+
+``` cpp {.numberLines}
+#define FWD(...) \
+    std::forward<decltype(__VA_ARGS__)>(__VA_ARGS__)
+
+#define LIFT(X) [](auto &&... args) \
+    noexcept(noexcept(X(FWD(args)...)))  \
+    -> decltype(X(FWD(args)...)) \
+{  \
+    return X(FWD(args)...); \
+}
+
+// ...
+std::transform(first, last, target, LIFT(foo));
+```
+
+#### `tolower` is not an addressible function
+
+You can't take an adress of std:: function since function could be implemented
+differently with different STL(s) and/or in the feature the function
+may change, hence such code is not portable. From [A popular but wrong way to convert a string to uppercase or lowercase](https://devblogs.microsoft.com/oldnewthing/20241007-00/?p=110345):
+
+> The standard imposes this limitation because the implementation
+> may need to add default function parameters, template default parameters,
+> or overloads in order to accomplish the various requirements of the standard.
+
+So, strictly speaking, ignoring facts from the article, this is not portable C++:
+
+``` cpp {.numberLines}
+std::wstring name;
+std::transform(name.begin(), name.end(), name.begin(),
+    std::tolower);
+```
