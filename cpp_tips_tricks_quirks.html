@@ -396,6 +396,11 @@ overload set)</a></li>
 id="toc-tolower-is-not-an-addressible-function"><span
 class="toc-section-number">42</span> <code>tolower</code> is not an
 addressible function</a></li>
+<li><a
+href="#replace-operator-new-to-track-third-party-code-allocations"
+id="toc-replace-operator-new-to-track-third-party-code-allocations"><span
+class="toc-section-number">43</span> replace operator new to track
+third-party code allocations</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -1578,5 +1583,30 @@ portable C++:</p>
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb64-1"><a href="#cb64-1"></a><span class="bu">std::</span>wstring name<span class="op">;</span></span>
 <span id="cb64-2"><a href="#cb64-2"></a><span class="bu">std::</span>transform<span class="op">(</span>name<span class="op">.</span>begin<span class="op">(),</span> name<span class="op">.</span>end<span class="op">(),</span> name<span class="op">.</span>begin<span class="op">(),</span></span>
 <span id="cb64-3"><a href="#cb64-3"></a>    <span class="bu">std::</span>tolower<span class="op">);</span></span></code></pre></div>
+<h4 data-number="43"
+id="replace-operator-new-to-track-third-party-code-allocations"><span
+class="header-section-number">43</span> replace operator new to track
+third-party code allocations</h4>
+<p><code>operator new</code>/<code>operator delete</code> can have <a
+href="https://en.cppreference.com/w/cpp/memory/new/operator_new#Global_replacements">global
+replacement</a>. Usually used to actually inject custom memory
+allocator, but also is used for tracking/profiling purpose. And can be
+used for debugging:</p>
+<div class="sourceCode" id="cb65"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb65-1"><a href="#cb65-1"></a><span class="dt">void</span><span class="op">*</span> <span class="kw">operator</span> <span class="kw">new</span><span class="op">(</span><span class="bu">std::</span>size_t size<span class="op">)</span></span>
+<span id="cb65-2"><a href="#cb65-2"></a><span class="op">{</span></span>
+<span id="cb65-3"><a href="#cb65-3"></a>    <span class="cf">return</span> malloc<span class="op">(</span>size<span class="op">);</span> <span class="co">// assume size &gt; 0</span></span>
+<span id="cb65-4"><a href="#cb65-4"></a><span class="op">}</span></span>
+<span id="cb65-5"><a href="#cb65-5"></a><span class="dt">void</span> <span class="kw">operator</span> <span class="kw">delete</span><span class="op">(</span><span class="dt">void</span><span class="op">*</span> ptr<span class="op">)</span> <span class="kw">noexcept</span></span>
+<span id="cb65-6"><a href="#cb65-6"></a><span class="op">{</span></span>
+<span id="cb65-7"><a href="#cb65-7"></a>    free<span class="op">(</span>ptr<span class="op">);</span></span>
+<span id="cb65-8"><a href="#cb65-8"></a><span class="op">}</span></span>
+<span id="cb65-9"><a href="#cb65-9"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb65-10"><a href="#cb65-10"></a><span class="op">{</span></span>
+<span id="cb65-11"><a href="#cb65-11"></a>    <span class="bu">std::</span>string s<span class="op">{</span><span class="st">&quot;does it allocate for such input?&quot;</span><span class="op">};</span></span>
+<span id="cb65-12"><a href="#cb65-12"></a>    <span class="co">// ...</span></span>
+<span id="cb65-13"><a href="#cb65-13"></a><span class="op">}</span></span></code></pre></div>
+<p>Just put a breakpoint inside your version of new/delete; observe
+callstack and all the useful context.</p>
 </body>
 </html>

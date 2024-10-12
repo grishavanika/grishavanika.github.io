@@ -32,7 +32,7 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 - picewise construct
 - map[x]
 - emplace back with placement new pre c++11
-- mayers singletong
+- mayers singleton
 - universal references, mayers
 - https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01
 - https://jorenar.com/blog/less-known-c
@@ -42,7 +42,6 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 - variadic templates default argument emulation
 - mixing variadic templates and variadic c
 - type promotion passing custom type/float to variadic c
-- shared_ptr void
 - dynamic cast reference/pointer
 - https://andreasfertig.blog/2021/07/cpp20-a-neat-trick-with-consteval/
 - templates sfinae/enable_if/checks/void_t
@@ -75,6 +74,8 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 - `static_cast<decltype(args)>(args)...` - https://www.foonathan.net/2020/09/move-forward/#content
 - Howard Hinnant special member function diagram - https://www.foonathan.net/2019/02/special-member-functions/#content
 - modern C++ + value semantics = love
+- cstdio vs stdio.h and puts vs std::puts
+- 
 
 -----------------------------------------------------------
 
@@ -1138,7 +1139,7 @@ ptr = {}; // reset, set to nullptr
 Default constructor should contain nothing except default/trivial
 data member initialization. Specifically, no memory allocations, no side effects. 
 
-Bonus question: why does this code allocates under MSVC debug?
+Bonus question: why does this code allocate under MSVC debug?
 
 ```
 std::string s; // ?
@@ -1257,3 +1258,44 @@ std::wstring name;
 std::transform(name.begin(), name.end(), name.begin(),
     std::tolower);
 ```
+
+#### replace operator new to track third-party code allocations
+
+`operator new`/`operator delete` can have [global replacement](https://en.cppreference.com/w/cpp/memory/new/operator_new#Global_replacements).
+Usually used to actually inject custom memory allocator, but also is used for
+tracking/profiling purpose. And can be used for debugging:
+
+``` cpp {.numberLines}
+void* operator new(std::size_t size)
+{
+    return malloc(size); // assume size > 0
+}
+void operator delete(void* ptr) noexcept
+{
+    free(ptr);
+}
+int main()
+{
+    std::string s{"does it allocate for this input?"};
+    // ...
+}
+```
+
+Just put a breakpoint inside your version of new/delete; observe callstack and 
+all the useful context.
+
+Hint: same can be done with, let say, WinAPI - use [Detours](https://github.com/microsoft/Detours).
+
+#### `std::shared_ptr<void>` exists
+
+`std::shared_ptr<void>` holds `void*` pointer, but also has [type-erased](https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Type_Erasure)
+destroy function that remembers the actual type it was created with, so this is
+fine:
+
+```
+std::shared_ptr<void>   ptr1 = std::make_shared<MyData>();             // ok
+std::shared_ptr<MyData> ptr2 = std::static_pointer_cast<MyData>(ptr1); // ok
+```
+
+See [Why do std::shared_ptr<void> work](https://stackoverflow.com/questions/5913396/why-do-stdshared-ptrvoid-work)
+and [The std::shared_ptr as arbitrary user-data pointer](https://www.nextptr.com/tutorial/ta1227747841/the-stdshared_ptrvoid-as-arbitrary-userdata-pointer).
