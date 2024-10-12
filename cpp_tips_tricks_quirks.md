@@ -19,19 +19,15 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 
 [TODO]{.mark}
 
-- cout and stdout synchronization
 - initializer list crap (no move only)
 - std::function crap (no move only)
 - non-trivial types in union
-- +\[]()
 - no capture needed for globals/const for lambda
 - operator-> and non pointer return type recursion
-- operator Type for perfect forward construction
 - overload struct for variant visit (inherit from lambda)
 - map and modifying keys ub
 - picewise construct
 - map[x]
-- emplace back with placement new pre c++11
 - mayers singleton
 - universal references, mayers
 - https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01
@@ -388,7 +384,7 @@ struct MyArray
 Note: mutable `get()` is implemented in terms of const version, not the other way
 around (which would be UB).
 
-Kind-a outdated with [C++23’s Deducing this](https://devblogs.microsoft.com/cppblog/cpp23-deducing-this/)
+Kind-a outdated with [C++23's Deducing this](https://devblogs.microsoft.com/cppblog/cpp23-deducing-this/)
 or is it? (template, compile time, .h vs .cpp).
 
 #### missing `std::` and why it still compiles (ADL)
@@ -1141,7 +1137,7 @@ data member initialization. Specifically, no memory allocations, no side effects
 
 Bonus question: why does this code allocate under MSVC debug?
 
-```
+``` cpp {.numberLines}
 std::string s; // ?
 ```
 
@@ -1292,10 +1288,146 @@ Hint: same can be done with, let say, WinAPI - use [Detours](https://github.com/
 destroy function that remembers the actual type it was created with, so this is
 fine:
 
-```
+``` cpp {.numberLines}
 std::shared_ptr<void>   ptr1 = std::make_shared<MyData>();             // ok
 std::shared_ptr<MyData> ptr2 = std::static_pointer_cast<MyData>(ptr1); // ok
 ```
 
 See [Why do std::shared_ptr<void> work](https://stackoverflow.com/questions/5913396/why-do-stdshared-ptrvoid-work)
 and [The std::shared_ptr as arbitrary user-data pointer](https://www.nextptr.com/tutorial/ta1227747841/the-stdshared_ptrvoid-as-arbitrary-userdata-pointer).
+
+#### sync_with_stdio for stdout vs std::cout
+
+See [sync_with_stdio](https://en.cppreference.com/w/cpp/io/ios_base/sync_with_stdio).
+
+> In practice, this means that the synchronized C++ streams are unbuffered,
+> and each I/O operation on a C++ stream is immediately applied to the
+> corresponding C stream's buffer. This makes it possible to freely
+> mix C++ and C I/O.
+
+> In addition, synchronized C++ streams are guaranteed to be thread-safe
+> (individual characters output from multiple threads may interleave,
+> but no data races occur).
+
+``` cpp {.numberLines}
+std::ios::sync_with_stdio(false);
+std::cout << "a\n";
+std::printf("b\n"); // may be output before 'a' above
+std::cout << "c\n";
+```
+
+#### std::clog vs std::cerr
+
+[clog](https://en.cppreference.com/w/cpp/io/clog) cppreference and [cerr](https://en.cppreference.com/w/cpp/io/cerr).
+Associated with the standard C error output stream `stderr` (same as cerr), but:
+
+> Output to stderr via std::cerr flushes out the pending output on std::cout,
+> while output to stderr via std::clog does not.
+
+``` cpp {.numberLines}
+std::cout << "aaaaa\n";
+std::clog << "bbbbb\n"; // may not flush "aaaaa"
+std::cerr << "ccccc\n"; // flush "aaaaa"
+```
+
+#### capture-less lambda can be converted to c-function
+
+``` cpp {.numberLines}
+extern "C" void Handle(void (*MyCallback)(int));
+
+Handle([](int V) { std::println("{}", V); }); // pass to C-function
+void (*MyFunction)(int) = [](int) {};         // convert to C-function
+```
+
+In case lambda has empty capture list (and no deducing this is used), it can be
+converted to c-style function pointer (has conversion operator). See [lambda](https://en.cppreference.com/w/cpp/language/lambda).
+
+#### `+[](){}` to convert lambda to c-function
+
+See [A positive lambda: '+[]{}' - What sorcery is this?](https://stackoverflow.com/questions/18889028/a-positive-lambda-what-sorcery-is-this):
+
+``` cpp {.numberLines}
+#include <functional>
+
+void foo(std::function<void()> f) { f(); }
+void foo(void (*f)()) { f(); }
+
+int main ()
+{
+    foo(  [](){} ); // ambiguous
+    foo( +[](){} ); // not ambiguous (calls the function pointer overload)
+}
+```
+
+> The + in the expression `+[](){}` is the unary + operator 
+> [...] forces the conversion to the function pointer type
+
+In addition: what `*[](){}` does? And `+*[](){}`?.
+
+#### virtual operator int
+
+[conversion function or cast operator](https://en.cppreference.com/w/cpp/language/cast_operator)
+is the same as regular function and could also be made virtual:
+
+``` cpp {.numberLines}
+struct MyBase
+{
+    virtual operator int() const
+    { return 1; }
+};
+struct MyDerived : MyBase
+{
+    virtual operator int() const override
+    { return 2; }
+};
+
+void Handle(const MyBase& Base)
+{
+    const int V = Base;
+    std::print("{}", V);
+}
+
+int main()
+{
+    Handle(MyDerived{}); // prints 2
+}
+```
+
+#### placement new emplace_back pre-C++11
+
+Used to perfect-construct object in-place. Below is valid C++98:
+
+``` cpp {.numberLines}
+#include <cassert>
+#include <new>
+
+// array of max size 2 for int(s) for illustation
+struct MyArray
+{
+    /*alignas(int)*/ char buffer[2 * sizeof(int)];
+    int size; // = 0;
+
+    void* emplace_back()
+    {
+        assert(size < 2);
+        void* memory = (buffer + size * sizeof(int));
+        size += 1;
+        return memory;
+    }
+};
+
+int main()
+{
+    MyArray v;
+    new(v.emplace_back()) int(44);
+    new(v.emplace_back()) int(45);
+}
+```
+
+Observed in Unreal Engine:
+
+``` cpp {.numberLines}
+TArray<int> Data;
+new(Data) int{67}; // push_back to Data
+```
+

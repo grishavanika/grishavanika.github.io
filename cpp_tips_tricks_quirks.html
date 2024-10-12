@@ -405,6 +405,26 @@ third-party code allocations</a></li>
 id="toc-stdshared_ptrvoid-exists"><span
 class="toc-section-number">44</span>
 <code>std::shared_ptr&lt;void&gt;</code> exists</a></li>
+<li><a href="#sync_with_stdio-for-stdout-vs-stdcout"
+id="toc-sync_with_stdio-for-stdout-vs-stdcout"><span
+class="toc-section-number">45</span> sync_with_stdio for stdout vs
+std::cout</a></li>
+<li><a href="#stdclog-vs-stdcerr" id="toc-stdclog-vs-stdcerr"><span
+class="toc-section-number">46</span> std::clog vs std::cerr</a></li>
+<li><a href="#capture-less-lambda-can-be-converted-to-c-function"
+id="toc-capture-less-lambda-can-be-converted-to-c-function"><span
+class="toc-section-number">47</span> capture-less lambda can be
+converted to c-function</a></li>
+<li><a href="#to-convert-lambda-to-c-function"
+id="toc-to-convert-lambda-to-c-function"><span
+class="toc-section-number">48</span> <code>+[](){}</code> to convert
+lambda to c-function</a></li>
+<li><a href="#virtual-operator-int" id="toc-virtual-operator-int"><span
+class="toc-section-number">49</span> virtual operator int</a></li>
+<li><a href="#placement-new-emplace_back-pre-c11"
+id="toc-placement-new-emplace_back-pre-c11"><span
+class="toc-section-number">50</span> placement new emplace_back
+pre-C++11</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -420,19 +440,15 @@ known tricks, quirks and features of C</a>.</p>
 <hr />
 <p><mark>TODO</mark></p>
 <ul>
-<li>cout and stdout synchronization</li>
 <li>initializer list crap (no move only)</li>
 <li>std::function crap (no move only)</li>
 <li>non-trivial types in union</li>
-<li>+[]()</li>
 <li>no capture needed for globals/const for lambda</li>
 <li>operator-&gt; and non pointer return type recursion</li>
-<li>operator Type for perfect forward construction</li>
 <li>overload struct for variant visit (inherit from lambda)</li>
 <li>map and modifying keys ub</li>
 <li>picewise construct</li>
 <li>map[x]</li>
-<li>emplace back with placement new pre c++11</li>
 <li>mayers singleton</li>
 <li>universal references, mayers</li>
 <li>https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01</li>
@@ -1474,7 +1490,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 data member initialization. Specifically, no memory allocations, no side
 effects.</p>
 <p>Bonus question: why does this code allocate under MSVC debug?</p>
-<pre><code>std::string s; // ?</code></pre>
+<div class="sourceCode" id="cb59"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb59-1"><a href="#cb59-1"></a><span class="bu">std::</span>string s<span class="op">;</span> <span class="co">// ?</span></span></code></pre></div>
 <p>Hint: MSVC STL debug iterators machinery.</p>
 <h4 data-number="38" id="constructors-should-do-no-work"><span
 class="header-section-number">38</span> constructors should do no
@@ -1623,12 +1640,146 @@ pointer, but also has <a
 href="https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Type_Erasure">type-erased</a>
 destroy function that remembers the actual type it was created with, so
 this is fine:</p>
-<pre><code>std::shared_ptr&lt;void&gt;   ptr1 = std::make_shared&lt;MyData&gt;();             // ok
-std::shared_ptr&lt;MyData&gt; ptr2 = std::static_pointer_cast&lt;MyData&gt;(ptr1); // ok</code></pre>
+<div class="sourceCode" id="cb66"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb66-1"><a href="#cb66-1"></a><span class="bu">std::</span>shared_ptr<span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span>   ptr1 <span class="op">=</span> <span class="bu">std::</span>make_shared<span class="op">&lt;</span>MyData<span class="op">&gt;();</span>             <span class="co">// ok</span></span>
+<span id="cb66-2"><a href="#cb66-2"></a><span class="bu">std::</span>shared_ptr<span class="op">&lt;</span>MyData<span class="op">&gt;</span> ptr2 <span class="op">=</span> <span class="bu">std::</span>static_pointer_cast<span class="op">&lt;</span>MyData<span class="op">&gt;(</span>ptr1<span class="op">);</span> <span class="co">// ok</span></span></code></pre></div>
 <p>See <a
 href="https://stackoverflow.com/questions/5913396/why-do-stdshared-ptrvoid-work">Why
 do std::shared_ptr<void> work</a> and <a
 href="https://www.nextptr.com/tutorial/ta1227747841/the-stdshared_ptrvoid-as-arbitrary-userdata-pointer">The
 std::shared_ptr as arbitrary user-data pointer</a>.</p>
+<h4 data-number="45" id="sync_with_stdio-for-stdout-vs-stdcout"><span
+class="header-section-number">45</span> sync_with_stdio for stdout vs
+std::cout</h4>
+<p>See <a
+href="https://en.cppreference.com/w/cpp/io/ios_base/sync_with_stdio">sync_with_stdio</a>.</p>
+<blockquote>
+<p>In practice, this means that the synchronized C++ streams are
+unbuffered, and each I/O operation on a C++ stream is immediately
+applied to the corresponding C stream’s buffer. This makes it possible
+to freely mix C++ and C I/O.</p>
+</blockquote>
+<blockquote>
+<p>In addition, synchronized C++ streams are guaranteed to be
+thread-safe (individual characters output from multiple threads may
+interleave, but no data races occur).</p>
+</blockquote>
+<div class="sourceCode" id="cb67"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb67-1"><a href="#cb67-1"></a><span class="bu">std::</span>ios::sync_with_stdio<span class="op">(</span><span class="kw">false</span><span class="op">);</span></span>
+<span id="cb67-2"><a href="#cb67-2"></a><span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">&quot;a</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
+<span id="cb67-3"><a href="#cb67-3"></a><span class="bu">std::</span>printf<span class="op">(</span><span class="st">&quot;b</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span> <span class="co">// may be output before &#39;a&#39; above</span></span>
+<span id="cb67-4"><a href="#cb67-4"></a><span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">&quot;c</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span></code></pre></div>
+<h4 data-number="46" id="stdclog-vs-stdcerr"><span
+class="header-section-number">46</span> std::clog vs std::cerr</h4>
+<p><a href="https://en.cppreference.com/w/cpp/io/clog">clog</a>
+cppreference and <a
+href="https://en.cppreference.com/w/cpp/io/cerr">cerr</a>. Associated
+with the standard C error output stream <code>stderr</code> (same as
+cerr), but:</p>
+<blockquote>
+<p>Output to stderr via std::cerr flushes out the pending output on
+std::cout, while output to stderr via std::clog does not.</p>
+</blockquote>
+<div class="sourceCode" id="cb68"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb68-1"><a href="#cb68-1"></a><span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">&quot;aaaaa</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
+<span id="cb68-2"><a href="#cb68-2"></a><span class="bu">std::</span>clog <span class="op">&lt;&lt;</span> <span class="st">&quot;bbbbb</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span> <span class="co">// may not flush &quot;aaaaa&quot;</span></span>
+<span id="cb68-3"><a href="#cb68-3"></a><span class="bu">std::</span>cerr <span class="op">&lt;&lt;</span> <span class="st">&quot;ccccc</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span> <span class="co">// flush &quot;aaaaa&quot;</span></span></code></pre></div>
+<h4 data-number="47"
+id="capture-less-lambda-can-be-converted-to-c-function"><span
+class="header-section-number">47</span> capture-less lambda can be
+converted to c-function</h4>
+<div class="sourceCode" id="cb69"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb69-1"><a href="#cb69-1"></a><span class="at">extern</span> <span class="st">&quot;C&quot;</span> <span class="dt">void</span> Handle<span class="op">(</span><span class="dt">void</span> <span class="op">(*</span>MyCallback<span class="op">)(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb69-2"><a href="#cb69-2"></a></span>
+<span id="cb69-3"><a href="#cb69-3"></a>Handle<span class="op">([](</span><span class="dt">int</span> V<span class="op">)</span> <span class="op">{</span> <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> V<span class="op">);</span> <span class="op">});</span> <span class="co">// pass to C-function</span></span>
+<span id="cb69-4"><a href="#cb69-4"></a><span class="dt">void</span> <span class="op">(*</span>MyFunction<span class="op">)(</span><span class="dt">int</span><span class="op">)</span> <span class="op">=</span> <span class="op">[](</span><span class="dt">int</span><span class="op">)</span> <span class="op">{};</span>         <span class="co">// convert to C-function</span></span></code></pre></div>
+<p>In case lambda has empty capture list (and no deducing this is used),
+it can be converted to c-style function pointer (has conversion
+operator). See <a
+href="https://en.cppreference.com/w/cpp/language/lambda">lambda</a>.</p>
+<h4 data-number="48" id="to-convert-lambda-to-c-function"><span
+class="header-section-number">48</span> <code>+[](){}</code> to convert
+lambda to c-function</h4>
+<p>See <a
+href="https://stackoverflow.com/questions/18889028/a-positive-lambda-what-sorcery-is-this">A
+positive lambda: ‘+<span></span>’ - What sorcery is this?</a>:</p>
+<div class="sourceCode" id="cb70"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb70-1"><a href="#cb70-1"></a><span class="pp">#include </span><span class="im">&lt;functional&gt;</span></span>
+<span id="cb70-2"><a href="#cb70-2"></a></span>
+<span id="cb70-3"><a href="#cb70-3"></a><span class="dt">void</span> foo<span class="op">(</span><span class="bu">std::</span>function<span class="op">&lt;</span><span class="dt">void</span><span class="op">()&gt;</span> f<span class="op">)</span> <span class="op">{</span> f<span class="op">();</span> <span class="op">}</span></span>
+<span id="cb70-4"><a href="#cb70-4"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">void</span> <span class="op">(*</span>f<span class="op">)())</span> <span class="op">{</span> f<span class="op">();</span> <span class="op">}</span></span>
+<span id="cb70-5"><a href="#cb70-5"></a></span>
+<span id="cb70-6"><a href="#cb70-6"></a><span class="dt">int</span> main <span class="op">()</span></span>
+<span id="cb70-7"><a href="#cb70-7"></a><span class="op">{</span></span>
+<span id="cb70-8"><a href="#cb70-8"></a>    foo<span class="op">(</span>  <span class="op">[](){}</span> <span class="op">);</span> <span class="co">// ambiguous</span></span>
+<span id="cb70-9"><a href="#cb70-9"></a>    foo<span class="op">(</span> <span class="op">+[](){}</span> <span class="op">);</span> <span class="co">// not ambiguous (calls the function pointer overload)</span></span>
+<span id="cb70-10"><a href="#cb70-10"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p>The + in the expression <code>+[](){}</code> is the unary + operator
+[…] forces the conversion to the function pointer type</p>
+</blockquote>
+<p>In addition: what <code>*[](){}</code> does? And
+<code>+*[](){}</code>?.</p>
+<h4 data-number="49" id="virtual-operator-int"><span
+class="header-section-number">49</span> virtual operator int</h4>
+<p><a
+href="https://en.cppreference.com/w/cpp/language/cast_operator">conversion
+function or cast operator</a> is the same as regular function and could
+also be made virtual:</p>
+<div class="sourceCode" id="cb71"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb71-1"><a href="#cb71-1"></a><span class="kw">struct</span> MyBase</span>
+<span id="cb71-2"><a href="#cb71-2"></a><span class="op">{</span></span>
+<span id="cb71-3"><a href="#cb71-3"></a>    <span class="kw">virtual</span> <span class="kw">operator</span> <span class="dt">int</span><span class="op">()</span> <span class="at">const</span></span>
+<span id="cb71-4"><a href="#cb71-4"></a>    <span class="op">{</span> <span class="cf">return</span> <span class="dv">1</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb71-5"><a href="#cb71-5"></a><span class="op">};</span></span>
+<span id="cb71-6"><a href="#cb71-6"></a><span class="kw">struct</span> MyDerived <span class="op">:</span> MyBase</span>
+<span id="cb71-7"><a href="#cb71-7"></a><span class="op">{</span></span>
+<span id="cb71-8"><a href="#cb71-8"></a>    <span class="kw">virtual</span> <span class="kw">operator</span> <span class="dt">int</span><span class="op">()</span> <span class="at">const</span> <span class="kw">override</span></span>
+<span id="cb71-9"><a href="#cb71-9"></a>    <span class="op">{</span> <span class="cf">return</span> <span class="dv">2</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb71-10"><a href="#cb71-10"></a><span class="op">};</span></span>
+<span id="cb71-11"><a href="#cb71-11"></a></span>
+<span id="cb71-12"><a href="#cb71-12"></a><span class="dt">void</span> Handle<span class="op">(</span><span class="at">const</span> MyBase<span class="op">&amp;</span> Base<span class="op">)</span></span>
+<span id="cb71-13"><a href="#cb71-13"></a><span class="op">{</span></span>
+<span id="cb71-14"><a href="#cb71-14"></a>    <span class="at">const</span> <span class="dt">int</span> V <span class="op">=</span> Base<span class="op">;</span></span>
+<span id="cb71-15"><a href="#cb71-15"></a>    <span class="bu">std::</span>print<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> V<span class="op">);</span></span>
+<span id="cb71-16"><a href="#cb71-16"></a><span class="op">}</span></span>
+<span id="cb71-17"><a href="#cb71-17"></a></span>
+<span id="cb71-18"><a href="#cb71-18"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb71-19"><a href="#cb71-19"></a><span class="op">{</span></span>
+<span id="cb71-20"><a href="#cb71-20"></a>    Handle<span class="op">(</span>MyDerived<span class="op">{});</span> <span class="co">// prints 2</span></span>
+<span id="cb71-21"><a href="#cb71-21"></a><span class="op">}</span></span></code></pre></div>
+<h4 data-number="50" id="placement-new-emplace_back-pre-c11"><span
+class="header-section-number">50</span> placement new emplace_back
+pre-C++11</h4>
+<p>Used to perfect-construct object in-place. Below is valid C++98:</p>
+<div class="sourceCode" id="cb72"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb72-1"><a href="#cb72-1"></a><span class="pp">#include </span><span class="im">&lt;cassert&gt;</span></span>
+<span id="cb72-2"><a href="#cb72-2"></a><span class="pp">#include </span><span class="im">&lt;new&gt;</span></span>
+<span id="cb72-3"><a href="#cb72-3"></a></span>
+<span id="cb72-4"><a href="#cb72-4"></a><span class="co">// array of max size 2 for int(s) for illustation</span></span>
+<span id="cb72-5"><a href="#cb72-5"></a><span class="kw">struct</span> MyArray</span>
+<span id="cb72-6"><a href="#cb72-6"></a><span class="op">{</span></span>
+<span id="cb72-7"><a href="#cb72-7"></a>    <span class="co">/*alignas(int)*/</span> <span class="dt">char</span> buffer<span class="op">[</span><span class="dv">2</span> <span class="op">*</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">)];</span></span>
+<span id="cb72-8"><a href="#cb72-8"></a>    <span class="dt">int</span> size<span class="op">;</span> <span class="co">// = 0;</span></span>
+<span id="cb72-9"><a href="#cb72-9"></a></span>
+<span id="cb72-10"><a href="#cb72-10"></a>    <span class="dt">void</span><span class="op">*</span> emplace_back<span class="op">()</span></span>
+<span id="cb72-11"><a href="#cb72-11"></a>    <span class="op">{</span></span>
+<span id="cb72-12"><a href="#cb72-12"></a>        <span class="ot">assert</span><span class="op">(</span>size <span class="op">&lt;</span> <span class="dv">2</span><span class="op">);</span></span>
+<span id="cb72-13"><a href="#cb72-13"></a>        <span class="dt">void</span><span class="op">*</span> memory <span class="op">=</span> <span class="op">(</span>buffer <span class="op">+</span> size <span class="op">*</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb72-14"><a href="#cb72-14"></a>        size <span class="op">+=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb72-15"><a href="#cb72-15"></a>        <span class="cf">return</span> memory<span class="op">;</span></span>
+<span id="cb72-16"><a href="#cb72-16"></a>    <span class="op">}</span></span>
+<span id="cb72-17"><a href="#cb72-17"></a><span class="op">};</span></span>
+<span id="cb72-18"><a href="#cb72-18"></a></span>
+<span id="cb72-19"><a href="#cb72-19"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb72-20"><a href="#cb72-20"></a><span class="op">{</span></span>
+<span id="cb72-21"><a href="#cb72-21"></a>    MyArray v<span class="op">;</span></span>
+<span id="cb72-22"><a href="#cb72-22"></a>    <span class="kw">new</span><span class="op">(</span>v<span class="op">.</span>emplace_back<span class="op">())</span> <span class="dt">int</span><span class="op">(</span><span class="dv">44</span><span class="op">);</span></span>
+<span id="cb72-23"><a href="#cb72-23"></a>    <span class="kw">new</span><span class="op">(</span>v<span class="op">.</span>emplace_back<span class="op">())</span> <span class="dt">int</span><span class="op">(</span><span class="dv">45</span><span class="op">);</span></span>
+<span id="cb72-24"><a href="#cb72-24"></a><span class="op">}</span></span></code></pre></div>
+<p>Observed in Unreal Engine:</p>
+<div class="sourceCode" id="cb73"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb73-1"><a href="#cb73-1"></a>TArray<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> Data<span class="op">;</span></span>
+<span id="cb73-2"><a href="#cb73-2"></a><span class="kw">new</span><span class="op">(</span>Data<span class="op">)</span> <span class="dt">int</span><span class="op">{</span><span class="dv">67</span><span class="op">};</span> <span class="co">// push_back to Data</span></span></code></pre></div>
 </body>
 </html>
