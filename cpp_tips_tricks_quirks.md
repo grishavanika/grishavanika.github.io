@@ -19,11 +19,9 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 
 [TODO]{.mark}
 
-- initializer list crap (no move only)
 - std::function crap (no move only)
 - non-trivial types in union
 - no capture needed for globals/const for lambda
-- operator-> and non pointer return type recursion
 - overload struct for variant visit (inherit from lambda)
 - map and modifying keys ub
 - picewise construct
@@ -71,6 +69,7 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 - Howard Hinnant special member function diagram - https://www.foonathan.net/2019/02/special-member-functions/#content
 - modern C++ + value semantics = love
 - cstdio vs stdio.h and puts vs std::puts
+- [ambiguity between a variable declaration and a function declaration](https://en.cppreference.com/w/cpp/language/direct_initialization#Notes)
 - 
 
 -----------------------------------------------------------
@@ -1433,3 +1432,81 @@ TArray<int> Data;
 new(Data) int{67}; // push_back to Data
 ```
 
+#### `operator->` recursion (returning non-pointer type)
+
+If `operator->` returns non-pointer type, compiler will automatically
+invoke `operator->` on returned value until it's return type is pointer:
+
+``` cpp {.numberLines}
+std::vector<int> data; // for illustration purpose
+
+struct A0
+{
+    std::vector<int>* operator->() { return &data; }
+};
+struct A1
+{
+    A0 operator->() { return A0{}; } // note: returns value
+};
+struct A2
+{
+    A1 operator->() { return A1{}; } // note: returns value
+};
+int main()
+{
+    A2 v;
+    v->resize(3); // finds A0::operator->()
+}
+```
+
+Used for [arrow_proxy](https://quuxplusone.github.io/blog/2019/02/06/arrow-proxy/).
+
+#### move-only types and initializer_list
+
+Surprisingly, std::initializer_list with "uniform initialization" was introduced
+together with move semantics in C++11. However, initializer_list does not 
+support move-only types like std::unique_ptr. This does not compile:
+
+``` cpp {.numberLines}
+std::vector<std::unique_ptr<int>> vs{
+    std::make_unique<int>(1), std::make_unique<int>(2), std::make_unique<int>(3)
+    };
+```
+
+The fix could be the use of temporary array in this case:
+
+``` cpp {.numberLines}
+std::unique_ptr<int> temp[]{
+    std::make_unique<int>(1), std::make_unique<int>(2), std::make_unique<int>(3)
+    };
+std::vector<std::unique_ptr<int>> vs{
+    std::make_move_iterator(std::begin(temp)),
+    std::make_move_iterator(std::end(temp))
+    };
+```
+
+#### uniform initialization is not uniform, use parentheses (() vs {})
+
+C++ initialization is famously complex. C++11 "uniform initialization"
+with braces `{}` (list-initialization) is famously non-uniform, see:
+
+ * [Uniform initialization isn't](https://medium.com/@barryrevzin/uniform-initialization-isnt-82533d3b9c11);
+ * [C++ Uniform Initialization - Benefits & Pitfalls](https://ianyepan.github.io/posts/cpp-uniform-initialization/);
+ * [The Knightmare of Initialization in C++](https://quuxplusone.github.io/blog/2019/02/18/knightmare-of-initialization/).
+
+Sometimes also called as [unicorn initialization](https://www.reddit.com/r/cpp/comments/as8pu1/comment/egslsok/);
+see also [Forrest Gump C++ initialization](https://x.com/timur_audio/status/1004017362381795329).
+
+The best is to fall back to `()` with C++ 20 [Allow initializing aggregates from a parenthesized list of values](https://wg21.link/p0960):
+
+``` cpp {.numberLines}
+struct A
+{
+    int v1 = 0;
+    int v2 = 0;
+};
+
+A v(10, 20); // fine, C++20
+```
+
+but also see [C++20’s parenthesized aggregate initialization has some downsides](https://quuxplusone.github.io/blog/2022/06/03/aggregate-parens-init-considered-kinda-bad/).

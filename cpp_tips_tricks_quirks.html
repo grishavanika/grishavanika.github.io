@@ -425,6 +425,18 @@ class="toc-section-number">49</span> virtual operator int</a></li>
 id="toc-placement-new-emplace_back-pre-c11"><span
 class="toc-section-number">50</span> placement new emplace_back
 pre-C++11</a></li>
+<li><a href="#operator--recursion-returning-non-pointer-type"
+id="toc-operator--recursion-returning-non-pointer-type"><span
+class="toc-section-number">51</span> <code>operator-&gt;</code>
+recursion (returning non-pointer type)</a></li>
+<li><a href="#move-only-types-and-initializer_list"
+id="toc-move-only-types-and-initializer_list"><span
+class="toc-section-number">52</span> move-only types and
+initializer_list</a></li>
+<li><a href="#uniform-initialization-is-not-uniform-use-parentheses-vs"
+id="toc-uniform-initialization-is-not-uniform-use-parentheses-vs"><span
+class="toc-section-number">53</span> uniform initialization is not
+uniform, use parentheses (() vs {})</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -440,11 +452,9 @@ known tricks, quirks and features of C</a>.</p>
 <hr />
 <p><mark>TODO</mark></p>
 <ul>
-<li>initializer list crap (no move only)</li>
 <li>std::function crap (no move only)</li>
 <li>non-trivial types in union</li>
 <li>no capture needed for globals/const for lambda</li>
-<li>operator-&gt; and non pointer return type recursion</li>
 <li>overload struct for variant visit (inherit from lambda)</li>
 <li>map and modifying keys ub</li>
 <li>picewise construct</li>
@@ -496,6 +506,9 @@ https://www.foonathan.net/2020/09/move-forward/#content</li>
 https://www.foonathan.net/2019/02/special-member-functions/#content</li>
 <li>modern C++ + value semantics = love</li>
 <li>cstdio vs stdio.h and puts vs std::puts</li>
+<li><a
+href="https://en.cppreference.com/w/cpp/language/direct_initialization#Notes">ambiguity
+between a variable declaration and a function declaration</a></li>
 <li></li>
 </ul>
 <hr />
@@ -1669,6 +1682,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb67-2"><a href="#cb67-2"></a><span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">&quot;a</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
 <span id="cb67-3"><a href="#cb67-3"></a><span class="bu">std::</span>printf<span class="op">(</span><span class="st">&quot;b</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span> <span class="co">// may be output before &#39;a&#39; above</span></span>
 <span id="cb67-4"><a href="#cb67-4"></a><span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">&quot;c</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span></code></pre></div>
+<p>Note: not the same as <a
+href="https://en.cppreference.com/w/cpp/io/basic_osyncstream">syncstream/C++20</a>.</p>
 <h4 data-number="46" id="stdclog-vs-stdcerr"><span
 class="header-section-number">46</span> std::clog vs std::cerr</h4>
 <p><a href="https://en.cppreference.com/w/cpp/io/clog">clog</a>
@@ -1781,5 +1796,91 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <div class="sourceCode" id="cb73"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb73-1"><a href="#cb73-1"></a>TArray<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> Data<span class="op">;</span></span>
 <span id="cb73-2"><a href="#cb73-2"></a><span class="kw">new</span><span class="op">(</span>Data<span class="op">)</span> <span class="dt">int</span><span class="op">{</span><span class="dv">67</span><span class="op">};</span> <span class="co">// push_back to Data</span></span></code></pre></div>
+<h4 data-number="51"
+id="operator--recursion-returning-non-pointer-type"><span
+class="header-section-number">51</span> <code>operator-&gt;</code>
+recursion (returning non-pointer type)</h4>
+<p>If <code>operator-&gt;</code> returns non-pointer type, compiler will
+automatically invoke <code>operator-&gt;</code> on returned value until
+it’s return type is pointer:</p>
+<div class="sourceCode" id="cb74"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb74-1"><a href="#cb74-1"></a><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> data<span class="op">;</span> <span class="co">// for illustration purpose</span></span>
+<span id="cb74-2"><a href="#cb74-2"></a></span>
+<span id="cb74-3"><a href="#cb74-3"></a><span class="kw">struct</span> A0</span>
+<span id="cb74-4"><a href="#cb74-4"></a><span class="op">{</span></span>
+<span id="cb74-5"><a href="#cb74-5"></a>    <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;*</span> <span class="kw">operator</span><span class="op">-&gt;()</span> <span class="op">{</span> <span class="cf">return</span> <span class="op">&amp;</span>data<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb74-6"><a href="#cb74-6"></a><span class="op">};</span></span>
+<span id="cb74-7"><a href="#cb74-7"></a><span class="kw">struct</span> A1</span>
+<span id="cb74-8"><a href="#cb74-8"></a><span class="op">{</span></span>
+<span id="cb74-9"><a href="#cb74-9"></a>    A0 <span class="kw">operator</span><span class="op">-&gt;()</span> <span class="op">{</span> <span class="cf">return</span> A0<span class="op">{};</span> <span class="op">}</span> <span class="co">// note: returns value</span></span>
+<span id="cb74-10"><a href="#cb74-10"></a><span class="op">};</span></span>
+<span id="cb74-11"><a href="#cb74-11"></a><span class="kw">struct</span> A2</span>
+<span id="cb74-12"><a href="#cb74-12"></a><span class="op">{</span></span>
+<span id="cb74-13"><a href="#cb74-13"></a>    A1 <span class="kw">operator</span><span class="op">-&gt;()</span> <span class="op">{</span> <span class="cf">return</span> A1<span class="op">{};</span> <span class="op">}</span> <span class="co">// note: returns value</span></span>
+<span id="cb74-14"><a href="#cb74-14"></a><span class="op">};</span></span>
+<span id="cb74-15"><a href="#cb74-15"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb74-16"><a href="#cb74-16"></a><span class="op">{</span></span>
+<span id="cb74-17"><a href="#cb74-17"></a>    A2 v<span class="op">;</span></span>
+<span id="cb74-18"><a href="#cb74-18"></a>    v<span class="op">-&gt;</span>resize<span class="op">(</span><span class="dv">3</span><span class="op">);</span> <span class="co">// finds A0::operator-&gt;()</span></span>
+<span id="cb74-19"><a href="#cb74-19"></a><span class="op">}</span></span></code></pre></div>
+<p>Used for <a
+href="https://quuxplusone.github.io/blog/2019/02/06/arrow-proxy/">arrow_proxy</a>.</p>
+<h4 data-number="52" id="move-only-types-and-initializer_list"><span
+class="header-section-number">52</span> move-only types and
+initializer_list</h4>
+<p>Surprisingly, std::initializer_list with “uniform initialization” was
+introduced together with move semantics in C++11. However,
+initializer_list does not support move-only types like std::unique_ptr.
+This does not compile:</p>
+<div class="sourceCode" id="cb75"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb75-1"><a href="#cb75-1"></a><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>unique_ptr<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;&gt;</span> vs<span class="op">{</span></span>
+<span id="cb75-2"><a href="#cb75-2"></a>    <span class="bu">std::</span>make_unique<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;(</span><span class="dv">1</span><span class="op">),</span> <span class="bu">std::</span>make_unique<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;(</span><span class="dv">2</span><span class="op">),</span> <span class="bu">std::</span>make_unique<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;(</span><span class="dv">3</span><span class="op">)</span></span>
+<span id="cb75-3"><a href="#cb75-3"></a>    <span class="op">};</span></span></code></pre></div>
+<p>The fix could be the use of temporary array in this case:</p>
+<div class="sourceCode" id="cb76"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb76-1"><a href="#cb76-1"></a><span class="bu">std::</span>unique_ptr<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> temp<span class="op">[]{</span></span>
+<span id="cb76-2"><a href="#cb76-2"></a>    <span class="bu">std::</span>make_unique<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;(</span><span class="dv">1</span><span class="op">),</span> <span class="bu">std::</span>make_unique<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;(</span><span class="dv">2</span><span class="op">),</span> <span class="bu">std::</span>make_unique<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;(</span><span class="dv">3</span><span class="op">)</span></span>
+<span id="cb76-3"><a href="#cb76-3"></a>    <span class="op">};</span></span>
+<span id="cb76-4"><a href="#cb76-4"></a><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>unique_ptr<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;&gt;</span> vs<span class="op">{</span></span>
+<span id="cb76-5"><a href="#cb76-5"></a>    <span class="bu">std::</span>make_move_iterator<span class="op">(</span><span class="bu">std::</span>begin<span class="op">(</span>temp<span class="op">)),</span></span>
+<span id="cb76-6"><a href="#cb76-6"></a>    <span class="bu">std::</span>make_move_iterator<span class="op">(</span><span class="bu">std::</span>end<span class="op">(</span>temp<span class="op">))</span></span>
+<span id="cb76-7"><a href="#cb76-7"></a>    <span class="op">};</span></span></code></pre></div>
+<h4 data-number="53"
+id="uniform-initialization-is-not-uniform-use-parentheses-vs"><span
+class="header-section-number">53</span> uniform initialization is not
+uniform, use parentheses (() vs {})</h4>
+<p>C++ initialization is famously complex. C++11 “uniform
+initialization” with braces <code>{}</code> (list-initialization) is
+famously non-uniform, see:</p>
+<ul>
+<li><a
+href="https://medium.com/@barryrevzin/uniform-initialization-isnt-82533d3b9c11">Uniform
+initialization isn’t</a>;</li>
+<li><a
+href="https://ianyepan.github.io/posts/cpp-uniform-initialization/">C++
+Uniform Initialization - Benefits &amp; Pitfalls</a>;</li>
+<li><a
+href="https://quuxplusone.github.io/blog/2019/02/18/knightmare-of-initialization/">The
+Knightmare of Initialization in C++</a>.</li>
+</ul>
+<p>Sometimes also called as <a
+href="https://www.reddit.com/r/cpp/comments/as8pu1/comment/egslsok/">unicorn
+initialization</a>; see also <a
+href="https://x.com/timur_audio/status/1004017362381795329">Forrest Gump
+C++ initialization</a>.</p>
+<p>The best is to fall back to <code>()</code> with C++ 20 <a
+href="https://wg21.link/p0960">Allow initializing aggregates from a
+parenthesized list of values</a>:</p>
+<div class="sourceCode" id="cb77"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb77-1"><a href="#cb77-1"></a><span class="kw">struct</span> A</span>
+<span id="cb77-2"><a href="#cb77-2"></a><span class="op">{</span></span>
+<span id="cb77-3"><a href="#cb77-3"></a>    <span class="dt">int</span> v1 <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb77-4"><a href="#cb77-4"></a>    <span class="dt">int</span> v2 <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb77-5"><a href="#cb77-5"></a><span class="op">};</span></span>
+<span id="cb77-6"><a href="#cb77-6"></a></span>
+<span id="cb77-7"><a href="#cb77-7"></a>A v<span class="op">(</span><span class="dv">10</span><span class="op">,</span> <span class="dv">20</span><span class="op">);</span> <span class="co">// fine, C++20</span></span></code></pre></div>
+<p>but also see <a
+href="https://quuxplusone.github.io/blog/2022/06/03/aggregate-parens-init-considered-kinda-bad/">C++20’s
+parenthesized aggregate initialization has some downsides</a>.</p>
 </body>
 </html>
