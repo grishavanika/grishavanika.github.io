@@ -401,6 +401,10 @@ href="#replace-operator-new-to-track-third-party-code-allocations"
 id="toc-replace-operator-new-to-track-third-party-code-allocations"><span
 class="toc-section-number">43</span> replace operator new to track
 third-party code allocations</a></li>
+<li><a href="#stdshared_ptrvoid-exists"
+id="toc-stdshared_ptrvoid-exists"><span
+class="toc-section-number">44</span>
+<code>std::shared_ptr&lt;void&gt;</code> exists</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -429,7 +433,7 @@ known tricks, quirks and features of C</a>.</p>
 <li>picewise construct</li>
 <li>map[x]</li>
 <li>emplace back with placement new pre c++11</li>
-<li>mayers singletong</li>
+<li>mayers singleton</li>
 <li>universal references, mayers</li>
 <li>https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01</li>
 <li>https://jorenar.com/blog/less-known-c</li>
@@ -439,7 +443,6 @@ known tricks, quirks and features of C</a>.</p>
 <li>variadic templates default argument emulation</li>
 <li>mixing variadic templates and variadic c</li>
 <li>type promotion passing custom type/float to variadic c</li>
-<li>shared_ptr void</li>
 <li>dynamic cast reference/pointer</li>
 <li>https://andreasfertig.blog/2021/07/cpp20-a-neat-trick-with-consteval/</li>
 <li>templates sfinae/enable_if/checks/void_t</li>
@@ -476,6 +479,8 @@ https://www.foonathan.net/2020/09/move-forward/#content</li>
 <li>Howard Hinnant special member function diagram -
 https://www.foonathan.net/2019/02/special-member-functions/#content</li>
 <li>modern C++ + value semantics = love</li>
+<li>cstdio vs stdio.h and puts vs std::puts</li>
+<li></li>
 </ul>
 <hr />
 <h4 data-number="1" id="pitfall-of-for-const-pairk-v-kv-my_map"><span
@@ -1468,7 +1473,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>Default constructor should contain nothing except default/trivial
 data member initialization. Specifically, no memory allocations, no side
 effects.</p>
-<p>Bonus question: why does this code allocates under MSVC debug?</p>
+<p>Bonus question: why does this code allocate under MSVC debug?</p>
 <pre><code>std::string s; // ?</code></pre>
 <p>Hint: MSVC STL debug iterators machinery.</p>
 <h4 data-number="38" id="constructors-should-do-no-work"><span
@@ -1603,10 +1608,27 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb65-8"><a href="#cb65-8"></a><span class="op">}</span></span>
 <span id="cb65-9"><a href="#cb65-9"></a><span class="dt">int</span> main<span class="op">()</span></span>
 <span id="cb65-10"><a href="#cb65-10"></a><span class="op">{</span></span>
-<span id="cb65-11"><a href="#cb65-11"></a>    <span class="bu">std::</span>string s<span class="op">{</span><span class="st">&quot;does it allocate for such input?&quot;</span><span class="op">};</span></span>
+<span id="cb65-11"><a href="#cb65-11"></a>    <span class="bu">std::</span>string s<span class="op">{</span><span class="st">&quot;does it allocate for this input?&quot;</span><span class="op">};</span></span>
 <span id="cb65-12"><a href="#cb65-12"></a>    <span class="co">// ...</span></span>
 <span id="cb65-13"><a href="#cb65-13"></a><span class="op">}</span></span></code></pre></div>
 <p>Just put a breakpoint inside your version of new/delete; observe
 callstack and all the useful context.</p>
+<p>Hint: same can be done with, let say, WinAPI - use <a
+href="https://github.com/microsoft/Detours">Detours</a>.</p>
+<h4 data-number="44" id="stdshared_ptrvoid-exists"><span
+class="header-section-number">44</span>
+<code>std::shared_ptr&lt;void&gt;</code> exists</h4>
+<p><code>std::shared_ptr&lt;void&gt;</code> holds <code>void*</code>
+pointer, but also has <a
+href="https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Type_Erasure">type-erased</a>
+destroy function that remembers the actual type it was created with, so
+this is fine:</p>
+<pre><code>std::shared_ptr&lt;void&gt;   ptr1 = std::make_shared&lt;MyData&gt;();             // ok
+std::shared_ptr&lt;MyData&gt; ptr2 = std::static_pointer_cast&lt;MyData&gt;(ptr1); // ok</code></pre>
+<p>See <a
+href="https://stackoverflow.com/questions/5913396/why-do-stdshared-ptrvoid-work">Why
+do std::shared_ptr<void> work</a> and <a
+href="https://www.nextptr.com/tutorial/ta1227747841/the-stdshared_ptrvoid-as-arbitrary-userdata-pointer">The
+std::shared_ptr as arbitrary user-data pointer</a>.</p>
 </body>
 </html>
