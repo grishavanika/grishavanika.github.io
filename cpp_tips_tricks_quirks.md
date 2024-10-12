@@ -72,6 +72,10 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 - note [C++ Lambda Story](https://asawicki.info/news_1739_book_review_c_lambda_story)
 - note [C++ Move Semantics](https://www.cppmove.com/)
 - note [Book review: C++ Initialization Story](https://asawicki.info/news_1766_book_review_c_initialization_story)
+- decltype() vs decltype(())
+- requires vs requires requires
+- noexcept vs noexcept(noexcept())
+- `declval<T>` vs `declval<T&>`
 
 -----------------------------------------------------------
 
