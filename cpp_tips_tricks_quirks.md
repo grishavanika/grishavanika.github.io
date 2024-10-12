@@ -1316,6 +1316,8 @@ std::printf("b\n"); // may be output before 'a' above
 std::cout << "c\n";
 ```
 
+Note: not the same as [syncstream/C++20](https://en.cppreference.com/w/cpp/io/basic_osyncstream).
+
 #### std::clog vs std::cerr
 
 [clog](https://en.cppreference.com/w/cpp/io/clog) cppreference and [cerr](https://en.cppreference.com/w/cpp/io/cerr).
