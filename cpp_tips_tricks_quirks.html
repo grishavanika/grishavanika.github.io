@@ -436,7 +436,13 @@ initializer_list</a></li>
 <li><a href="#uniform-initialization-is-not-uniform-use-parentheses-vs"
 id="toc-uniform-initialization-is-not-uniform-use-parentheses-vs"><span
 class="toc-section-number">53</span> uniform initialization is not
-uniform, use parentheses (() vs {})</a></li>
+uniform, use parentheses (<code>()</code> vs <code>{}</code>)</a></li>
+<li><a href="#move-only-lambda-and-stdfunction"
+id="toc-move-only-lambda-and-stdfunction"><span
+class="toc-section-number">54</span> move-only lambda and
+std::function</a></li>
+<li><a href="#stdfunction-issues" id="toc-stdfunction-issues"><span
+class="toc-section-number">55</span> std::function issues</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -452,7 +458,6 @@ known tricks, quirks and features of C</a>.</p>
 <hr />
 <p><mark>TODO</mark></p>
 <ul>
-<li>std::function crap (no move only)</li>
 <li>non-trivial types in union</li>
 <li>no capture needed for globals/const for lambda</li>
 <li>overload struct for variant visit (inherit from lambda)</li>
@@ -509,7 +514,13 @@ https://www.foonathan.net/2019/02/special-member-functions/#content</li>
 <li><a
 href="https://en.cppreference.com/w/cpp/language/direct_initialization#Notes">ambiguity
 between a variable declaration and a function declaration</a></li>
-<li></li>
+<li>note <a
+href="https://asawicki.info/news_1739_book_review_c_lambda_story">C++
+Lambda Story</a></li>
+<li>note <a href="https://www.cppmove.com/">C++ Move Semantics</a></li>
+<li>note <a
+href="https://asawicki.info/news_1766_book_review_c_initialization_story">Book
+review: C++ Initialization Story</a></li>
 </ul>
 <hr />
 <h4 data-number="1" id="pitfall-of-for-const-pairk-v-kv-my_map"><span
@@ -1802,7 +1813,7 @@ class="header-section-number">51</span> <code>operator-&gt;</code>
 recursion (returning non-pointer type)</h4>
 <p>If <code>operator-&gt;</code> returns non-pointer type, compiler will
 automatically invoke <code>operator-&gt;</code> on returned value until
-it’s return type is pointer:</p>
+its return type is pointer:</p>
 <div class="sourceCode" id="cb74"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb74-1"><a href="#cb74-1"></a><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> data<span class="op">;</span> <span class="co">// for illustration purpose</span></span>
 <span id="cb74-2"><a href="#cb74-2"></a></span>
@@ -1828,8 +1839,8 @@ href="https://quuxplusone.github.io/blog/2019/02/06/arrow-proxy/">arrow_proxy</a
 <h4 data-number="52" id="move-only-types-and-initializer_list"><span
 class="header-section-number">52</span> move-only types and
 initializer_list</h4>
-<p>Surprisingly, std::initializer_list with “uniform initialization” was
-introduced together with move semantics in C++11. However,
+<p>std::initializer_list with “uniform initialization” was introduced
+together with move semantics in C++11. However, surprisingly,
 initializer_list does not support move-only types like std::unique_ptr.
 This does not compile:</p>
 <div class="sourceCode" id="cb75"><pre
@@ -1848,7 +1859,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <h4 data-number="53"
 id="uniform-initialization-is-not-uniform-use-parentheses-vs"><span
 class="header-section-number">53</span> uniform initialization is not
-uniform, use parentheses (() vs {})</h4>
+uniform, use parentheses (<code>()</code> vs <code>{}</code>)</h4>
 <p>C++ initialization is famously complex. C++11 “uniform
 initialization” with braces <code>{}</code> (list-initialization) is
 famously non-uniform, see:</p>
@@ -1861,7 +1872,10 @@ href="https://ianyepan.github.io/posts/cpp-uniform-initialization/">C++
 Uniform Initialization - Benefits &amp; Pitfalls</a>;</li>
 <li><a
 href="https://quuxplusone.github.io/blog/2019/02/18/knightmare-of-initialization/">The
-Knightmare of Initialization in C++</a>.</li>
+Knightmare of Initialization in C++</a>;</li>
+<li>~300 pages book, <a
+href="https://www.amazon.com/Initialization-Story-Through-Options-Related/dp/B0BW38DDBK">C++
+Initialization Story</a>.</li>
 </ul>
 <p>Sometimes also called as <a
 href="https://www.reddit.com/r/cpp/comments/as8pu1/comment/egslsok/">unicorn
@@ -1882,5 +1896,32 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>but also see <a
 href="https://quuxplusone.github.io/blog/2022/06/03/aggregate-parens-init-considered-kinda-bad/">C++20’s
 parenthesized aggregate initialization has some downsides</a>.</p>
+<h4 data-number="54" id="move-only-lambda-and-stdfunction"><span
+class="header-section-number">54</span> move-only lambda and
+std::function</h4>
+<p><code>std::function</code> was introduced together with move
+semantics in C++11. However, surprisingly, std::function does not
+support move-only lambda/function objects. This does not compile:</p>
+<div class="sourceCode" id="cb78"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb78-1"><a href="#cb78-1"></a><span class="bu">std::</span>function<span class="op">&lt;</span><span class="dt">void</span> <span class="op">()&gt;</span> f<span class="op">{[</span>x <span class="op">=</span> <span class="bu">std::</span>make_unique<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;(</span><span class="dv">11</span><span class="op">)]()</span> <span class="op">{}};</span></span></code></pre></div>
+<p>That’s one of the reasons C++23 <a
+href="https://en.cppreference.com/w/cpp/utility/functional/move_only_function">std::move_only_function</a>
+was introduced.</p>
+<h4 data-number="55" id="stdfunction-issues"><span
+class="header-section-number">55</span> std::function issues</h4>
+<p>From <a href="https://wg21.link/n4159">std::functionand
+Beyond</a>:</p>
+<ul>
+<li>Const-correctness and data races</li>
+<li>Non-copyable function objects</li>
+<li>Non-lvalue-callable function objects</li>
+</ul>
+<p>See also:</p>
+<ul>
+<li><a href="https://wg21.link/p2548">copyable_function</a> - C++26</li>
+<li><a href="https://wg21.link/P0288">move_only_function</a> -
+C++23</li>
+<li><a href="https://wg21.link/P0792">function_ref</a> - C++26</li>
+</ul>
 </body>
 </html>

@@ -19,7 +19,6 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 
 [TODO]{.mark}
 
-- std::function crap (no move only)
 - non-trivial types in union
 - no capture needed for globals/const for lambda
 - overload struct for variant visit (inherit from lambda)
@@ -70,7 +69,9 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 - modern C++ + value semantics = love
 - cstdio vs stdio.h and puts vs std::puts
 - [ambiguity between a variable declaration and a function declaration](https://en.cppreference.com/w/cpp/language/direct_initialization#Notes)
-- 
+- note [C++ Lambda Story](https://asawicki.info/news_1739_book_review_c_lambda_story)
+- note [C++ Move Semantics](https://www.cppmove.com/)
+- note [Book review: C++ Initialization Story](https://asawicki.info/news_1766_book_review_c_initialization_story)
 
 -----------------------------------------------------------
 
@@ -1435,7 +1436,7 @@ new(Data) int{67}; // push_back to Data
 #### `operator->` recursion (returning non-pointer type)
 
 If `operator->` returns non-pointer type, compiler will automatically
-invoke `operator->` on returned value until it's return type is pointer:
+invoke `operator->` on returned value until its return type is pointer:
 
 ``` cpp {.numberLines}
 std::vector<int> data; // for illustration purpose
@@ -1463,9 +1464,9 @@ Used for [arrow_proxy](https://quuxplusone.github.io/blog/2019/02/06/arrow-proxy
 
 #### move-only types and initializer_list
 
-Surprisingly, std::initializer_list with "uniform initialization" was introduced
-together with move semantics in C++11. However, initializer_list does not 
-support move-only types like std::unique_ptr. This does not compile:
+std::initializer_list with "uniform initialization" was introduced
+together with move semantics in C++11. However, surprisingly, initializer_list
+does not support move-only types like std::unique_ptr. This does not compile:
 
 ``` cpp {.numberLines}
 std::vector<std::unique_ptr<int>> vs{
@@ -1485,14 +1486,15 @@ std::vector<std::unique_ptr<int>> vs{
     };
 ```
 
-#### uniform initialization is not uniform, use parentheses (() vs {})
+#### uniform initialization is not uniform, use parentheses (`()` vs `{}`)
 
 C++ initialization is famously complex. C++11 "uniform initialization"
 with braces `{}` (list-initialization) is famously non-uniform, see:
 
  * [Uniform initialization isn't](https://medium.com/@barryrevzin/uniform-initialization-isnt-82533d3b9c11);
  * [C++ Uniform Initialization - Benefits & Pitfalls](https://ianyepan.github.io/posts/cpp-uniform-initialization/);
- * [The Knightmare of Initialization in C++](https://quuxplusone.github.io/blog/2019/02/18/knightmare-of-initialization/).
+ * [The Knightmare of Initialization in C++](https://quuxplusone.github.io/blog/2019/02/18/knightmare-of-initialization/);
+ * ~300 pages book, [C++ Initialization Story](https://www.amazon.com/Initialization-Story-Through-Options-Related/dp/B0BW38DDBK).
 
 Sometimes also called as [unicorn initialization](https://www.reddit.com/r/cpp/comments/as8pu1/comment/egslsok/);
 see also [Forrest Gump C++ initialization](https://x.com/timur_audio/status/1004017362381795329).
@@ -1510,3 +1512,30 @@ A v(10, 20); // fine, C++20
 ```
 
 but also see [C++20’s parenthesized aggregate initialization has some downsides](https://quuxplusone.github.io/blog/2022/06/03/aggregate-parens-init-considered-kinda-bad/).
+
+#### move-only lambda and std::function
+
+`std::function` was introduced together with move semantics in C++11.
+However, surprisingly, std::function does not support move-only lambda/function
+objects. This does not compile:
+
+``` cpp {.numberLines}
+std::function<void ()> f{[x = std::make_unique<int>(11)]() {}};
+```
+
+That's one of the reasons C++23 [std::move_only_function](https://en.cppreference.com/w/cpp/utility/functional/move_only_function)
+was introduced.
+
+#### std::function issues
+
+From [std::functionand Beyond](https://wg21.link/n4159):
+
+ * Const-correctness and data races
+ * Non-copyable function objects
+ * Non-lvalue-callable function objects
+
+See also:
+
+ * [copyable_function](https://wg21.link/p2548) - C++26
+ * [move_only_function](https://wg21.link/P0288) - C++23
+ * [function_ref](https://wg21.link/P0792) - C++26
