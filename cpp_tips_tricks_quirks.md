@@ -1117,13 +1117,76 @@ Relative: [Move Semantics and Default Constructors – Rule of Six?](https://www
 
 #### default constructor must do no work
 
-[TBD]{.mark}
+Default constructor may be used as a fallback in a few places of STL/your code:
 
-This also applies to debug builds (see MSVC STL debug iterators machinery).
+``` cpp {.numberLines}
+std::vector<MyData> v;
+v.resize(1'000); // insert 1'000 default-constructed MyData elements
+std::map<int, MyData> m;
+m[1] = MyData{98}; // default construct MyData, then reassign
+std::variant<MyData, int> v; // default construct MyData
+```
+
+Following C++ value semantic, move semantic with its empty state, it may also
+be used to reset state or check whether or not the instance is valid:
+
+``` cpp {.numberLines}
+std::unique_ptr<int> ptr = ...;
+ptr = {}; // reset, set to nullptr
+```
+
+Default constructor should contain nothing except default/trivial
+data member initialization. Specifically, no memory allocations, no side effects. 
+
+Bonus question: why does this code allocates under MSVC debug?
+
+```
+std::string s; // ?
+```
+
+Hint: MSVC STL debug iterators machinery.
 
 #### constructors should do no work
 
-[TBD]{.mark}
+Constructors (at least of objects for types that are part of your applicaiton domain)
+should just assign/default initialize data members, NO business/application
+logic inside. This applies to copy constructor, constructors
+with parameters, move constructor.
+
+Simply because you don't control when and who and how can invoke and/or ignore/skip
+your constructor invocation. See, for instance, (but not only) [Copy elision/RVO/NRVO/URVO](https://en.cppreference.com/w/cpp/language/copy_elision).
+
+But what about RAII? How to make RAII classes then?
+
+``` cpp {.numberLines}
+struct MyFile
+{
+public:
+    using FileHandle = ...;
+
+    static Open(const char* file_name)
+    {
+        FileHandle handle = ::open(file_name); // imaginary system API
+        return MyFile{handle};
+    }
+
+    explicit MyFile() noexcept = default;
+    ~MyFile(); // ...
+
+private:
+    explicit MyFile(FileHandle handle) noexcept
+        : file_handle{handle}
+    {
+    }
+    FileHandle file_handle{};
+};
+```
+
+Isn't this makes sense only when exceptions are disabled? Not sure exceptions
+change anything there.
+
+Sometimes I even leave `MyFile(FileHandle handle)`-like constructors public.
+This makes API extremely hackable and testable.
 
 #### `std::unique_ptr` with decltype lambda
 

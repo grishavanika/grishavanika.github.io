@@ -1446,13 +1446,65 @@ Semantics and Default Constructors – Rule of Six?</a>.</p>
 <h4 data-number="37" id="default-constructor-must-do-no-work"><span
 class="header-section-number">37</span> default constructor must do no
 work</h4>
-<p><mark>TBD</mark></p>
-<p>This also applies to debug builds (see MSVC STL debug iterators
-machinery).</p>
+<p>Default constructor may be used as a fallback in a few places of
+STL/your code:</p>
+<div class="sourceCode" id="cb57"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb57-1"><a href="#cb57-1"></a><span class="bu">std::</span>vector<span class="op">&lt;</span>MyData<span class="op">&gt;</span> v<span class="op">;</span></span>
+<span id="cb57-2"><a href="#cb57-2"></a>v<span class="op">.</span>resize<span class="op">(</span><span class="dv">1&#39;000</span><span class="op">);</span> <span class="co">// insert 1&#39;000 default-constructed MyData elements</span></span>
+<span id="cb57-3"><a href="#cb57-3"></a><span class="bu">std::</span>map<span class="op">&lt;</span><span class="dt">int</span><span class="op">,</span> MyData<span class="op">&gt;</span> m<span class="op">;</span></span>
+<span id="cb57-4"><a href="#cb57-4"></a>m<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> MyData<span class="op">{</span><span class="dv">98</span><span class="op">};</span> <span class="co">// default construct MyData, then reassign</span></span>
+<span id="cb57-5"><a href="#cb57-5"></a><span class="bu">std::</span>variant<span class="op">&lt;</span>MyData<span class="op">,</span> <span class="dt">int</span><span class="op">&gt;</span> v<span class="op">;</span> <span class="co">// default construct MyData</span></span></code></pre></div>
+<p>Following C++ value semantic, move semantic with its empty state, it
+may also be used to reset state or check whether or not the instance is
+valid:</p>
+<div class="sourceCode" id="cb58"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb58-1"><a href="#cb58-1"></a><span class="bu">std::</span>unique_ptr<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> ptr <span class="op">=</span> <span class="op">...;</span></span>
+<span id="cb58-2"><a href="#cb58-2"></a>ptr <span class="op">=</span> <span class="op">{};</span> <span class="co">// reset, set to nullptr</span></span></code></pre></div>
+<p>Default constructor should contain nothing except default/trivial
+data member initialization. Specifically, no memory allocations, no side
+effects.</p>
+<p>Bonus question: why does this code allocates under MSVC debug?</p>
+<pre><code>std::string s; // ?</code></pre>
+<p>Hint: MSVC STL debug iterators machinery.</p>
 <h4 data-number="38" id="constructors-should-do-no-work"><span
 class="header-section-number">38</span> constructors should do no
 work</h4>
-<p><mark>TBD</mark></p>
+<p>Constructors (at least of objects for types that are part of your
+applicaiton domain) should just assign/default initialize data members,
+NO business/application logic inside. This applies to copy constructor,
+constructors with parameters, move constructor.</p>
+<p>Simply because you don’t control when and who and how can invoke
+and/or ignore/skip your constructor invocation. See, for instance, (but
+not only) <a
+href="https://en.cppreference.com/w/cpp/language/copy_elision">Copy
+elision/RVO/NRVO/URVO</a>.</p>
+<p>But what about RAII? How to make RAII classes then?</p>
+<div class="sourceCode" id="cb60"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb60-1"><a href="#cb60-1"></a><span class="kw">struct</span> MyFile</span>
+<span id="cb60-2"><a href="#cb60-2"></a><span class="op">{</span></span>
+<span id="cb60-3"><a href="#cb60-3"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb60-4"><a href="#cb60-4"></a>    <span class="kw">using</span> FileHandle <span class="op">=</span> <span class="op">...;</span></span>
+<span id="cb60-5"><a href="#cb60-5"></a></span>
+<span id="cb60-6"><a href="#cb60-6"></a>    <span class="at">static</span> Open<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file_name<span class="op">)</span></span>
+<span id="cb60-7"><a href="#cb60-7"></a>    <span class="op">{</span></span>
+<span id="cb60-8"><a href="#cb60-8"></a>        FileHandle handle <span class="op">=</span> <span class="op">::</span>open<span class="op">(</span>file_name<span class="op">);</span> <span class="co">// imaginary system API</span></span>
+<span id="cb60-9"><a href="#cb60-9"></a>        <span class="cf">return</span> MyFile<span class="op">{</span>handle<span class="op">};</span></span>
+<span id="cb60-10"><a href="#cb60-10"></a>    <span class="op">}</span></span>
+<span id="cb60-11"><a href="#cb60-11"></a></span>
+<span id="cb60-12"><a href="#cb60-12"></a>    <span class="kw">explicit</span> MyFile<span class="op">()</span> <span class="kw">noexcept</span> <span class="op">=</span> <span class="cf">default</span><span class="op">;</span></span>
+<span id="cb60-13"><a href="#cb60-13"></a>    <span class="op">~</span>MyFile<span class="op">();</span> <span class="co">// ...</span></span>
+<span id="cb60-14"><a href="#cb60-14"></a></span>
+<span id="cb60-15"><a href="#cb60-15"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb60-16"><a href="#cb60-16"></a>    <span class="kw">explicit</span> MyFile<span class="op">(</span>FileHandle handle<span class="op">)</span> <span class="kw">noexcept</span></span>
+<span id="cb60-17"><a href="#cb60-17"></a>        <span class="op">:</span> file_handle<span class="op">{</span>handle<span class="op">}</span></span>
+<span id="cb60-18"><a href="#cb60-18"></a>    <span class="op">{</span></span>
+<span id="cb60-19"><a href="#cb60-19"></a>    <span class="op">}</span></span>
+<span id="cb60-20"><a href="#cb60-20"></a>    FileHandle file_handle<span class="op">{};</span></span>
+<span id="cb60-21"><a href="#cb60-21"></a><span class="op">};</span></span></code></pre></div>
+<p>Isn’t this makes sense only when exceptions are disabled? Not sure
+exceptions change anything there.</p>
+<p>Sometimes I even leave <code>MyFile(FileHandle handle)</code>-like
+constructors public. This makes API extremely hackable and testable.</p>
 <h4 data-number="39" id="stdunique_ptr-with-decltype-lambda"><span
 class="header-section-number">39</span> <code>std::unique_ptr</code>
 with decltype lambda</h4>
@@ -1460,14 +1512,14 @@ with decltype lambda</h4>
 href="https://andreasfertig.blog/2022/08/cpp-insights-lambdas-in-unevaluated-contexts/">Lambdas
 in unevaluated contexts</a>, you can have poor man’s scope exit as a
 side effect:</p>
-<div class="sourceCode" id="cb57"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb57-1"><a href="#cb57-1"></a><span class="kw">using</span> on_exit <span class="op">=</span> <span class="bu">std::</span>unique_ptr<span class="op">&lt;</span><span class="at">const</span> <span class="dt">char</span><span class="op">,</span></span>
-<span id="cb57-2"><a href="#cb57-2"></a>    <span class="kw">decltype</span><span class="op">([](</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> msg<span class="op">)</span> <span class="op">{</span> puts<span class="op">(</span>msg<span class="op">);</span> <span class="op">})&gt;;</span></span>
-<span id="cb57-3"><a href="#cb57-3"></a></span>
-<span id="cb57-4"><a href="#cb57-4"></a><span class="dt">void</span> Foo<span class="op">()</span></span>
-<span id="cb57-5"><a href="#cb57-5"></a><span class="op">{</span></span>
-<span id="cb57-6"><a href="#cb57-6"></a>    on_exit msg<span class="op">(</span><span class="st">&quot;Foo&quot;</span><span class="op">);</span></span>
-<span id="cb57-7"><a href="#cb57-7"></a><span class="op">}</span> <span class="co">// prints Foo on scope exit</span></span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb61-1"><a href="#cb61-1"></a><span class="kw">using</span> on_exit <span class="op">=</span> <span class="bu">std::</span>unique_ptr<span class="op">&lt;</span><span class="at">const</span> <span class="dt">char</span><span class="op">,</span></span>
+<span id="cb61-2"><a href="#cb61-2"></a>    <span class="kw">decltype</span><span class="op">([](</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> msg<span class="op">)</span> <span class="op">{</span> puts<span class="op">(</span>msg<span class="op">);</span> <span class="op">})&gt;;</span></span>
+<span id="cb61-3"><a href="#cb61-3"></a></span>
+<span id="cb61-4"><a href="#cb61-4"></a><span class="dt">void</span> Foo<span class="op">()</span></span>
+<span id="cb61-5"><a href="#cb61-5"></a><span class="op">{</span></span>
+<span id="cb61-6"><a href="#cb61-6"></a>    on_exit msg<span class="op">(</span><span class="st">&quot;Foo&quot;</span><span class="op">);</span></span>
+<span id="cb61-7"><a href="#cb61-7"></a><span class="op">}</span> <span class="co">// prints Foo on scope exit</span></span></code></pre></div>
 <p>from <a
 href="https://youtu.be/O2G3bwNP5p4?si=_2yfyq9BEoxF3etB">Creating a
 Sender/Receiver HTTP Server for Asynchronous Operations in C++</a>.</p>
@@ -1478,11 +1530,11 @@ class="header-section-number">40</span> <code>auto</code> vs
 href="https://en.cppreference.com/w/cpp/language/template_argument_deduction#Other_contexts">template
 argument deduction</a>, it’s fine to have <code>auto*</code> in the same
 way it’s fine to have <code>T*</code> as a template parameter:</p>
-<div class="sourceCode" id="cb58"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb58-1"><a href="#cb58-1"></a><span class="kw">auto</span>  p1 <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">;</span>        <span class="co">// p1 = int*</span></span>
-<span id="cb58-2"><a href="#cb58-2"></a><span class="kw">auto</span><span class="op">*</span> p2 <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">;</span>        <span class="co">// p2 = int*</span></span>
-<span id="cb58-3"><a href="#cb58-3"></a><span class="at">const</span> <span class="kw">auto</span>  p3 <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">;</span>  <span class="co">// p3 = int* const</span></span>
-<span id="cb58-4"><a href="#cb58-4"></a><span class="at">const</span> <span class="kw">auto</span><span class="op">*</span> p4 <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">;</span>  <span class="co">// p4 = const int*</span></span></code></pre></div>
+<div class="sourceCode" id="cb62"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb62-1"><a href="#cb62-1"></a><span class="kw">auto</span>  p1 <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">;</span>        <span class="co">// p1 = int*</span></span>
+<span id="cb62-2"><a href="#cb62-2"></a><span class="kw">auto</span><span class="op">*</span> p2 <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">;</span>        <span class="co">// p2 = int*</span></span>
+<span id="cb62-3"><a href="#cb62-3"></a><span class="at">const</span> <span class="kw">auto</span>  p3 <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">;</span>  <span class="co">// p3 = int* const</span></span>
+<span id="cb62-4"><a href="#cb62-4"></a><span class="at">const</span> <span class="kw">auto</span><span class="op">*</span> p4 <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">;</span>  <span class="co">// p4 = const int*</span></span></code></pre></div>
 <p>Still, note the difference for p3 vs p4 - const pointer to int vs
 just pointer to const int!</p>
 <h4 data-number="41"
@@ -1492,19 +1544,19 @@ overload set)</h4>
 <p>See <a
 href="https://blog.tartanllama.xyz/passing-overload-sets/">Passing
 overload sets to functions</a>:</p>
-<div class="sourceCode" id="cb59"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb59-1"><a href="#cb59-1"></a><span class="pp">#define FWD</span><span class="op">(...)</span><span class="pp"> </span><span class="op">\</span></span>
-<span id="cb59-2"><a href="#cb59-2"></a><span class="pp">    </span><span class="bu">std::</span>forward<span class="op">&lt;</span><span class="kw">decltype</span><span class="op">(</span><span class="ot">__VA_ARGS__</span><span class="op">)&gt;(</span><span class="ot">__VA_ARGS__</span><span class="op">)</span></span>
-<span id="cb59-3"><a href="#cb59-3"></a></span>
-<span id="cb59-4"><a href="#cb59-4"></a><span class="pp">#define LIFT</span><span class="op">(</span>X<span class="op">)</span><span class="pp"> </span><span class="op">[](</span><span class="kw">auto</span><span class="pp"> </span><span class="op">&amp;&amp;...</span><span class="pp"> </span>args<span class="op">)</span><span class="pp"> </span><span class="op">\</span></span>
-<span id="cb59-5"><a href="#cb59-5"></a><span class="pp">    </span><span class="kw">noexcept</span><span class="op">(</span><span class="kw">noexcept</span><span class="op">(</span>X<span class="op">(</span>FWD<span class="op">(</span>args<span class="op">)...)))</span><span class="pp">  </span><span class="op">\</span></span>
-<span id="cb59-6"><a href="#cb59-6"></a><span class="pp">    </span><span class="op">-&gt;</span><span class="pp"> </span><span class="kw">decltype</span><span class="op">(</span>X<span class="op">(</span>FWD<span class="op">(</span>args<span class="op">)...))</span><span class="pp"> </span><span class="op">\</span></span>
-<span id="cb59-7"><a href="#cb59-7"></a><span class="op">{</span><span class="pp">  </span><span class="op">\</span></span>
-<span id="cb59-8"><a href="#cb59-8"></a><span class="pp">    </span><span class="cf">return</span><span class="pp"> </span>X<span class="op">(</span>FWD<span class="op">(</span>args<span class="op">)...);</span><span class="pp"> </span><span class="op">\</span></span>
-<span id="cb59-9"><a href="#cb59-9"></a><span class="op">}</span></span>
-<span id="cb59-10"><a href="#cb59-10"></a></span>
-<span id="cb59-11"><a href="#cb59-11"></a><span class="co">// ...</span></span>
-<span id="cb59-12"><a href="#cb59-12"></a><span class="bu">std::</span>transform<span class="op">(</span>first<span class="op">,</span> last<span class="op">,</span> target<span class="op">,</span> LIFT<span class="op">(</span>foo<span class="op">));</span></span></code></pre></div>
+<div class="sourceCode" id="cb63"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb63-1"><a href="#cb63-1"></a><span class="pp">#define FWD</span><span class="op">(...)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb63-2"><a href="#cb63-2"></a><span class="pp">    </span><span class="bu">std::</span>forward<span class="op">&lt;</span><span class="kw">decltype</span><span class="op">(</span><span class="ot">__VA_ARGS__</span><span class="op">)&gt;(</span><span class="ot">__VA_ARGS__</span><span class="op">)</span></span>
+<span id="cb63-3"><a href="#cb63-3"></a></span>
+<span id="cb63-4"><a href="#cb63-4"></a><span class="pp">#define LIFT</span><span class="op">(</span>X<span class="op">)</span><span class="pp"> </span><span class="op">[](</span><span class="kw">auto</span><span class="pp"> </span><span class="op">&amp;&amp;...</span><span class="pp"> </span>args<span class="op">)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb63-5"><a href="#cb63-5"></a><span class="pp">    </span><span class="kw">noexcept</span><span class="op">(</span><span class="kw">noexcept</span><span class="op">(</span>X<span class="op">(</span>FWD<span class="op">(</span>args<span class="op">)...)))</span><span class="pp">  </span><span class="op">\</span></span>
+<span id="cb63-6"><a href="#cb63-6"></a><span class="pp">    </span><span class="op">-&gt;</span><span class="pp"> </span><span class="kw">decltype</span><span class="op">(</span>X<span class="op">(</span>FWD<span class="op">(</span>args<span class="op">)...))</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb63-7"><a href="#cb63-7"></a><span class="op">{</span><span class="pp">  </span><span class="op">\</span></span>
+<span id="cb63-8"><a href="#cb63-8"></a><span class="pp">    </span><span class="cf">return</span><span class="pp"> </span>X<span class="op">(</span>FWD<span class="op">(</span>args<span class="op">)...);</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb63-9"><a href="#cb63-9"></a><span class="op">}</span></span>
+<span id="cb63-10"><a href="#cb63-10"></a></span>
+<span id="cb63-11"><a href="#cb63-11"></a><span class="co">// ...</span></span>
+<span id="cb63-12"><a href="#cb63-12"></a><span class="bu">std::</span>transform<span class="op">(</span>first<span class="op">,</span> last<span class="op">,</span> target<span class="op">,</span> LIFT<span class="op">(</span>foo<span class="op">));</span></span></code></pre></div>
 <h4 data-number="42" id="tolower-is-not-an-addressible-function"><span
 class="header-section-number">42</span> <code>tolower</code> is not an
 addressible function</h4>
@@ -1522,9 +1574,9 @@ standard.</p>
 </blockquote>
 <p>So, strictly speaking, ignoring facts from the article, this is not
 portable C++:</p>
-<div class="sourceCode" id="cb60"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb60-1"><a href="#cb60-1"></a><span class="bu">std::</span>wstring name<span class="op">;</span></span>
-<span id="cb60-2"><a href="#cb60-2"></a><span class="bu">std::</span>transform<span class="op">(</span>name<span class="op">.</span>begin<span class="op">(),</span> name<span class="op">.</span>end<span class="op">(),</span> name<span class="op">.</span>begin<span class="op">(),</span></span>
-<span id="cb60-3"><a href="#cb60-3"></a>    <span class="bu">std::</span>tolower<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb64"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb64-1"><a href="#cb64-1"></a><span class="bu">std::</span>wstring name<span class="op">;</span></span>
+<span id="cb64-2"><a href="#cb64-2"></a><span class="bu">std::</span>transform<span class="op">(</span>name<span class="op">.</span>begin<span class="op">(),</span> name<span class="op">.</span>end<span class="op">(),</span> name<span class="op">.</span>begin<span class="op">(),</span></span>
+<span id="cb64-3"><a href="#cb64-3"></a>    <span class="bu">std::</span>tolower<span class="op">);</span></span></code></pre></div>
 </body>
 </html>
