@@ -17,6 +17,12 @@ pandoc -s --toc --toc-depth=4
 
 Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/blog/less-known-c).
 
+[C++ reference]{.mark}:
+
+ * [Working Draft/eel.is](https://eel.is/c++draft)
+ * [cppreference](https://en.cppreference.com/w/), [compiler support](https://en.cppreference.com/w/cpp/compiler_support)
+ * [WG21 redirect service/wg21.link](https://wg21.link/)
+
 -----------------------------------------------------------
 
 [TODO]{.mark}
@@ -421,6 +427,36 @@ return {_STD move(_First), _STD move(_UResult.fun)};
 So `::std::move` is used to **disable** ADL and make sure
 implementation of `move` from namespace `std` is choosen.
 Who knows what user-defined custom type could bring into the table?
+
+#### the use of shared_ptr in public API is a code smell
+
+[TBD]{.mark}
+
+#### enable_shared_from_this requires factory function
+
+If class derives from `enable_shared_from_this`:
+
+ * most likely, objects are required to be created with shared_ptr and
+ * the use of `shared_from_this()` in constructor is not safe anyway.
+
+Hence, provide `Create()` factory function to encode the behavior:
+
+``` cpp {.numberLines}
+struct MyData : public std::enable_shared_from_this<MyData>
+{
+public:
+    static std::shared_ptr<MyData> Create()
+    {
+        // Quiz: why not std::make_shared?
+        return std::shared_ptr<MyData>(new MyData{});
+    }
+
+private:
+    explicit MyData() = default;
+};
+```
+
+See [cppreference example](https://en.cppreference.com/w/cpp/memory/enable_shared_from_this#Example).
 
 #### `std::shared_ptr` aliasing constructor
 
@@ -1687,3 +1723,28 @@ Apple a{};
  * [Shared pointer to an immutable type has value semantics](https://stackoverflow.com/a/18803611)
  * [copy_on_write.hpp](https://github.com/stlab/libraries/blob/1cd251b49cac434ca519af17da32c4969ee9d3d5/stlab/copy_on_write.hpp) from STLab.
 
+[TBD]{.mark}: code sample
+
+#### string_view issues
+
+See [Enough string_view to hang ourselves](https://ciura.ro/presentations/2018/Conferences/Enough%20string_view%20to%20hang%20ourselves%20-%20Victor%20Ciura%20-%20CppCon%202018.pdf).
+
+[TBD]{.mark}: code sample
+
+#### user-provided constructor and garbage initialization
+
+See [I Have No Constructor, and I Must Initialize](https://consteval.ca/2024/07/03/initialization/):
+
+``` cpp {.numberLines}
+struct T {
+    int x;
+    T();
+};
+T::T() = default;
+
+T t{};
+std::cout << t.x << std::endl;
+```
+
+> You'd expect the printed result to be 0, right?
+> You poor thing. Alas—it will be garbage.
