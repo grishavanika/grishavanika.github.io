@@ -27,60 +27,59 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 
 [TODO]{.mark}
 
-- map and modifying keys ub
 - picewise construct
 - map[x]
 - mayers singleton
 - universal references, mayers
-- https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01
-- https://jorenar.com/blog/less-known-c
-- http://www.danielvik.com/2010/05/c-language-quirks.html
-- https://codeforces.com/blog/entry/74684
 - inherit multiple classes from template, with tags
 - variadic templates default argument emulation
 - mixing variadic templates and variadic c
 - type promotion passing custom type/float to variadic c
 - dynamic cast reference/pointer
-- https://andreasfertig.blog/2021/07/cpp20-a-neat-trick-with-consteval/
 - templates sfinae/enable_if/checks/void_t
-- https://en.cppreference.com/w/cpp/meta
-- https://landelare.github.io/2023/01/07/cpp-speedrun.html
-- https://andreasfertig.com/courses/programming-with-cpp11-to-cpp17/
-- x-macro
-- https://www.foonathan.net/2020/05/fold-tricks/
+- x-macro (c)
 - rdbuf, read whole file
 - rdbuf, redirect: https://stackoverflow.com/questions/10150468/how-to-redirect-cin-and-cout-to-files
 - allocconsole, reopen
-- https://chromium.googlesource.com/chromium/src/base/+/master/strings/stringprintf.h
-- see chromium/base
-- see boost/base
-- see abseil
 - forcing constexpr to be compile time
 - type id / magic enum (parsing `__PRETTY_FUNCTION__`)
 - swap idiom (unqualified call to swap in generic context)
-- https://en.wikipedia.org/wiki/Barton%E2%80%93Nackman_trick
-- https://en.wikipedia.org/wiki/Category:C%2B%2B
-- http://www.gotw.ca/gotw/076.htm
-- (go thru idioms, shwartz counter, https://en.m.wikibooks.org/wiki/More_C++_Idioms)
-- (go thru shortcuts, like immediately invoked lambda)
-- see also https://github.com/shafik/cpp_blogs quiz questions
-- (and https://cppquiz.org/)
 - relocatable and faster then stl container implementations
-- https://www.foonathan.net/2016/05/final/
-- https://www.foonathan.net/2020/10/tricks-default-template-argument/
-- https://www.foonathan.net/2020/10/iife-metaprogramming/#content
 - `static_cast<decltype(args)>(args)...` - https://www.foonathan.net/2020/09/move-forward/#content
 - Howard Hinnant special member function diagram - https://www.foonathan.net/2019/02/special-member-functions/#content
 - modern C++ + value semantics = love
 - cstdio vs stdio.h and puts vs std::puts
 - [ambiguity between a variable declaration and a function declaration](https://en.cppreference.com/w/cpp/language/direct_initialization#Notes)
-- note [C++ Lambda Story](https://asawicki.info/news_1739_book_review_c_lambda_story)
-- note [C++ Move Semantics](https://www.cppmove.com/)
-- note [Book review: C++ Initialization Story](https://asawicki.info/news_1766_book_review_c_initialization_story)
 - decltype() vs decltype(())
 - requires vs requires requires
 - noexcept vs noexcept(noexcept())
 - `declval<T>` vs `declval<T&>`
+- https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01
+- https://jorenar.com/blog/less-known-c
+- http://www.danielvik.com/2010/05/c-language-quirks.html
+- https://codeforces.com/blog/entry/74684
+- https://andreasfertig.blog/2021/07/cpp20-a-neat-trick-with-consteval/
+- https://en.cppreference.com/w/cpp/meta
+- https://landelare.github.io/2023/01/07/cpp-speedrun.html
+- https://andreasfertig.com/courses/programming-with-cpp11-to-cpp17/
+- https://www.foonathan.net/2020/05/fold-tricks/
+- https://chromium.googlesource.com/chromium/src/base/+/master/strings/stringprintf.h
+- https://en.wikipedia.org/wiki/Barton%E2%80%93Nackman_trick
+- https://en.wikipedia.org/wiki/Category:C%2B%2B
+- http://www.gotw.ca/gotw/076.htm
+- https://github.com/shafik/cpp_blogs quiz questions
+- https://cppquiz.org/
+- https://www.foonathan.net/2016/05/final/
+- https://www.foonathan.net/2020/10/tricks-default-template-argument/
+- https://www.foonathan.net/2020/10/iife-metaprogramming/#content
+- see chromium/base
+- see boost/base
+- see abseil
+- (go thru idioms, shwartz counter, https://en.m.wikibooks.org/wiki/More_C++_Idioms)
+- (go thru shortcuts, like immediately invoked lambda)
+- note [C++ Lambda Story](https://asawicki.info/news_1739_book_review_c_lambda_story)
+- note [C++ Move Semantics](https://www.cppmove.com/)
+- note [Book review: C++ Initialization Story](https://asawicki.info/news_1766_book_review_c_initialization_story)
 
 -----------------------------------------------------------
 
@@ -1748,3 +1747,24 @@ std::cout << t.x << std::endl;
 
 > You'd expect the printed result to be 0, right?
 > You poor thing. Alas—it will be garbage.
+
+#### beaware of std::string_view-like key with std::meow_map
+
+See, for instance, [std::string_view and std::map](https://olafurw.com/2022-12-03-a-view-of-a-map/).
+std::meow_map has invariant and does not allow easily modify keys, making
+value_type to be `std::pair<const Key, T>`. Modifying it implicitly is UB:
+
+``` cpp {.numberLines}
+int main()
+{
+    std::string s1 = "wwwwwwwwwwwwwwwwwwwww";
+    std::string s2 = "bbbbbbbbbbbbbbbbbbbbb";
+    std::map<std::string_view, int> m;
+    m[s1] = 1;
+    m[s2] = 2;
+    s1 = "xx"; // what's the state of map?
+}
+```
+
+This is also the reason std::owner_less/owner_hash/owner_equal exist.
+See [Enabling the Use of weak_ptr as Keys in Unordered Associative Containers](https://wg21.link/P1901).
