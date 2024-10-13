@@ -6,9 +6,11 @@ To generate this .html out of [cpp_tips_tricks_quirks.md](https://raw.githubuser
 
 ```
 pandoc -s --toc --toc-depth=4
+  --standalone
   --number-sections
   --highlight=kate
-  -f markdown -t html
+  --from markdown --to=html5
+  --lua-filter=anchor-links.lua
   cpp_tips_tricks_quirks.md
   -o cpp_tips_tricks_quirks.html
 ```
@@ -19,9 +21,6 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 
 [TODO]{.mark}
 
-- non-trivial types in union
-- no capture needed for globals/const for lambda
-- overload struct for variant visit (inherit from lambda)
 - map and modifying keys ub
 - picewise construct
 - map[x]
@@ -1286,7 +1285,7 @@ all the useful context.
 
 Hint: same can be done with, let say, WinAPI - use [Detours](https://github.com/microsoft/Detours).
 
-#### `std::shared_ptr<void>` exists
+#### `std::shared_ptr<void>` as user-data pointer
 
 `std::shared_ptr<void>` holds `void*` pointer, but also has [type-erased](https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Type_Erasure)
 destroy function that remembers the actual type it was created with, so this is
@@ -1543,3 +1542,148 @@ See also:
  * [copyable_function](https://wg21.link/p2548) - C++26
  * [move_only_function](https://wg21.link/P0288) - C++23
  * [function_ref](https://wg21.link/P0792) - C++26
+
+#### non-trivial types in union
+
+Since C++11, you can manually control lifetime of user-defined types.
+See [Union declaration](https://en.cppreference.com/w/cpp/language/union) for
+more precise definition:
+
+``` cpp {.numberLines}
+using String = std::string; // non-trivial type
+union MyUnion
+{
+    String s0;
+    String s1;
+    MyUnion() { new(&s0) String("aa"); } // activate s0
+    ~MyUnion() { } // does not know what to destruct
+};
+
+int main()
+{
+    MyUnion u;
+    u.s0.~String(); // free active member
+    new(&u.s1) String("bb"); // construct s1
+    // ...
+    u.s1.~String(); // clean-up
+}
+```
+
+#### lambda with access to const and global variables
+
+You can omit capture of const/global data in a simple cases:
+
+``` cpp {.numberLines}
+int MyGlobal = 98;
+
+int main()
+{
+    const int MyConst = 65;
+
+    auto lambda0 = []() { return MyGlobal; }; // ok
+    auto lambda1 = []() { return MyConst; };  // ok
+}
+```
+
+However, if const is odr-used (e.g., pointer is taken or reference-to is formed),
+it needs to be captured:
+
+``` cpp {.numberLines}
+void Foo(const int*);
+void Bar(const int&);
+
+int main()
+{
+    const int MyConst = 65;
+    auto lambda0 = []() { Foo(&MyConst); }; // error
+    auto lambda0 = []() { Bar(MyConst); };  // error
+}
+```
+
+See "implicit"/"odr-usable" in [cppreference](https://en.cppreference.com/w/cpp/language/lambda).
+
+#### std::variant overload pattern
+
+See [2 Lines Of Code and 3 C++17 Features - The overload Pattern](https://www.cppstories.com/2019/02/2lines3featuresoverload.html/).
+
+C++17 version:
+
+``` cpp {.numberLines}
+template<class... Ts> struct overload : Ts... { using Ts::operator()...; };
+template<class... Ts> overload(Ts...) -> overload<Ts...>;
+
+std::variant<int, float> vv{67};
+std::visit(overload
+    {
+      [](const int& i)   { std::cout << "int: " << i; },
+      [](const float& f) { std::cout << "float: " << f; }
+    },
+    vv);
+```
+
+C++20 version:
+
+``` cpp {.numberLines}
+template<class... Ts> struct overload : Ts... { using Ts::operator()...; };
+```
+
+C++23 version (see [Visiting a std::variant safely](https://andreasfertig.blog/2023/07/visiting-a-stdvariant-safely/)):
+
+``` cpp {.numberLines}
+template<class... Ts>
+struct overload : Ts...
+{
+  using Ts::operator()...;
+
+  // Prevent implicit type conversions
+  consteval void operator()(auto) const
+  {
+    static_assert(false, "Unsupported type");
+  }
+};
+```
+
+#### unique_ptr to incomplete type and class destructor
+
+See [When an empty destructor is required](https://andreasfertig.blog/2023/12/when-an-empty-destructor-is-required/)
+and [Smart pointers and the pointer to implementation idiom](https://andreasfertig.blog/2024/10/smart-pointers-and-the-pointer-to-implementation-idiom/).
+
+In short, this does not compile:
+
+``` cpp {.numberLines}
+// apple.h
+class Orange;
+class Apple {
+  std::unique_ptr<Orange> orange{};
+};
+
+// use (error)
+Apple a{};
+```
+
+since compiler-generated destructor is placed in the apple.h and tries to
+invoke `Orange` destructor. Deleting incomplete type is UB.
+
+The fix is to move destructor definition to .cpp file:
+
+``` cpp {.numberLines}
+// apple.h
+class Orange;
+class Apple {
+  std::unique_ptr<Orange> orange{};
+  ~Apple();
+};
+
+// apple.cpp
+Apple::Apple() = default;
+
+// use (fine)
+Apple a{};
+```
+
+#### the use of `shared_ptr<const T>`
+
+ * [Sean Parent: Value Semantics and Concepts-based Polymorphism](https://youtu.be/_BpMYeUFXv8?si=t1XrdB4wjzdGksYd)
+ * [Shared pointer to an immutable type has value semantics](https://stackoverflow.com/a/18803611)
+ * [copy_on_write.hpp](https://github.com/stlab/libraries/blob/1cd251b49cac434ca519af17da32c4969ee9d3d5/stlab/copy_on_write.hpp) from STLab.
+
