@@ -502,8 +502,12 @@ class="toc-section-number">69</span>
 class="toc-section-number">70</span> 🔗Meyer’s singleton</a></li>
 <li><a href="#magic-static" id="toc-magic-static"><span
 class="toc-section-number">71</span> 🔗magic static</a></li>
+<li><a href="#stdminx-y-thanks-to-windows.h"
+id="toc-stdminx-y-thanks-to-windows.h"><span
+class="toc-section-number">72</span> 🔗(std::min)(x, y) thanks to
+Windows.h</a></li>
 <li><a href="#todo" id="toc-todo"><span
-class="toc-section-number">72</span> 🔗TODO</a></li>
+class="toc-section-number">73</span> 🔗TODO</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -1976,6 +1980,9 @@ Knightmare of Initialization in C++</a>;</li>
 <li>~300 pages book, <a
 href="https://www.amazon.com/Initialization-Story-Through-Options-Related/dp/B0BW38DDBK">C++
 Initialization Story</a>.</li>
+<li><a
+href="https://accu.org/journals/overload/25/139/brand_2379/">Initialization
+in C++ is Bonkers</a></li>
 </ul>
 <p>Sometimes also called as <a
 href="https://www.reddit.com/r/cpp/comments/as8pu1/comment/egslsok/">unicorn
@@ -2377,11 +2384,41 @@ class="sourceCode numberSource asm numberLines"><code class="sourceCode fasm"><s
 <span id="cb101-5"><a href="#cb101-5"></a>    <span class="cf">je</span>      <span class="op">.</span>L15</span>
 <span id="cb101-6"><a href="#cb101-6"></a>    <span class="bu">mov</span>     <span class="kw">eax</span><span class="op">,</span> OFFSET FLAT<span class="op">:</span>MyClass<span class="op">::</span>GetInstance<span class="op">()::</span>instance</span>
 <span id="cb101-7"><a href="#cb101-7"></a>    <span class="cf">ret</span></span></code></pre></div>
+<h4 data-number="72" id="stdminx-y-thanks-to-windows.h"><span
+class="header-section-number">72</span> <a
+href="#stdminx-y-thanks-to-windows.h">🔗</a>(std::min)(x, y) thanks to
+Windows.h</h4>
+<p>You see code like this?</p>
+<div class="sourceCode" id="cb102"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb102-1"><a href="#cb102-1"></a><span class="dt">int</span> my_min <span class="op">=</span> <span class="op">(</span><span class="bu">std::</span>min<span class="op">)(</span>x1<span class="op">,</span> x2<span class="op">);</span></span>
+<span id="cb102-2"><a href="#cb102-2"></a><span class="dt">int</span> my_max <span class="op">=</span> <span class="op">(</span><span class="bu">std::</span>max<span class="op">)(</span>y1<span class="op">,</span> y2<span class="op">);</span></span></code></pre></div>
+<p>and wonder why anyone would put extra parentheses? Thanks to
+Windows.h we may have min and max available as MACROS, hence:</p>
+<div class="sourceCode" id="cb103"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb103-1"><a href="#cb103-1"></a><span class="pp">#include </span><span class="im">&lt;Windows.h&gt;</span></span>
+<span id="cb103-2"><a href="#cb103-2"></a></span>
+<span id="cb103-3"><a href="#cb103-3"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb103-4"><a href="#cb103-4"></a><span class="op">{</span></span>
+<span id="cb103-5"><a href="#cb103-5"></a>    <span class="dt">int</span> v <span class="op">=</span> <span class="bu">std::</span>min<span class="op">(</span>x<span class="op">,</span> y<span class="op">);</span> <span class="co">// error, tries to expand min macro</span></span>
+<span id="cb103-6"><a href="#cb103-6"></a><span class="op">}</span></span></code></pre></div>
+<p>does not work. Extra parentheses around function name prevent macro
+invocation. Other workarounds include:</p>
+<div class="sourceCode" id="cb104"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb104-1"><a href="#cb104-1"></a><span class="dt">int</span> my_max <span class="op">=</span> <span class="bu">std::</span>max<span class="op">&lt;&gt;(</span>x<span class="op">,</span> y<span class="op">);</span></span>
+<span id="cb104-2"><a href="#cb104-2"></a><span class="dt">int</span> my_min <span class="op">=</span> <span class="bu">std::</span>min<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;(</span>x<span class="op">,</span> y<span class="op">);</span></span></code></pre></div>
+<p>If you conrol build system, you may enforce <a
+href="https://devblogs.microsoft.com/oldnewthing/20091130-00/?p=15863">WIN32_LEAN_AND_MEAN</a>,
+NOMINMAX and heard about <a
+href="http://web.archive.org/web/20121219084749/http://support.microsoft.com/kb/166474">VC_EXTRALEAN</a>.</p>
 <hr />
-<h4 data-number="72" id="todo"><span
-class="header-section-number">72</span> <a href="#todo">🔗</a>TODO</h4>
+<h4 data-number="73" id="todo"><span
+class="header-section-number">73</span> <a href="#todo">🔗</a>TODO</h4>
 <p><mark>TODO</mark></p>
 <ul>
+<li>assert(false &amp;&amp; “message”)</li>
+<li>!!v, where v=int</li>
+<li>&lt;assert.h&gt; and NDEBUG</li>
+<li>sizeof int vs sizeof(v)</li>
 <li>universal references, mayers</li>
 <li>inherit multiple classes from template, with tags</li>
 <li>variadic templates default argument emulation</li>
@@ -2412,6 +2449,9 @@ between a variable declaration and a function declaration</a></li>
 <li>noexcept vs noexcept(noexcept())</li>
 <li><code>declval&lt;T&gt;</code> vs
 <code>declval&lt;T&amp;&gt;</code></li>
+<li><a
+href="https://holyblackcat.github.io/blog/2024/10/22/macro-placeholders.html">Placeholder
+substitution in the preprocessor</a></li>
 <li>https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01</li>
 <li>https://jorenar.com/blog/less-known-c</li>
 <li>http://www.danielvik.com/2010/05/c-language-quirks.html</li>

@@ -1477,6 +1477,7 @@ with braces `{}` (list-initialization) is famously non-uniform, see:
  * [C++ Uniform Initialization - Benefits & Pitfalls](https://ianyepan.github.io/posts/cpp-uniform-initialization/);
  * [The Knightmare of Initialization in C++](https://quuxplusone.github.io/blog/2019/02/18/knightmare-of-initialization/);
  * ~300 pages book, [C++ Initialization Story](https://www.amazon.com/Initialization-Story-Through-Options-Related/dp/B0BW38DDBK).
+ * [Initialization in C++ is Bonkers](https://accu.org/journals/overload/25/139/brand_2379/)
 
 Sometimes also called as [unicorn initialization](https://www.reddit.com/r/cpp/comments/as8pu1/comment/egslsok/);
 see also [Forrest Gump C++ initialization](https://x.com/timur_audio/status/1004017362381795329).
@@ -1884,12 +1885,49 @@ meaning that you may pay for each call to GetInstance:
     ret
 ```
 
+#### (std::min)(x, y) thanks to Windows.h
+
+You see code like this?
+
+``` cpp {.numberLines}
+int my_min = (std::min)(x1, x2);
+int my_max = (std::max)(y1, y2);
+```
+
+and wonder why anyone would put extra parentheses? Thanks to Windows.h we may have
+min and max available as MACROS, hence:
+
+``` cpp {.numberLines}
+#include <Windows.h>
+
+int main()
+{
+    int v = std::min(x, y); // error, tries to expand min macro
+}
+```
+
+does not work. Extra parentheses around function name prevent macro invocation.
+Other workarounds include:
+
+``` cpp {.numberLines}
+int my_max = std::max<>(x, y);
+int my_min = std::min<int>(x, y);
+```
+
+If you conrol build system, you may enforce [WIN32_LEAN_AND_MEAN](https://devblogs.microsoft.com/oldnewthing/20091130-00/?p=15863),
+NOMINMAX and heard about [VC_EXTRALEAN](http://web.archive.org/web/20121219084749/http://support.microsoft.com/kb/166474).
+
+
 -----------------------------------------------------------
 
 #### TODO
 
 [TODO]{.mark}
 
+- assert(false && "message")
+- !!v, where v=int
+- <assert.h> and NDEBUG
+- sizeof int vs sizeof(v)
 - universal references, mayers
 - inherit multiple classes from template, with tags
 - variadic templates default argument emulation
@@ -1914,6 +1952,7 @@ meaning that you may pay for each call to GetInstance:
 - requires vs requires requires
 - noexcept vs noexcept(noexcept())
 - `declval<T>` vs `declval<T&>`
+- [Placeholder substitution in the preprocessor](https://holyblackcat.github.io/blog/2024/10/22/macro-placeholders.html)
 - https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01
 - https://jorenar.com/blog/less-known-c
 - http://www.danielvik.com/2010/05/c-language-quirks.html
