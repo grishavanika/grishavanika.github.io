@@ -508,8 +508,25 @@ class="toc-section-number">72</span> 🔗(std::min)(x, y) thanks to
 Windows.h</a></li>
 <li><a href="#v-double-negation" id="toc-v-double-negation"><span
 class="toc-section-number">73</span> 🔗!!v double-negation</a></li>
+<li><a href="#sizeof-v-and-sizeofv" id="toc-sizeof-v-and-sizeofv"><span
+class="toc-section-number">74</span> 🔗<code>sizeof v</code> and
+<code>sizeof(v)</code></a></li>
+<li><a href="#six-dots-ts......" id="toc-six-dots-ts......"><span
+class="toc-section-number">75</span> 🔗six dots
+<code>Ts......</code></a></li>
+<li><a href="#assertx-message" id="toc-assertx-message"><span
+class="toc-section-number">76</span>
+🔗<code>assert(x &amp;&amp; "message")</code></a></li>
+<li><a href="#assert.h-and-ndebug-with-no-include-guard"
+id="toc-assert.h-and-ndebug-with-no-include-guard"><span
+class="toc-section-number">77</span> 🔗<code>&lt;assert.h&gt;</code> and
+NDEBUG with no include guard</a></li>
+<li><a href="#universal-reference-vs-forwarding-reference"
+id="toc-universal-reference-vs-forwarding-reference"><span
+class="toc-section-number">78</span> 🔗universal reference vs forwarding
+reference</a></li>
 <li><a href="#todo" id="toc-todo"><span
-class="toc-section-number">74</span> 🔗TODO</a></li>
+class="toc-section-number">79</span> 🔗TODO</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -2431,16 +2448,136 @@ to bool, second ! reverts value to original one.</p>
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb106-1"><a href="#cb106-1"></a><span class="cf">if</span> <span class="op">(!!</span>my_data<span class="op">.</span>get<span class="op">(</span><span class="st">&quot;anything&quot;</span><span class="op">))</span> <span class="op">{</span> <span class="co">/**/</span> <span class="op">}</span></span></code></pre></div>
 <p>Why not <code>static_cast&lt;bool&gt;(x)</code>? MSVC may warn you
 about <code>(bool)a</code>, <code>bool(a)</code> and
-<code>static_cast&lt;bool&gt;(a)</code>.</p>
+<code>static_cast&lt;bool&gt;(a)</code>. See also <a
+href="https://en.cppreference.com/w/cpp/language/implicit_conversion#Contextual_conversions">contextually
+converted to bool</a>.</p>
+<h4 data-number="74" id="sizeof-v-and-sizeofv"><span
+class="header-section-number">74</span> <a
+href="#sizeof-v-and-sizeofv">🔗</a><code>sizeof v</code> and
+<code>sizeof(v)</code></h4>
+<p>Turns out, for expression sizeof does not requre parentheses:</p>
+<div class="sourceCode" id="cb107"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb107-1"><a href="#cb107-1"></a><span class="dt">int</span> v <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb107-2"><a href="#cb107-2"></a><span class="at">const</span> <span class="dt">unsigned</span> size <span class="op">=</span> <span class="kw">sizeof</span><span class="op">(</span>v<span class="op">);</span> <span class="co">// compiles</span></span>
+<span id="cb107-3"><a href="#cb107-3"></a><span class="at">const</span> <span class="dt">unsigned</span> size <span class="op">=</span> <span class="kw">sizeof</span> v<span class="op">;</span>  <span class="co">// same as above</span></span></code></pre></div>
+<p>where <code>sizeof(Type)</code> requires parentheses for a type. See
+<a href="https://en.cppreference.com/w/cpp/language/sizeof">sizeof
+operator</a>.</p>
+<h4 data-number="75" id="six-dots-ts......"><span
+class="header-section-number">75</span> <a
+href="#six-dots-ts......">🔗</a>six dots <code>Ts......</code></h4>
+<p>See <a href="https://lbrandy.com/blog/2013/02/c11s-six-dots/">C++11’s
+six dots</a>:</p>
+<div class="sourceCode" id="cb108"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb108-1"><a href="#cb108-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Ts<span class="op">&gt;</span></span>
+<span id="cb108-2"><a href="#cb108-2"></a><span class="dt">void</span> MyFoo<span class="op">(</span>Ts<span class="op">......)</span></span>
+<span id="cb108-3"><a href="#cb108-3"></a><span class="op">{</span></span>
+<span id="cb108-4"><a href="#cb108-4"></a><span class="op">}</span></span></code></pre></div>
+<p>is valid C++, where <code>Ts...</code> is “a function with a variable
+number of arguments” and the next 3 dots <code>...</code> is “a variadic
+function from C, varargs”; all because comma is optional. From the
+acticle above:</p>
+<div class="sourceCode" id="cb109"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb109-1"><a href="#cb109-1"></a><span class="co">// These are all equivalent.</span></span>
+<span id="cb109-2"><a href="#cb109-2"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span> <span class="dt">void</span> foo1<span class="op">(</span>Args<span class="op">......);</span></span>
+<span id="cb109-3"><a href="#cb109-3"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span> <span class="dt">void</span> foo2<span class="op">(</span>Args<span class="op">...</span> <span class="op">...);</span></span>
+<span id="cb109-4"><a href="#cb109-4"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span> <span class="dt">void</span> foo3<span class="op">(</span>Args<span class="op">...,</span> <span class="op">...);</span></span></code></pre></div>
+<h4 data-number="76" id="assertx-message"><span
+class="header-section-number">76</span> <a
+href="#assertx-message">🔗</a><code>assert(x &amp;&amp; "message")</code></h4>
+<p>Used to print “message” when assert fails. Compare the output of:</p>
+<div class="sourceCode" id="cb110"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb110-1"><a href="#cb110-1"></a>    <span class="dt">bool</span> x <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb110-2"><a href="#cb110-2"></a>    <span class="ot">assert</span><span class="op">(</span>x<span class="op">);</span></span>
+<span id="cb110-3"><a href="#cb110-3"></a><span class="co">// example.cpp:2: int main(): Assertion `x&#39; failed.</span></span></code></pre></div>
+<p>and</p>
+<div class="sourceCode" id="cb111"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb111-1"><a href="#cb111-1"></a>    <span class="dt">bool</span> x <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb111-2"><a href="#cb111-2"></a>    <span class="ot">assert</span><span class="op">(</span>x <span class="op">&amp;&amp;</span> <span class="st">&quot;message&quot;</span><span class="op">);</span></span>
+<span id="cb111-3"><a href="#cb111-3"></a><span class="co">// example.cpp:2: int main(): Assertion `x &amp;&amp; &quot;message&quot;&#39; failed.</span></span></code></pre></div>
+<p>This works since “message” is implicitly converted to
+<code>const char*</code> which then is converted to bool and is always
+true. Because of that next variations exist to always fail, but with a
+message:</p>
+<div class="sourceCode" id="cb112"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb112-1"><a href="#cb112-1"></a><span class="ot">assert</span><span class="op">(</span><span class="kw">false</span> <span class="op">&amp;&amp;</span> <span class="st">&quot;message&quot;</span><span class="op">);</span> <span class="co">// fail always, print &quot;message&quot;</span></span>
+<span id="cb112-2"><a href="#cb112-2"></a><span class="ot">assert</span><span class="op">(!</span><span class="st">&quot;message&quot;</span><span class="op">);</span>         <span class="co">// same</span></span></code></pre></div>
+<h4 data-number="77"
+id="assert.h-and-ndebug-with-no-include-guard"><span
+class="header-section-number">77</span> <a
+href="#assert.h-and-ndebug-with-no-include-guard">🔗</a><code>&lt;assert.h&gt;</code>
+and NDEBUG with no include guard</h4>
+<p><code>&lt;assert.h&gt;</code> and <code>&lt;cassert&gt;</code> are
+special in the sense that there is no header include guard, <strong>by
+design</strong> - see, for instance, MSVC implementation:</p>
+<div class="sourceCode" id="cb113"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb113-1"><a href="#cb113-1"></a><span class="co">// &lt;cassert&gt;</span></span>
+<span id="cb113-2"><a href="#cb113-2"></a><span class="co">// </span><span class="al">NOTE</span><span class="co">: no include guard</span></span>
+<span id="cb113-3"><a href="#cb113-3"></a><span class="pp">#include </span><span class="im">&lt;yvals_core.h&gt;</span></span>
+<span id="cb113-4"><a href="#cb113-4"></a><span class="pp">#include </span><span class="im">&lt;assert.h&gt;</span></span></code></pre></div>
+<p>This is so you can ON and OFF <code>NDEBUG</code> whenever you want
+and include <code>&lt;assert.h&gt;</code> to either get working
+<code>assert()</code> or a no-op in a different parts of the program.
+Consider:</p>
+<div class="sourceCode" id="cb114"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb114-1"><a href="#cb114-1"></a><span class="co">// impl.cpp</span></span>
+<span id="cb114-2"><a href="#cb114-2"></a><span class="pp">#include </span><span class="im">&lt;cassert&gt;</span></span>
+<span id="cb114-3"><a href="#cb114-3"></a><span class="dt">void</span> MyFoo<span class="op">()</span></span>
+<span id="cb114-4"><a href="#cb114-4"></a><span class="op">{</span></span>
+<span id="cb114-5"><a href="#cb114-5"></a>    <span class="ot">assert</span><span class="op">(</span><span class="kw">false</span><span class="op">);</span> <span class="co">// may or may not trigger `assert()`;</span></span>
+<span id="cb114-6"><a href="#cb114-6"></a>                   <span class="co">// depends on compilation options</span></span>
+<span id="cb114-7"><a href="#cb114-7"></a><span class="op">}</span></span>
+<span id="cb114-8"><a href="#cb114-8"></a></span>
+<span id="cb114-9"><a href="#cb114-9"></a><span class="pp">#if defined(NDEBUG)</span></span>
+<span id="cb114-10"><a href="#cb114-10"></a><span class="pp">#  undef NDEBUG</span></span>
+<span id="cb114-11"><a href="#cb114-11"></a><span class="pp">#endif</span></span>
+<span id="cb114-12"><a href="#cb114-12"></a><span class="pp">#include </span><span class="im">&lt;cassert&gt;</span><span class="pp"> </span><span class="co">// include 2nd time, assert is ENABLED</span></span>
+<span id="cb114-13"><a href="#cb114-13"></a><span class="dt">void</span> MyBar<span class="op">()</span></span>
+<span id="cb114-14"><a href="#cb114-14"></a><span class="op">{</span></span>
+<span id="cb114-15"><a href="#cb114-15"></a>    <span class="ot">assert</span><span class="op">(</span><span class="kw">false</span><span class="op">);</span> <span class="co">// invokes std::abort(), always</span></span>
+<span id="cb114-16"><a href="#cb114-16"></a><span class="op">}</span></span></code></pre></div>
+<p>Usually useful for one-file tools to fail fast even in Release:</p>
+<div class="sourceCode" id="cb115"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb115-1"><a href="#cb115-1"></a><span class="co">// main.cpp</span></span>
+<span id="cb115-2"><a href="#cb115-2"></a><span class="pp">#include </span><span class="im">&quot;my_api.h&quot;</span></span>
+<span id="cb115-3"><a href="#cb115-3"></a><span class="pp">#include </span><span class="im">&lt;Windows.h&gt;</span></span>
+<span id="cb115-4"><a href="#cb115-4"></a></span>
+<span id="cb115-5"><a href="#cb115-5"></a><span class="pp">#if defined(NDEBUG)</span></span>
+<span id="cb115-6"><a href="#cb115-6"></a><span class="pp">#  undef NDEBUG</span></span>
+<span id="cb115-7"><a href="#cb115-7"></a><span class="pp">#endif</span></span>
+<span id="cb115-8"><a href="#cb115-8"></a><span class="pp">#include </span><span class="im">&lt;cassert&gt;</span><span class="pp"> </span><span class="co">// enable assert in Release also</span></span>
+<span id="cb115-9"><a href="#cb115-9"></a></span>
+<span id="cb115-10"><a href="#cb115-10"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span><span class="op">*</span> argv<span class="op">[])</span></span>
+<span id="cb115-11"><a href="#cb115-11"></a><span class="op">{</span></span>
+<span id="cb115-12"><a href="#cb115-12"></a>    <span class="ot">assert</span><span class="op">(</span>argc <span class="op">&gt;</span> <span class="dv">1</span> <span class="op">&amp;&amp;</span> <span class="st">&quot;Expected single &lt;file_name&gt; argument passed&quot;</span><span class="op">);</span></span>
+<span id="cb115-13"><a href="#cb115-13"></a>    <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file_name <span class="op">=</span> argv<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="cb115-14"><a href="#cb115-14"></a><span class="op">}</span></span></code></pre></div>
+<h4 data-number="78"
+id="universal-reference-vs-forwarding-reference"><span
+class="header-section-number">78</span> <a
+href="#universal-reference-vs-forwarding-reference">🔗</a>universal
+reference vs forwarding reference</h4>
+<p>The same thing:</p>
+<div class="sourceCode" id="cb116"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb116-1"><a href="#cb116-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb116-2"><a href="#cb116-2"></a><span class="dt">void</span> MyFoo<span class="op">(</span>T<span class="op">&amp;&amp;);</span>       <span class="co">// T&amp;&amp; is a forwarding reference</span></span></code></pre></div>
+<p>From this <a href="https://stackoverflow.com/a/39552345">SO
+answer</a>:</p>
+<blockquote>
+<p>Universal reference was a term Scott Meyers coined […] At the time
+the C++ standard didn’t have a special term for this, which was an
+oversight in C++11 and makes it hard to teach. This oversight was
+remedied by N4164 […]</p>
+</blockquote>
+<p>See <a
+href="https://isocpp.org/blog/2012/11/universal-references-in-c11-scott-meyers">Universal
+References in C++11</a> and <a
+href="https://wg21.link/n4164">n4164/Forwarding References</a>.</p>
 <hr />
-<h4 data-number="74" id="todo"><span
-class="header-section-number">74</span> <a href="#todo">🔗</a>TODO</h4>
+<h4 data-number="79" id="todo"><span
+class="header-section-number">79</span> <a href="#todo">🔗</a>TODO</h4>
 <p><mark>TODO</mark></p>
 <ul>
-<li>assert(false &amp;&amp; “message”)</li>
-<li>&lt;assert.h&gt; and NDEBUG</li>
-<li>sizeof int vs sizeof(v)</li>
-<li>universal references, mayers</li>
 <li>inherit multiple classes from template, with tags</li>
 <li>variadic templates default argument emulation</li>
 <li>mixing variadic templates and variadic c</li>

@@ -1896,8 +1896,8 @@ int my_min = (std::min)(x1, x2);
 int my_max = (std::max)(y1, y2);
 ```
 
-and wonder why anyone would put extra parentheses? Thanks to Windows.h we may have
-min and max available as MACROS, hence:
+and wonder why anyone would put extra parentheses? Thanks to Windows.h we may
+have min and max available as MACROS, hence:
 
 ``` cpp {.numberLines}
 #include <Windows.h>
@@ -1931,8 +1931,8 @@ Lets have a look at MSVC `assert` implementation:
         (_wassert(..., 0))
 ```
 
-`expression` comes from client/user code and may be of ANY type, `int`, `const char*`,
-anything. !! is used to silence any warning since || expects bool.
+`expression` comes from client/user code and may be of ANY type, `int`,
+`const char*`, anything. !! is used to silence any warning since || expects bool.
 First ! actually converts to bool, second ! reverts value to original one.
 
 Same happens in code like this:
@@ -1941,7 +1941,143 @@ Same happens in code like this:
 if (!!my_data.get("anything")) { /**/ }
 ```
 
-Why not `static_cast<bool>(x)`? MSVC may warn you about `(bool)a`, `bool(a)` and `static_cast<bool>(a)`.
+Why not `static_cast<bool>(x)`? MSVC may warn you about `(bool)a`, `bool(a)`
+and `static_cast<bool>(a)`. See also [contextually converted to bool](https://en.cppreference.com/w/cpp/language/implicit_conversion#Contextual_conversions).
+
+#### `sizeof v` and `sizeof(v)`
+
+Turns out, for expression sizeof does not requre parentheses:
+
+``` cpp {.numberLines}
+int v = 0;
+const unsigned size = sizeof(v); // compiles
+const unsigned size = sizeof v;  // same as above
+```
+
+where `sizeof(Type)` requires parentheses for a type.
+See [sizeof operator](https://en.cppreference.com/w/cpp/language/sizeof).
+
+#### six dots `Ts......`
+
+See [C++11's six dots](https://lbrandy.com/blog/2013/02/c11s-six-dots/):
+
+``` cpp {.numberLines}
+template<typename... Ts>
+void MyFoo(Ts......)
+{
+}
+```
+
+is valid C++, where `Ts...` is "a function with a variable number of arguments"
+and the next 3 dots `...` is "a variadic function from C, varargs";
+all because comma is optional. From the acticle above:
+
+``` cpp {.numberLines}
+// These are all equivalent.
+template <typename... Args> void foo1(Args......);
+template <typename... Args> void foo2(Args... ...);
+template <typename... Args> void foo3(Args..., ...);
+```
+
+#### `assert(x && "message")`
+
+Used to print "message" when assert fails. Compare the output of:
+
+``` cpp {.numberLines}
+    bool x = false;
+    assert(x);
+// example.cpp:2: int main(): Assertion `x' failed.
+```
+
+and 
+
+``` cpp {.numberLines}
+    bool x = false;
+    assert(x && "message");
+// example.cpp:2: int main(): Assertion `x && "message"' failed.
+```
+
+This works since "message" is implicitly converted to `const char*` which then
+is converted to bool and is always true. Because of that next variations
+exist to always fail, but with a message:
+
+``` cpp {.numberLines}
+assert(false && "message"); // fail always, print "message"
+assert(!"message");         // same
+```
+
+#### `<assert.h>` and NDEBUG with no include guard
+
+`<assert.h>` and `<cassert>` are special in the sense that there is
+no header include guard, **by design** - see, for instance, MSVC implementation:
+
+``` cpp {.numberLines}
+// <cassert>
+// NOTE: no include guard
+#include <yvals_core.h>
+#include <assert.h>
+```
+
+This is so you can ON and OFF `NDEBUG` whenever you want and 
+include `<assert.h>` to either get working `assert()` or a no-op in a different
+parts of the program. Consider:
+
+``` cpp {.numberLines}
+// impl.cpp
+#include <cassert>
+void MyFoo()
+{
+    assert(false); // may or may not trigger `assert()`;
+                   // depends on compilation options
+}
+
+#if defined(NDEBUG)
+#  undef NDEBUG
+#endif
+#include <cassert> // include 2nd time, assert is ENABLED
+void MyBar()
+{
+    assert(false); // invokes std::abort(), always
+}
+```
+
+Usually useful for one-file tools to fail fast even in Release:
+
+``` cpp {.numberLines}
+// main.cpp
+#include "my_api.h"
+#include <Windows.h>
+
+#if defined(NDEBUG)
+#  undef NDEBUG
+#endif
+#include <cassert> // enable assert in Release also
+
+int main(int argc, char* argv[])
+{
+    assert(argc > 1 && "Expected single <file_name> argument passed");
+    const char* file_name = argv[1];
+}
+```
+
+#### universal reference vs forwarding reference
+
+The same thing:
+
+``` cpp {.numberLines}
+template<typename T>
+void MyFoo(T&&);       // T&& is a forwarding reference
+```
+
+From this [SO answer](https://stackoverflow.com/a/39552345):
+
+> Universal reference was a term Scott Meyers coined [...]
+> At the time the C++ standard didn't have a special term for this,
+> which was an oversight in C++11 and makes it hard to teach.
+> This oversight was remedied by N4164 [...]
+
+See [Universal References in C++11](https://isocpp.org/blog/2012/11/universal-references-in-c11-scott-meyers)
+and [n4164/Forwarding References](https://wg21.link/n4164).
 
 -----------------------------------------------------------
 
@@ -1949,10 +2085,6 @@ Why not `static_cast<bool>(x)`? MSVC may warn you about `(bool)a`, `bool(a)` and
 
 [TODO]{.mark}
 
-- assert(false && "message")
-- <assert.h> and NDEBUG
-- sizeof int vs sizeof(v)
-- universal references, mayers
 - inherit multiple classes from template, with tags
 - variadic templates default argument emulation
 - mixing variadic templates and variadic c
