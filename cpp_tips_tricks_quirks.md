@@ -2085,9 +2085,7 @@ and [n4164/Forwarding References](https://wg21.link/n4164).
 
 [TODO]{.mark}
 
-- inherit multiple classes from template, with tags
 - variadic templates default argument emulation
-- mixing variadic templates and variadic c
 - type promotion passing custom type/float to variadic c
 - dynamic cast reference/pointer
 - templates sfinae/enable_if/checks/void_t
@@ -2109,6 +2107,9 @@ and [n4164/Forwarding References](https://wg21.link/n4164).
 - noexcept vs noexcept(noexcept())
 - `declval<T>` vs `declval<T&>`
 - [Placeholder substitution in the preprocessor](https://holyblackcat.github.io/blog/2024/10/22/macro-placeholders.html)
+- https://stackoverflow.com/questions/57547273/how-to-use-source-location-in-a-variadic-template-function
+- https://cor3ntin.github.io/posts/variadic/
+- https://vitaut.net/posts/2015/compile-time-checking-of-printf-args-in-cppformat/
 - https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01
 - https://jorenar.com/blog/less-known-c
 - http://www.danielvik.com/2010/05/c-language-quirks.html
