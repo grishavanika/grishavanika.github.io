@@ -506,8 +506,10 @@ class="toc-section-number">71</span> 🔗magic static</a></li>
 id="toc-stdminx-y-thanks-to-windows.h"><span
 class="toc-section-number">72</span> 🔗(std::min)(x, y) thanks to
 Windows.h</a></li>
+<li><a href="#v-double-negation" id="toc-v-double-negation"><span
+class="toc-section-number">73</span> 🔗!!v double-negation</a></li>
 <li><a href="#todo" id="toc-todo"><span
-class="toc-section-number">73</span> 🔗TODO</a></li>
+class="toc-section-number">74</span> 🔗TODO</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -2388,6 +2390,7 @@ class="sourceCode numberSource asm numberLines"><code class="sourceCode fasm"><s
 class="header-section-number">72</span> <a
 href="#stdminx-y-thanks-to-windows.h">🔗</a>(std::min)(x, y) thanks to
 Windows.h</h4>
+<p>A trick to avoid macro invocation.</p>
 <p>You see code like this?</p>
 <div class="sourceCode" id="cb102"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb102-1"><a href="#cb102-1"></a><span class="dt">int</span> my_min <span class="op">=</span> <span class="op">(</span><span class="bu">std::</span>min<span class="op">)(</span>x1<span class="op">,</span> x2<span class="op">);</span></span>
@@ -2410,13 +2413,31 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 href="https://devblogs.microsoft.com/oldnewthing/20091130-00/?p=15863">WIN32_LEAN_AND_MEAN</a>,
 NOMINMAX and heard about <a
 href="http://web.archive.org/web/20121219084749/http://support.microsoft.com/kb/166474">VC_EXTRALEAN</a>.</p>
+<h4 data-number="73" id="v-double-negation"><span
+class="header-section-number">73</span> <a
+href="#v-double-negation">🔗</a>!!v double-negation</h4>
+<p>It’s a trick to convert to bool.</p>
+<p>Lets have a look at MSVC <code>assert</code> implementation:</p>
+<div class="sourceCode" id="cb105"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb105-1"><a href="#cb105-1"></a><span class="pp">#define assert</span><span class="op">(</span>expression<span class="op">)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)(</span><span class="pp">    </span><span class="op">\</span></span>
+<span id="cb105-2"><a href="#cb105-2"></a><span class="pp">        </span><span class="op">(!!(</span>expression<span class="op">))</span><span class="pp"> </span><span class="op">||</span><span class="pp">           </span><span class="op">\</span></span>
+<span id="cb105-3"><a href="#cb105-3"></a><span class="pp">        </span><span class="op">(</span>_wassert<span class="op">(...,</span><span class="pp"> </span><span class="dv">0</span><span class="op">))</span></span></code></pre></div>
+<p><code>expression</code> comes from client/user code and may be of ANY
+type, <code>int</code>, <code>const char*</code>, anything. !! is used
+to silence any warning since || expects bool. First ! actually converts
+to bool, second ! reverts value to original one.</p>
+<p>Same happens in code like this:</p>
+<div class="sourceCode" id="cb106"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb106-1"><a href="#cb106-1"></a><span class="cf">if</span> <span class="op">(!!</span>my_data<span class="op">.</span>get<span class="op">(</span><span class="st">&quot;anything&quot;</span><span class="op">))</span> <span class="op">{</span> <span class="co">/**/</span> <span class="op">}</span></span></code></pre></div>
+<p>Why not <code>static_cast&lt;bool&gt;(x)</code>? MSVC may warn you
+about <code>(bool)a</code>, <code>bool(a)</code> and
+<code>static_cast&lt;bool&gt;(a)</code>.</p>
 <hr />
-<h4 data-number="73" id="todo"><span
-class="header-section-number">73</span> <a href="#todo">🔗</a>TODO</h4>
+<h4 data-number="74" id="todo"><span
+class="header-section-number">74</span> <a href="#todo">🔗</a>TODO</h4>
 <p><mark>TODO</mark></p>
 <ul>
 <li>assert(false &amp;&amp; “message”)</li>
-<li>!!v, where v=int</li>
 <li>&lt;assert.h&gt; and NDEBUG</li>
 <li>sizeof int vs sizeof(v)</li>
 <li>universal references, mayers</li>

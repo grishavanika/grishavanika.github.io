@@ -1887,6 +1887,8 @@ meaning that you may pay for each call to GetInstance:
 
 #### (std::min)(x, y) thanks to Windows.h
 
+A trick to avoid macro invocation.
+
 You see code like this?
 
 ``` cpp {.numberLines}
@@ -1917,6 +1919,29 @@ int my_min = std::min<int>(x, y);
 If you conrol build system, you may enforce [WIN32_LEAN_AND_MEAN](https://devblogs.microsoft.com/oldnewthing/20091130-00/?p=15863),
 NOMINMAX and heard about [VC_EXTRALEAN](http://web.archive.org/web/20121219084749/http://support.microsoft.com/kb/166474).
 
+#### !!v double-negation
+
+It's a trick to convert to bool.
+
+Lets have a look at MSVC `assert` implementation:
+
+``` cpp {.numberLines}
+#define assert(expression) (void)(    \
+        (!!(expression)) ||           \
+        (_wassert(..., 0))
+```
+
+`expression` comes from client/user code and may be of ANY type, `int`, `const char*`,
+anything. !! is used to silence any warning since || expects bool.
+First ! actually converts to bool, second ! reverts value to original one.
+
+Same happens in code like this:
+
+``` cpp {.numberLines}
+if (!!my_data.get("anything")) { /**/ }
+```
+
+Why not `static_cast<bool>(x)`? MSVC may warn you about `(bool)a`, `bool(a)` and `static_cast<bool>(a)`.
 
 -----------------------------------------------------------
 
@@ -1925,7 +1950,6 @@ NOMINMAX and heard about [VC_EXTRALEAN](http://web.archive.org/web/2012121908474
 [TODO]{.mark}
 
 - assert(false && "message")
-- !!v, where v=int
 - <assert.h> and NDEBUG
 - sizeof int vs sizeof(v)
 - universal references, mayers
