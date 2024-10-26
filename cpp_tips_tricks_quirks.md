@@ -22,64 +22,8 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
  * [Working Draft/eel.is](https://eel.is/c++draft)
  * [cppreference](https://en.cppreference.com/w/), [compiler support](https://en.cppreference.com/w/cpp/compiler_support)
  * [WG21 redirect service/wg21.link](https://wg21.link/)
-
------------------------------------------------------------
-
-[TODO]{.mark}
-
-- picewise construct
-- map[x]
-- mayers singleton
-- universal references, mayers
-- inherit multiple classes from template, with tags
-- variadic templates default argument emulation
-- mixing variadic templates and variadic c
-- type promotion passing custom type/float to variadic c
-- dynamic cast reference/pointer
-- templates sfinae/enable_if/checks/void_t
-- x-macro (c)
-- rdbuf, read whole file
-- rdbuf, redirect: https://stackoverflow.com/questions/10150468/how-to-redirect-cin-and-cout-to-files
-- allocconsole, reopen
-- forcing constexpr to be compile time
-- type id / magic enum (parsing `__PRETTY_FUNCTION__`)
-- swap idiom (unqualified call to swap in generic context)
-- relocatable and faster then stl container implementations
-- `static_cast<decltype(args)>(args)...` - https://www.foonathan.net/2020/09/move-forward/#content
-- Howard Hinnant special member function diagram - https://www.foonathan.net/2019/02/special-member-functions/#content
-- modern C++ + value semantics = love
-- cstdio vs stdio.h and puts vs std::puts
-- [ambiguity between a variable declaration and a function declaration](https://en.cppreference.com/w/cpp/language/direct_initialization#Notes)
-- decltype() vs decltype(())
-- requires vs requires requires
-- noexcept vs noexcept(noexcept())
-- `declval<T>` vs `declval<T&>`
-- https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01
-- https://jorenar.com/blog/less-known-c
-- http://www.danielvik.com/2010/05/c-language-quirks.html
-- https://codeforces.com/blog/entry/74684
-- https://andreasfertig.blog/2021/07/cpp20-a-neat-trick-with-consteval/
-- https://en.cppreference.com/w/cpp/meta
-- https://landelare.github.io/2023/01/07/cpp-speedrun.html
-- https://andreasfertig.com/courses/programming-with-cpp11-to-cpp17/
-- https://www.foonathan.net/2020/05/fold-tricks/
-- https://chromium.googlesource.com/chromium/src/base/+/master/strings/stringprintf.h
-- https://en.wikipedia.org/wiki/Barton%E2%80%93Nackman_trick
-- https://en.wikipedia.org/wiki/Category:C%2B%2B
-- http://www.gotw.ca/gotw/076.htm
-- https://github.com/shafik/cpp_blogs quiz questions
-- https://cppquiz.org/
-- https://www.foonathan.net/2016/05/final/
-- https://www.foonathan.net/2020/10/tricks-default-template-argument/
-- https://www.foonathan.net/2020/10/iife-metaprogramming/#content
-- see chromium/base
-- see boost/base
-- see abseil
-- (go thru idioms, shwartz counter, https://en.m.wikibooks.org/wiki/More_C++_Idioms)
-- (go thru shortcuts, like immediately invoked lambda)
-- note [C++ Lambda Story](https://asawicki.info/news_1739_book_review_c_lambda_story)
-- note [C++ Move Semantics](https://www.cppmove.com/)
-- note [Book review: C++ Initialization Story](https://asawicki.info/news_1766_book_review_c_initialization_story)
+ * [Compiler Explorer/godbolt](https://godbolt.org/)
+ * [Cpp Insights](https://cppinsights.io/)
 
 -----------------------------------------------------------
 
@@ -1768,3 +1712,233 @@ int main()
 
 This is also the reason std::owner_less/owner_hash/owner_equal exist.
 See [Enabling the Use of weak_ptr as Keys in Unordered Associative Containers](https://wg21.link/P1901).
+
+#### `std::piecewise_construct`
+
+See also [What's up with std::piecewise_construct and std::forward_as_tuple?](https://devblogs.microsoft.com/oldnewthing/20220428-00/?p=106540).
+
+In case pair-like type has to:
+
+1. construct types with multi-parameter constructor and/or
+2. create non-copyable non-movable types in-place and/or
+3. avoid having intermediate moves
+
+``` cpp {.numberLines}
+struct MyIds
+{
+    MyIds(int v1, int v2);
+};
+
+std::pair<int, MyIds> p1{1, MyIds{4, 6}}; // unneeded move
+```
+
+To foward a set of arguments to a sigle constructor, then:
+
+``` cpp {.numberLines}
+std::pair<int, MyIds> p2{std::piecewise_construct // for tag-dispatch
+    , std::tuple<int>(1) // first value
+    , std::tuple<int, int>(4, 6) // second value
+    };
+// OR
+std::pair<int, MyIds> p3{std::piecewise_construct // for tag-dispatch
+    , std::forward_as_tuple(1) // first value, from std::tuple<int&&>
+    , std::forward_as_tuple(4, 6) // second value, from std::tuple<int&&, int&&>
+    };
+```
+
+This applies to std::meow_map, see [emplace](https://en.cppreference.com/w/cpp/container/map/emplace):
+
+``` cpp {.numberLines}
+std::map<int, MyIds> my_map;
+auto [_, inserted] = my_map.emplace(std::piecewise_construct
+    , std::forward_as_tuple(1)
+    , std::forward_as_tuple(4, 6));
+```
+
+#### `map[key]` creates default-constructed value first
+
+See [map::operator[]](https://en.cppreference.com/w/cpp/container/map/operator_at)
+which looks like this (simplifiyed) and returns `T&` ALWAYS:
+
+``` cpp {.numberLines}
+T& map::operator[](Key key);
+```
+
+If `key` does not exist, no exception is thrown, instead default-constructed
+value `T` is inserted:
+
+``` cpp {.numberLines}
+std::map<int, std::string> my_map;
+my_map[1]; // key 1 = empty string, inserted anyway
+my_map[2] = "xxx"; // key 2 = empty string inserted,
+                   // empty string re-assigned next
+```
+
+See also "default constructor must do no work" and "const map[key] does not compile".
+
+#### const `map[key]` does not compile, use `.find()`
+
+See "map[key] creates default-constructed value first". Because `map::operator[]` is:
+
+``` cpp {.numberLines}
+T& map::operator[](Key key);
+```
+
+you can't use it for const map lookup, since operator at needs to insert default
+value in case key does not exist:
+
+``` cpp {.numberLines}
+void MyProcess(const std::map<int, std::string>& kv)
+{
+    const std::string& my_value = kv[42]; // does not compile
+}
+```
+
+#### `if not map.find(x) then map[x]` is an antipattern
+
+In case you need to do extra work only if key does not exist, having code like this:
+
+``` cpp {.numberLines}
+void MyProcess(std::map<int, std::string>& my_data)
+{
+    auto it = my_data.find(56);   // lookup #1
+    if (it != my_data.end())
+    {
+        my_data[56] = "data 56";  // lookup #2 then
+                                  // default construct & assign std::string
+    }
+}
+```
+
+Instead, insert or emplace key-value first:
+
+``` cpp {.numberLines}
+void MyProcess(std::map<int, std::string>& my_data)
+{
+    auto [it, inserted] = my_map.insert(56, std::string());
+    if (!inserted)
+    {
+        it->value = "data 56";
+    }
+}
+```
+
+(You can use emplace to avoid default-constructing std::string).
+
+#### Meyer's singleton
+
+Relies on static local variables. Points to consider:
+
+ * lazy, on-first-access initialization
+ * magic static
+
+``` cpp {.numberLines}
+struct MyClass
+{
+    static MyClass& GetInstance()
+    {
+        static MyClass instance;
+        return instance;
+    }
+};
+```
+
+See also [C++ and the Perils of Double-Checked Locking](https://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf).
+
+#### magic static
+
+From [Storage classes/static](https://learn.microsoft.com/en-us/cpp/cpp/storage-classes-cpp?view=msvc-170#static):
+
+> Starting in C++11, a static local variable initialization is
+> guaranteed to be thread-safe. This feature is sometimes called magic statics.
+> However, in a multithreaded application all subsequent
+> assignments must be synchronized [...]
+
+``` cpp {.numberLines}
+struct MyClass
+{
+    static MyClass& GetInstance()
+    {
+        static MyClass instance; // magic static
+        return instance;
+    }
+};
+```
+
+Note, that:
+
+> If control enters the declaration concurrently while the variable is
+> being initialized, the concurrent execution shall wait for completion
+> of the initialization
+
+See also [Double-Checked Locking is Fixed In C++11](https://preshing.com/20130930/double-checked-locking-is-fixed-in-cpp11/),
+meaning that you may pay for each call to GetInstance:
+
+``` asm {.numberLines}
+// MyClass& v1 = MyClass::GetInstance();
+// MyClass& v2 = MyClass::GetInstance(); // may need to check guard/initialization anyway
+    movzx   eax, BYTE PTR guard variable for MyClass::GetInstance()::instance[rip]
+    test    al, al
+    je      .L15
+    mov     eax, OFFSET FLAT:MyClass::GetInstance()::instance
+    ret
+```
+
+-----------------------------------------------------------
+
+#### TODO
+
+[TODO]{.mark}
+
+- universal references, mayers
+- inherit multiple classes from template, with tags
+- variadic templates default argument emulation
+- mixing variadic templates and variadic c
+- type promotion passing custom type/float to variadic c
+- dynamic cast reference/pointer
+- templates sfinae/enable_if/checks/void_t
+- x-macro (c)
+- rdbuf, read whole file
+- rdbuf, redirect: https://stackoverflow.com/questions/10150468/how-to-redirect-cin-and-cout-to-files
+- allocconsole, reopen
+- forcing constexpr to be compile time
+- type id / magic enum (parsing `__PRETTY_FUNCTION__`)
+- swap idiom (unqualified call to swap in generic context)
+- relocatable and faster then stl container implementations
+- `static_cast<decltype(args)>(args)...` - https://www.foonathan.net/2020/09/move-forward/#content
+- Howard Hinnant special member function diagram - https://www.foonathan.net/2019/02/special-member-functions/#content
+- modern C++ + value semantics = love
+- cstdio vs stdio.h and puts vs std::puts
+- [ambiguity between a variable declaration and a function declaration](https://en.cppreference.com/w/cpp/language/direct_initialization#Notes)
+- decltype() vs decltype(())
+- requires vs requires requires
+- noexcept vs noexcept(noexcept())
+- `declval<T>` vs `declval<T&>`
+- https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01
+- https://jorenar.com/blog/less-known-c
+- http://www.danielvik.com/2010/05/c-language-quirks.html
+- https://codeforces.com/blog/entry/74684
+- https://andreasfertig.blog/2021/07/cpp20-a-neat-trick-with-consteval/
+- https://en.cppreference.com/w/cpp/meta
+- https://landelare.github.io/2023/01/07/cpp-speedrun.html
+- https://andreasfertig.com/courses/programming-with-cpp11-to-cpp17/
+- https://www.foonathan.net/2020/05/fold-tricks/
+- https://chromium.googlesource.com/chromium/src/base/+/master/strings/stringprintf.h
+- https://en.wikipedia.org/wiki/Barton%E2%80%93Nackman_trick
+- https://en.wikipedia.org/wiki/Category:C%2B%2B
+- http://www.gotw.ca/gotw/076.htm
+- https://github.com/shafik/cpp_blogs quiz questions
+- https://cppquiz.org/
+- https://www.foonathan.net/2016/05/final/
+- https://www.foonathan.net/2020/10/tricks-default-template-argument/
+- https://www.foonathan.net/2020/10/iife-metaprogramming/#content
+- see chromium/base
+- see boost/base
+- see abseil
+- (go thru idioms, shwartz counter, https://en.m.wikibooks.org/wiki/More_C++_Idioms)
+- (go thru shortcuts, like immediately invoked lambda)
+- note [C++ Lambda Story](https://asawicki.info/news_1739_book_review_c_lambda_story)
+- note [C++ Move Semantics](https://www.cppmove.com/)
+- note [Book review: C++ Initialization Story](https://asawicki.info/news_1766_book_review_c_initialization_story)
+
+-----------------------------------------------------------
