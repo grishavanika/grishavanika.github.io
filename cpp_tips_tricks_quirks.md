@@ -2079,13 +2079,161 @@ From this [SO answer](https://stackoverflow.com/a/39552345):
 See [Universal References in C++11](https://isocpp.org/blog/2012/11/universal-references-in-c11-scott-meyers)
 and [n4164/Forwarding References](https://wg21.link/n4164).
 
+#### force constexpr to evaluate at compile time
+
+Even if arguments of constexpr function are known at compile time, it's not
+guarantee that its going to be evaluated at compile time. To force constexpr
+run at compile time, need to use it in a context where compile time value is
+expected, such as template argument or constexpr variable:
+
+``` cpp {.numberLines}
+constexpr int MyHash(const char* str) { return 9; }
+
+template<int N>
+struct ForceCompileTime
+{
+    static int Get() { return N; }
+};
+
+int main()
+{
+    int v1 = MyHash("v1");                          // may run at run-time
+    constexpr int v2 = MyHash("v2");                // compile-time
+    int v3 = ForceCompileTime<MyHash("v3")>::Get(); // compile-time
+}
+```
+
+#### variadic template with default argument
+
+See [Non-terminal variadic template parameters](https://cor3ntin.github.io/posts/variadic/).
+Specifically, arguments deduction does not work in cases like this:
+
+``` cpp {.numberLines}
+template<typename... Args>
+void Foo(Args..., int default_v = 10) { }
+
+int main()
+{
+    Foo(0.1f, 'c'); // does not compile
+}
+```
+
+You can, however, specify all Args... explicitly, so this works:
+
+``` cpp {.numberLines}
+Foo<float, char>(0.1f, 'c'); // default_v = 10
+```
+
+Usually, this is solved case by case. For instance, to emulate this kind of API:
+
+``` cpp {.numberLines}
+template<typename... Args>
+void WaitAll(Args&&... args, milliseconds timeout = milliseconds::max());
+```
+
+where Args... could be handles/async requests we want to wait with optional
+timeput. One can mimic it with something like this:
+
+``` cpp {.numberLines}
+#include <chrono>
+#include <type_traits>
+
+using std::chrono::milliseconds;
+
+template<typename... Args>
+void WaitAll_Impl(milliseconds timeout, Args&&... args)
+{
+    std::puts(timeout == milliseconds::max() ? "no timeout" : "with timeout");
+}
+
+template<typename... Args>
+void WaitAll(Args&&... args)
+{
+    using LastT = std::remove_cvref_t<decltype((args, ...))>;
+    if constexpr (std::is_same_v<LastT, milliseconds>)
+    {
+        const milliseconds timeout = (args, ...); // get last argument
+        return WaitAll_Impl(timeout, std::forward<Args>(args)...);
+    }
+    else
+    {
+        const milliseconds timeout = milliseconds::max(); // default timeout
+        return WaitAll_Impl(timeout, std::forward<Args>(args)...);
+    }
+}
+
+int main()
+{
+    WaitAll(1, 2, 3, milliseconds{25}); // with timeout
+    WaitAll(1, 2, 3); // no timeout
+}
+```
+
+To see what `(args, ...)` does, check [Nifty Fold Expression Tricks](https://www.foonathan.net/2020/05/fold-tricks/).
+See also similar issues with `source_location::current()`.
+
+#### variadic template with default std::source_location::current()
+
+Something like this does not work (see [this SO](https://stackoverflow.com/q/57547273/2451677)):
+
+``` cpp {.numberLines}
+template <typename... Args>
+void debug(Args&&... args,
+           const std::source_location& loc = std::source_location::current());
+```
+
+Introducing type with implicit constructor is the trick:
+
+``` cpp {.numberLines}
+#include <source_location>
+#include <stdio.h>
+
+struct FormatWithLocation {
+  const char* fmt;
+  std::source_location loc;
+
+  FormatWithLocation(const char* fmt_,
+                     const std::source_location& loc_ = std::source_location::current())
+      : fmt(fmt_), loc(loc_) {}
+};
+
+template<typename... Args>
+void debug(FormatWithLocation fmt, Args&&... args) {
+  printf("[%s:%d] ", fmt.loc.file_name(), fmt.loc.line());
+  printf(fmt.fmt, args...);
+}
+
+int main() { debug("hello %s %s", "world", "around"); }
+```
+
+See also [Non-terminal variadic template parameters](https://cor3ntin.github.io/posts/variadic/).
+
+#### variadic template with default argument and deduction guide
+
+See [this SO](https://stackoverflow.com/q/57547273/2451677):
+
+``` cpp {.numberLines}
+template <typename... Ts>
+struct debug
+{    
+    debug(Ts&&... ts
+        , const std::source_location& loc = std::source_location::current());
+};
+
+template <typename... Ts>
+debug(Ts&&...) -> debug<Ts...>;
+
+// debug(5, 'A', 3.14f, "foo"); // works
+```
+
+See also [Non-terminal variadic template parameters](https://cor3ntin.github.io/posts/variadic/).
+
 -----------------------------------------------------------
 
 #### TODO
 
 [TODO]{.mark}
 
-- variadic templates default argument emulation
 - type promotion passing custom type/float to variadic c
 - dynamic cast reference/pointer
 - templates sfinae/enable_if/checks/void_t
@@ -2093,7 +2241,6 @@ and [n4164/Forwarding References](https://wg21.link/n4164).
 - rdbuf, read whole file
 - rdbuf, redirect: https://stackoverflow.com/questions/10150468/how-to-redirect-cin-and-cout-to-files
 - allocconsole, reopen
-- forcing constexpr to be compile time
 - type id / magic enum (parsing `__PRETTY_FUNCTION__`)
 - swap idiom (unqualified call to swap in generic context)
 - relocatable and faster then stl container implementations
@@ -2107,8 +2254,6 @@ and [n4164/Forwarding References](https://wg21.link/n4164).
 - noexcept vs noexcept(noexcept())
 - `declval<T>` vs `declval<T&>`
 - [Placeholder substitution in the preprocessor](https://holyblackcat.github.io/blog/2024/10/22/macro-placeholders.html)
-- https://stackoverflow.com/questions/57547273/how-to-use-source-location-in-a-variadic-template-function
-- https://cor3ntin.github.io/posts/variadic/
 - https://vitaut.net/posts/2015/compile-time-checking-of-printf-args-in-cppformat/
 - https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01
 - https://jorenar.com/blog/less-known-c

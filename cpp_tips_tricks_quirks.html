@@ -525,8 +525,25 @@ NDEBUG with no include guard</a></li>
 id="toc-universal-reference-vs-forwarding-reference"><span
 class="toc-section-number">78</span> # universal reference vs forwarding
 reference</a></li>
+<li><a href="#force-constexpr-to-evaluate-at-compile-time"
+id="toc-force-constexpr-to-evaluate-at-compile-time"><span
+class="toc-section-number">79</span> # force constexpr to evaluate at
+compile time</a></li>
+<li><a href="#variadic-template-with-default-argument"
+id="toc-variadic-template-with-default-argument"><span
+class="toc-section-number">80</span> # variadic template with default
+argument</a></li>
+<li><a href="#variadic-template-with-default-stdsource_locationcurrent"
+id="toc-variadic-template-with-default-stdsource_locationcurrent"><span
+class="toc-section-number">81</span> # variadic template with default
+std::source_location::current()</a></li>
+<li><a
+href="#variadic-template-with-default-argument-and-deduction-guide"
+id="toc-variadic-template-with-default-argument-and-deduction-guide"><span
+class="toc-section-number">82</span> # variadic template with default
+argument and deduction guide</a></li>
 <li><a href="#todo" id="toc-todo"><span
-class="toc-section-number">79</span> # TODO</a></li>
+class="toc-section-number">83</span> # TODO</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -2577,12 +2594,155 @@ remedied by N4164 […]</p>
 href="https://isocpp.org/blog/2012/11/universal-references-in-c11-scott-meyers">Universal
 References in C++11</a> and <a
 href="https://wg21.link/n4164">n4164/Forwarding References</a>.</p>
+<h4 data-number="79"
+id="force-constexpr-to-evaluate-at-compile-time"><span
+class="header-section-number">79</span> <a
+href="#force-constexpr-to-evaluate-at-compile-time"># </a>force
+constexpr to evaluate at compile time</h4>
+<p>Even if arguments of constexpr function are known at compile time,
+it’s not guarantee that its going to be evaluated at compile time. To
+force constexpr run at compile time, need to use it in a context where
+compile time value is expected, such as template argument or constexpr
+variable:</p>
+<div class="sourceCode" id="cb117"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb117-1"><a href="#cb117-1"></a><span class="kw">constexpr</span> <span class="dt">int</span> MyHash<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> str<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="dv">9</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb117-2"><a href="#cb117-2"></a></span>
+<span id="cb117-3"><a href="#cb117-3"></a><span class="kw">template</span><span class="op">&lt;</span><span class="dt">int</span> N<span class="op">&gt;</span></span>
+<span id="cb117-4"><a href="#cb117-4"></a><span class="kw">struct</span> ForceCompileTime</span>
+<span id="cb117-5"><a href="#cb117-5"></a><span class="op">{</span></span>
+<span id="cb117-6"><a href="#cb117-6"></a>    <span class="at">static</span> <span class="dt">int</span> Get<span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> N<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb117-7"><a href="#cb117-7"></a><span class="op">};</span></span>
+<span id="cb117-8"><a href="#cb117-8"></a></span>
+<span id="cb117-9"><a href="#cb117-9"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb117-10"><a href="#cb117-10"></a><span class="op">{</span></span>
+<span id="cb117-11"><a href="#cb117-11"></a>    <span class="dt">int</span> v1 <span class="op">=</span> MyHash<span class="op">(</span><span class="st">&quot;v1&quot;</span><span class="op">);</span>                          <span class="co">// may run at run-time</span></span>
+<span id="cb117-12"><a href="#cb117-12"></a>    <span class="kw">constexpr</span> <span class="dt">int</span> v2 <span class="op">=</span> MyHash<span class="op">(</span><span class="st">&quot;v2&quot;</span><span class="op">);</span>                <span class="co">// compile-time</span></span>
+<span id="cb117-13"><a href="#cb117-13"></a>    <span class="dt">int</span> v3 <span class="op">=</span> ForceCompileTime<span class="op">&lt;</span>MyHash<span class="op">(</span><span class="st">&quot;v3&quot;</span><span class="op">)&gt;::</span>Get<span class="op">();</span> <span class="co">// compile-time</span></span>
+<span id="cb117-14"><a href="#cb117-14"></a><span class="op">}</span></span></code></pre></div>
+<h4 data-number="80" id="variadic-template-with-default-argument"><span
+class="header-section-number">80</span> <a
+href="#variadic-template-with-default-argument"># </a>variadic template
+with default argument</h4>
+<p>See <a href="https://cor3ntin.github.io/posts/variadic/">Non-terminal
+variadic template parameters</a>. Specifically, arguments deduction does
+not work in cases like this:</p>
+<div class="sourceCode" id="cb118"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb118-1"><a href="#cb118-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span></span>
+<span id="cb118-2"><a href="#cb118-2"></a><span class="dt">void</span> Foo<span class="op">(</span>Args<span class="op">...,</span> <span class="dt">int</span> default_v <span class="op">=</span> <span class="dv">10</span><span class="op">)</span> <span class="op">{</span> <span class="op">}</span></span>
+<span id="cb118-3"><a href="#cb118-3"></a></span>
+<span id="cb118-4"><a href="#cb118-4"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb118-5"><a href="#cb118-5"></a><span class="op">{</span></span>
+<span id="cb118-6"><a href="#cb118-6"></a>    Foo<span class="op">(</span><span class="fl">0.1</span><span class="bu">f</span><span class="op">,</span> <span class="ch">&#39;c&#39;</span><span class="op">);</span> <span class="co">// does not compile</span></span>
+<span id="cb118-7"><a href="#cb118-7"></a><span class="op">}</span></span></code></pre></div>
+<p>You can, however, specify all Args… explicitly, so this works:</p>
+<div class="sourceCode" id="cb119"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb119-1"><a href="#cb119-1"></a>Foo<span class="op">&lt;</span><span class="dt">float</span><span class="op">,</span> <span class="dt">char</span><span class="op">&gt;(</span><span class="fl">0.1</span><span class="bu">f</span><span class="op">,</span> <span class="ch">&#39;c&#39;</span><span class="op">);</span> <span class="co">// default_v = 10</span></span></code></pre></div>
+<p>Usually, this is solved case by case. For instance, to emulate this
+kind of API:</p>
+<div class="sourceCode" id="cb120"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb120-1"><a href="#cb120-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span></span>
+<span id="cb120-2"><a href="#cb120-2"></a><span class="dt">void</span> WaitAll<span class="op">(</span>Args<span class="op">&amp;&amp;...</span> args<span class="op">,</span> milliseconds timeout <span class="op">=</span> milliseconds<span class="op">::</span>max<span class="op">());</span></span></code></pre></div>
+<p>where Args… could be handles/async requests we want to wait with
+optional timeput. One can mimic it with something like this:</p>
+<div class="sourceCode" id="cb121"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb121-1"><a href="#cb121-1"></a><span class="pp">#include </span><span class="im">&lt;chrono&gt;</span></span>
+<span id="cb121-2"><a href="#cb121-2"></a><span class="pp">#include </span><span class="im">&lt;type_traits&gt;</span></span>
+<span id="cb121-3"><a href="#cb121-3"></a></span>
+<span id="cb121-4"><a href="#cb121-4"></a><span class="kw">using</span> <span class="bu">std::</span>chrono::milliseconds<span class="op">;</span></span>
+<span id="cb121-5"><a href="#cb121-5"></a></span>
+<span id="cb121-6"><a href="#cb121-6"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span></span>
+<span id="cb121-7"><a href="#cb121-7"></a><span class="dt">void</span> WaitAll_Impl<span class="op">(</span>milliseconds timeout<span class="op">,</span> Args<span class="op">&amp;&amp;...</span> args<span class="op">)</span></span>
+<span id="cb121-8"><a href="#cb121-8"></a><span class="op">{</span></span>
+<span id="cb121-9"><a href="#cb121-9"></a>    <span class="bu">std::</span>puts<span class="op">(</span>timeout <span class="op">==</span> milliseconds<span class="op">::</span>max<span class="op">()</span> <span class="op">?</span> <span class="st">&quot;no timeout&quot;</span> <span class="op">:</span> <span class="st">&quot;with timeout&quot;</span><span class="op">);</span></span>
+<span id="cb121-10"><a href="#cb121-10"></a><span class="op">}</span></span>
+<span id="cb121-11"><a href="#cb121-11"></a></span>
+<span id="cb121-12"><a href="#cb121-12"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span></span>
+<span id="cb121-13"><a href="#cb121-13"></a><span class="dt">void</span> WaitAll<span class="op">(</span>Args<span class="op">&amp;&amp;...</span> args<span class="op">)</span></span>
+<span id="cb121-14"><a href="#cb121-14"></a><span class="op">{</span></span>
+<span id="cb121-15"><a href="#cb121-15"></a>    <span class="kw">using</span> LastT <span class="op">=</span> <span class="bu">std::</span>remove_cvref_t<span class="op">&lt;</span><span class="kw">decltype</span><span class="op">((</span>args<span class="op">,</span> <span class="op">...))&gt;;</span></span>
+<span id="cb121-16"><a href="#cb121-16"></a>    <span class="cf">if</span> <span class="kw">constexpr</span> <span class="op">(</span><span class="bu">std::</span>is_same_v<span class="op">&lt;</span>LastT<span class="op">,</span> milliseconds<span class="op">&gt;)</span></span>
+<span id="cb121-17"><a href="#cb121-17"></a>    <span class="op">{</span></span>
+<span id="cb121-18"><a href="#cb121-18"></a>        <span class="at">const</span> milliseconds timeout <span class="op">=</span> <span class="op">(</span>args<span class="op">,</span> <span class="op">...);</span> <span class="co">// get last argument</span></span>
+<span id="cb121-19"><a href="#cb121-19"></a>        <span class="cf">return</span> WaitAll_Impl<span class="op">(</span>timeout<span class="op">,</span> <span class="bu">std::</span>forward<span class="op">&lt;</span>Args<span class="op">&gt;(</span>args<span class="op">)...);</span></span>
+<span id="cb121-20"><a href="#cb121-20"></a>    <span class="op">}</span></span>
+<span id="cb121-21"><a href="#cb121-21"></a>    <span class="cf">else</span></span>
+<span id="cb121-22"><a href="#cb121-22"></a>    <span class="op">{</span></span>
+<span id="cb121-23"><a href="#cb121-23"></a>        <span class="at">const</span> milliseconds timeout <span class="op">=</span> milliseconds<span class="op">::</span>max<span class="op">();</span> <span class="co">// default timeout</span></span>
+<span id="cb121-24"><a href="#cb121-24"></a>        <span class="cf">return</span> WaitAll_Impl<span class="op">(</span>timeout<span class="op">,</span> <span class="bu">std::</span>forward<span class="op">&lt;</span>Args<span class="op">&gt;(</span>args<span class="op">)...);</span></span>
+<span id="cb121-25"><a href="#cb121-25"></a>    <span class="op">}</span></span>
+<span id="cb121-26"><a href="#cb121-26"></a><span class="op">}</span></span>
+<span id="cb121-27"><a href="#cb121-27"></a></span>
+<span id="cb121-28"><a href="#cb121-28"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb121-29"><a href="#cb121-29"></a><span class="op">{</span></span>
+<span id="cb121-30"><a href="#cb121-30"></a>    WaitAll<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">,</span> milliseconds<span class="op">{</span><span class="dv">25</span><span class="op">});</span> <span class="co">// with timeout</span></span>
+<span id="cb121-31"><a href="#cb121-31"></a>    WaitAll<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">);</span> <span class="co">// no timeout</span></span>
+<span id="cb121-32"><a href="#cb121-32"></a><span class="op">}</span></span></code></pre></div>
+<p>To see what <code>(args, ...)</code> does, check <a
+href="https://www.foonathan.net/2020/05/fold-tricks/">Nifty Fold
+Expression Tricks</a>. See also similar issues with
+<code>source_location::current()</code>.</p>
+<h4 data-number="81"
+id="variadic-template-with-default-stdsource_locationcurrent"><span
+class="header-section-number">81</span> <a
+href="#variadic-template-with-default-stdsource_locationcurrent">#
+</a>variadic template with default std::source_location::current()</h4>
+<p>Something like this does not work (see <a
+href="https://stackoverflow.com/q/57547273/2451677">this SO</a>):</p>
+<div class="sourceCode" id="cb122"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb122-1"><a href="#cb122-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span></span>
+<span id="cb122-2"><a href="#cb122-2"></a><span class="dt">void</span> debug<span class="op">(</span>Args<span class="op">&amp;&amp;...</span> args<span class="op">,</span></span>
+<span id="cb122-3"><a href="#cb122-3"></a>           <span class="at">const</span> <span class="bu">std::</span>source_location<span class="op">&amp;</span> loc <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">());</span></span></code></pre></div>
+<p>Introducing type with implicit constructor is the trick:</p>
+<div class="sourceCode" id="cb123"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb123-1"><a href="#cb123-1"></a><span class="pp">#include </span><span class="im">&lt;source_location&gt;</span></span>
+<span id="cb123-2"><a href="#cb123-2"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb123-3"><a href="#cb123-3"></a></span>
+<span id="cb123-4"><a href="#cb123-4"></a><span class="kw">struct</span> FormatWithLocation <span class="op">{</span></span>
+<span id="cb123-5"><a href="#cb123-5"></a>  <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> fmt<span class="op">;</span></span>
+<span id="cb123-6"><a href="#cb123-6"></a>  <span class="bu">std::</span>source_location loc<span class="op">;</span></span>
+<span id="cb123-7"><a href="#cb123-7"></a></span>
+<span id="cb123-8"><a href="#cb123-8"></a>  FormatWithLocation<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> <span class="va">fmt_</span><span class="op">,</span></span>
+<span id="cb123-9"><a href="#cb123-9"></a>                     <span class="at">const</span> <span class="bu">std::</span>source_location<span class="op">&amp;</span> <span class="va">loc_</span> <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">())</span></span>
+<span id="cb123-10"><a href="#cb123-10"></a>      <span class="op">:</span> fmt<span class="op">(</span><span class="va">fmt_</span><span class="op">),</span> loc<span class="op">(</span><span class="va">loc_</span><span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb123-11"><a href="#cb123-11"></a><span class="op">};</span></span>
+<span id="cb123-12"><a href="#cb123-12"></a></span>
+<span id="cb123-13"><a href="#cb123-13"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span></span>
+<span id="cb123-14"><a href="#cb123-14"></a><span class="dt">void</span> debug<span class="op">(</span>FormatWithLocation fmt<span class="op">,</span> Args<span class="op">&amp;&amp;...</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb123-15"><a href="#cb123-15"></a>  printf<span class="op">(</span><span class="st">&quot;[</span><span class="sc">%s</span><span class="st">:</span><span class="sc">%d</span><span class="st">] &quot;</span><span class="op">,</span> fmt<span class="op">.</span>loc<span class="op">.</span>file_name<span class="op">(),</span> fmt<span class="op">.</span>loc<span class="op">.</span>line<span class="op">());</span></span>
+<span id="cb123-16"><a href="#cb123-16"></a>  printf<span class="op">(</span>fmt<span class="op">.</span>fmt<span class="op">,</span> args<span class="op">...);</span></span>
+<span id="cb123-17"><a href="#cb123-17"></a><span class="op">}</span></span>
+<span id="cb123-18"><a href="#cb123-18"></a></span>
+<span id="cb123-19"><a href="#cb123-19"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span> debug<span class="op">(</span><span class="st">&quot;hello </span><span class="sc">%s</span><span class="st"> </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="st">&quot;world&quot;</span><span class="op">,</span> <span class="st">&quot;around&quot;</span><span class="op">);</span> <span class="op">}</span></span></code></pre></div>
+<p>See also <a
+href="https://cor3ntin.github.io/posts/variadic/">Non-terminal variadic
+template parameters</a>.</p>
+<h4 data-number="82"
+id="variadic-template-with-default-argument-and-deduction-guide"><span
+class="header-section-number">82</span> <a
+href="#variadic-template-with-default-argument-and-deduction-guide">#
+</a>variadic template with default argument and deduction guide</h4>
+<p>See <a href="https://stackoverflow.com/q/57547273/2451677">this
+SO</a>:</p>
+<div class="sourceCode" id="cb124"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb124-1"><a href="#cb124-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Ts<span class="op">&gt;</span></span>
+<span id="cb124-2"><a href="#cb124-2"></a><span class="kw">struct</span> debug</span>
+<span id="cb124-3"><a href="#cb124-3"></a><span class="op">{</span>    </span>
+<span id="cb124-4"><a href="#cb124-4"></a>    debug<span class="op">(</span>Ts<span class="op">&amp;&amp;...</span> ts</span>
+<span id="cb124-5"><a href="#cb124-5"></a>        <span class="op">,</span> <span class="at">const</span> <span class="bu">std::</span>source_location<span class="op">&amp;</span> loc <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">());</span></span>
+<span id="cb124-6"><a href="#cb124-6"></a><span class="op">};</span></span>
+<span id="cb124-7"><a href="#cb124-7"></a></span>
+<span id="cb124-8"><a href="#cb124-8"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Ts<span class="op">&gt;</span></span>
+<span id="cb124-9"><a href="#cb124-9"></a>debug<span class="op">(</span>Ts<span class="op">&amp;&amp;...)</span> <span class="op">-&gt;</span> debug<span class="op">&lt;</span>Ts<span class="op">...&gt;;</span></span>
+<span id="cb124-10"><a href="#cb124-10"></a></span>
+<span id="cb124-11"><a href="#cb124-11"></a><span class="co">// debug(5, &#39;A&#39;, 3.14f, &quot;foo&quot;); // works</span></span></code></pre></div>
+<p>See also <a
+href="https://cor3ntin.github.io/posts/variadic/">Non-terminal variadic
+template parameters</a>.</p>
 <hr />
-<h4 data-number="79" id="todo"><span
-class="header-section-number">79</span> <a href="#todo"># </a>TODO</h4>
+<h4 data-number="83" id="todo"><span
+class="header-section-number">83</span> <a href="#todo"># </a>TODO</h4>
 <p><mark>TODO</mark></p>
 <ul>
-<li>variadic templates default argument emulation</li>
 <li>type promotion passing custom type/float to variadic c</li>
 <li>dynamic cast reference/pointer</li>
 <li>templates sfinae/enable_if/checks/void_t</li>
@@ -2591,7 +2751,6 @@ class="header-section-number">79</span> <a href="#todo"># </a>TODO</h4>
 <li>rdbuf, redirect:
 https://stackoverflow.com/questions/10150468/how-to-redirect-cin-and-cout-to-files</li>
 <li>allocconsole, reopen</li>
-<li>forcing constexpr to be compile time</li>
 <li>type id / magic enum (parsing <code>__PRETTY_FUNCTION__</code>)</li>
 <li>swap idiom (unqualified call to swap in generic context)</li>
 <li>relocatable and faster then stl container implementations</li>
@@ -2612,8 +2771,6 @@ between a variable declaration and a function declaration</a></li>
 <li><a
 href="https://holyblackcat.github.io/blog/2024/10/22/macro-placeholders.html">Placeholder
 substitution in the preprocessor</a></li>
-<li>https://stackoverflow.com/questions/57547273/how-to-use-source-location-in-a-variadic-template-function</li>
-<li>https://cor3ntin.github.io/posts/variadic/</li>
 <li>https://vitaut.net/posts/2015/compile-time-checking-of-printf-args-in-cppformat/</li>
 <li>https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01</li>
 <li>https://jorenar.com/blog/less-known-c</li>
