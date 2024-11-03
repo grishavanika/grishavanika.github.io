@@ -2132,7 +2132,7 @@ void WaitAll(Args&&... args, milliseconds timeout = milliseconds::max());
 ```
 
 where Args... could be handles/async requests we want to wait with optional
-timeput. One can mimic it with something like this:
+timeout. To mimic it, we can do something like this:
 
 ``` cpp {.numberLines}
 #include <chrono>
@@ -2165,7 +2165,7 @@ void WaitAll(Args&&... args)
 int main()
 {
     WaitAll(1, 2, 3, milliseconds{25}); // with timeout
-    WaitAll(1, 2, 3); // no timeout
+    WaitAll(1, 2, 3);                   // no timeout, use default
 }
 ```
 
@@ -2226,7 +2226,34 @@ debug(Ts&&...) -> debug<Ts...>;
 // debug(5, 'A', 3.14f, "foo"); // works
 ```
 
-See also [Non-terminal variadic template parameters](https://cor3ntin.github.io/posts/variadic/).
+See also [Non-terminal variadic template parameters](https://cor3ntin.github.io/posts/variadic/)
+and "variadic template with default argument" section.
+
+#### debug: print type at compile time with error
+
+Sometimes it's useful to know the type of a variable deep inside templates:
+
+``` cpp {.numberLines}
+template<typename T> struct Show;
+
+template<typename T>
+void Foo(T&& v)
+{
+    Show<decltype(v)>{};
+}
+
+Foo(10);
+```
+
+Show is intentionally incomplete. Compiler will print the error message like this:
+
+```
+error: invalid use of incomplete type 'struct Show<int&&>'
+       Show<decltype(v)>{};
+       ^~~~
+```
+
+and you can see that `v` has type `int&&` there.
 
 -----------------------------------------------------------
 

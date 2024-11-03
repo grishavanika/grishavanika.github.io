@@ -542,8 +542,12 @@ href="#variadic-template-with-default-argument-and-deduction-guide"
 id="toc-variadic-template-with-default-argument-and-deduction-guide"><span
 class="toc-section-number">82</span> # variadic template with default
 argument and deduction guide</a></li>
+<li><a href="#debug-print-type-at-compile-time-with-error"
+id="toc-debug-print-type-at-compile-time-with-error"><span
+class="toc-section-number">83</span> # debug: print type at compile time
+with error</a></li>
 <li><a href="#todo" id="toc-todo"><span
-class="toc-section-number">83</span> # TODO</a></li>
+class="toc-section-number">84</span> # TODO</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -2643,7 +2647,7 @@ kind of API:</p>
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb120-1"><a href="#cb120-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span></span>
 <span id="cb120-2"><a href="#cb120-2"></a><span class="dt">void</span> WaitAll<span class="op">(</span>Args<span class="op">&amp;&amp;...</span> args<span class="op">,</span> milliseconds timeout <span class="op">=</span> milliseconds<span class="op">::</span>max<span class="op">());</span></span></code></pre></div>
 <p>where Args… could be handles/async requests we want to wait with
-optional timeput. One can mimic it with something like this:</p>
+optional timeout. To mimic it, we can do something like this:</p>
 <div class="sourceCode" id="cb121"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb121-1"><a href="#cb121-1"></a><span class="pp">#include </span><span class="im">&lt;chrono&gt;</span></span>
 <span id="cb121-2"><a href="#cb121-2"></a><span class="pp">#include </span><span class="im">&lt;type_traits&gt;</span></span>
@@ -2675,7 +2679,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb121-28"><a href="#cb121-28"></a><span class="dt">int</span> main<span class="op">()</span></span>
 <span id="cb121-29"><a href="#cb121-29"></a><span class="op">{</span></span>
 <span id="cb121-30"><a href="#cb121-30"></a>    WaitAll<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">,</span> milliseconds<span class="op">{</span><span class="dv">25</span><span class="op">});</span> <span class="co">// with timeout</span></span>
-<span id="cb121-31"><a href="#cb121-31"></a>    WaitAll<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">);</span> <span class="co">// no timeout</span></span>
+<span id="cb121-31"><a href="#cb121-31"></a>    WaitAll<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">);</span>                   <span class="co">// no timeout, use default</span></span>
 <span id="cb121-32"><a href="#cb121-32"></a><span class="op">}</span></span></code></pre></div>
 <p>To see what <code>(args, ...)</code> does, check <a
 href="https://www.foonathan.net/2020/05/fold-tricks/">Nifty Fold
@@ -2737,10 +2741,35 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb124-11"><a href="#cb124-11"></a><span class="co">// debug(5, &#39;A&#39;, 3.14f, &quot;foo&quot;); // works</span></span></code></pre></div>
 <p>See also <a
 href="https://cor3ntin.github.io/posts/variadic/">Non-terminal variadic
-template parameters</a>.</p>
+template parameters</a> and “variadic template with default argument”
+section.</p>
+<h4 data-number="83"
+id="debug-print-type-at-compile-time-with-error"><span
+class="header-section-number">83</span> <a
+href="#debug-print-type-at-compile-time-with-error"># </a>debug: print
+type at compile time with error</h4>
+<p>Sometimes it’s useful to know the type of a variable deep inside
+templates:</p>
+<div class="sourceCode" id="cb125"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb125-1"><a href="#cb125-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span> <span class="kw">struct</span> Show<span class="op">;</span></span>
+<span id="cb125-2"><a href="#cb125-2"></a></span>
+<span id="cb125-3"><a href="#cb125-3"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb125-4"><a href="#cb125-4"></a><span class="dt">void</span> Foo<span class="op">(</span>T<span class="op">&amp;&amp;</span> v<span class="op">)</span></span>
+<span id="cb125-5"><a href="#cb125-5"></a><span class="op">{</span></span>
+<span id="cb125-6"><a href="#cb125-6"></a>    Show<span class="op">&lt;</span><span class="kw">decltype</span><span class="op">(</span>v<span class="op">)&gt;{};</span></span>
+<span id="cb125-7"><a href="#cb125-7"></a><span class="op">}</span></span>
+<span id="cb125-8"><a href="#cb125-8"></a></span>
+<span id="cb125-9"><a href="#cb125-9"></a>Foo<span class="op">(</span><span class="dv">10</span><span class="op">);</span></span></code></pre></div>
+<p>Show is intentionally incomplete. Compiler will print the error
+message like this:</p>
+<pre><code>error: invalid use of incomplete type &#39;struct Show&lt;int&amp;&amp;&gt;&#39;
+       Show&lt;decltype(v)&gt;{};
+       ^~~~</code></pre>
+<p>and you can see that <code>v</code> has type
+<code>int&amp;&amp;</code> there.</p>
 <hr />
-<h4 data-number="83" id="todo"><span
-class="header-section-number">83</span> <a href="#todo"># </a>TODO</h4>
+<h4 data-number="84" id="todo"><span
+class="header-section-number">84</span> <a href="#todo"># </a>TODO</h4>
 <p><mark>TODO</mark></p>
 <ul>
 <li>type promotion passing custom type/float to variadic c</li>
