@@ -1117,7 +1117,7 @@ ptr = {}; // reset, set to nullptr
 Default constructor should contain nothing except default/trivial
 data member initialization. Specifically, no memory allocations, no side effects. 
 
-Bonus question: why does this code allocate under MSVC debug?
+Bonus question: why does this code allocates under MSVC debug?
 
 ``` cpp {.numberLines}
 std::string s; // ?
@@ -2254,6 +2254,28 @@ error: invalid use of incomplete type 'struct Show<int&&>'
 ```
 
 and you can see that `v` has type `int&&` there.
+
+#### debug: useful custom assert
+
+When custom version of assert is needed, it's useful to inject `__debugbreak`
+right at assert definition so you can get breakpoint hit exactly at the location
+of the assert fail. In short:
+
+``` cpp {.numberLines}
+#define KK_ABORT(KK_FMT, ...) (void)                              \
+    (::log_abort(__FILE__, __LINE__, KK_FMT, ##__VA_ARGS__),      \
+        __debugbreak(),                                           \
+        std::quick_exit(-1))
+
+#define KK_VERIFY(KK_EXPRESSION) (void)                           \
+    (!!(KK_EXPRESSION) ||                                         \
+        (KK_ABORT("Verify failed: {}.", #KK_EXPRESSION), false))
+```
+
+`__debugbreak()` is for the cases when you are under debugger and
+`std::quick_exit()` is for the case when you are not.
+
+Bonus question: why operator comma is used in `(KK_ABORT(...), false)`?
 
 -----------------------------------------------------------
 

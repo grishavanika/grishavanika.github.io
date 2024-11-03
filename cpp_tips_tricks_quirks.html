@@ -546,8 +546,12 @@ argument and deduction guide</a></li>
 id="toc-debug-print-type-at-compile-time-with-error"><span
 class="toc-section-number">83</span> # debug: print type at compile time
 with error</a></li>
+<li><a href="#debug-useful-custom-assert"
+id="toc-debug-useful-custom-assert"><span
+class="toc-section-number">84</span> # debug: useful custom
+assert</a></li>
 <li><a href="#todo" id="toc-todo"><span
-class="toc-section-number">84</span> # TODO</a></li>
+class="toc-section-number">85</span> # TODO</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -1642,7 +1646,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>Default constructor should contain nothing except default/trivial
 data member initialization. Specifically, no memory allocations, no side
 effects.</p>
-<p>Bonus question: why does this code allocate under MSVC debug?</p>
+<p>Bonus question: why does this code allocates under MSVC debug?</p>
 <div class="sourceCode" id="cb60"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb60-1"><a href="#cb60-1"></a><span class="bu">std::</span>string s<span class="op">;</span> <span class="co">// ?</span></span></code></pre></div>
 <p>Hint: MSVC STL debug iterators machinery.</p>
@@ -2767,9 +2771,30 @@ message like this:</p>
        ^~~~</code></pre>
 <p>and you can see that <code>v</code> has type
 <code>int&amp;&amp;</code> there.</p>
+<h4 data-number="84" id="debug-useful-custom-assert"><span
+class="header-section-number">84</span> <a
+href="#debug-useful-custom-assert"># </a>debug: useful custom
+assert</h4>
+<p>When custom version of assert is needed, it’s useful to inject
+<code>__debugbreak</code> right at assert definition so you can get
+breakpoint hit exactly at the location of the assert fail. In short:</p>
+<div class="sourceCode" id="cb127"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb127-1"><a href="#cb127-1"></a><span class="pp">#define KK_ABORT</span><span class="op">(</span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">...)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                              </span><span class="op">\</span></span>
+<span id="cb127-2"><a href="#cb127-2"></a><span class="pp">    </span><span class="op">(::</span>log_abort<span class="op">(</span><span class="ot">__FILE__</span><span class="op">,</span><span class="pp"> </span><span class="ot">__LINE__</span><span class="op">,</span><span class="pp"> </span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">##</span><span class="ot">__VA_ARGS__</span><span class="op">),</span><span class="pp">      </span><span class="op">\</span></span>
+<span id="cb127-3"><a href="#cb127-3"></a><span class="pp">        </span>__debugbreak<span class="op">(),</span><span class="pp">                                           </span><span class="op">\</span></span>
+<span id="cb127-4"><a href="#cb127-4"></a><span class="pp">        </span><span class="bu">std::</span>quick_exit<span class="op">(-</span><span class="dv">1</span><span class="op">))</span></span>
+<span id="cb127-5"><a href="#cb127-5"></a></span>
+<span id="cb127-6"><a href="#cb127-6"></a><span class="pp">#define KK_VERIFY</span><span class="op">(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                           </span><span class="op">\</span></span>
+<span id="cb127-7"><a href="#cb127-7"></a><span class="pp">    </span><span class="op">(!!(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">||</span><span class="pp">                                         </span><span class="op">\</span></span>
+<span id="cb127-8"><a href="#cb127-8"></a><span class="pp">        </span><span class="op">(</span>KK_ABORT<span class="op">(</span><span class="st">&quot;Verify failed: </span><span class="sc">{}</span><span class="st">.&quot;</span><span class="op">,</span><span class="pp"> </span><span class="op">#</span>KK_EXPRESSION<span class="op">),</span><span class="pp"> </span><span class="kw">false</span><span class="op">))</span></span></code></pre></div>
+<p><code>__debugbreak()</code> is for the cases when you are under
+debugger and <code>std::quick_exit()</code> is for the case when you are
+not.</p>
+<p>Bonus question: why operator comma is used in
+<code>(KK_ABORT(...), false)</code>?</p>
 <hr />
-<h4 data-number="84" id="todo"><span
-class="header-section-number">84</span> <a href="#todo"># </a>TODO</h4>
+<h4 data-number="85" id="todo"><span
+class="header-section-number">85</span> <a href="#todo"># </a>TODO</h4>
 <p><mark>TODO</mark></p>
 <ul>
 <li>type promotion passing custom type/float to variadic c</li>
