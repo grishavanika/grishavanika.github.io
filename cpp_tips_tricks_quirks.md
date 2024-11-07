@@ -2277,6 +2277,141 @@ of the assert fail. In short:
 
 Bonus question: why operator comma is used in `(KK_ABORT(...), false)`?
 
+#### std::move does not move
+
+`std::move(object)` does not "move" on its own. So
+
+``` cpp {.numberLines}
+std::string s;
+std::move(s); // no-op
+```
+
+Similarly, you can move into function that accepts rvalue refence. If function
+implementation does not actually modify/move argument - initial move is a no-op:
+
+``` cpp {.numberLines}
+void Foo(std::string&& str) // rvalue reference
+{
+    std::puts("not using str");
+}
+
+std::string str = ...
+Foo(std::move(str)); // no-op
+// str is unchanged, can be used freely,
+// but only because you **know** exact implementation of `Foo`
+```
+
+Same, if class has only copy constructor, copy assignment and no move constructor/
+move assignment, the code is no-op:
+
+``` cpp {.numberLines}
+struct MyClass
+{
+    MyClass(const MyClass& rhs) { /**/ }
+    MyClass& operator=(const MyClass& rhs) { /**/ }
+};
+
+MyClass object;
+MyClass copy = std::move(object); // no-op or rathe copy constructor is invoked
+// object is unchaged, can be used freely
+```
+
+Same, if class has move constructor/move assignmed that actually does not use/or
+modify argument, it is no-op again:
+
+``` cpp {.numberLines}
+struct MyClass
+{
+    MyClass(MyClass&& rhs) { std::puts("not using rhs actually"); }
+    MyClass& operator=(const MyClass& rhs) { std::puts("same"); }
+};
+
+MyClass object;
+MyClass o2 = std::move(object); // no-op, even tho move constructor was invoked
+// object is unchaged, can be used freely
+```
+
+So in short std::move is a cast to rvalue that is used **only** for overload
+resolution; only to select move constructor instead of copy constructor if both
+present, etc.
+
+
+See [C++ Rvalue References Explained](https://web.archive.org/web/20230604062855/http://thbecker.net/articles/rvalue_references/section_01.html)
+archive.
+
+#### no destructive move
+
+After std::move object still alive and invokes destructor.
+
+[TODO]{.mark}
+
+#### std::move on return
+
+See [On harmful overuse of std::move](https://devblogs.microsoft.com/oldnewthing/20231124-00/?p=109059).
+
+[TODO]{.mark}
+
+#### enum struct
+
+Does below compile?
+
+``` cpp {.numberLines}
+enum struct MyEnum
+{
+    V0 = 0,
+    V1 = 1,
+}
+```
+
+Yes. Exactly the same as `enum class MyEnum`.
+
+#### using enum declaration
+
+This works (C++20):
+
+``` cpp {.numberLines}
+#include <cstio>
+
+enum class MyEnum
+{
+    MyValue0 = 0,
+    MyValue1 = 1,
+    MyValue2 = 2,
+};
+
+void MyProcess(MyEnum v)
+{
+    using enum MyEnum;
+    switch (v)
+    {
+        case MyValue0: std::puts("got MyValue0"); break;
+        case MyValue1: std::puts("got MyValue1"); break;
+        case MyValue2: std::puts("got MyValue2"); break;
+    }
+    // Note: no need to fully-qualify MyEnum::MyValue0.
+}
+```
+
+#### using declaration vs using directive
+
+See [using declaration](https://learn.microsoft.com/en-us/cpp/cpp/using-declaration?view=msvc-170)
+and [using directives](https://learn.microsoft.com/en-us/cpp/cpp/using-declaration?view=msvc-170).
+
+``` cpp {.numberLines}
+namespace MyNamespace
+{
+    void Foo();
+    void Bar();
+}
+
+using MyNamespace::Bar; // using declaration
+Bar();
+using namespace MyNamespace; // using directive
+Foo();
+```
+
+One brings single name; another brings whole namespace.
+
 -----------------------------------------------------------
 
 #### TODO
@@ -2330,5 +2465,8 @@ Bonus question: why operator comma is used in `(KK_ABORT(...), false)`?
 - note [C++ Lambda Story](https://asawicki.info/news_1739_book_review_c_lambda_story)
 - note [C++ Move Semantics](https://www.cppmove.com/)
 - note [Book review: C++ Initialization Story](https://asawicki.info/news_1766_book_review_c_initialization_story)
+- https://en.cppreference.com/w/cpp/language/acronyms
+- https://quuxplusone.github.io/blog/2019/08/02/the-tough-guide-to-cpp-acronyms/ (https://www.reddit.com/r/cpp/comments/cl7arc/a_c_acronym_glossary/)
+- 
 
 -----------------------------------------------------------

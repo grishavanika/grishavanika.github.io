@@ -550,8 +550,24 @@ with error</a></li>
 id="toc-debug-useful-custom-assert"><span
 class="toc-section-number">84</span> # debug: useful custom
 assert</a></li>
+<li><a href="#stdmove-does-not-move"
+id="toc-stdmove-does-not-move"><span
+class="toc-section-number">85</span> # std::move does not move</a></li>
+<li><a href="#no-destructive-move" id="toc-no-destructive-move"><span
+class="toc-section-number">86</span> # no destructive move</a></li>
+<li><a href="#stdmove-on-return" id="toc-stdmove-on-return"><span
+class="toc-section-number">87</span> # std::move on return</a></li>
+<li><a href="#enum-struct" id="toc-enum-struct"><span
+class="toc-section-number">88</span> # enum struct</a></li>
+<li><a href="#using-enum-declaration"
+id="toc-using-enum-declaration"><span
+class="toc-section-number">89</span> # using enum declaration</a></li>
+<li><a href="#using-declaration-vs-using-directive"
+id="toc-using-declaration-vs-using-directive"><span
+class="toc-section-number">90</span> # using declaration vs using
+directive</a></li>
 <li><a href="#todo" id="toc-todo"><span
-class="toc-section-number">85</span> # TODO</a></li>
+class="toc-section-number">91</span> # TODO</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -2792,9 +2808,128 @@ debugger and <code>std::quick_exit()</code> is for the case when you are
 not.</p>
 <p>Bonus question: why operator comma is used in
 <code>(KK_ABORT(...), false)</code>?</p>
+<h4 data-number="85" id="stdmove-does-not-move"><span
+class="header-section-number">85</span> <a
+href="#stdmove-does-not-move"># </a>std::move does not move</h4>
+<p><code>std::move(object)</code> does not “move” on its own. So</p>
+<div class="sourceCode" id="cb128"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb128-1"><a href="#cb128-1"></a><span class="bu">std::</span>string s<span class="op">;</span></span>
+<span id="cb128-2"><a href="#cb128-2"></a><span class="bu">std::</span>move<span class="op">(</span>s<span class="op">);</span> <span class="co">// no-op</span></span></code></pre></div>
+<p>Similarly, you can move into function that accepts rvalue refence. If
+function implementation does not actually modify/move argument - initial
+move is a no-op:</p>
+<div class="sourceCode" id="cb129"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb129-1"><a href="#cb129-1"></a><span class="dt">void</span> Foo<span class="op">(</span><span class="bu">std::</span>string<span class="op">&amp;&amp;</span> str<span class="op">)</span> <span class="co">// rvalue reference</span></span>
+<span id="cb129-2"><a href="#cb129-2"></a><span class="op">{</span></span>
+<span id="cb129-3"><a href="#cb129-3"></a>    <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;not using str&quot;</span><span class="op">);</span></span>
+<span id="cb129-4"><a href="#cb129-4"></a><span class="op">}</span></span>
+<span id="cb129-5"><a href="#cb129-5"></a></span>
+<span id="cb129-6"><a href="#cb129-6"></a><span class="bu">std::</span>string str <span class="op">=</span> <span class="op">...</span></span>
+<span id="cb129-7"><a href="#cb129-7"></a>Foo<span class="op">(</span><span class="bu">std::</span>move<span class="op">(</span>str<span class="op">));</span> <span class="co">// no-op</span></span>
+<span id="cb129-8"><a href="#cb129-8"></a><span class="co">// str is unchanged, can be used freely,</span></span>
+<span id="cb129-9"><a href="#cb129-9"></a><span class="co">// but only because you **know** exact implementation of `Foo`</span></span></code></pre></div>
+<p>Same, if class has only copy constructor, copy assignment and no move
+constructor/ move assignment, the code is no-op:</p>
+<div class="sourceCode" id="cb130"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb130-1"><a href="#cb130-1"></a><span class="kw">struct</span> MyClass</span>
+<span id="cb130-2"><a href="#cb130-2"></a><span class="op">{</span></span>
+<span id="cb130-3"><a href="#cb130-3"></a>    MyClass<span class="op">(</span><span class="at">const</span> MyClass<span class="op">&amp;</span> rhs<span class="op">)</span> <span class="op">{</span> <span class="co">/**/</span> <span class="op">}</span></span>
+<span id="cb130-4"><a href="#cb130-4"></a>    MyClass<span class="op">&amp;</span> <span class="kw">operator</span><span class="op">=(</span><span class="at">const</span> MyClass<span class="op">&amp;</span> rhs<span class="op">)</span> <span class="op">{</span> <span class="co">/**/</span> <span class="op">}</span></span>
+<span id="cb130-5"><a href="#cb130-5"></a><span class="op">};</span></span>
+<span id="cb130-6"><a href="#cb130-6"></a></span>
+<span id="cb130-7"><a href="#cb130-7"></a>MyClass object<span class="op">;</span></span>
+<span id="cb130-8"><a href="#cb130-8"></a>MyClass copy <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>object<span class="op">);</span> <span class="co">// no-op or rathe copy constructor is invoked</span></span>
+<span id="cb130-9"><a href="#cb130-9"></a><span class="co">// object is unchaged, can be used freely</span></span></code></pre></div>
+<p>Same, if class has move constructor/move assignmed that actually does
+not use/or modify argument, it is no-op again:</p>
+<div class="sourceCode" id="cb131"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb131-1"><a href="#cb131-1"></a><span class="kw">struct</span> MyClass</span>
+<span id="cb131-2"><a href="#cb131-2"></a><span class="op">{</span></span>
+<span id="cb131-3"><a href="#cb131-3"></a>    MyClass<span class="op">(</span>MyClass<span class="op">&amp;&amp;</span> rhs<span class="op">)</span> <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;not using rhs actually&quot;</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb131-4"><a href="#cb131-4"></a>    MyClass<span class="op">&amp;</span> <span class="kw">operator</span><span class="op">=(</span><span class="at">const</span> MyClass<span class="op">&amp;</span> rhs<span class="op">)</span> <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;same&quot;</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb131-5"><a href="#cb131-5"></a><span class="op">};</span></span>
+<span id="cb131-6"><a href="#cb131-6"></a></span>
+<span id="cb131-7"><a href="#cb131-7"></a>MyClass object<span class="op">;</span></span>
+<span id="cb131-8"><a href="#cb131-8"></a>MyClass o2 <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>object<span class="op">);</span> <span class="co">// no-op, even tho move constructor was invoked</span></span>
+<span id="cb131-9"><a href="#cb131-9"></a><span class="co">// object is unchaged, can be used freely</span></span></code></pre></div>
+<p>So in short std::move is a cast to rvalue that is used
+<strong>only</strong> for overload resolution; only to select move
+constructor instead of copy constructor if both present, etc.</p>
+<p>See <a
+href="https://web.archive.org/web/20230604062855/http://thbecker.net/articles/rvalue_references/section_01.html">C++
+Rvalue References Explained</a> archive.</p>
+<h4 data-number="86" id="no-destructive-move"><span
+class="header-section-number">86</span> <a href="#no-destructive-move">#
+</a>no destructive move</h4>
+<p>After std::move object still alive and invokes destructor.</p>
+<p><mark>TODO</mark></p>
+<h4 data-number="87" id="stdmove-on-return"><span
+class="header-section-number">87</span> <a href="#stdmove-on-return">#
+</a>std::move on return</h4>
+<p>See <a
+href="https://devblogs.microsoft.com/oldnewthing/20231124-00/?p=109059">On
+harmful overuse of std::move</a>.</p>
+<p><mark>TODO</mark></p>
+<h4 data-number="88" id="enum-struct"><span
+class="header-section-number">88</span> <a href="#enum-struct">#
+</a>enum struct</h4>
+<p>Does below compile?</p>
+<div class="sourceCode" id="cb132"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb132-1"><a href="#cb132-1"></a><span class="kw">enum</span> <span class="kw">struct</span> MyEnum</span>
+<span id="cb132-2"><a href="#cb132-2"></a><span class="op">{</span></span>
+<span id="cb132-3"><a href="#cb132-3"></a>    V0 <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb132-4"><a href="#cb132-4"></a>    V1 <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb132-5"><a href="#cb132-5"></a><span class="op">}</span></span></code></pre></div>
+<p>Yes. Exactly the same as <code>enum class MyEnum</code>.</p>
+<h4 data-number="89" id="using-enum-declaration"><span
+class="header-section-number">89</span> <a
+href="#using-enum-declaration"># </a>using enum declaration</h4>
+<p>This works (C++20):</p>
+<div class="sourceCode" id="cb133"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb133-1"><a href="#cb133-1"></a><span class="pp">#include </span><span class="im">&lt;cstio&gt;</span></span>
+<span id="cb133-2"><a href="#cb133-2"></a></span>
+<span id="cb133-3"><a href="#cb133-3"></a><span class="kw">enum</span> <span class="kw">class</span> MyEnum</span>
+<span id="cb133-4"><a href="#cb133-4"></a><span class="op">{</span></span>
+<span id="cb133-5"><a href="#cb133-5"></a>    MyValue0 <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb133-6"><a href="#cb133-6"></a>    MyValue1 <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb133-7"><a href="#cb133-7"></a>    MyValue2 <span class="op">=</span> <span class="dv">2</span><span class="op">,</span></span>
+<span id="cb133-8"><a href="#cb133-8"></a><span class="op">};</span></span>
+<span id="cb133-9"><a href="#cb133-9"></a></span>
+<span id="cb133-10"><a href="#cb133-10"></a><span class="dt">void</span> MyProcess<span class="op">(</span>MyEnum v<span class="op">)</span></span>
+<span id="cb133-11"><a href="#cb133-11"></a><span class="op">{</span></span>
+<span id="cb133-12"><a href="#cb133-12"></a>    <span class="kw">using</span> <span class="kw">enum</span> MyEnum<span class="op">;</span></span>
+<span id="cb133-13"><a href="#cb133-13"></a>    <span class="cf">switch</span> <span class="op">(</span>v<span class="op">)</span></span>
+<span id="cb133-14"><a href="#cb133-14"></a>    <span class="op">{</span></span>
+<span id="cb133-15"><a href="#cb133-15"></a>        <span class="cf">case</span> MyValue0<span class="op">:</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;got MyValue0&quot;</span><span class="op">);</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb133-16"><a href="#cb133-16"></a>        <span class="cf">case</span> MyValue1<span class="op">:</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;got MyValue1&quot;</span><span class="op">);</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb133-17"><a href="#cb133-17"></a>        <span class="cf">case</span> MyValue2<span class="op">:</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;got MyValue2&quot;</span><span class="op">);</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb133-18"><a href="#cb133-18"></a>    <span class="op">}</span></span>
+<span id="cb133-19"><a href="#cb133-19"></a>    <span class="co">// Note: no need to fully-qualify MyEnum::MyValue0.</span></span>
+<span id="cb133-20"><a href="#cb133-20"></a><span class="op">}</span></span></code></pre></div>
+<h4 data-number="90" id="using-declaration-vs-using-directive"><span
+class="header-section-number">90</span> <a
+href="#using-declaration-vs-using-directive"># </a>using declaration vs
+using directive</h4>
+<p>See <a
+href="https://learn.microsoft.com/en-us/cpp/cpp/using-declaration?view=msvc-170">using
+declaration</a> and <a
+href="https://learn.microsoft.com/en-us/cpp/cpp/using-declaration?view=msvc-170">using
+directives</a>.</p>
+<div class="sourceCode" id="cb134"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb134-1"><a href="#cb134-1"></a><span class="kw">namespace</span> MyNamespace</span>
+<span id="cb134-2"><a href="#cb134-2"></a><span class="op">{</span></span>
+<span id="cb134-3"><a href="#cb134-3"></a>    <span class="dt">void</span> Foo<span class="op">();</span></span>
+<span id="cb134-4"><a href="#cb134-4"></a>    <span class="dt">void</span> Bar<span class="op">();</span></span>
+<span id="cb134-5"><a href="#cb134-5"></a><span class="op">}</span></span>
+<span id="cb134-6"><a href="#cb134-6"></a></span>
+<span id="cb134-7"><a href="#cb134-7"></a><span class="kw">using</span> MyNamespace<span class="op">::</span>Bar<span class="op">;</span> <span class="co">// using declaration</span></span>
+<span id="cb134-8"><a href="#cb134-8"></a>Bar<span class="op">();</span></span>
+<span id="cb134-9"><a href="#cb134-9"></a><span class="kw">using</span> <span class="kw">namespace</span> MyNamespace<span class="op">;</span> <span class="co">// using directive</span></span>
+<span id="cb134-10"><a href="#cb134-10"></a>Foo<span class="op">();</span></span></code></pre></div>
+<p>One brings single name; another brings whole namespace.</p>
 <hr />
-<h4 data-number="85" id="todo"><span
-class="header-section-number">85</span> <a href="#todo"># </a>TODO</h4>
+<h4 data-number="91" id="todo"><span
+class="header-section-number">91</span> <a href="#todo"># </a>TODO</h4>
 <p><mark>TODO</mark></p>
 <ul>
 <li>type promotion passing custom type/float to variadic c</li>
@@ -2857,6 +2992,10 @@ Lambda Story</a></li>
 <li>note <a
 href="https://asawicki.info/news_1766_book_review_c_initialization_story">Book
 review: C++ Initialization Story</a></li>
+<li>https://en.cppreference.com/w/cpp/language/acronyms</li>
+<li>https://quuxplusone.github.io/blog/2019/08/02/the-tough-guide-to-cpp-acronyms/
+(https://www.reddit.com/r/cpp/comments/cl7arc/a_c_acronym_glossary/)</li>
+<li></li>
 </ul>
 <hr />
 </body>
