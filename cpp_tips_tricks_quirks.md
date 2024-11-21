@@ -2499,7 +2499,7 @@ std::string ReadFileAsString(const char* file_path)
 }
 ```
 
-Is it fast?
+Is it "fast" enough?
 
 #### rdbuf to redirect
 
@@ -2564,6 +2564,7 @@ int main()
 - (c ? x : y) = v
 - C++ amalgamation (single source) / see [The SQLite Amalgamation](https://sqlite.org/amalgamation.html)
 - quick exit vs exit
+- Almost Always Vector (https://youtu.be/VRGRTvfOxb4?si=4CMVZwGlWK79yrWe, http://andybohn.com/almostalwaysvector/)
 - [Placeholder substitution in the preprocessor](https://holyblackcat.github.io/blog/2024/10/22/macro-placeholders.html)
 - https://vitaut.net/posts/2015/compile-time-checking-of-printf-args-in-cppformat/
 - https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01
