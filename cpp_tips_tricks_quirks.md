@@ -2412,6 +2412,76 @@ Foo();
 
 One brings single name; another brings whole namespace.
 
+#### `dynamic_cast<T*>` and `dynamic_cast<T&>` 
+
+One returns nullptr on fail, the other one throws [std::bad_cast](https://en.cppreference.com/w/cpp/types/bad_cast):
+
+``` cpp {.numberLines}
+struct Base
+{
+    virtual ~Base() = default;
+};
+struct Derived : Base {};
+
+void Handle(Base* base)
+{
+    Derived* d_ptr = dynamic_cast<Derived*>(base);
+    assert(d_ptr); // null on fail
+
+    try
+    {
+        Derived& d_ref = dynamic_cast<Derived&>(*base);
+    }
+    catch (const std::bad_cast&)
+    {
+        assert(false); // exception of fail
+    }
+}
+```
+
+#### `dynamic_cast<const T*>` adds const
+
+``` cpp {.numberLines}
+struct V {};
+
+void Handle(V* v)
+{
+    const V* v1 = dynamic_cast<const V*>(v);
+    const V* v2 = static_cast<const V*>(v);
+    const V* v3 = const_cast<const V*>(v);
+}
+```
+
+Usually, it's said that dynamic_cast needs to be appliyed to polymorphic type,
+note V in this case is not a polymorphic type (but still a class type). See also
+`dynamic_cast<void*>`.
+
+Notice, const_cast<const V*> can also be used to **add** const, not only remove it.
+
+#### `CONOUT$`, `CONIN$` for `::AllocConsole()` 
+
+See [Console Handles](https://learn.microsoft.com/en-us/windows/console/console-handles).
+In case you do ::AllocConsole(), you may want to reinitialize C and C++ stdio:
+
+``` cpp {.numberLines}
+// /SUBSYSTEM:WINDOWS or Not Set.
+int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
+{
+    KK_VERIFY(::AllocConsole());
+    FILE* unused = nullptr;
+    KK_VERIFY(0 == freopen_s(&unused, "CONOUT$", "w", stdout));
+    KK_VERIFY(0 == freopen_s(&unused, "CONOUT$", "w", stderr));
+    KK_VERIFY(0 == freopen_s(&unused, "CONIN$", "r", stdin));
+    std::cout.clear(); // to reset badbit/failbit
+    std::clog.clear();
+    std::cerr.clear();
+    std::cin.clear();
+    return 0;
+}
+```
+
+See [this SO](https://stackoverflow.com/a/57241985/2451677) for std::wcout and friends reinitilization.
+
 -----------------------------------------------------------
 
 #### TODO
@@ -2419,12 +2489,10 @@ One brings single name; another brings whole namespace.
 [TODO]{.mark}
 
 - type promotion passing custom type/float to variadic c
-- dynamic cast reference/pointer
 - templates sfinae/enable_if/checks/void_t
 - x-macro (c)
 - rdbuf, read whole file
 - rdbuf, redirect: https://stackoverflow.com/questions/10150468/how-to-redirect-cin-and-cout-to-files
-- allocconsole, reopen
 - type id / magic enum (parsing `__PRETTY_FUNCTION__`)
 - swap idiom (unqualified call to swap in generic context)
 - relocatable and faster then stl container implementations
@@ -2433,10 +2501,25 @@ One brings single name; another brings whole namespace.
 - modern C++ + value semantics = love
 - cstdio vs stdio.h and puts vs std::puts
 - [ambiguity between a variable declaration and a function declaration](https://en.cppreference.com/w/cpp/language/direct_initialization#Notes)
-- decltype() vs decltype(())
+- decltype() vs decltype(()) -- https://cppquiz.org/quiz/question/38?result=OK&answer=11&did_answer=Answer
 - requires vs requires requires
 - noexcept vs noexcept(noexcept())
 - `declval<T>` vs `declval<T&>`
+- struct-to-tuple trick
+- covariant return type (https://stackoverflow.com/questions/4665117/c-virtual-function-return-type)
+- const in the definition (http://www.gotw.ca/gotw/006.htm)
+- implementing move copy assignment in terms of constructor with explicit call to dtor (http://www.gotw.ca/gotw/022.htm, http://www.gotw.ca/gotw/023.htm)
+- pimpl idiom (http://www.gotw.ca/gotw/024.htm, http://www.gotw.ca/gotw/028.htm)
+- const auto_ptr const shared ptr idiom (http://www.gotw.ca/gotw/025.htm)
+- Koenig Lookup / adl (http://www.gotw.ca/gotw/030.htm)
+- Nifty/Schwarz counter
+- most vexing parse (https://herbsutter.com/2013/05/09/gotw-1-solution/)
+- value based  metaprogramming hana (P0425R0/https://youtu.be/L2SktfaJPuU?si=0H6_akmVIqxXA7Kt)
+- Type Based Template Metaprogramming (https://youtu.be/EtU4RDCCsiU?si=987nCPiQuG4t1FBE)
+- by-value signature of the copy assignment operator (https://stackoverflow.com/questions/39386209/implementing-copy-assignment-operator-in-terms-of-move-constructor)
+- (c ? x : y) = v
+- C++ amalgamation (single source) / see [The SQLite Amalgamation](https://sqlite.org/amalgamation.html)
+- quick exit vs exit
 - [Placeholder substitution in the preprocessor](https://holyblackcat.github.io/blog/2024/10/22/macro-placeholders.html)
 - https://vitaut.net/posts/2015/compile-time-checking-of-printf-args-in-cppformat/
 - https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01
@@ -2467,6 +2550,7 @@ One brings single name; another brings whole namespace.
 - note [Book review: C++ Initialization Story](https://asawicki.info/news_1766_book_review_c_initialization_story)
 - https://en.cppreference.com/w/cpp/language/acronyms
 - https://quuxplusone.github.io/blog/2019/08/02/the-tough-guide-to-cpp-acronyms/ (https://www.reddit.com/r/cpp/comments/cl7arc/a_c_acronym_glossary/)
+- https://stackoverflow.com/tags/c%2B%2B/info
 - 
 
 -----------------------------------------------------------
