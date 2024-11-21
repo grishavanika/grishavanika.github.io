@@ -2482,6 +2482,52 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
 
 See [this SO](https://stackoverflow.com/a/57241985/2451677) for std::wcout and friends reinitilization.
 
+#### rdbuf to read whole file
+
+In case you just need a file content as std::string:
+
+``` cpp {.numberLines}
+std::string ReadFileAsString(const char* file_path)
+{
+    std::ifstream file{file_path};
+    KK_VERIFY(file);
+    std::ostringstream ss;
+    ss << file.rdbuf();
+    KK_VERIFY(ss);
+    std::string content = std::move(ss).str();
+    return content;
+}
+```
+
+Is it fast?
+
+#### rdbuf to redirect
+
+See also [rdbuf](https://en.cppreference.com/w/cpp/io/basic_ios/rdbuf):
+
+``` cpp {.numberLines}
+int main()
+{
+    std::ifstream in("in.txt");
+    KK_VERIFY(in);
+    std::streambuf* old_cin = std::cin.rdbuf(in.rdbuf()); // redirect std::cin to in.txt
+    KK_VERIFY(old_cin);
+
+    std::ofstream out("out.txt");
+    KK_VERIFY(out);
+    std::streambuf* old_cout = std::cout.rdbuf(out.rdbuf()); // redirect std::cout to out.txt
+    KK_VERIFY(old_cout);
+
+    // read/write
+    std::string word;
+    std::cin >> word;
+    std::cout << word;
+
+    std::cin.rdbuf(old_cin); // rollback
+    std::cout.rdbuf(old_cout);
+}
+```
+
 -----------------------------------------------------------
 
 #### TODO
@@ -2491,8 +2537,6 @@ See [this SO](https://stackoverflow.com/a/57241985/2451677) for std::wcout and f
 - type promotion passing custom type/float to variadic c
 - templates sfinae/enable_if/checks/void_t
 - x-macro (c)
-- rdbuf, read whole file
-- rdbuf, redirect: https://stackoverflow.com/questions/10150468/how-to-redirect-cin-and-cout-to-files
 - type id / magic enum (parsing `__PRETTY_FUNCTION__`)
 - swap idiom (unqualified call to swap in generic context)
 - relocatable and faster then stl container implementations

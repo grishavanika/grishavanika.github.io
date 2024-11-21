@@ -579,8 +579,13 @@ class="toc-section-number">92</span> #
 id="toc-conout-conin-for-allocconsole"><span
 class="toc-section-number">93</span> # <code>CONOUT$</code>,
 <code>CONIN$</code> for <code>::AllocConsole()</code></a></li>
+<li><a href="#rdbuf-to-read-whole-file"
+id="toc-rdbuf-to-read-whole-file"><span
+class="toc-section-number">94</span> # rdbuf to read whole file</a></li>
+<li><a href="#rdbuf-to-redirect" id="toc-rdbuf-to-redirect"><span
+class="toc-section-number">95</span> # rdbuf to redirect</a></li>
 <li><a href="#todo" id="toc-todo"><span
-class="toc-section-number">94</span> # TODO</a></li>
+class="toc-section-number">96</span> # TODO</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -3012,17 +3017,56 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb137-14"><a href="#cb137-14"></a><span class="op">}</span></span></code></pre></div>
 <p>See <a href="https://stackoverflow.com/a/57241985/2451677">this
 SO</a> for std::wcout and friends reinitilization.</p>
+<h4 data-number="94" id="rdbuf-to-read-whole-file"><span
+class="header-section-number">94</span> <a
+href="#rdbuf-to-read-whole-file"># </a>rdbuf to read whole file</h4>
+<p>In case you just need a file content as std::string:</p>
+<div class="sourceCode" id="cb138"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb138-1"><a href="#cb138-1"></a><span class="bu">std::</span>string ReadFileAsString<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file_path<span class="op">)</span></span>
+<span id="cb138-2"><a href="#cb138-2"></a><span class="op">{</span></span>
+<span id="cb138-3"><a href="#cb138-3"></a>    <span class="bu">std::</span>ifstream file<span class="op">{</span>file_path<span class="op">};</span></span>
+<span id="cb138-4"><a href="#cb138-4"></a>    KK_VERIFY<span class="op">(</span>file<span class="op">);</span></span>
+<span id="cb138-5"><a href="#cb138-5"></a>    <span class="bu">std::</span>ostringstream ss<span class="op">;</span></span>
+<span id="cb138-6"><a href="#cb138-6"></a>    ss <span class="op">&lt;&lt;</span> file<span class="op">.</span>rdbuf<span class="op">();</span></span>
+<span id="cb138-7"><a href="#cb138-7"></a>    KK_VERIFY<span class="op">(</span>ss<span class="op">);</span></span>
+<span id="cb138-8"><a href="#cb138-8"></a>    <span class="bu">std::</span>string content <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>ss<span class="op">).</span>str<span class="op">();</span></span>
+<span id="cb138-9"><a href="#cb138-9"></a>    <span class="cf">return</span> content<span class="op">;</span></span>
+<span id="cb138-10"><a href="#cb138-10"></a><span class="op">}</span></span></code></pre></div>
+<p>Is it fast?</p>
+<h4 data-number="95" id="rdbuf-to-redirect"><span
+class="header-section-number">95</span> <a href="#rdbuf-to-redirect">#
+</a>rdbuf to redirect</h4>
+<p>See also <a
+href="https://en.cppreference.com/w/cpp/io/basic_ios/rdbuf">rdbuf</a>:</p>
+<div class="sourceCode" id="cb139"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb139-1"><a href="#cb139-1"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb139-2"><a href="#cb139-2"></a><span class="op">{</span></span>
+<span id="cb139-3"><a href="#cb139-3"></a>    <span class="bu">std::</span>ifstream in<span class="op">(</span><span class="st">&quot;in.txt&quot;</span><span class="op">);</span></span>
+<span id="cb139-4"><a href="#cb139-4"></a>    KK_VERIFY<span class="op">(</span>in<span class="op">);</span></span>
+<span id="cb139-5"><a href="#cb139-5"></a>    <span class="bu">std::</span>streambuf<span class="op">*</span> old_cin <span class="op">=</span> <span class="bu">std::</span>cin<span class="op">.</span>rdbuf<span class="op">(</span>in<span class="op">.</span>rdbuf<span class="op">());</span> <span class="co">// redirect std::cin to in.txt</span></span>
+<span id="cb139-6"><a href="#cb139-6"></a>    KK_VERIFY<span class="op">(</span>old_cin<span class="op">);</span></span>
+<span id="cb139-7"><a href="#cb139-7"></a></span>
+<span id="cb139-8"><a href="#cb139-8"></a>    <span class="bu">std::</span>ofstream out<span class="op">(</span><span class="st">&quot;out.txt&quot;</span><span class="op">);</span></span>
+<span id="cb139-9"><a href="#cb139-9"></a>    KK_VERIFY<span class="op">(</span>out<span class="op">);</span></span>
+<span id="cb139-10"><a href="#cb139-10"></a>    <span class="bu">std::</span>streambuf<span class="op">*</span> old_cout <span class="op">=</span> <span class="bu">std::</span>cout<span class="op">.</span>rdbuf<span class="op">(</span>out<span class="op">.</span>rdbuf<span class="op">());</span> <span class="co">// redirect std::cout to out.txt</span></span>
+<span id="cb139-11"><a href="#cb139-11"></a>    KK_VERIFY<span class="op">(</span>old_cout<span class="op">);</span></span>
+<span id="cb139-12"><a href="#cb139-12"></a></span>
+<span id="cb139-13"><a href="#cb139-13"></a>    <span class="co">// read/write</span></span>
+<span id="cb139-14"><a href="#cb139-14"></a>    <span class="bu">std::</span>string word<span class="op">;</span></span>
+<span id="cb139-15"><a href="#cb139-15"></a>    <span class="bu">std::</span>cin <span class="op">&gt;&gt;</span> word<span class="op">;</span></span>
+<span id="cb139-16"><a href="#cb139-16"></a>    <span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> word<span class="op">;</span></span>
+<span id="cb139-17"><a href="#cb139-17"></a></span>
+<span id="cb139-18"><a href="#cb139-18"></a>    <span class="bu">std::</span>cin<span class="op">.</span>rdbuf<span class="op">(</span>old_cin<span class="op">);</span> <span class="co">// rollback</span></span>
+<span id="cb139-19"><a href="#cb139-19"></a>    <span class="bu">std::</span>cout<span class="op">.</span>rdbuf<span class="op">(</span>old_cout<span class="op">);</span></span>
+<span id="cb139-20"><a href="#cb139-20"></a><span class="op">}</span></span></code></pre></div>
 <hr />
-<h4 data-number="94" id="todo"><span
-class="header-section-number">94</span> <a href="#todo"># </a>TODO</h4>
+<h4 data-number="96" id="todo"><span
+class="header-section-number">96</span> <a href="#todo"># </a>TODO</h4>
 <p><mark>TODO</mark></p>
 <ul>
 <li>type promotion passing custom type/float to variadic c</li>
 <li>templates sfinae/enable_if/checks/void_t</li>
 <li>x-macro (c)</li>
-<li>rdbuf, read whole file</li>
-<li>rdbuf, redirect:
-https://stackoverflow.com/questions/10150468/how-to-redirect-cin-and-cout-to-files</li>
 <li>type id / magic enum (parsing <code>__PRETTY_FUNCTION__</code>)</li>
 <li>swap idiom (unqualified call to swap in generic context)</li>
 <li>relocatable and faster then stl container implementations</li>
