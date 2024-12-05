@@ -2567,6 +2567,8 @@ int main()
 - Almost Always Vector (https://youtu.be/VRGRTvfOxb4?si=4CMVZwGlWK79yrWe, http://andybohn.com/almostalwaysvector/)
 - [Placeholder substitution in the preprocessor](https://holyblackcat.github.io/blog/2024/10/22/macro-placeholders.html)
 - SFINAE-friendly (https://stackoverflow.com/questions/35033306/what-does-it-mean-when-one-says-something-is-sfinae-friendly)
+- std::nested_exception / std::throw_with_nested (https://en.cppreference.com/w/cpp/error/nested_exception)
+- error handling  boost::outcome/std::error_code/LEAF (https://www.boost.org/doc/libs/1_83_0/libs/outcome/doc/html/motivation/plug_error_code.html, http://blog.think-async.com/2010/04/system-error-support-in-c0x-part-1.html, https://akrzemi1.wordpress.com/2017/07/12/your-own-error-code/)
 - 
 - https://biowpn.github.io/bioweapon/2024/11/12/what-does-f-x-mean.html
 - https://vitaut.net/posts/2015/compile-time-checking-of-printf-args-in-cppformat/
