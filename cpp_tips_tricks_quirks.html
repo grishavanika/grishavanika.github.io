@@ -599,6 +599,10 @@ class="toc-section-number">98</span> # all enum cases are handled, but
 it’s still possible to fall out of switch</a></li>
 <li><a href="#on_scope_exit" id="toc-on_scope_exit"><span
 class="toc-section-number">99</span> # ON_SCOPE_EXIT</a></li>
+<li><a href="#float-to-double-and-integer-promotions-variadic-function"
+id="toc-float-to-double-and-integer-promotions-variadic-function"><span
+class="toc-section-number">100</span> # float to double and integer
+promotions (variadic function)</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -3205,5 +3209,40 @@ class="uri">https://gist.github.com/maddouri/e22288fe973e107abf5bb775df84779d</a
     ON_SCOPE_EXIT { fclose(f); }
     // ...    
 }</code></pre>
+<h4 data-number="100"
+id="float-to-double-and-integer-promotions-variadic-function"><span
+class="header-section-number">100</span> <a
+href="#float-to-double-and-integer-promotions-variadic-function">#
+</a>float to double and integer promotions (variadic function)</h4>
+<p>For C-style variadic function, each argument of integer type
+undergoes integer promotion, and each argument of type float is
+implicitly converted to the type double. See <a
+href="https://en.cppreference.com/w/c/language/conversion">Implicit
+conversions</a>:</p>
+<div class="sourceCode" id="cb150"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb150-1"><a href="#cb150-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span><span class="pp">          </span></span>
+<span id="cb150-2"><a href="#cb150-2"></a><span class="pp">#include </span><span class="im">&lt;stdarg.h&gt;</span></span>
+<span id="cb150-3"><a href="#cb150-3"></a></span>
+<span id="cb150-4"><a href="#cb150-4"></a><span class="dt">void</span> MyFoo<span class="op">(</span><span class="dt">int</span> start<span class="op">,</span> <span class="op">...)</span></span>
+<span id="cb150-5"><a href="#cb150-5"></a><span class="op">{</span>   </span>
+<span id="cb150-6"><a href="#cb150-6"></a>    <span class="dt">va_list</span> args<span class="op">;</span></span>
+<span id="cb150-7"><a href="#cb150-7"></a>    va_start<span class="op">(</span>args<span class="op">,</span> start<span class="op">);</span></span>
+<span id="cb150-8"><a href="#cb150-8"></a>    <span class="at">const</span> <span class="dt">double</span> v1 <span class="op">=</span> va_arg<span class="op">(</span>args<span class="op">,</span> <span class="dt">double</span><span class="op">);</span></span>
+<span id="cb150-9"><a href="#cb150-9"></a>    <span class="at">const</span> <span class="dt">int</span> v2 <span class="op">=</span> va_arg<span class="op">(</span>args<span class="op">,</span> <span class="dt">int</span><span class="op">);</span></span>
+<span id="cb150-10"><a href="#cb150-10"></a>    printf<span class="op">(</span><span class="st">&quot;va_args: </span><span class="sc">%f</span><span class="st">, </span><span class="sc">%i\n</span><span class="st">&quot;</span><span class="op">,</span> v1<span class="op">,</span> v2<span class="op">);</span>    </span>
+<span id="cb150-11"><a href="#cb150-11"></a>    va_end<span class="op">(</span>args<span class="op">);</span></span>
+<span id="cb150-12"><a href="#cb150-12"></a><span class="op">}</span></span>
+<span id="cb150-13"><a href="#cb150-13"></a></span>
+<span id="cb150-14"><a href="#cb150-14"></a>MyFoo<span class="op">(</span><span class="dv">0</span><span class="op">,</span> <span class="fl">3.3</span><span class="bu">f</span><span class="op">,</span> <span class="ch">&#39;c&#39;</span><span class="op">);</span></span>
+<span id="cb150-15"><a href="#cb150-15"></a><span class="co">// va_args: 3.300000, 99</span></span></code></pre></div>
+<p><code>3.3f</code> of type float is conveted to double;
+<code>'c'</code>, which is char is converted to int so this is why
+<code>va_arg(args, double)</code> is used to query <code>v1</code>.
+Note, that <code>va_arg(args, float)</code> will at least trigger a
+warning:</p>
+<div class="sourceCode" id="cb151"><pre
+class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb151-1"><a href="#cb151-1"></a>&gt; warning: second argument to &#39;va_arg&#39; is of promotable type &#39;float&#39;;</span>
+<span id="cb151-2"><a href="#cb151-2"></a>&gt; this va_arg has undefined behavior because arguments will</span>
+<span id="cb151-3"><a href="#cb151-3"></a>&gt; be promoted to &#39;double&#39; [-Wvarargs]</span></code></pre></div>
 </body>
 </html>

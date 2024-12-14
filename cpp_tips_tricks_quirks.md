@@ -2676,3 +2676,37 @@ See <https://gist.github.com/maddouri/e22288fe973e107abf5bb775df84779d>:
     // ...    
 }
 ```
+
+#### float to double and integer promotions (variadic function)
+
+For C-style variadic function, each argument of integer type undergoes
+integer promotion, and each argument of type float is implicitly converted
+to the type double. See [Implicit conversions](https://en.cppreference.com/w/c/language/conversion):
+
+``` cpp {.numberLines}
+#include <stdio.h>          
+#include <stdarg.h>
+
+void MyFoo(int start, ...)
+{   
+    va_list args;
+    va_start(args, start);
+    const double v1 = va_arg(args, double);
+    const int v2 = va_arg(args, int);
+    printf("va_args: %f, %i\n", v1, v2);    
+    va_end(args);
+}
+
+MyFoo(0, 3.3f, 'c');
+// va_args: 3.300000, 99
+```
+
+`3.3f` of type float is conveted to double; `'c'`, which is char is converted to
+int so this is why `va_arg(args, double)` is used to query `v1`. Note, that
+`va_arg(args, float)` will at least trigger a warning:
+
+``` {.numberLines}
+> warning: second argument to 'va_arg' is of promotable type 'float';
+> this va_arg has undefined behavior because arguments will
+> be promoted to 'double' [-Wvarargs]
+```
