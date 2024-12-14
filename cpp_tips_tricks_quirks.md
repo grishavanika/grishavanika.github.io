@@ -1300,6 +1300,8 @@ std::cout << "c\n";
 
 Note: not the same as [syncstream/C++20](https://en.cppreference.com/w/cpp/io/basic_osyncstream).
 
+See also `cin.tie(nullptr)`.
+
 #### std::clog vs std::cerr
 
 [clog](https://en.cppreference.com/w/cpp/io/clog) cppreference and [cerr](https://en.cppreference.com/w/cpp/io/cerr).
@@ -2245,7 +2247,7 @@ void Foo(T&& v)
 Foo(10);
 ```
 
-Show is intentionally incomplete. Compiler will print the error message like this:
+`Show` is intentionally incomplete. Compiler will print the error message like this:
 
 ```
 error: invalid use of incomplete type 'struct Show<int&&>'
@@ -2254,6 +2256,8 @@ error: invalid use of incomplete type 'struct Show<int&&>'
 ```
 
 and you can see that `v` has type `int&&` there.
+
+See also [Template meta-programming: Some testing and debugging tricks](https://cukic.co/2019/02/19/tmp-testing-and-debugging-templates).
 
 #### debug: useful custom assert
 
@@ -2528,77 +2532,76 @@ int main()
 }
 ```
 
------------------------------------------------------------
+#### compile error on missing switch enum case
 
-#### TODO
+When adding new enum value to existing enum what places need to be updated?
 
-[TODO]{.mark}
+``` cpp {.numberLines}
+//      MSVC: /we4062
+// Clang/GCC: -Werror=switch-enum
 
-- type promotion passing custom type/float to variadic c
-- templates sfinae/enable_if/checks/void_t
-- x-macro (c)
-- type id / magic enum (parsing `__PRETTY_FUNCTION__`)
-- swap idiom (unqualified call to swap in generic context)
-- relocatable and faster then stl container implementations
-- `static_cast<decltype(args)>(args)...` - https://www.foonathan.net/2020/09/move-forward/#content
-- Howard Hinnant special member function diagram - https://www.foonathan.net/2019/02/special-member-functions/#content
-- modern C++ + value semantics = love
-- cstdio vs stdio.h and puts vs std::puts
-- [ambiguity between a variable declaration and a function declaration](https://en.cppreference.com/w/cpp/language/direct_initialization#Notes)
-- decltype() vs decltype(()) -- https://cppquiz.org/quiz/question/38?result=OK&answer=11&did_answer=Answer
-- requires vs requires requires
-- noexcept vs noexcept(noexcept())
-- `declval<T>` vs `declval<T&>`
-- struct-to-tuple trick
-- covariant return type (https://stackoverflow.com/questions/4665117/c-virtual-function-return-type)
-- const in the definition (http://www.gotw.ca/gotw/006.htm)
-- implementing move copy assignment in terms of constructor with explicit call to dtor (http://www.gotw.ca/gotw/022.htm, http://www.gotw.ca/gotw/023.htm)
-- pimpl idiom (http://www.gotw.ca/gotw/024.htm, http://www.gotw.ca/gotw/028.htm)
-- const auto_ptr const shared ptr idiom (http://www.gotw.ca/gotw/025.htm)
-- Koenig Lookup / adl (http://www.gotw.ca/gotw/030.htm)
-- Nifty/Schwarz counter
-- most vexing parse (https://herbsutter.com/2013/05/09/gotw-1-solution/)
-- value based  metaprogramming hana (P0425R0/https://youtu.be/L2SktfaJPuU?si=0H6_akmVIqxXA7Kt)
-- Type Based Template Metaprogramming (https://youtu.be/EtU4RDCCsiU?si=987nCPiQuG4t1FBE)
-- by-value signature of the copy assignment operator (https://stackoverflow.com/questions/39386209/implementing-copy-assignment-operator-in-terms-of-move-constructor)
-- (c ? x : y) = v
-- C++ amalgamation (single source) / see [The SQLite Amalgamation](https://sqlite.org/amalgamation.html)
-- quick exit vs exit
-- Almost Always Vector (https://youtu.be/VRGRTvfOxb4?si=4CMVZwGlWK79yrWe, http://andybohn.com/almostalwaysvector/)
-- [Placeholder substitution in the preprocessor](https://holyblackcat.github.io/blog/2024/10/22/macro-placeholders.html)
-- SFINAE-friendly (https://stackoverflow.com/questions/35033306/what-does-it-mean-when-one-says-something-is-sfinae-friendly)
-- 
-- https://biowpn.github.io/bioweapon/2024/11/12/what-does-f-x-mean.html
-- https://vitaut.net/posts/2015/compile-time-checking-of-printf-args-in-cppformat/
-- https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01
-- https://jorenar.com/blog/less-known-c
-- http://www.danielvik.com/2010/05/c-language-quirks.html
-- https://codeforces.com/blog/entry/74684
-- https://andreasfertig.blog/2021/07/cpp20-a-neat-trick-with-consteval/
-- https://en.cppreference.com/w/cpp/meta
-- https://landelare.github.io/2023/01/07/cpp-speedrun.html
-- https://andreasfertig.com/courses/programming-with-cpp11-to-cpp17/
-- https://www.foonathan.net/2020/05/fold-tricks/
-- https://chromium.googlesource.com/chromium/src/base/+/master/strings/stringprintf.h
-- https://en.wikipedia.org/wiki/Barton%E2%80%93Nackman_trick
-- https://en.wikipedia.org/wiki/Category:C%2B%2B
-- http://www.gotw.ca/gotw/076.htm
-- https://github.com/shafik/cpp_blogs quiz questions
-- https://cppquiz.org/
-- https://www.foonathan.net/2016/05/final/
-- https://www.foonathan.net/2020/10/tricks-default-template-argument/
-- https://www.foonathan.net/2020/10/iife-metaprogramming/#content
-- see chromium/base
-- see boost/base
-- see abseil
-- (go thru idioms, shwartz counter, https://en.m.wikibooks.org/wiki/More_C++_Idioms)
-- (go thru shortcuts, like immediately invoked lambda)
-- note [C++ Lambda Story](https://asawicki.info/news_1739_book_review_c_lambda_story)
-- note [C++ Move Semantics](https://www.cppmove.com/)
-- note [Book review: C++ Initialization Story](https://asawicki.info/news_1766_book_review_c_initialization_story)
-- https://en.cppreference.com/w/cpp/language/acronyms
-- https://quuxplusone.github.io/blog/2019/08/02/the-tough-guide-to-cpp-acronyms/ (https://www.reddit.com/r/cpp/comments/cl7arc/a_c_acronym_glossary/)
-- https://stackoverflow.com/tags/c%2B%2B/info
-- 
+enum MyEnum { E1, E2, E3, };
 
------------------------------------------------------------
+int MyProcess(MyEnum v)
+{
+    switch (v)
+    {
+    case MyEnum::E1: return 1;
+    case MyEnum::E2: return 2;
+    // note: missing case MyEnum::E3    <-----
+    // note: default must not be present
+    }
+}
+```
+
+MSVC has [Compiler Warning C4062](https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4062?view=msvc-170)
+to detect the issue. To make this warning as error, use `/we4062` which shows:
+
+```
+error C4062: enumerator 'E3' in switch of enum 'MyEnum' is not handled
+note: see declaration of 'MyEnum'
+```
+
+For Clang/GCC, it's [`-Wswitch-enum`](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html)
+(note, `-Wswitch` exists) in a combination with `-Werror` OR `-Werror=switch-enum`
+to error out only switch case, similar to what MSVC's /we4062 does:
+
+```
+error: enumeration value 'E3' not handled in switch [-Werror=switch-enum]
+```
+
+See also this [SO](https://stackoverflow.com/a/63161421/2451677).
+
+#### use compiler to write down pointer-to-member syntax
+
+Just use a wrong type first, see what compiler says, copy the correct type from 
+the error:
+
+``` cpp {.numberLines}
+struct MyClass
+{
+    int my_data = -1;
+};
+
+int ptr = &MyClass::my_data;
+```
+
+All 3 compilers say:
+
+``` {.numberLines}
+Clang: error: cannot initialize a variable of type 'int' with an rvalue of type 'int MyClass::*'
+GCC  : error: cannot convert 'int MyClass::*' to 'int' in initialization
+MSVC : error C2440: 'initializing': cannot convert from 'int MyClass::* ' to 'int'
+```
+
+So ptr should be:
+
+``` cpp {.numberLines}
+int MyClass::*ptr = &MyClass::my_data;
+// OR
+using MyIntMember = int MyClass::*;
+MyIntMember ptr = &MyClass::my_data;
+```
+
+Same works for member function pointers, etc.
+
