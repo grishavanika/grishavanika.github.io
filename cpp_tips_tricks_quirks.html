@@ -597,6 +597,8 @@ href="#all-enum-cases-are-handled-but-its-still-possible-to-fall-out-of-switch"
 id="toc-all-enum-cases-are-handled-but-its-still-possible-to-fall-out-of-switch"><span
 class="toc-section-number">98</span> # all enum cases are handled, but
 it’s still possible to fall out of switch</a></li>
+<li><a href="#on_scope_exit" id="toc-on_scope_exit"><span
+class="toc-section-number">99</span> # ON_SCOPE_EXIT</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -700,7 +702,9 @@ href="https://www.reddit.com/r/C_Programming/comments/2pkwvf/comment/cmxlx0e">th
 See also:</p>
 <div class="sourceCode" id="cb9"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">typedef</span> <span class="dt">double</span> MyFunction<span class="op">(</span><span class="dt">int</span><span class="op">,</span> <span class="dt">double</span><span class="op">,</span> <span class="dt">float</span><span class="op">);</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a>MyFunction foo<span class="op">,</span> bar<span class="op">,</span> baz<span class="op">;</span> <span class="co">// functions declarations</span></span></code></pre></div>
+<span id="cb9-2"><a href="#cb9-2"></a>MyFunction foo<span class="op">,</span> bar<span class="op">,</span> baz<span class="op">;</span> <span class="co">// functions declarations</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="co">// OR</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="dt">int</span> foo<span class="op">(</span><span class="dt">char</span><span class="op">),</span> bar<span class="op">();</span></span></code></pre></div>
 <h4 data-number="3"
 id="protectedprivate-virtual-functions-override"><span
 class="header-section-number">3</span> <a
@@ -3189,5 +3193,17 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb148-13"><a href="#cb148-13"></a><span class="op">}</span></span>
 <span id="cb148-14"><a href="#cb148-14"></a></span>
 <span id="cb148-15"><a href="#cb148-15"></a>MyProcess<span class="op">(</span>MyEnum<span class="op">{</span><span class="dv">78</span><span class="op">});</span> <span class="co">// perfectly fine</span></span></code></pre></div>
+<h4 data-number="99" id="on_scope_exit"><span
+class="header-section-number">99</span> <a href="#on_scope_exit">#
+</a>ON_SCOPE_EXIT</h4>
+<p>See <a
+href="https://gist.github.com/maddouri/e22288fe973e107abf5bb775df84779d"
+class="uri">https://gist.github.com/maddouri/e22288fe973e107abf5bb775df84779d</a>:</p>
+<p><mark>TBD</mark></p>
+<pre><code>{
+    FILE* f = fopen(&quot;file.txt&quot;, &quot;r&quot;);
+    ON_SCOPE_EXIT { fclose(f); }
+    // ...    
+}</code></pre>
 </body>
 </html>

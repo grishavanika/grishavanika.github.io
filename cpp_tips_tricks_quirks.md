@@ -116,6 +116,8 @@ See also:
 ``` cpp {.numberLines}
 typedef double MyFunction(int, double, float);
 MyFunction foo, bar, baz; // functions declarations
+// OR
+int foo(char), bar();
 ```
 
 #### protected/private virtual functions override
@@ -2659,4 +2661,18 @@ const char* MyProcess(MyEnum e)
 }
 
 MyProcess(MyEnum{78}); // perfectly fine
+```
+
+#### ON_SCOPE_EXIT
+
+See <https://gist.github.com/maddouri/e22288fe973e107abf5bb775df84779d>:
+
+[TBD]{.mark}
+
+```
+{
+    FILE* f = fopen("file.txt", "r");
+    ON_SCOPE_EXIT { fclose(f); }
+    // ...    
+}
 ```
