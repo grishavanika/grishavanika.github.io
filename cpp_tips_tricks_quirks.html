@@ -584,14 +584,8 @@ id="toc-rdbuf-to-read-whole-file"><span
 class="toc-section-number">94</span> # rdbuf to read whole file</a></li>
 <li><a href="#rdbuf-to-redirect" id="toc-rdbuf-to-redirect"><span
 class="toc-section-number">95</span> # rdbuf to redirect</a></li>
-<li><a href="#compile-error-on-missing-switch-enum-case"
-id="toc-compile-error-on-missing-switch-enum-case"><span
-class="toc-section-number">96</span> # compile error on missing switch
-enum case</a></li>
-<li><a href="#use-compiler-to-write-down-pointer-to-member-syntax"
-id="toc-use-compiler-to-write-down-pointer-to-member-syntax"><span
-class="toc-section-number">97</span> # use compiler to write down
-pointer-to-member syntax</a></li>
+<li><a href="#todo" id="toc-todo"><span
+class="toc-section-number">96</span> # TODO</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -1876,7 +1870,6 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb68-4"><a href="#cb68-4"></a><span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">&quot;c</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span></code></pre></div>
 <p>Note: not the same as <a
 href="https://en.cppreference.com/w/cpp/io/basic_osyncstream">syncstream/C++20</a>.</p>
-<p>See also <code>cin.tie(nullptr)</code>.</p>
 <h4 data-number="48" id="stdclog-vs-stdcerr"><span
 class="header-section-number">48</span> <a href="#stdclog-vs-stdcerr">#
 </a>std::clog vs std::cerr</h4>
@@ -2805,16 +2798,13 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb125-7"><a href="#cb125-7"></a><span class="op">}</span></span>
 <span id="cb125-8"><a href="#cb125-8"></a></span>
 <span id="cb125-9"><a href="#cb125-9"></a>Foo<span class="op">(</span><span class="dv">10</span><span class="op">);</span></span></code></pre></div>
-<p><code>Show</code> is intentionally incomplete. Compiler will print
-the error message like this:</p>
+<p>Show is intentionally incomplete. Compiler will print the error
+message like this:</p>
 <pre><code>error: invalid use of incomplete type &#39;struct Show&lt;int&amp;&amp;&gt;&#39;
        Show&lt;decltype(v)&gt;{};
        ^~~~</code></pre>
 <p>and you can see that <code>v</code> has type
 <code>int&amp;&amp;</code> there.</p>
-<p>See also <a
-href="https://cukic.co/2019/02/19/tmp-testing-and-debugging-templates">Template
-meta-programming: Some testing and debugging tricks</a>.</p>
 <h4 data-number="84" id="debug-useful-custom-assert"><span
 class="header-section-number">84</span> <a
 href="#debug-useful-custom-assert"># </a>debug: useful custom
@@ -3069,68 +3059,106 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb139-18"><a href="#cb139-18"></a>    <span class="bu">std::</span>cin<span class="op">.</span>rdbuf<span class="op">(</span>old_cin<span class="op">);</span> <span class="co">// rollback</span></span>
 <span id="cb139-19"><a href="#cb139-19"></a>    <span class="bu">std::</span>cout<span class="op">.</span>rdbuf<span class="op">(</span>old_cout<span class="op">);</span></span>
 <span id="cb139-20"><a href="#cb139-20"></a><span class="op">}</span></span></code></pre></div>
-<h4 data-number="96"
-id="compile-error-on-missing-switch-enum-case"><span
-class="header-section-number">96</span> <a
-href="#compile-error-on-missing-switch-enum-case"># </a>compile error on
-missing switch enum case</h4>
-<p>When adding new enum value to existing enum what places need to be
-updated?</p>
-<div class="sourceCode" id="cb140"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb140-1"><a href="#cb140-1"></a><span class="co">//      MSVC: /we4062</span></span>
-<span id="cb140-2"><a href="#cb140-2"></a><span class="co">// Clang/GCC: -Werror=switch-enum</span></span>
-<span id="cb140-3"><a href="#cb140-3"></a></span>
-<span id="cb140-4"><a href="#cb140-4"></a><span class="kw">enum</span> MyEnum <span class="op">{</span> E1<span class="op">,</span> E2<span class="op">,</span> E3<span class="op">,</span> <span class="op">};</span></span>
-<span id="cb140-5"><a href="#cb140-5"></a></span>
-<span id="cb140-6"><a href="#cb140-6"></a><span class="dt">int</span> MyProcess<span class="op">(</span>MyEnum v<span class="op">)</span></span>
-<span id="cb140-7"><a href="#cb140-7"></a><span class="op">{</span></span>
-<span id="cb140-8"><a href="#cb140-8"></a>    <span class="cf">switch</span> <span class="op">(</span>v<span class="op">)</span></span>
-<span id="cb140-9"><a href="#cb140-9"></a>    <span class="op">{</span></span>
-<span id="cb140-10"><a href="#cb140-10"></a>    <span class="cf">case</span> MyEnum<span class="op">::</span>E1<span class="op">:</span> <span class="cf">return</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb140-11"><a href="#cb140-11"></a>    <span class="cf">case</span> MyEnum<span class="op">::</span>E2<span class="op">:</span> <span class="cf">return</span> <span class="dv">2</span><span class="op">;</span></span>
-<span id="cb140-12"><a href="#cb140-12"></a>    <span class="co">// note: missing case MyEnum::E3    &lt;-----</span></span>
-<span id="cb140-13"><a href="#cb140-13"></a>    <span class="co">// note: default must not be present</span></span>
-<span id="cb140-14"><a href="#cb140-14"></a>    <span class="op">}</span></span>
-<span id="cb140-15"><a href="#cb140-15"></a><span class="op">}</span></span></code></pre></div>
-<p>MSVC has <a
-href="https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4062?view=msvc-170">Compiler
-Warning C4062</a> to detect the issue. To make this warning as error,
-use <code>/we4062</code> which shows:</p>
-<pre><code>error C4062: enumerator &#39;E3&#39; in switch of enum &#39;MyEnum&#39; is not handled
-note: see declaration of &#39;MyEnum&#39;</code></pre>
-<p>For Clang/GCC, it’s <a
-href="https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html"><code>-Wswitch-enum</code></a>
-(note, <code>-Wswitch</code> exists) in a combination with
-<code>-Werror</code> OR <code>-Werror=switch-enum</code> to error out
-only switch case, similar to what MSVC’s /we4062 does:</p>
-<pre><code>error: enumeration value &#39;E3&#39; not handled in switch [-Werror=switch-enum]</code></pre>
-<p>See also this <a
-href="https://stackoverflow.com/a/63161421/2451677">SO</a>.</p>
-<h4 data-number="97"
-id="use-compiler-to-write-down-pointer-to-member-syntax"><span
-class="header-section-number">97</span> <a
-href="#use-compiler-to-write-down-pointer-to-member-syntax"># </a>use
-compiler to write down pointer-to-member syntax</h4>
-<p>Just use a wrong type first, see what compiler says, copy the correct
-type from the error:</p>
-<div class="sourceCode" id="cb143"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb143-1"><a href="#cb143-1"></a><span class="kw">struct</span> MyClass</span>
-<span id="cb143-2"><a href="#cb143-2"></a><span class="op">{</span></span>
-<span id="cb143-3"><a href="#cb143-3"></a>    <span class="dt">int</span> my_data <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
-<span id="cb143-4"><a href="#cb143-4"></a><span class="op">};</span></span>
-<span id="cb143-5"><a href="#cb143-5"></a></span>
-<span id="cb143-6"><a href="#cb143-6"></a><span class="dt">int</span> ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span></code></pre></div>
-<p>All 3 compilers say:</p>
-<div class="sourceCode" id="cb144"><pre
-class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb144-1"><a href="#cb144-1"></a>Clang: error: cannot initialize a variable of type &#39;int&#39; with an rvalue of type &#39;int MyClass::*&#39;</span>
-<span id="cb144-2"><a href="#cb144-2"></a>GCC  : error: cannot convert &#39;int MyClass::*&#39; to &#39;int&#39; in initialization</span>
-<span id="cb144-3"><a href="#cb144-3"></a>MSVC : error C2440: &#39;initializing&#39;: cannot convert from &#39;int MyClass::* &#39; to &#39;int&#39;</span></code></pre></div>
-<p>So ptr should be:</p>
-<div class="sourceCode" id="cb145"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb145-1"><a href="#cb145-1"></a><span class="dt">int</span> MyClass<span class="op">::*</span>ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span>
-<span id="cb145-2"><a href="#cb145-2"></a><span class="co">// OR</span></span>
-<span id="cb145-3"><a href="#cb145-3"></a><span class="kw">using</span> MyIntMember <span class="op">=</span> <span class="dt">int</span> MyClass<span class="op">::*;</span></span>
-<span id="cb145-4"><a href="#cb145-4"></a>MyIntMember ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span></code></pre></div>
-<p>Same works for member function pointers, etc.</p>
+<hr />
+<h4 data-number="96" id="todo"><span
+class="header-section-number">96</span> <a href="#todo"># </a>TODO</h4>
+<p><mark>TODO</mark></p>
+<ul>
+<li>type promotion passing custom type/float to variadic c</li>
+<li>templates sfinae/enable_if/checks/void_t</li>
+<li>x-macro (c)</li>
+<li>type id / magic enum (parsing <code>__PRETTY_FUNCTION__</code>)</li>
+<li>swap idiom (unqualified call to swap in generic context)</li>
+<li>relocatable and faster then stl container implementations</li>
+<li><code>static_cast&lt;decltype(args)&gt;(args)...</code> -
+https://www.foonathan.net/2020/09/move-forward/#content</li>
+<li>Howard Hinnant special member function diagram -
+https://www.foonathan.net/2019/02/special-member-functions/#content</li>
+<li>modern C++ + value semantics = love</li>
+<li>cstdio vs stdio.h and puts vs std::puts</li>
+<li><a
+href="https://en.cppreference.com/w/cpp/language/direct_initialization#Notes">ambiguity
+between a variable declaration and a function declaration</a></li>
+<li>decltype() vs decltype(()) –
+https://cppquiz.org/quiz/question/38?result=OK&amp;answer=11&amp;did_answer=Answer</li>
+<li>requires vs requires requires</li>
+<li>noexcept vs noexcept(noexcept())</li>
+<li><code>declval&lt;T&gt;</code> vs
+<code>declval&lt;T&amp;&gt;</code></li>
+<li>struct-to-tuple trick</li>
+<li>covariant return type
+(https://stackoverflow.com/questions/4665117/c-virtual-function-return-type)</li>
+<li>const in the definition (http://www.gotw.ca/gotw/006.htm)</li>
+<li>implementing move copy assignment in terms of constructor with
+explicit call to dtor (http://www.gotw.ca/gotw/022.htm,
+http://www.gotw.ca/gotw/023.htm)</li>
+<li>pimpl idiom (http://www.gotw.ca/gotw/024.htm,
+http://www.gotw.ca/gotw/028.htm)</li>
+<li>const auto_ptr const shared ptr idiom
+(http://www.gotw.ca/gotw/025.htm)</li>
+<li>Koenig Lookup / adl (http://www.gotw.ca/gotw/030.htm)</li>
+<li>Nifty/Schwarz counter</li>
+<li>most vexing parse
+(https://herbsutter.com/2013/05/09/gotw-1-solution/)</li>
+<li>value based metaprogramming hana
+(P0425R0/https://youtu.be/L2SktfaJPuU?si=0H6_akmVIqxXA7Kt)</li>
+<li>Type Based Template Metaprogramming
+(https://youtu.be/EtU4RDCCsiU?si=987nCPiQuG4t1FBE)</li>
+<li>by-value signature of the copy assignment operator
+(https://stackoverflow.com/questions/39386209/implementing-copy-assignment-operator-in-terms-of-move-constructor)</li>
+<li>(c ? x : y) = v</li>
+<li>C++ amalgamation (single source) / see <a
+href="https://sqlite.org/amalgamation.html">The SQLite
+Amalgamation</a></li>
+<li>quick exit vs exit</li>
+<li>Almost Always Vector
+(https://youtu.be/VRGRTvfOxb4?si=4CMVZwGlWK79yrWe,
+http://andybohn.com/almostalwaysvector/)</li>
+<li><a
+href="https://holyblackcat.github.io/blog/2024/10/22/macro-placeholders.html">Placeholder
+substitution in the preprocessor</a></li>
+<li>SFINAE-friendly
+(https://stackoverflow.com/questions/35033306/what-does-it-mean-when-one-says-something-is-sfinae-friendly)</li>
+<li></li>
+<li>https://biowpn.github.io/bioweapon/2024/11/12/what-does-f-x-mean.html</li>
+<li>https://vitaut.net/posts/2015/compile-time-checking-of-printf-args-in-cppformat/</li>
+<li>https://gist.github.com/fay59/5ccbe684e6e56a7df8815c3486568f01</li>
+<li>https://jorenar.com/blog/less-known-c</li>
+<li>http://www.danielvik.com/2010/05/c-language-quirks.html</li>
+<li>https://codeforces.com/blog/entry/74684</li>
+<li>https://andreasfertig.blog/2021/07/cpp20-a-neat-trick-with-consteval/</li>
+<li>https://en.cppreference.com/w/cpp/meta</li>
+<li>https://landelare.github.io/2023/01/07/cpp-speedrun.html</li>
+<li>https://andreasfertig.com/courses/programming-with-cpp11-to-cpp17/</li>
+<li>https://www.foonathan.net/2020/05/fold-tricks/</li>
+<li>https://chromium.googlesource.com/chromium/src/base/+/master/strings/stringprintf.h</li>
+<li>https://en.wikipedia.org/wiki/Barton%E2%80%93Nackman_trick</li>
+<li>https://en.wikipedia.org/wiki/Category:C%2B%2B</li>
+<li>http://www.gotw.ca/gotw/076.htm</li>
+<li>https://github.com/shafik/cpp_blogs quiz questions</li>
+<li>https://cppquiz.org/</li>
+<li>https://www.foonathan.net/2016/05/final/</li>
+<li>https://www.foonathan.net/2020/10/tricks-default-template-argument/</li>
+<li>https://www.foonathan.net/2020/10/iife-metaprogramming/#content</li>
+<li>see chromium/base</li>
+<li>see boost/base</li>
+<li>see abseil</li>
+<li>(go thru idioms, shwartz counter,
+https://en.m.wikibooks.org/wiki/More_C++_Idioms)</li>
+<li>(go thru shortcuts, like immediately invoked lambda)</li>
+<li>note <a
+href="https://asawicki.info/news_1739_book_review_c_lambda_story">C++
+Lambda Story</a></li>
+<li>note <a href="https://www.cppmove.com/">C++ Move Semantics</a></li>
+<li>note <a
+href="https://asawicki.info/news_1766_book_review_c_initialization_story">Book
+review: C++ Initialization Story</a></li>
+<li>https://en.cppreference.com/w/cpp/language/acronyms</li>
+<li>https://quuxplusone.github.io/blog/2019/08/02/the-tough-guide-to-cpp-acronyms/
+(https://www.reddit.com/r/cpp/comments/cl7arc/a_c_acronym_glossary/)</li>
+<li>https://stackoverflow.com/tags/c%2B%2B/info</li>
+<li></li>
+</ul>
+<hr />
 </body>
 </html>
