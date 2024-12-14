@@ -592,6 +592,11 @@ enum case</a></li>
 id="toc-use-compiler-to-write-down-pointer-to-member-syntax"><span
 class="toc-section-number">97</span> # use compiler to write down
 pointer-to-member syntax</a></li>
+<li><a
+href="#all-enum-cases-are-handled-but-its-still-possible-to-fall-out-of-switch"
+id="toc-all-enum-cases-are-handled-but-its-still-possible-to-fall-out-of-switch"><span
+class="toc-section-number">98</span> # all enum cases are handled, but
+it’s still possible to fall out of switch</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -2912,7 +2917,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <h4 data-number="89" id="using-enum-declaration"><span
 class="header-section-number">89</span> <a
 href="#using-enum-declaration"># </a>using enum declaration</h4>
-<p>This works (C++20):</p>
+<p><a href="https://en.cppreference.com/w/cpp/language/enum">This works
+(C++20)</a>:</p>
 <div class="sourceCode" id="cb133"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb133-1"><a href="#cb133-1"></a><span class="pp">#include </span><span class="im">&lt;cstio&gt;</span></span>
 <span id="cb133-2"><a href="#cb133-2"></a></span>
@@ -3080,7 +3086,7 @@ updated?</p>
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb140-1"><a href="#cb140-1"></a><span class="co">//      MSVC: /we4062</span></span>
 <span id="cb140-2"><a href="#cb140-2"></a><span class="co">// Clang/GCC: -Werror=switch-enum</span></span>
 <span id="cb140-3"><a href="#cb140-3"></a></span>
-<span id="cb140-4"><a href="#cb140-4"></a><span class="kw">enum</span> MyEnum <span class="op">{</span> E1<span class="op">,</span> E2<span class="op">,</span> E3<span class="op">,</span> <span class="op">};</span></span>
+<span id="cb140-4"><a href="#cb140-4"></a><span class="kw">enum</span> <span class="kw">class</span> MyEnum <span class="op">{</span> E1<span class="op">,</span> E2<span class="op">,</span> E3<span class="op">,</span> <span class="op">};</span></span>
 <span id="cb140-5"><a href="#cb140-5"></a></span>
 <span id="cb140-6"><a href="#cb140-6"></a><span class="dt">int</span> MyProcess<span class="op">(</span>MyEnum v<span class="op">)</span></span>
 <span id="cb140-7"><a href="#cb140-7"></a><span class="op">{</span></span>
@@ -3106,6 +3112,24 @@ only switch case, similar to what MSVC’s /we4062 does:</p>
 <pre><code>error: enumeration value &#39;E3&#39; not handled in switch [-Werror=switch-enum]</code></pre>
 <p>See also this <a
 href="https://stackoverflow.com/a/63161421/2451677">SO</a>.</p>
+<p>Note, usual practice of having <code>COUNT</code> or <code>MAX</code>
+enum value - complicates the matter and forces you to handle undesired
+case. With C++17, the usual code for handling all cases looks next:</p>
+<div class="sourceCode" id="cb143"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb143-1"><a href="#cb143-1"></a><span class="pp">#include </span><span class="im">&lt;utility&gt;</span></span>
+<span id="cb143-2"><a href="#cb143-2"></a></span>
+<span id="cb143-3"><a href="#cb143-3"></a><span class="kw">enum</span> <span class="kw">class</span> MyEnum <span class="op">{</span> E1<span class="op">,</span> E2<span class="op">,</span> MAX <span class="op">};</span></span>
+<span id="cb143-4"><a href="#cb143-4"></a></span>
+<span id="cb143-5"><a href="#cb143-5"></a><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> MyProcess<span class="op">(</span>MyEnum e<span class="op">)</span></span>
+<span id="cb143-6"><a href="#cb143-6"></a><span class="op">{</span></span>
+<span id="cb143-7"><a href="#cb143-7"></a>    <span class="cf">switch</span> <span class="op">(</span>e<span class="op">)</span></span>
+<span id="cb143-8"><a href="#cb143-8"></a>    <span class="op">{</span></span>
+<span id="cb143-9"><a href="#cb143-9"></a>        <span class="cf">case</span> MyEnum<span class="op">::</span>E1<span class="op">:</span> <span class="cf">return</span> <span class="st">&quot;E1&quot;</span><span class="op">;</span></span>
+<span id="cb143-10"><a href="#cb143-10"></a>        <span class="cf">case</span> MyEnum<span class="op">::</span>E2<span class="op">:</span> <span class="cf">return</span> <span class="st">&quot;E2&quot;</span><span class="op">;</span></span>
+<span id="cb143-11"><a href="#cb143-11"></a>        <span class="cf">case</span> MyEnum<span class="op">::</span>MAX<span class="op">:</span> <span class="bu">std::</span>unreachable<span class="op">();</span></span>
+<span id="cb143-12"><a href="#cb143-12"></a>    <span class="op">}</span></span>
+<span id="cb143-13"><a href="#cb143-13"></a>    <span class="bu">std::</span>unreachable<span class="op">();</span></span>
+<span id="cb143-14"><a href="#cb143-14"></a><span class="op">}</span></span></code></pre></div>
 <h4 data-number="97"
 id="use-compiler-to-write-down-pointer-to-member-syntax"><span
 class="header-section-number">97</span> <a
@@ -3113,24 +3137,57 @@ href="#use-compiler-to-write-down-pointer-to-member-syntax"># </a>use
 compiler to write down pointer-to-member syntax</h4>
 <p>Just use a wrong type first, see what compiler says, copy the correct
 type from the error:</p>
-<div class="sourceCode" id="cb143"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb143-1"><a href="#cb143-1"></a><span class="kw">struct</span> MyClass</span>
-<span id="cb143-2"><a href="#cb143-2"></a><span class="op">{</span></span>
-<span id="cb143-3"><a href="#cb143-3"></a>    <span class="dt">int</span> my_data <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
-<span id="cb143-4"><a href="#cb143-4"></a><span class="op">};</span></span>
-<span id="cb143-5"><a href="#cb143-5"></a></span>
-<span id="cb143-6"><a href="#cb143-6"></a><span class="dt">int</span> ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span></code></pre></div>
-<p>All 3 compilers say:</p>
 <div class="sourceCode" id="cb144"><pre
-class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb144-1"><a href="#cb144-1"></a>Clang: error: cannot initialize a variable of type &#39;int&#39; with an rvalue of type &#39;int MyClass::*&#39;</span>
-<span id="cb144-2"><a href="#cb144-2"></a>GCC  : error: cannot convert &#39;int MyClass::*&#39; to &#39;int&#39; in initialization</span>
-<span id="cb144-3"><a href="#cb144-3"></a>MSVC : error C2440: &#39;initializing&#39;: cannot convert from &#39;int MyClass::* &#39; to &#39;int&#39;</span></code></pre></div>
-<p>So ptr should be:</p>
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb144-1"><a href="#cb144-1"></a><span class="kw">struct</span> MyClass</span>
+<span id="cb144-2"><a href="#cb144-2"></a><span class="op">{</span></span>
+<span id="cb144-3"><a href="#cb144-3"></a>    <span class="dt">int</span> my_data <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb144-4"><a href="#cb144-4"></a><span class="op">};</span></span>
+<span id="cb144-5"><a href="#cb144-5"></a></span>
+<span id="cb144-6"><a href="#cb144-6"></a><span class="dt">int</span> ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span></code></pre></div>
+<p>All 3 compilers say:</p>
 <div class="sourceCode" id="cb145"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb145-1"><a href="#cb145-1"></a><span class="dt">int</span> MyClass<span class="op">::*</span>ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span>
-<span id="cb145-2"><a href="#cb145-2"></a><span class="co">// OR</span></span>
-<span id="cb145-3"><a href="#cb145-3"></a><span class="kw">using</span> MyIntMember <span class="op">=</span> <span class="dt">int</span> MyClass<span class="op">::*;</span></span>
-<span id="cb145-4"><a href="#cb145-4"></a>MyIntMember ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span></code></pre></div>
+class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb145-1"><a href="#cb145-1"></a>Clang: error: cannot initialize a variable of type &#39;int&#39; with an rvalue of type &#39;int MyClass::*&#39;</span>
+<span id="cb145-2"><a href="#cb145-2"></a>GCC  : error: cannot convert &#39;int MyClass::*&#39; to &#39;int&#39; in initialization</span>
+<span id="cb145-3"><a href="#cb145-3"></a>MSVC : error C2440: &#39;initializing&#39;: cannot convert from &#39;int MyClass::* &#39; to &#39;int&#39;</span></code></pre></div>
+<p>So ptr should be:</p>
+<div class="sourceCode" id="cb146"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb146-1"><a href="#cb146-1"></a><span class="dt">int</span> MyClass<span class="op">::*</span>ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span>
+<span id="cb146-2"><a href="#cb146-2"></a><span class="co">// OR</span></span>
+<span id="cb146-3"><a href="#cb146-3"></a><span class="kw">using</span> MyIntMember <span class="op">=</span> <span class="dt">int</span> MyClass<span class="op">::*;</span></span>
+<span id="cb146-4"><a href="#cb146-4"></a>MyIntMember ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span></code></pre></div>
 <p>Same works for member function pointers, etc.</p>
+<h4 data-number="98"
+id="all-enum-cases-are-handled-but-its-still-possible-to-fall-out-of-switch"><span
+class="header-section-number">98</span> <a
+href="#all-enum-cases-are-handled-but-its-still-possible-to-fall-out-of-switch">#
+</a>all enum cases are handled, but it’s still possible to fall out of
+switch</h4>
+<p><a href="https://en.cppreference.com/w/cpp/language/enum">With
+C++17</a>, for instance, it’s possible to initialize enum with integer
+that does not match any named enum value:</p>
+<div class="sourceCode" id="cb147"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb147-1"><a href="#cb147-1"></a><span class="kw">enum</span> byte <span class="op">:</span> <span class="dt">unsigned</span> <span class="dt">char</span> <span class="op">{};</span></span>
+<span id="cb147-2"><a href="#cb147-2"></a>byte b<span class="op">{</span><span class="dv">42</span><span class="op">};</span> <span class="co">// OK as of C++17</span></span>
+<span id="cb147-3"><a href="#cb147-3"></a></span>
+<span id="cb147-4"><a href="#cb147-4"></a><span class="kw">enum</span> <span class="kw">class</span> MyEnum <span class="op">{</span> E1<span class="op">,</span> E2<span class="op">,</span> <span class="op">};</span></span>
+<span id="cb147-5"><a href="#cb147-5"></a>MyEnum e<span class="op">{</span><span class="dv">76</span><span class="op">};</span> <span class="co">// OK</span></span></code></pre></div>
+<p>meaning that even with all handled cases, it’s possible to fall out
+of switch case:</p>
+<div class="sourceCode" id="cb148"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb148-1"><a href="#cb148-1"></a><span class="kw">enum</span> <span class="kw">class</span> MyEnum <span class="op">{</span> E1<span class="op">,</span> E2<span class="op">,</span> <span class="op">};</span></span>
+<span id="cb148-2"><a href="#cb148-2"></a></span>
+<span id="cb148-3"><a href="#cb148-3"></a><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> MyProcess<span class="op">(</span>MyEnum e<span class="op">)</span></span>
+<span id="cb148-4"><a href="#cb148-4"></a><span class="op">{</span></span>
+<span id="cb148-5"><a href="#cb148-5"></a>    <span class="cf">switch</span> <span class="op">(</span>e<span class="op">)</span></span>
+<span id="cb148-6"><a href="#cb148-6"></a>    <span class="op">{</span></span>
+<span id="cb148-7"><a href="#cb148-7"></a>        <span class="cf">case</span> MyEnum<span class="op">::</span>E1<span class="op">:</span> <span class="cf">return</span> <span class="st">&quot;E1&quot;</span><span class="op">;</span></span>
+<span id="cb148-8"><a href="#cb148-8"></a>        <span class="cf">case</span> MyEnum<span class="op">::</span>E2<span class="op">:</span> <span class="cf">return</span> <span class="st">&quot;E2&quot;</span><span class="op">;</span></span>
+<span id="cb148-9"><a href="#cb148-9"></a>    <span class="op">}</span></span>
+<span id="cb148-10"><a href="#cb148-10"></a>    <span class="co">// perfectly fine to land there,</span></span>
+<span id="cb148-11"><a href="#cb148-11"></a>    <span class="co">// even when compiled with -Werror=switch-enum</span></span>
+<span id="cb148-12"><a href="#cb148-12"></a>    <span class="cf">return</span> <span class="st">&quot;&lt;unknown&gt;&quot;</span><span class="op">;</span> <span class="co">// OR std::unreachable()</span></span>
+<span id="cb148-13"><a href="#cb148-13"></a><span class="op">}</span></span>
+<span id="cb148-14"><a href="#cb148-14"></a></span>
+<span id="cb148-15"><a href="#cb148-15"></a>MyProcess<span class="op">(</span>MyEnum<span class="op">{</span><span class="dv">78</span><span class="op">});</span> <span class="co">// perfectly fine</span></span></code></pre></div>
 </body>
 </html>

@@ -2371,7 +2371,7 @@ Yes. Exactly the same as `enum class MyEnum`.
 
 #### using enum declaration
 
-This works (C++20):
+[This works (C++20)](https://en.cppreference.com/w/cpp/language/enum):
 
 ``` cpp {.numberLines}
 #include <cstio>
@@ -2540,7 +2540,7 @@ When adding new enum value to existing enum what places need to be updated?
 //      MSVC: /we4062
 // Clang/GCC: -Werror=switch-enum
 
-enum MyEnum { E1, E2, E3, };
+enum class MyEnum { E1, E2, E3, };
 
 int MyProcess(MyEnum v)
 {
@@ -2571,6 +2571,27 @@ error: enumeration value 'E3' not handled in switch [-Werror=switch-enum]
 ```
 
 See also this [SO](https://stackoverflow.com/a/63161421/2451677).
+
+Note, usual practice of having `COUNT` or `MAX` enum value - complicates the
+matter and forces you to handle undesired case. With C++17, the usual code
+for handling all cases looks next:
+
+``` cpp {.numberLines}
+#include <utility>
+
+enum class MyEnum { E1, E2, MAX };
+
+const char* MyProcess(MyEnum e)
+{
+    switch (e)
+    {
+        case MyEnum::E1: return "E1";
+        case MyEnum::E2: return "E2";
+        case MyEnum::MAX: std::unreachable();
+    }
+    std::unreachable();
+}
+```
 
 #### use compiler to write down pointer-to-member syntax
 
@@ -2605,3 +2626,37 @@ MyIntMember ptr = &MyClass::my_data;
 
 Same works for member function pointers, etc.
 
+#### all enum cases are handled, but it's still possible to fall out of switch
+
+[With C++17](https://en.cppreference.com/w/cpp/language/enum), for instance,
+it's possible to initialize enum with integer that does not match
+any named enum value:
+
+``` cpp {.numberLines}
+enum byte : unsigned char {};
+byte b{42}; // OK as of C++17
+
+enum class MyEnum { E1, E2, };
+MyEnum e{76}; // OK
+```
+
+meaning that even with all handled cases, it's possible to fall out of switch
+case:
+
+``` cpp {.numberLines}
+enum class MyEnum { E1, E2, };
+
+const char* MyProcess(MyEnum e)
+{
+    switch (e)
+    {
+        case MyEnum::E1: return "E1";
+        case MyEnum::E2: return "E2";
+    }
+    // perfectly fine to land there,
+    // even when compiled with -Werror=switch-enum
+    return "<unknown>"; // OR std::unreachable()
+}
+
+MyProcess(MyEnum{78}); // perfectly fine
+```
