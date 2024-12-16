@@ -615,6 +615,11 @@ reference to an array</a></li>
 id="toc-infinite-function-pointer-dereference"><span
 class="toc-section-number">103</span> # infinite function pointer
 dereference</a></li>
+<li><a
+href="#historical-schwarz-counter-nifty-counter-static-initialization"
+id="toc-historical-schwarz-counter-nifty-counter-static-initialization"><span
+class="toc-section-number">104</span> # (historical?) Schwarz Counter /
+Nifty Counter (static initialization)</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -3335,5 +3340,81 @@ href="https://en.cppreference.com/w/cpp/language/implicit_conversion">Function-t
 conversion</a> and <a
 href="https://en.cppreference.com/w/cpp/language/function">Function
 declaration</a>.</p>
+<h4 data-number="104"
+id="historical-schwarz-counter-nifty-counter-static-initialization"><span
+class="header-section-number">104</span> <a
+href="#historical-schwarz-counter-nifty-counter-static-initialization">#
+</a>(historical?) Schwarz Counter / Nifty Counter (static
+initialization)</h4>
+<p>In the context of <a
+href="https://en.cppreference.com/w/cpp/language/siof">Static
+Initialization Order Fiasco</a> where global objects constructors from
+different ~.cpp files (translation units) are invoked in unspecified
+order, Schwarz Counter helps to be sure global object is initialized
+before the first use:</p>
+<div class="sourceCode" id="cb155"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb155-1"><a href="#cb155-1"></a><span class="co">// my_object.h</span></span>
+<span id="cb155-2"><a href="#cb155-2"></a><span class="kw">struct</span> MyObject <span class="op">{</span></span>
+<span id="cb155-3"><a href="#cb155-3"></a>  <span class="dt">int</span> x<span class="op">;</span></span>
+<span id="cb155-4"><a href="#cb155-4"></a>  MyObject<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> src<span class="op">,</span> <span class="dt">int</span> v<span class="op">);</span></span>
+<span id="cb155-5"><a href="#cb155-5"></a><span class="op">};</span></span>
+<span id="cb155-6"><a href="#cb155-6"></a></span>
+<span id="cb155-7"><a href="#cb155-7"></a><span class="at">extern</span> MyObject<span class="op">&amp;</span> o1<span class="op">;</span></span>
+<span id="cb155-8"><a href="#cb155-8"></a></span>
+<span id="cb155-9"><a href="#cb155-9"></a><span class="kw">struct</span> MyInit <span class="op">{</span></span>
+<span id="cb155-10"><a href="#cb155-10"></a>  MyInit<span class="op">();</span></span>
+<span id="cb155-11"><a href="#cb155-11"></a>  <span class="op">~</span>MyInit<span class="op">();</span></span>
+<span id="cb155-12"><a href="#cb155-12"></a><span class="op">};</span></span>
+<span id="cb155-13"><a href="#cb155-13"></a></span>
+<span id="cb155-14"><a href="#cb155-14"></a><span class="co">// </span><span class="al">NOTE</span><span class="co">: static in the header - each transtlation unit will get its own copy of my_init.</span></span>
+<span id="cb155-15"><a href="#cb155-15"></a><span class="at">static</span> MyInit my_init<span class="op">;</span></span>
+<span id="cb155-16"><a href="#cb155-16"></a></span>
+<span id="cb155-17"><a href="#cb155-17"></a><span class="co">// o1.cpp</span></span>
+<span id="cb155-18"><a href="#cb155-18"></a><span class="pp">#include </span><span class="im">&quot;my_object.h&quot;</span></span>
+<span id="cb155-19"><a href="#cb155-19"></a><span class="pp">#include </span><span class="im">&lt;new&gt;</span></span>
+<span id="cb155-20"><a href="#cb155-20"></a></span>
+<span id="cb155-21"><a href="#cb155-21"></a><span class="at">static</span> <span class="dt">int</span> counter <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb155-22"><a href="#cb155-22"></a><span class="at">static</span> <span class="kw">alignas</span><span class="op">(</span>MyObject<span class="op">)</span> <span class="dt">char</span> data<span class="op">[</span><span class="kw">sizeof</span><span class="op">(</span>MyObject<span class="op">)];</span></span>
+<span id="cb155-23"><a href="#cb155-23"></a><span class="co">// reference to not-yet-initialized memory</span></span>
+<span id="cb155-24"><a href="#cb155-24"></a>MyObject<span class="op">&amp;</span> o1 <span class="op">=</span> <span class="kw">reinterpret_cast</span><span class="op">&lt;</span>MyObject<span class="op">&amp;&gt;(</span>data<span class="op">);</span></span>
+<span id="cb155-25"><a href="#cb155-25"></a></span>
+<span id="cb155-26"><a href="#cb155-26"></a>MyInit<span class="op">::</span>MyInit<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb155-27"><a href="#cb155-27"></a>  <span class="cf">if</span> <span class="op">(</span>counter<span class="op">++</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb155-28"><a href="#cb155-28"></a>    <span class="co">// first initialization</span></span>
+<span id="cb155-29"><a href="#cb155-29"></a>    <span class="kw">new</span> <span class="op">(</span>data<span class="op">)</span> MyObject<span class="op">{</span><span class="st">&quot;o1&quot;</span><span class="op">,</span> <span class="dv">865</span><span class="op">};</span></span>
+<span id="cb155-30"><a href="#cb155-30"></a>  <span class="op">}</span></span>
+<span id="cb155-31"><a href="#cb155-31"></a><span class="op">}</span></span>
+<span id="cb155-32"><a href="#cb155-32"></a></span>
+<span id="cb155-33"><a href="#cb155-33"></a>MyInit2<span class="op">::~</span>MyInit2<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb155-34"><a href="#cb155-34"></a>  <span class="cf">if</span> <span class="op">(--</span>counter <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb155-35"><a href="#cb155-35"></a>    o1<span class="op">.~</span>MyObject<span class="op">();</span></span>
+<span id="cb155-36"><a href="#cb155-36"></a>  <span class="op">}</span></span>
+<span id="cb155-37"><a href="#cb155-37"></a><span class="op">}</span></span>
+<span id="cb155-38"><a href="#cb155-38"></a></span>
+<span id="cb155-39"><a href="#cb155-39"></a><span class="co">// main.cpp</span></span>
+<span id="cb155-40"><a href="#cb155-40"></a><span class="pp">#include </span><span class="im">&quot;my_object.h&quot;</span><span class="pp"> </span><span class="co">// </span><span class="al">NOTE</span><span class="co">: must be included before the use</span></span>
+<span id="cb155-41"><a href="#cb155-41"></a><span class="co">// use o1 anywhere in any global. OK</span></span></code></pre></div>
+<p>Note on unspecified order: it’s usually .obj files link order.
+Consider MyObject class, where 2 objects are defined in o1.cpp and
+o2.cpp files:</p>
+<div class="sourceCode" id="cb156"><pre
+class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb156-1"><a href="#cb156-1"></a>// cl o1.cpp o2.cpp main.cpp &amp;&amp; o1.exe</span>
+<span id="cb156-2"><a href="#cb156-2"></a>[o1 %0xa0ae40]</span>
+<span id="cb156-3"><a href="#cb156-3"></a>[o2 %0xa0ae54]</span>
+<span id="cb156-4"><a href="#cb156-4"></a></span>
+<span id="cb156-5"><a href="#cb156-5"></a>// cl o2.cpp o1.cpp main.cpp &amp;&amp; o2.exe</span>
+<span id="cb156-6"><a href="#cb156-6"></a>[o2 %0xa0ae40]</span>
+<span id="cb156-7"><a href="#cb156-7"></a>[o1 %0xa0ae54]</span></code></pre></div>
+<p>o1 is initialized first, then comes o2, when linking o1.cpp, o2.cpp.
+Swapping link options to o2.cpp, o1.cpp changes the order
+(interestingly, memory locations stay the same).</p>
+<p>See <a
+href="https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Nifty_Counter">More
+C++ Idioms/Nifty Counter</a>.</p>
+<p>Note: MSVC STL (and others?) does not use the idiom (relies on
+runtime linked first? <mark>TBD</mark>).</p>
+<p>Note: may not work in case of precompiled headers use, see <a
+href="https://developercommunity.visualstudio.com/t/Schwarz-counter-vs-precompiled-header/1256884">bug
+report</a>.</p>
 </body>
 </html>

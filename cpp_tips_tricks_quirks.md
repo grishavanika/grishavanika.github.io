@@ -2780,3 +2780,74 @@ See [Pointers to functions](https://en.cppreference.com/w/cpp/language/pointer),
 [Function-to-pointer conversion](https://en.cppreference.com/w/cpp/language/implicit_conversion)
 and [Function declaration](https://en.cppreference.com/w/cpp/language/function).
 
+#### (historical?) Schwarz Counter / Nifty Counter (static initialization)
+
+In the context of [Static Initialization Order Fiasco](https://en.cppreference.com/w/cpp/language/siof) where
+global objects constructors from different ~.cpp files (translation units) are invoked in unspecified order,
+Schwarz Counter helps to be sure global object is initialized before the first use:
+
+``` cpp {.numberLines}
+// my_object.h
+struct MyObject {
+  int x;
+  MyObject(const char* src, int v);
+};
+
+extern MyObject& o1;
+
+struct MyInit {
+  MyInit();
+  ~MyInit();
+};
+
+// NOTE: static in the header - each transtlation unit will get its own copy of my_init.
+static MyInit my_init;
+
+// o1.cpp
+#include "my_object.h"
+#include <new>
+
+static int counter = 0;
+static alignas(MyObject) char data[sizeof(MyObject)];
+// reference to not-yet-initialized memory
+MyObject& o1 = reinterpret_cast<MyObject&>(data);
+
+MyInit::MyInit() {
+  if (counter++ == 0) {
+    // first initialization
+    new (data) MyObject{"o1", 865};
+  }
+}
+
+MyInit2::~MyInit2() {
+  if (--counter == 0) {
+    o1.~MyObject();
+  }
+}
+
+// main.cpp
+#include "my_object.h" // NOTE: must be included before the use
+// use o1 anywhere in any global. OK
+```
+
+Note on unspecified order: it's usually .obj files link order. Consider MyObject class, where 2 objects are
+defined in o1.cpp and o2.cpp files:
+
+``` {.numberLines}
+// cl o1.cpp o2.cpp main.cpp && o1.exe
+[o1 %0xa0ae40]
+[o2 %0xa0ae54]
+
+// cl o2.cpp o1.cpp main.cpp && o2.exe
+[o2 %0xa0ae40]
+[o1 %0xa0ae54]
+```
+
+o1 is initialized first, then comes o2, when linking o1.cpp, o2.cpp. Swapping link options to
+o2.cpp, o1.cpp changes the order (interestingly, memory locations stay the same).
+
+See [More C++ Idioms/Nifty Counter](https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Nifty_Counter).
+
+Note: MSVC STL (and others?) does not use the idiom (relies on runtime linked first? [TBD]{.mark}).
+
+Note: may not work in case of precompiled headers use, see [bug report](https://developercommunity.visualstudio.com/t/Schwarz-counter-vs-precompiled-header/1256884).
