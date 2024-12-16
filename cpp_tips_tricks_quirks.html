@@ -603,6 +603,14 @@ class="toc-section-number">99</span> # ON_SCOPE_EXIT</a></li>
 id="toc-float-to-double-and-integer-promotions-variadic-function"><span
 class="toc-section-number">100</span> # float to double and integer
 promotions (variadic function)</a></li>
+<li><a href="#surrogate-call-functions-or-calling-conversion-functions"
+id="toc-surrogate-call-functions-or-calling-conversion-functions"><span
+class="toc-section-number">101</span> # surrogate call functions or
+calling conversion functions</a></li>
+<li><a href="#array_size-function-returning-reference-to-an-array"
+id="toc-array_size-function-returning-reference-to-an-array"><span
+class="toc-section-number">102</span> # ARRAY_SIZE / function returning
+reference to an array</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -3244,5 +3252,53 @@ warning:</p>
 class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb151-1"><a href="#cb151-1"></a>&gt; warning: second argument to &#39;va_arg&#39; is of promotable type &#39;float&#39;;</span>
 <span id="cb151-2"><a href="#cb151-2"></a>&gt; this va_arg has undefined behavior because arguments will</span>
 <span id="cb151-3"><a href="#cb151-3"></a>&gt; be promoted to &#39;double&#39; [-Wvarargs]</span></code></pre></div>
+<h4 data-number="101"
+id="surrogate-call-functions-or-calling-conversion-functions"><span
+class="header-section-number">101</span> <a
+href="#surrogate-call-functions-or-calling-conversion-functions">#
+</a>surrogate call functions or calling conversion functions</h4>
+<p>From <a
+href="https://timsong-cpp.github.io/cppwp/over.call.object">std/over.call.object</a>:</p>
+<div class="sourceCode" id="cb152"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb152-1"><a href="#cb152-1"></a><span class="dt">int</span> f1<span class="op">(</span><span class="dt">int</span><span class="op">);</span></span>
+<span id="cb152-2"><a href="#cb152-2"></a><span class="dt">char</span> f2<span class="op">(</span><span class="dt">float</span><span class="op">);</span></span>
+<span id="cb152-3"><a href="#cb152-3"></a></span>
+<span id="cb152-4"><a href="#cb152-4"></a><span class="kw">typedef</span> <span class="dt">int</span> <span class="op">(*</span>fp1<span class="op">)(</span><span class="dt">int</span><span class="op">);</span></span>
+<span id="cb152-5"><a href="#cb152-5"></a><span class="kw">typedef</span> <span class="dt">char</span> <span class="op">(*</span>fp2<span class="op">)(</span><span class="dt">float</span><span class="op">);</span></span>
+<span id="cb152-6"><a href="#cb152-6"></a></span>
+<span id="cb152-7"><a href="#cb152-7"></a><span class="kw">struct</span> A <span class="op">{</span></span>
+<span id="cb152-8"><a href="#cb152-8"></a>  <span class="kw">operator</span> fp1<span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> f1<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb152-9"><a href="#cb152-9"></a>  <span class="kw">operator</span> fp2<span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> f2<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb152-10"><a href="#cb152-10"></a><span class="op">}</span> a<span class="op">;</span></span>
+<span id="cb152-11"><a href="#cb152-11"></a></span>
+<span id="cb152-12"><a href="#cb152-12"></a><span class="dt">int</span> i1 <span class="op">=</span> a<span class="op">(</span><span class="dv">1</span><span class="op">);</span> <span class="co">// calls f1 via pointer returned from conversion function</span></span>
+<span id="cb152-13"><a href="#cb152-13"></a><span class="dt">char</span> i2 <span class="op">=</span> a<span class="op">(</span><span class="fl">0.5</span><span class="bu">f</span><span class="op">);</span> <span class="co">// calls f2</span></span></code></pre></div>
+<h4 data-number="102"
+id="array_size-function-returning-reference-to-an-array"><span
+class="header-section-number">102</span> <a
+href="#array_size-function-returning-reference-to-an-array">#
+</a>ARRAY_SIZE / function returning reference to an array</h4>
+<p>To get size/length/count of c-style static array pre-C++17 constexpr
+std::size(), next ARRAY_SIZE macro is used:</p>
+<div class="sourceCode" id="cb153"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb153-1"><a href="#cb153-1"></a><span class="co">// no definition needed</span></span>
+<span id="cb153-2"><a href="#cb153-2"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">,</span> <span class="dt">unsigned</span> N<span class="op">&gt;</span></span>
+<span id="cb153-3"><a href="#cb153-3"></a><span class="dt">char</span> <span class="op">(&amp;</span>ArraySizeHelper<span class="op">(</span>T <span class="op">(&amp;</span>array<span class="op">)[</span>N<span class="op">]))[</span>N<span class="op">];</span></span>
+<span id="cb153-4"><a href="#cb153-4"></a></span>
+<span id="cb153-5"><a href="#cb153-5"></a><span class="pp">#define ARRAY_SIZE</span><span class="op">(</span>array<span class="op">)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb153-6"><a href="#cb153-6"></a><span class="pp">    </span><span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>ArraySizeHelper<span class="op">(</span>array<span class="op">)))</span></span>
+<span id="cb153-7"><a href="#cb153-7"></a></span>
+<span id="cb153-8"><a href="#cb153-8"></a><span class="dt">int</span> data<span class="op">[</span><span class="dv">4</span><span class="op">]{};</span></span>
+<span id="cb153-9"><a href="#cb153-9"></a><span class="dt">int</span> copy<span class="op">[</span>ARRAY_SIZE<span class="op">(</span>data<span class="op">)];</span> <span class="co">// ARRAY_SIZE(data) = 4, known at compile time</span></span></code></pre></div>
+<p>Compared to “usual” <code>((sizeof(a) / sizeof(*(a)))</code>
+definition, ARRAY_SIZE does not allow some missuses (like passing
+pointers). See <a
+href="https://codereview.chromium.org/501323002/patch/1/10009">old
+chromium changelist</a>. Epic’s Unreal Engine has exactly the same
+UE_ARRAY_COUNT macro.</p>
+<p>Note, with C++17, std::size() should be used instead.</p>
+<p>Note, also, how ArraySizeHelper is a function that accepts reference
+to array of size N (known at compile time) and returns reference to
+array of size N.</p>
 </body>
 </html>

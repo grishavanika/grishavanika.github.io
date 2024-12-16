@@ -2710,3 +2710,49 @@ int so this is why `va_arg(args, double)` is used to query `v1`. Note, that
 > this va_arg has undefined behavior because arguments will
 > be promoted to 'double' [-Wvarargs]
 ```
+
+#### surrogate call functions or calling conversion functions
+
+From [std/over.call.object](https://timsong-cpp.github.io/cppwp/over.call.object):
+
+``` cpp {.numberLines}
+int f1(int);
+char f2(float);
+
+typedef int (*fp1)(int);
+typedef char (*fp2)(float);
+
+struct A {
+  operator fp1() { return f1; }
+  operator fp2() { return f2; }
+} a;
+
+int i1 = a(1); // calls f1 via pointer returned from conversion function
+char i2 = a(0.5f); // calls f2
+```
+
+#### ARRAY_SIZE / function returning reference to an array
+
+To get size/length/count of c-style static array pre-C++17 constexpr std::size(),
+next ARRAY_SIZE macro is used:
+
+``` cpp {.numberLines}
+// no definition needed
+template <typename T, unsigned N>
+char (&ArraySizeHelper(T (&array)[N]))[N];
+
+#define ARRAY_SIZE(array) \
+    (sizeof(ArraySizeHelper(array)))
+
+int data[4]{};
+int copy[ARRAY_SIZE(data)]; // ARRAY_SIZE(data) = 4, known at compile time
+```
+
+Compared to "usual" `((sizeof(a) / sizeof(*(a)))` definition, ARRAY_SIZE does not allow
+some missuses (like passing pointers). See [old chromium changelist](https://codereview.chromium.org/501323002/patch/1/10009).
+Epic's Unreal Engine has exactly the same UE_ARRAY_COUNT macro.
+
+Note, with C++17, std::size() should be used instead.
+
+Note, also, how ArraySizeHelper is a function that accepts reference to array of size N
+(known at compile time) and returns reference to array of size N.
