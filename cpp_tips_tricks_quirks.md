@@ -2713,7 +2713,7 @@ int so this is why `va_arg(args, double)` is used to query `v1`. Note, that
 > be promoted to 'double' [-Wvarargs]
 ```
 
-#### surrogate call functions or calling conversion functions
+#### surrogate call functions (/ conversion operator)
 
 From [std/over.call.object](https://timsong-cpp.github.io/cppwp/over.call.object):
 
