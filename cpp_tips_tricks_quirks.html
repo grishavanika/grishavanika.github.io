@@ -2689,6 +2689,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb117-12"><a href="#cb117-12"></a>    <span class="kw">constexpr</span> <span class="dt">int</span> v2 <span class="op">=</span> MyHash<span class="op">(</span><span class="st">&quot;v2&quot;</span><span class="op">);</span>                <span class="co">// compile-time</span></span>
 <span id="cb117-13"><a href="#cb117-13"></a>    <span class="dt">int</span> v3 <span class="op">=</span> ForceCompileTime<span class="op">&lt;</span>MyHash<span class="op">(</span><span class="st">&quot;v3&quot;</span><span class="op">)&gt;::</span>Get<span class="op">();</span> <span class="co">// compile-time</span></span>
 <span id="cb117-14"><a href="#cb117-14"></a><span class="op">}</span></span></code></pre></div>
+<p>See also Epic’s Unreal Engine version: UE_FORCE_CONSTEVAL, where
+variable template is used instead.</p>
 <h4 data-number="80" id="variadic-template-with-default-argument"><span
 class="header-section-number">80</span> <a
 href="#variadic-template-with-default-argument"># </a>variadic template
@@ -3271,8 +3273,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb152-9"><a href="#cb152-9"></a>  <span class="kw">operator</span> fp2<span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> f2<span class="op">;</span> <span class="op">}</span></span>
 <span id="cb152-10"><a href="#cb152-10"></a><span class="op">}</span> a<span class="op">;</span></span>
 <span id="cb152-11"><a href="#cb152-11"></a></span>
-<span id="cb152-12"><a href="#cb152-12"></a><span class="dt">int</span> i1 <span class="op">=</span> a<span class="op">(</span><span class="dv">1</span><span class="op">);</span> <span class="co">// calls f1 via pointer returned from conversion function</span></span>
-<span id="cb152-13"><a href="#cb152-13"></a><span class="dt">char</span> i2 <span class="op">=</span> a<span class="op">(</span><span class="fl">0.5</span><span class="bu">f</span><span class="op">);</span> <span class="co">// calls f2</span></span></code></pre></div>
+<span id="cb152-12"><a href="#cb152-12"></a><span class="dt">int</span> i <span class="op">=</span> a<span class="op">(</span><span class="dv">1</span><span class="op">);</span>       <span class="co">// calls f1 via pointer</span></span>
+<span id="cb152-13"><a href="#cb152-13"></a>                    <span class="co">// returned from conversion function</span></span>
+<span id="cb152-14"><a href="#cb152-14"></a><span class="dt">char</span> c <span class="op">=</span> a<span class="op">(</span><span class="fl">0.5</span><span class="bu">f</span><span class="op">);</span>   <span class="co">// calls f2</span></span></code></pre></div>
 <h4 data-number="102"
 id="array_size-function-returning-reference-to-an-array"><span
 class="header-section-number">102</span> <a

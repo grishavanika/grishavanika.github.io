@@ -2107,6 +2107,8 @@ int main()
 }
 ```
 
+See also Epic's Unreal Engine version: UE_FORCE_CONSTEVAL, where variable template is used instead.
+
 #### variadic template with default argument
 
 See [Non-terminal variadic template parameters](https://cor3ntin.github.io/posts/variadic/).
@@ -2727,8 +2729,9 @@ struct A {
   operator fp2() { return f2; }
 } a;
 
-int i1 = a(1); // calls f1 via pointer returned from conversion function
-char i2 = a(0.5f); // calls f2
+int i = a(1);       // calls f1 via pointer
+                    // returned from conversion function
+char c = a(0.5f);   // calls f2
 ```
 
 #### ARRAY_SIZE / function returning reference to an array
