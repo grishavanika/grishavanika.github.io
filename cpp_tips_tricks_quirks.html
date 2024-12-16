@@ -620,6 +620,10 @@ href="#historical-schwarz-counter-nifty-counter-static-initialization"
 id="toc-historical-schwarz-counter-nifty-counter-static-initialization"><span
 class="toc-section-number">104</span> # (historical?) Schwarz Counter /
 Nifty Counter (static initialization)</a></li>
+<li><a href="#emulate-concept-passing-as-template-argument"
+id="toc-emulate-concept-passing-as-template-argument"><span
+class="toc-section-number">105</span> # emulate concept passing as
+template argument</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -3416,5 +3420,34 @@ runtime linked first? <mark>TBD</mark>).</p>
 <p>Note: may not work in case of precompiled headers use, see <a
 href="https://developercommunity.visualstudio.com/t/Schwarz-counter-vs-precompiled-header/1256884">bug
 report</a>.</p>
+<h4 data-number="105"
+id="emulate-concept-passing-as-template-argument"><span
+class="header-section-number">105</span> <a
+href="#emulate-concept-passing-as-template-argument"># </a>emulate
+concept passing as template argument</h4>
+<p>From <a
+href="https://x.com/krisjusiak/status/1622679895514963970">Kris
+Jusiak</a>, <a href="https://t.co/BKRhl1hD9e">godbolt</a>:</p>
+<div class="sourceCode" id="cb157"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb157-1"><a href="#cb157-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">class</span> T<span class="op">&gt;</span></span>
+<span id="cb157-2"><a href="#cb157-2"></a><span class="kw">concept</span> Fooable <span class="op">=</span> <span class="kw">requires</span><span class="op">(</span>T t<span class="op">)</span> <span class="op">{</span> t<span class="op">.</span>foo<span class="op">;</span> <span class="op">};</span></span>
+<span id="cb157-3"><a href="#cb157-3"></a></span>
+<span id="cb157-4"><a href="#cb157-4"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">auto</span> Concept<span class="op">&gt;</span></span>
+<span id="cb157-5"><a href="#cb157-5"></a><span class="kw">struct</span> foo <span class="op">{</span></span>
+<span id="cb157-6"><a href="#cb157-6"></a>  <span class="kw">auto</span> fn<span class="op">(</span><span class="kw">auto</span> t<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb157-7"><a href="#cb157-7"></a>    <span class="kw">static_assert</span><span class="op">(</span><span class="kw">requires</span> <span class="op">{</span> Concept<span class="op">(</span>t<span class="op">);</span> <span class="op">});</span></span>
+<span id="cb157-8"><a href="#cb157-8"></a>  <span class="op">}</span></span>
+<span id="cb157-9"><a href="#cb157-9"></a><span class="op">};</span></span>
+<span id="cb157-10"><a href="#cb157-10"></a></span>
+<span id="cb157-11"><a href="#cb157-11"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb157-12"><a href="#cb157-12"></a>  <span class="kw">struct</span> Foo <span class="op">{</span></span>
+<span id="cb157-13"><a href="#cb157-13"></a>    <span class="dt">int</span> foo<span class="op">{};</span></span>
+<span id="cb157-14"><a href="#cb157-14"></a>  <span class="op">};</span></span>
+<span id="cb157-15"><a href="#cb157-15"></a>  <span class="kw">struct</span> Bar <span class="op">{};</span></span>
+<span id="cb157-16"><a href="#cb157-16"></a>  </span>
+<span id="cb157-17"><a href="#cb157-17"></a>  foo<span class="op">&lt;[](</span>Fooable <span class="kw">auto</span><span class="op">){}&gt;</span> f<span class="op">{};</span> <span class="co">// </span><span class="al">NOTE</span><span class="co">: here</span></span>
+<span id="cb157-18"><a href="#cb157-18"></a>  f<span class="op">.</span>fn<span class="op">(</span>Foo<span class="op">{});</span></span>
+<span id="cb157-19"><a href="#cb157-19"></a>  f<span class="op">.</span>fn<span class="op">(</span>Bar<span class="op">{});</span> <span class="co">// static_assert, contrained not satisfied</span></span>
+<span id="cb157-20"><a href="#cb157-20"></a><span class="op">}</span></span></code></pre></div>
 </body>
 </html>

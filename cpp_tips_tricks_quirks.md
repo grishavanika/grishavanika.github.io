@@ -2851,3 +2851,30 @@ See [More C++ Idioms/Nifty Counter](https://en.wikibooks.org/wiki/More_C%2B%2B_I
 Note: MSVC STL (and others?) does not use the idiom (relies on runtime linked first? [TBD]{.mark}).
 
 Note: may not work in case of precompiled headers use, see [bug report](https://developercommunity.visualstudio.com/t/Schwarz-counter-vs-precompiled-header/1256884).
+
+#### emulate concept passing as template argument
+
+From [Kris Jusiak](https://x.com/krisjusiak/status/1622679895514963970), [godbolt](https://t.co/BKRhl1hD9e):
+
+``` cpp {.numberLines}
+template<class T>
+concept Fooable = requires(T t) { t.foo; };
+
+template<auto Concept>
+struct foo {
+  auto fn(auto t) {
+    static_assert(requires { Concept(t); });
+  }
+};
+
+int main() {
+  struct Foo {
+    int foo{};
+  };
+  struct Bar {};
+  
+  foo<[](Fooable auto){}> f{}; // NOTE: here
+  f.fn(Foo{});
+  f.fn(Bar{}); // static_assert, contrained not satisfied
+}
+```
