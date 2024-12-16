@@ -611,6 +611,10 @@ calling conversion functions</a></li>
 id="toc-array_size-function-returning-reference-to-an-array"><span
 class="toc-section-number">102</span> # ARRAY_SIZE / function returning
 reference to an array</a></li>
+<li><a href="#infinite-function-pointer-dereference"
+id="toc-infinite-function-pointer-dereference"><span
+class="toc-section-number">103</span> # infinite function pointer
+dereference</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -3303,5 +3307,33 @@ UE_ARRAY_COUNT macro.</p>
 <p>Note, also, how ArraySizeHelper is a function that accepts reference
 to array of size N (known at compile time) and returns reference to
 array of size N.</p>
+<h4 data-number="103" id="infinite-function-pointer-dereference"><span
+class="header-section-number">103</span> <a
+href="#infinite-function-pointer-dereference"># </a>infinite function
+pointer dereference</h4>
+<div class="sourceCode" id="cb154"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb154-1"><a href="#cb154-1"></a><span class="dt">void</span> f<span class="op">()</span> <span class="op">{}</span></span>
+<span id="cb154-2"><a href="#cb154-2"></a><span class="dt">void</span> <span class="op">(*</span>fp1<span class="op">)()</span> <span class="op">=</span> f<span class="op">;</span></span>
+<span id="cb154-3"><a href="#cb154-3"></a><span class="dt">void</span> <span class="op">(*</span>fp2<span class="op">)()</span> <span class="op">=</span> <span class="op">************</span>f<span class="op">;</span> <span class="co">// same as above</span></span></code></pre></div>
+<ul>
+<li><code>*f</code> has type of reference-to-function:
+<code>void (&amp;)()</code></li>
+<li><code>f</code> has type of just function-type:
+<code>void()</code></li>
+<li><code>&amp;f</code> has type of pointer-to-function:
+<code>void (*)()</code></li>
+</ul>
+<p>Function (name), reference-to-function decay to function pointer
+implicitly as soon as possible. <code>*f</code> forms a
+reference-to-function, but then immediately decayed to
+pointer-to-function which then gets converted back to reference
+<code>**f</code> and so on.</p>
+<p>See <a
+href="https://en.cppreference.com/w/cpp/language/pointer">Pointers to
+functions</a>, <a
+href="https://en.cppreference.com/w/cpp/language/implicit_conversion">Function-to-pointer
+conversion</a> and <a
+href="https://en.cppreference.com/w/cpp/language/function">Function
+declaration</a>.</p>
 </body>
 </html>

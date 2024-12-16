@@ -2759,3 +2759,24 @@ Note, with C++17, std::size() should be used instead.
 
 Note, also, how ArraySizeHelper is a function that accepts reference to array of size N
 (known at compile time) and returns reference to array of size N.
+
+#### infinite function pointer dereference
+
+``` cpp {.numberLines}
+void f() {}
+void (*fp1)() = f;
+void (*fp2)() = ************f; // same as above
+```
+
+ * `*f` has type of reference-to-function: `void (&)()`
+ * `f` has type of just function-type: `void()`
+ * `&f` has type of pointer-to-function: `void (*)()`
+
+Function (name), reference-to-function decay to function pointer implicitly as soon as possible.
+`*f` forms a reference-to-function, but then immediately decayed to pointer-to-function which then
+gets converted back to reference `**f` and so on.
+
+See [Pointers to functions](https://en.cppreference.com/w/cpp/language/pointer),
+[Function-to-pointer conversion](https://en.cppreference.com/w/cpp/language/implicit_conversion)
+and [Function declaration](https://en.cppreference.com/w/cpp/language/function).
+
