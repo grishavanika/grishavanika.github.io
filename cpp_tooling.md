@@ -68,5 +68,51 @@ Folder:
 
 ``` {.numberLines}
 ls -Path . -Recurse -File -Include *.h,*.cpp `
-	| % { clang-format -i --style=file:.clang-format $_.FullName }
+	| % { clang-format.exe -i --style=file:.clang-format $_.FullName }
 ```
+
+#### MSVC: dump class/object memory layout
+
+See [/d1reportAllClassLayout – Dumping Object Memory Layout](https://ofekshilon.com/2010/11/07/d1reportallclasslayout-dumping-object-memory-layout/) and [VC++ 2013 class Layout Change and Wasted Space](https://randomascii.wordpress.com/2013/12/01/vc-2013-class-layout-change-and-wasted-space/). For this code:
+
+```cpp {.numberLines}
+// main.cpp
+struct MyBase
+{
+	virtual ~MyBase() = default;
+	virtual void MyFoo() {};
+	int _data = -1;
+};
+
+struct MyDerived : MyBase
+{
+	virtual void MyFoo() override {};
+	float _id = 0.0f;
+};
+```
+
+Running
+
+cl /d1reportSingleClassLayout[MyDerived]{.mark} main.cpp
+
+will dump:
+
+
+``` {.numberLines}
+class MyDerived size(12):
+        +---
+ 0      | +--- (base class MyBase)
+ 0      | | {vfptr}
+ 4      | | _data
+        | +---
+ 8      | _id
+        +---
+
+MyDerived::$vftable@:
+        | &MyDerived_meta
+        |  0
+ 0      | &MyDerived::{dtor}
+ 1      | &MyDerived::MyFoo
+```
+
+Note there is also `/d1reportAllClassLayout` so you don't need to specify class name.

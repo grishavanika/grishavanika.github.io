@@ -257,6 +257,10 @@ code</a></li>
 id="toc-clang-format-command-line-for-file-formatting"><span
 class="toc-section-number">4</span> # clang-format command line for file
 formatting</a></li>
+<li><a href="#msvc-dump-classobject-memory-layout"
+id="toc-msvc-dump-classobject-memory-layout"><span
+class="toc-section-number">5</span> # MSVC: dump class/object memory
+layout</a></li>
 </ul>
 </nav>
 <h4 data-number="1" id="clang-format-force-multi-line-formatting"><span
@@ -285,14 +289,14 @@ class="header-section-number">2</span> <a
 href="#initial-clang-format-setup"># </a>initial clang-format setup</h4>
 <ul>
 <li>Note clang-format version with
-<code>clang-format.exe --version</code></li>
+<code>clang-format.exe --version</code>.</li>
 <li>Dump some (any?) available style to .clang-format with
-<code>clang-format.exe --style=Microsoft --dump-config &gt; .clang-format</code></li>
+<code>clang-format.exe --style=Microsoft --dump-config &gt; .clang-format</code>.</li>
 <li>(You may want to force everyone to use same clang-format
-version)</li>
+version).</li>
 <li>(Check <a
 href="https://clang.llvm.org/docs/ClangFormatStyleOptions.html">ClangFormatStyleOptions</a>
-reference)</li>
+reference).</li>
 </ul>
 <p>Add header with above info to .clang-format, submit:</p>
 <div class="sourceCode" id="cb3"><pre
@@ -324,6 +328,49 @@ class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="c
 <p>Folder:</p>
 <div class="sourceCode" id="cb6"><pre
 class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb6-1"><a href="#cb6-1"></a>ls -Path . -Recurse -File -Include *.h,*.cpp `</span>
-<span id="cb6-2"><a href="#cb6-2"></a>    | % { clang-format -i --style=file:.clang-format $_.FullName }</span></code></pre></div>
+<span id="cb6-2"><a href="#cb6-2"></a>    | % { clang-format.exe -i --style=file:.clang-format $_.FullName }</span></code></pre></div>
+<h4 data-number="5" id="msvc-dump-classobject-memory-layout"><span
+class="header-section-number">5</span> <a
+href="#msvc-dump-classobject-memory-layout"># </a>MSVC: dump
+class/object memory layout</h4>
+<p>See <a
+href="https://ofekshilon.com/2010/11/07/d1reportallclasslayout-dumping-object-memory-layout/">/d1reportAllClassLayout
+– Dumping Object Memory Layout</a> and <a
+href="https://randomascii.wordpress.com/2013/12/01/vc-2013-class-layout-change-and-wasted-space/">VC++
+2013 class Layout Change and Wasted Space</a>. For this code:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1"></a><span class="co">// main.cpp</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="kw">struct</span> MyBase</span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="op">{</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a>    <span class="kw">virtual</span> <span class="op">~</span>MyBase<span class="op">()</span> <span class="op">=</span> <span class="cf">default</span><span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a>    <span class="kw">virtual</span> <span class="dt">void</span> MyFoo<span class="op">()</span> <span class="op">{};</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a>    <span class="dt">int</span> _data <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="op">};</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a></span>
+<span id="cb7-9"><a href="#cb7-9"></a><span class="kw">struct</span> MyDerived <span class="op">:</span> MyBase</span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="op">{</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>    <span class="kw">virtual</span> <span class="dt">void</span> MyFoo<span class="op">()</span> <span class="kw">override</span> <span class="op">{};</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a>    <span class="dt">float</span> _id <span class="op">=</span> <span class="fl">0.0</span><span class="bu">f</span><span class="op">;</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="op">};</span></span></code></pre></div>
+<p>Running</p>
+<p>cl /d1reportSingleClassLayout<mark>MyDerived</mark> main.cpp</p>
+<p>will dump:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb8-1"><a href="#cb8-1"></a>class MyDerived size(12):</span>
+<span id="cb8-2"><a href="#cb8-2"></a>        +---</span>
+<span id="cb8-3"><a href="#cb8-3"></a> 0      | +--- (base class MyBase)</span>
+<span id="cb8-4"><a href="#cb8-4"></a> 0      | | {vfptr}</span>
+<span id="cb8-5"><a href="#cb8-5"></a> 4      | | _data</span>
+<span id="cb8-6"><a href="#cb8-6"></a>        | +---</span>
+<span id="cb8-7"><a href="#cb8-7"></a> 8      | _id</span>
+<span id="cb8-8"><a href="#cb8-8"></a>        +---</span>
+<span id="cb8-9"><a href="#cb8-9"></a></span>
+<span id="cb8-10"><a href="#cb8-10"></a>MyDerived::$vftable@:</span>
+<span id="cb8-11"><a href="#cb8-11"></a>        | &amp;MyDerived_meta</span>
+<span id="cb8-12"><a href="#cb8-12"></a>        |  0</span>
+<span id="cb8-13"><a href="#cb8-13"></a> 0      | &amp;MyDerived::{dtor}</span>
+<span id="cb8-14"><a href="#cb8-14"></a> 1      | &amp;MyDerived::MyFoo</span></code></pre></div>
+<p>Note there is also <code>/d1reportAllClassLayout</code> so you don’t
+need to specify class name.</p>
 </body>
 </html>
