@@ -2,7 +2,7 @@
 title: C++ snippets
 ---
 
-#### sorted vector: add a value into sorted vector, trivial case
+#### add a value into sorted vector, trivial case
 
 ```cpp {.numberLines}
 #include <vector>
@@ -73,6 +73,30 @@ void Sorted_Add(std::vector<T>& vs, U&& v)
 	vs.insert(it, std::forward<U>(v));
 }
 ```
+
+#### parse string to int, strict version
+
+```cpp {.numberLines}
+#include <string_view>
+#include <charconv>
+#include <cassert>
+#include <cstdint>
+
+std::uint64_t ParseToU64(const std::string_view& str)
+{
+	std::uint64_t v = 0;
+	const char* const start = str.data();
+	const char* const end = (start + str.size());
+	auto&& [ptr, ec] = std::from_chars(start, end, v, 10);
+	assert(ptr == end);
+	assert(ec == std::errc{});
+	return v;
+}
+```
+
+where it does not allow to have string leftovers, so `ParseToU64("10a")` fails,
+compared to regular `std::from_chars("10a", ...)` and old-style `atoi("10a")`
+analogs.
 
 -----------------------------------------------------------
 

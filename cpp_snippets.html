@@ -241,17 +241,21 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#sorted-vector-add-a-value-into-sorted-vector-trivial-case"
-id="toc-sorted-vector-add-a-value-into-sorted-vector-trivial-case"><span
-class="toc-section-number">1</span> # sorted vector: add a value into
-sorted vector, trivial case</a></li>
+<li><a href="#add-a-value-into-sorted-vector-trivial-case"
+id="toc-add-a-value-into-sorted-vector-trivial-case"><span
+class="toc-section-number">1</span> # add a value into sorted vector,
+trivial case</a></li>
+<li><a href="#parse-string-to-int-strict-version"
+id="toc-parse-string-to-int-strict-version"><span
+class="toc-section-number">2</span> # parse string to int, strict
+version</a></li>
 </ul>
 </nav>
 <h4 data-number="1"
-id="sorted-vector-add-a-value-into-sorted-vector-trivial-case"><span
+id="add-a-value-into-sorted-vector-trivial-case"><span
 class="header-section-number">1</span> <a
-href="#sorted-vector-add-a-value-into-sorted-vector-trivial-case">#
-</a>sorted vector: add a value into sorted vector, trivial case</h4>
+href="#add-a-value-into-sorted-vector-trivial-case"># </a>add a value
+into sorted vector, trivial case</h4>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1"></a><span class="pp">#include </span><span class="im">&lt;vector&gt;</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="pp">#include </span><span class="im">&lt;algorithm&gt;</span></span>
@@ -309,6 +313,30 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb5-7"><a href="#cb5-7"></a>    <span class="kw">auto</span> it <span class="op">=</span> <span class="bu">std::</span>upper_bound<span class="op">(</span>vs<span class="op">.</span>begin<span class="op">(),</span> vs<span class="op">.</span>end<span class="op">(),</span> v<span class="op">);</span></span>
 <span id="cb5-8"><a href="#cb5-8"></a>    vs<span class="op">.</span>insert<span class="op">(</span>it<span class="op">,</span> <span class="bu">std::</span>forward<span class="op">&lt;</span>U<span class="op">&gt;(</span>v<span class="op">));</span></span>
 <span id="cb5-9"><a href="#cb5-9"></a><span class="op">}</span></span></code></pre></div>
+<h4 data-number="2" id="parse-string-to-int-strict-version"><span
+class="header-section-number">2</span> <a
+href="#parse-string-to-int-strict-version"># </a>parse string to int,
+strict version</h4>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1"></a><span class="pp">#include </span><span class="im">&lt;string_view&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="pp">#include </span><span class="im">&lt;charconv&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="pp">#include </span><span class="im">&lt;cassert&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="pp">#include </span><span class="im">&lt;cstdint&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="bu">std::</span>uint64_t ParseToU64<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>string_view<span class="op">&amp;</span> str<span class="op">)</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="op">{</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a>    <span class="bu">std::</span>uint64_t v <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a>    <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> <span class="at">const</span> start <span class="op">=</span> str<span class="op">.</span>data<span class="op">();</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a>    <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> <span class="at">const</span> end <span class="op">=</span> <span class="op">(</span>start <span class="op">+</span> str<span class="op">.</span>size<span class="op">());</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a>    <span class="kw">auto</span><span class="op">&amp;&amp;</span> <span class="op">[</span>ptr<span class="op">,</span> ec<span class="op">]</span> <span class="op">=</span> <span class="bu">std::</span>from_chars<span class="op">(</span>start<span class="op">,</span> end<span class="op">,</span> v<span class="op">,</span> <span class="dv">10</span><span class="op">);</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a>    <span class="ot">assert</span><span class="op">(</span>ptr <span class="op">==</span> end<span class="op">);</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a>    <span class="ot">assert</span><span class="op">(</span>ec <span class="op">==</span> <span class="bu">std::</span>errc<span class="op">{});</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a>    <span class="cf">return</span> v<span class="op">;</span></span>
+<span id="cb6-15"><a href="#cb6-15"></a><span class="op">}</span></span></code></pre></div>
+<p>where it does not allow to have string leftovers, so
+<code>ParseToU64("10a")</code> fails, compared to regular
+<code>std::from_chars("10a", ...)</code> and old-style
+<code>atoi("10a")</code> analogs.</p>
 <hr />
 <p>C++ snippets:</p>
 <ul>
