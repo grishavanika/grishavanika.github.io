@@ -550,79 +550,83 @@ with error</a></li>
 id="toc-debug-useful-custom-assert"><span
 class="toc-section-number">84</span> # debug: useful custom
 assert</a></li>
+<li><a href="#non-standard-__va_args__-vs-c20-__va_opt__"
+id="toc-non-standard-__va_args__-vs-c20-__va_opt__"><span
+class="toc-section-number">85</span> # non-standard
+<code>, ##__VA_ARGS__</code> vs C++20 <code>__VA_OPT__</code></a></li>
 <li><a href="#stdmove-does-not-move"
 id="toc-stdmove-does-not-move"><span
-class="toc-section-number">85</span> # std::move does not move</a></li>
+class="toc-section-number">86</span> # std::move does not move</a></li>
 <li><a href="#no-destructive-move" id="toc-no-destructive-move"><span
-class="toc-section-number">86</span> # no destructive move</a></li>
+class="toc-section-number">87</span> # no destructive move</a></li>
 <li><a href="#stdmove-on-return" id="toc-stdmove-on-return"><span
-class="toc-section-number">87</span> # std::move on return</a></li>
+class="toc-section-number">88</span> # std::move on return</a></li>
 <li><a href="#enum-struct" id="toc-enum-struct"><span
-class="toc-section-number">88</span> # enum struct</a></li>
+class="toc-section-number">89</span> # enum struct</a></li>
 <li><a href="#using-enum-declaration"
 id="toc-using-enum-declaration"><span
-class="toc-section-number">89</span> # using enum declaration</a></li>
+class="toc-section-number">90</span> # using enum declaration</a></li>
 <li><a href="#using-declaration-vs-using-directive"
 id="toc-using-declaration-vs-using-directive"><span
-class="toc-section-number">90</span> # using declaration vs using
+class="toc-section-number">91</span> # using declaration vs using
 directive</a></li>
 <li><a href="#dynamic_castt-and-dynamic_castt"
 id="toc-dynamic_castt-and-dynamic_castt"><span
-class="toc-section-number">91</span> #
+class="toc-section-number">92</span> #
 <code>dynamic_cast&lt;T*&gt;</code> and
 <code>dynamic_cast&lt;T&amp;&gt;</code></a></li>
 <li><a href="#dynamic_castconst-t-adds-const"
 id="toc-dynamic_castconst-t-adds-const"><span
-class="toc-section-number">92</span> #
+class="toc-section-number">93</span> #
 <code>dynamic_cast&lt;const T*&gt;</code> adds const</a></li>
 <li><a href="#conout-conin-for-allocconsole"
 id="toc-conout-conin-for-allocconsole"><span
-class="toc-section-number">93</span> # <code>CONOUT$</code>,
+class="toc-section-number">94</span> # <code>CONOUT$</code>,
 <code>CONIN$</code> for <code>::AllocConsole()</code></a></li>
 <li><a href="#rdbuf-to-read-whole-file"
 id="toc-rdbuf-to-read-whole-file"><span
-class="toc-section-number">94</span> # rdbuf to read whole file</a></li>
+class="toc-section-number">95</span> # rdbuf to read whole file</a></li>
 <li><a href="#rdbuf-to-redirect" id="toc-rdbuf-to-redirect"><span
-class="toc-section-number">95</span> # rdbuf to redirect</a></li>
+class="toc-section-number">96</span> # rdbuf to redirect</a></li>
 <li><a href="#compile-error-on-missing-switch-enum-case"
 id="toc-compile-error-on-missing-switch-enum-case"><span
-class="toc-section-number">96</span> # compile error on missing switch
+class="toc-section-number">97</span> # compile error on missing switch
 enum case</a></li>
 <li><a href="#use-compiler-to-write-down-pointer-to-member-syntax"
 id="toc-use-compiler-to-write-down-pointer-to-member-syntax"><span
-class="toc-section-number">97</span> # use compiler to write down
+class="toc-section-number">98</span> # use compiler to write down
 pointer-to-member syntax</a></li>
 <li><a
 href="#all-enum-cases-are-handled-but-its-still-possible-to-fall-out-of-switch"
 id="toc-all-enum-cases-are-handled-but-its-still-possible-to-fall-out-of-switch"><span
-class="toc-section-number">98</span> # all enum cases are handled, but
+class="toc-section-number">99</span> # all enum cases are handled, but
 it’s still possible to fall out of switch</a></li>
 <li><a href="#on_scope_exit" id="toc-on_scope_exit"><span
-class="toc-section-number">99</span> # ON_SCOPE_EXIT</a></li>
+class="toc-section-number">100</span> # ON_SCOPE_EXIT</a></li>
 <li><a href="#float-to-double-and-integer-promotions-variadic-function"
 id="toc-float-to-double-and-integer-promotions-variadic-function"><span
-class="toc-section-number">100</span> # float to double and integer
+class="toc-section-number">101</span> # float to double and integer
 promotions (variadic function)</a></li>
 <li><a href="#surrogate-call-functions-conversion-operator"
 id="toc-surrogate-call-functions-conversion-operator"><span
-class="toc-section-number">101</span> # surrogate call functions (/
+class="toc-section-number">102</span> # surrogate call functions (/
 conversion operator)</a></li>
 <li><a href="#array_size-function-returning-reference-to-an-array"
 id="toc-array_size-function-returning-reference-to-an-array"><span
-class="toc-section-number">102</span> # ARRAY_SIZE / function returning
+class="toc-section-number">103</span> # ARRAY_SIZE / function returning
 reference to an array</a></li>
 <li><a href="#infinite-function-pointer-dereference"
 id="toc-infinite-function-pointer-dereference"><span
-class="toc-section-number">103</span> # infinite function pointer
+class="toc-section-number">104</span> # infinite function pointer
 dereference</a></li>
 <li><a
 href="#historical-schwarz-counter-nifty-counter-static-initialization"
 id="toc-historical-schwarz-counter-nifty-counter-static-initialization"><span
-class="toc-section-number">104</span> # (historical?) Schwarz Counter /
+class="toc-section-number">105</span> # (historical?) Schwarz Counter /
 Nifty Counter (static initialization)</a></li>
 <li><a href="#emulate-concept-passing-as-template-argument"
 id="toc-emulate-concept-passing-as-template-argument"><span
-class="toc-section-number">105</span> # emulate concept passing as
+class="toc-section-number">106</span> # emulate concept passing as
 template argument</a></li>
 </ul>
 </nav>
@@ -2861,19 +2865,28 @@ breakpoint hit exactly at the location of the assert fail. In short:</p>
 <div class="sourceCode" id="cb127"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb127-1"><a href="#cb127-1"></a><span class="pp">#define KK_ABORT</span><span class="op">(</span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">...)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                              </span><span class="op">\</span></span>
 <span id="cb127-2"><a href="#cb127-2"></a><span class="pp">    </span><span class="op">(::</span>log_abort<span class="op">(</span><span class="ot">__FILE__</span><span class="op">,</span><span class="pp"> </span><span class="ot">__LINE__</span><span class="op">,</span><span class="pp"> </span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">##</span><span class="ot">__VA_ARGS__</span><span class="op">),</span><span class="pp">      </span><span class="op">\</span></span>
-<span id="cb127-3"><a href="#cb127-3"></a><span class="pp">        </span>__debugbreak<span class="op">(),</span><span class="pp">                                           </span><span class="op">\</span></span>
-<span id="cb127-4"><a href="#cb127-4"></a><span class="pp">        </span><span class="bu">std::</span>quick_exit<span class="op">(-</span><span class="dv">1</span><span class="op">))</span></span>
+<span id="cb127-3"><a href="#cb127-3"></a><span class="pp">        </span>__debugbreak<span class="op">(),</span><span class="pp">       </span><span class="co">/*MSVC-specific*/</span><span class="pp">                   </span><span class="op">\</span></span>
+<span id="cb127-4"><a href="#cb127-4"></a><span class="pp">        </span><span class="bu">std::</span>quick_exit<span class="op">(-</span><span class="dv">1</span><span class="op">))</span><span class="pp">  </span><span class="co">/*just to be extra-paranoid*/</span></span>
 <span id="cb127-5"><a href="#cb127-5"></a></span>
 <span id="cb127-6"><a href="#cb127-6"></a><span class="pp">#define KK_VERIFY</span><span class="op">(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                           </span><span class="op">\</span></span>
 <span id="cb127-7"><a href="#cb127-7"></a><span class="pp">    </span><span class="op">(!!(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">||</span><span class="pp">                                         </span><span class="op">\</span></span>
 <span id="cb127-8"><a href="#cb127-8"></a><span class="pp">        </span><span class="op">(</span>KK_ABORT<span class="op">(</span><span class="st">&quot;Verify failed: </span><span class="sc">{}</span><span class="st">.&quot;</span><span class="op">,</span><span class="pp"> </span><span class="op">#</span>KK_EXPRESSION<span class="op">),</span><span class="pp"> </span><span class="kw">false</span><span class="op">))</span></span></code></pre></div>
-<p><code>__debugbreak()</code> is for the cases when you are under
-debugger and <code>std::quick_exit()</code> is for the case when you are
-not.</p>
-<p>Bonus question: why operator comma is used in
+<p><code>__debugbreak()</code> hits under debugger and points exactly at
+assert/verify location:</p>
+<p><img src="cpp_tips_tricks_quirks/cpp_tips_tricks_quirks0.png" /></p>
+<p>Side question: why operator comma is used in
 <code>(KK_ABORT(...), false)</code>?</p>
-<h3 data-number="85" id="stdmove-does-not-move"><span
+<h3 data-number="85"
+id="non-standard-__va_args__-vs-c20-__va_opt__"><span
 class="header-section-number">85</span> <a
+href="#non-standard-__va_args__-vs-c20-__va_opt__"># </a>non-standard
+<code>, ##__VA_ARGS__</code> vs C++20 <code>__VA_OPT__</code></h3>
+<p><mark>TBD</mark>. See <a
+href="https://stackoverflow.com/questions/52891546/what-does-va-args-mean">SO</a>,
+<a
+href="https://en.cppreference.com/w/cpp/preprocessor/replace">cppreference</a>.</p>
+<h3 data-number="86" id="stdmove-does-not-move"><span
+class="header-section-number">86</span> <a
 href="#stdmove-does-not-move"># </a>std::move does not move</h3>
 <p><code>std::move(object)</code> does not “move” on its own. So</p>
 <div class="sourceCode" id="cb128"><pre
@@ -2922,20 +2935,20 @@ constructor instead of copy constructor if both present, etc.</p>
 <p>See <a
 href="https://web.archive.org/web/20230604062855/http://thbecker.net/articles/rvalue_references/section_01.html">C++
 Rvalue References Explained</a> archive.</p>
-<h3 data-number="86" id="no-destructive-move"><span
-class="header-section-number">86</span> <a href="#no-destructive-move">#
+<h3 data-number="87" id="no-destructive-move"><span
+class="header-section-number">87</span> <a href="#no-destructive-move">#
 </a>no destructive move</h3>
 <p>After std::move object still alive and invokes destructor.</p>
 <p><mark>TODO</mark></p>
-<h3 data-number="87" id="stdmove-on-return"><span
-class="header-section-number">87</span> <a href="#stdmove-on-return">#
+<h3 data-number="88" id="stdmove-on-return"><span
+class="header-section-number">88</span> <a href="#stdmove-on-return">#
 </a>std::move on return</h3>
 <p>See <a
 href="https://devblogs.microsoft.com/oldnewthing/20231124-00/?p=109059">On
 harmful overuse of std::move</a>.</p>
 <p><mark>TODO</mark></p>
-<h3 data-number="88" id="enum-struct"><span
-class="header-section-number">88</span> <a href="#enum-struct">#
+<h3 data-number="89" id="enum-struct"><span
+class="header-section-number">89</span> <a href="#enum-struct">#
 </a>enum struct</h3>
 <p>Does below compile?</p>
 <div class="sourceCode" id="cb132"><pre
@@ -2945,8 +2958,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb132-4"><a href="#cb132-4"></a>    V1 <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
 <span id="cb132-5"><a href="#cb132-5"></a><span class="op">};</span></span></code></pre></div>
 <p>Yes. Exactly the same as <code>enum class MyEnum</code>.</p>
-<h3 data-number="89" id="using-enum-declaration"><span
-class="header-section-number">89</span> <a
+<h3 data-number="90" id="using-enum-declaration"><span
+class="header-section-number">90</span> <a
 href="#using-enum-declaration"># </a>using enum declaration</h3>
 <p><a href="https://en.cppreference.com/w/cpp/language/enum">This works
 (C++20)</a>:</p>
@@ -2971,8 +2984,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb133-18"><a href="#cb133-18"></a>    <span class="op">}</span></span>
 <span id="cb133-19"><a href="#cb133-19"></a>    <span class="co">// Note: no need to fully-qualify MyEnum::MyValue0.</span></span>
 <span id="cb133-20"><a href="#cb133-20"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="90" id="using-declaration-vs-using-directive"><span
-class="header-section-number">90</span> <a
+<h3 data-number="91" id="using-declaration-vs-using-directive"><span
+class="header-section-number">91</span> <a
 href="#using-declaration-vs-using-directive"># </a>using declaration vs
 using directive</h3>
 <p>See <a
@@ -2992,8 +3005,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb134-9"><a href="#cb134-9"></a><span class="kw">using</span> <span class="kw">namespace</span> MyNamespace<span class="op">;</span> <span class="co">// using directive</span></span>
 <span id="cb134-10"><a href="#cb134-10"></a>Foo<span class="op">();</span></span></code></pre></div>
 <p>One brings single name; another brings whole namespace.</p>
-<h3 data-number="91" id="dynamic_castt-and-dynamic_castt"><span
-class="header-section-number">91</span> <a
+<h3 data-number="92" id="dynamic_castt-and-dynamic_castt"><span
+class="header-section-number">92</span> <a
 href="#dynamic_castt-and-dynamic_castt">#
 </a><code>dynamic_cast&lt;T*&gt;</code> and
 <code>dynamic_cast&lt;T&amp;&gt;</code></h3>
@@ -3020,8 +3033,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb135-18"><a href="#cb135-18"></a>        <span class="ot">assert</span><span class="op">(</span><span class="kw">false</span><span class="op">);</span> <span class="co">// exception of fail</span></span>
 <span id="cb135-19"><a href="#cb135-19"></a>    <span class="op">}</span></span>
 <span id="cb135-20"><a href="#cb135-20"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="92" id="dynamic_castconst-t-adds-const"><span
-class="header-section-number">92</span> <a
+<h3 data-number="93" id="dynamic_castconst-t-adds-const"><span
+class="header-section-number">93</span> <a
 href="#dynamic_castconst-t-adds-const">#
 </a><code>dynamic_cast&lt;const T*&gt;</code> adds const</h3>
 <div class="sourceCode" id="cb136"><pre
@@ -3039,8 +3052,8 @@ still a class type). See also
 <code>dynamic_cast&lt;void*&gt;</code>.</p>
 <p>Notice, const_cast&lt;const V*&gt; can also be used to
 <strong>add</strong> const, not only remove it.</p>
-<h3 data-number="93" id="conout-conin-for-allocconsole"><span
-class="header-section-number">93</span> <a
+<h3 data-number="94" id="conout-conin-for-allocconsole"><span
+class="header-section-number">94</span> <a
 href="#conout-conin-for-allocconsole"># </a><code>CONOUT$</code>,
 <code>CONIN$</code> for <code>::AllocConsole()</code></h3>
 <p>See <a
@@ -3064,8 +3077,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb137-14"><a href="#cb137-14"></a><span class="op">}</span></span></code></pre></div>
 <p>See <a href="https://stackoverflow.com/a/57241985/2451677">this
 SO</a> for std::wcout and friends reinitilization.</p>
-<h3 data-number="94" id="rdbuf-to-read-whole-file"><span
-class="header-section-number">94</span> <a
+<h3 data-number="95" id="rdbuf-to-read-whole-file"><span
+class="header-section-number">95</span> <a
 href="#rdbuf-to-read-whole-file"># </a>rdbuf to read whole file</h3>
 <p>In case you just need a file content as std::string:</p>
 <div class="sourceCode" id="cb138"><pre
@@ -3080,8 +3093,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb138-9"><a href="#cb138-9"></a>    <span class="cf">return</span> content<span class="op">;</span></span>
 <span id="cb138-10"><a href="#cb138-10"></a><span class="op">}</span></span></code></pre></div>
 <p>Is it “fast” enough?</p>
-<h3 data-number="95" id="rdbuf-to-redirect"><span
-class="header-section-number">95</span> <a href="#rdbuf-to-redirect">#
+<h3 data-number="96" id="rdbuf-to-redirect"><span
+class="header-section-number">96</span> <a href="#rdbuf-to-redirect">#
 </a>rdbuf to redirect</h3>
 <p>See also <a
 href="https://en.cppreference.com/w/cpp/io/basic_ios/rdbuf">rdbuf</a>:</p>
@@ -3106,9 +3119,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb139-18"><a href="#cb139-18"></a>    <span class="bu">std::</span>cin<span class="op">.</span>rdbuf<span class="op">(</span>old_cin<span class="op">);</span> <span class="co">// rollback</span></span>
 <span id="cb139-19"><a href="#cb139-19"></a>    <span class="bu">std::</span>cout<span class="op">.</span>rdbuf<span class="op">(</span>old_cout<span class="op">);</span></span>
 <span id="cb139-20"><a href="#cb139-20"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="96"
+<h3 data-number="97"
 id="compile-error-on-missing-switch-enum-case"><span
-class="header-section-number">96</span> <a
+class="header-section-number">97</span> <a
 href="#compile-error-on-missing-switch-enum-case"># </a>compile error on
 missing switch enum case</h3>
 <p>When adding new enum value to existing enum what places need to be
@@ -3161,9 +3174,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb143-12"><a href="#cb143-12"></a>    <span class="op">}</span></span>
 <span id="cb143-13"><a href="#cb143-13"></a>    <span class="bu">std::</span>unreachable<span class="op">();</span></span>
 <span id="cb143-14"><a href="#cb143-14"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="97"
+<h3 data-number="98"
 id="use-compiler-to-write-down-pointer-to-member-syntax"><span
-class="header-section-number">97</span> <a
+class="header-section-number">98</span> <a
 href="#use-compiler-to-write-down-pointer-to-member-syntax"># </a>use
 compiler to write down pointer-to-member syntax</h3>
 <p>Just use a wrong type first, see what compiler says, copy the correct
@@ -3187,9 +3200,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb146-3"><a href="#cb146-3"></a><span class="kw">using</span> MyIntMember <span class="op">=</span> <span class="dt">int</span> MyClass<span class="op">::*;</span></span>
 <span id="cb146-4"><a href="#cb146-4"></a>MyIntMember ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span></code></pre></div>
 <p>Same works for member function pointers, etc.</p>
-<h3 data-number="98"
+<h3 data-number="99"
 id="all-enum-cases-are-handled-but-its-still-possible-to-fall-out-of-switch"><span
-class="header-section-number">98</span> <a
+class="header-section-number">99</span> <a
 href="#all-enum-cases-are-handled-but-its-still-possible-to-fall-out-of-switch">#
 </a>all enum cases are handled, but it’s still possible to fall out of
 switch</h3>
@@ -3220,8 +3233,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb148-13"><a href="#cb148-13"></a><span class="op">}</span></span>
 <span id="cb148-14"><a href="#cb148-14"></a></span>
 <span id="cb148-15"><a href="#cb148-15"></a>MyProcess<span class="op">(</span>MyEnum<span class="op">{</span><span class="dv">78</span><span class="op">});</span> <span class="co">// perfectly fine</span></span></code></pre></div>
-<h3 data-number="99" id="on_scope_exit"><span
-class="header-section-number">99</span> <a href="#on_scope_exit">#
+<h3 data-number="100" id="on_scope_exit"><span
+class="header-section-number">100</span> <a href="#on_scope_exit">#
 </a>ON_SCOPE_EXIT</h3>
 <p>See <a
 href="https://gist.github.com/maddouri/e22288fe973e107abf5bb775df84779d"
@@ -3232,9 +3245,9 @@ class="uri">https://gist.github.com/maddouri/e22288fe973e107abf5bb775df84779d</a
     ON_SCOPE_EXIT { fclose(f); }
     // ...    
 }</code></pre>
-<h3 data-number="100"
+<h3 data-number="101"
 id="float-to-double-and-integer-promotions-variadic-function"><span
-class="header-section-number">100</span> <a
+class="header-section-number">101</span> <a
 href="#float-to-double-and-integer-promotions-variadic-function">#
 </a>float to double and integer promotions (variadic function)</h3>
 <p>For C-style variadic function, each argument of integer type
@@ -3267,9 +3280,9 @@ warning:</p>
 class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb151-1"><a href="#cb151-1"></a>&gt; warning: second argument to &#39;va_arg&#39; is of promotable type &#39;float&#39;;</span>
 <span id="cb151-2"><a href="#cb151-2"></a>&gt; this va_arg has undefined behavior because arguments will</span>
 <span id="cb151-3"><a href="#cb151-3"></a>&gt; be promoted to &#39;double&#39; [-Wvarargs]</span></code></pre></div>
-<h3 data-number="101"
+<h3 data-number="102"
 id="surrogate-call-functions-conversion-operator"><span
-class="header-section-number">101</span> <a
+class="header-section-number">102</span> <a
 href="#surrogate-call-functions-conversion-operator"># </a>surrogate
 call functions (/ conversion operator)</h3>
 <p>From <a
@@ -3289,9 +3302,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb152-12"><a href="#cb152-12"></a><span class="dt">int</span> i <span class="op">=</span> a<span class="op">(</span><span class="dv">1</span><span class="op">);</span>       <span class="co">// calls f1 via pointer</span></span>
 <span id="cb152-13"><a href="#cb152-13"></a>                    <span class="co">// returned from conversion function</span></span>
 <span id="cb152-14"><a href="#cb152-14"></a><span class="dt">char</span> c <span class="op">=</span> a<span class="op">(</span><span class="fl">0.5</span><span class="bu">f</span><span class="op">);</span>   <span class="co">// calls f2</span></span></code></pre></div>
-<h3 data-number="102"
+<h3 data-number="103"
 id="array_size-function-returning-reference-to-an-array"><span
-class="header-section-number">102</span> <a
+class="header-section-number">103</span> <a
 href="#array_size-function-returning-reference-to-an-array">#
 </a>ARRAY_SIZE / function returning reference to an array</h3>
 <p>To get size/length/count of c-style static array pre-C++17 constexpr
@@ -3316,8 +3329,8 @@ UE_ARRAY_COUNT macro.</p>
 <p>Note, also, how ArraySizeHelper is a function that accepts reference
 to array of size N (known at compile time) and returns reference to
 array of size N.</p>
-<h3 data-number="103" id="infinite-function-pointer-dereference"><span
-class="header-section-number">103</span> <a
+<h3 data-number="104" id="infinite-function-pointer-dereference"><span
+class="header-section-number">104</span> <a
 href="#infinite-function-pointer-dereference"># </a>infinite function
 pointer dereference</h3>
 <div class="sourceCode" id="cb154"><pre
@@ -3344,9 +3357,9 @@ href="https://en.cppreference.com/w/cpp/language/implicit_conversion">Function-t
 conversion</a> and <a
 href="https://en.cppreference.com/w/cpp/language/function">Function
 declaration</a>.</p>
-<h3 data-number="104"
+<h3 data-number="105"
 id="historical-schwarz-counter-nifty-counter-static-initialization"><span
-class="header-section-number">104</span> <a
+class="header-section-number">105</span> <a
 href="#historical-schwarz-counter-nifty-counter-static-initialization">#
 </a>(historical?) Schwarz Counter / Nifty Counter (static
 initialization)</h3>
@@ -3420,9 +3433,9 @@ runtime linked first? <mark>TBD</mark>).</p>
 <p>Note: may not work in case of precompiled headers use, see <a
 href="https://developercommunity.visualstudio.com/t/Schwarz-counter-vs-precompiled-header/1256884">bug
 report</a>.</p>
-<h3 data-number="105"
+<h3 data-number="106"
 id="emulate-concept-passing-as-template-argument"><span
-class="header-section-number">105</span> <a
+class="header-section-number">106</span> <a
 href="#emulate-concept-passing-as-template-argument"># </a>emulate
 concept passing as template argument</h3>
 <p>From <a

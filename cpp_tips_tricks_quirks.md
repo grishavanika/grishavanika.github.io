@@ -2272,18 +2272,24 @@ of the assert fail. In short:
 ``` cpp {.numberLines}
 #define KK_ABORT(KK_FMT, ...) (void)                              \
     (::log_abort(__FILE__, __LINE__, KK_FMT, ##__VA_ARGS__),      \
-        __debugbreak(),                                           \
-        std::quick_exit(-1))
+        __debugbreak(),       /*MSVC-specific*/                   \
+        std::quick_exit(-1))  /*just to be extra-paranoid*/
 
 #define KK_VERIFY(KK_EXPRESSION) (void)                           \
     (!!(KK_EXPRESSION) ||                                         \
         (KK_ABORT("Verify failed: {}.", #KK_EXPRESSION), false))
 ```
 
-`__debugbreak()` is for the cases when you are under debugger and
-`std::quick_exit()` is for the case when you are not.
+`__debugbreak()` hits under debugger and points exactly at assert/verify location:
 
-Bonus question: why operator comma is used in `(KK_ABORT(...), false)`?
+![](cpp_tips_tricks_quirks/cpp_tips_tricks_quirks0.png) 
+
+Side question: why operator comma is used in `(KK_ABORT(...), false)`?
+
+### non-standard `, ##__VA_ARGS__` vs C++20 `__VA_OPT__`
+
+[TBD]{.mark}. See [SO](https://stackoverflow.com/questions/52891546/what-does-va-args-mean),
+[cppreference](https://en.cppreference.com/w/cpp/preprocessor/replace).
 
 ### std::move does not move
 

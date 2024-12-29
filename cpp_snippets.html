@@ -249,6 +249,13 @@ trivial case</a></li>
 id="toc-parse-string-to-int-strict-version"><span
 class="toc-section-number">2</span> # parse string to int, strict
 version</a></li>
+<li><a href="#custom-assert-pre-c23"
+id="toc-custom-assert-pre-c23"><span class="toc-section-number">3</span>
+# custom assert pre-C++23</a></li>
+<li><a href="#custom-assert-post-c23-with-callstack"
+id="toc-custom-assert-post-c23-with-callstack"><span
+class="toc-section-number">4</span> # custom assert post-C++23, with
+callstack</a></li>
 </ul>
 </nav>
 <h3 data-number="1"
@@ -337,6 +344,96 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <code>ParseToU64("10a")</code> fails, compared to regular
 <code>std::from_chars("10a", ...)</code> and old-style
 <code>atoi("10a")</code> analogs.</p>
+<h3 data-number="3" id="custom-assert-pre-c23"><span
+class="header-section-number">3</span> <a
+href="#custom-assert-pre-c23"># </a>custom assert pre-C++23</h3>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1"></a><span class="pp">#define KK_ABORT</span><span class="op">(</span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">...)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                              </span><span class="op">\</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="pp">    </span><span class="op">(::</span>log_abort<span class="op">(</span><span class="ot">__FILE__</span><span class="op">,</span><span class="pp"> </span><span class="ot">__LINE__</span><span class="op">,</span><span class="pp"> </span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">##</span><span class="ot">__VA_ARGS__</span><span class="op">),</span><span class="pp">      </span><span class="op">\</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="pp">        </span>__debugbreak<span class="op">(),</span><span class="pp">       </span><span class="co">/*MSVC-specific*/</span><span class="pp">                   </span><span class="op">\</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="pp">        </span><span class="bu">std::</span>quick_exit<span class="op">(-</span><span class="dv">1</span><span class="op">))</span><span class="pp">  </span><span class="co">/*just to be extra-paranoid*/</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="pp">#define KK_VERIFY</span><span class="op">(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                           </span><span class="op">\</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="pp">    </span><span class="op">(!!(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">||</span><span class="pp">                                         </span><span class="op">\</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="pp">        </span><span class="op">(</span>KK_ABORT<span class="op">(</span><span class="st">&quot;Verify failed: &#39;</span><span class="sc">%s</span><span class="st">&#39;.&quot;</span><span class="op">,</span><span class="pp"> </span><span class="op">#</span>KK_EXPRESSION<span class="op">),</span><span class="pp"> </span><span class="kw">false</span><span class="op">))</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="pp">#define KK_ASSERT </span>KK_VERIFY<span class="pp"> </span><span class="co">// another name</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a></span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="pp">#include </span><span class="im">&lt;cstdarg&gt;</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="pp">#include </span><span class="im">&lt;cstdio&gt;</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a><span class="pp">#include </span><span class="im">&lt;cstdlib&gt;</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a></span>
+<span id="cb7-16"><a href="#cb7-16"></a><span class="dt">void</span> log_abort<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file<span class="op">,</span> <span class="dt">unsigned</span> line<span class="op">,</span> <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> fmt<span class="op">,</span> <span class="op">...)</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a><span class="op">{</span></span>
+<span id="cb7-18"><a href="#cb7-18"></a>    <span class="dt">char</span> str<span class="op">[</span><span class="dv">1024</span><span class="op">]{};</span></span>
+<span id="cb7-19"><a href="#cb7-19"></a>    <span class="dt">va_list</span> args<span class="op">;</span></span>
+<span id="cb7-20"><a href="#cb7-20"></a>    va_start<span class="op">(</span>args<span class="op">,</span> fmt<span class="op">);</span></span>
+<span id="cb7-21"><a href="#cb7-21"></a>    <span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="bu">std::</span>vsnprintf<span class="op">(</span>str<span class="op">,</span> <span class="bu">std::</span>size_t<span class="op">(</span>str<span class="op">),</span> fmt<span class="op">,</span> args<span class="op">);</span></span>
+<span id="cb7-22"><a href="#cb7-22"></a>    va_end<span class="op">(</span>args<span class="op">);</span></span>
+<span id="cb7-23"><a href="#cb7-23"></a></span>
+<span id="cb7-24"><a href="#cb7-24"></a>    <span class="co">// Optionally, only file name could be cut and used from `file`.</span></span>
+<span id="cb7-25"><a href="#cb7-25"></a>    <span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="bu">std::</span>fflush<span class="op">(</span>stdout<span class="op">);</span></span>
+<span id="cb7-26"><a href="#cb7-26"></a>    <span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="bu">std::</span>fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;Error at &#39;</span><span class="sc">%s</span><span class="st">,</span><span class="sc">%u</span><span class="st">&#39;</span><span class="sc">\n</span><span class="st"> -&gt; </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> file<span class="op">,</span> line<span class="op">,</span> str<span class="op">);</span></span>
+<span id="cb7-27"><a href="#cb7-27"></a>    <span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="bu">std::</span>fflush<span class="op">(</span>stderr<span class="op">);</span></span>
+<span id="cb7-28"><a href="#cb7-28"></a><span class="op">}</span></span>
+<span id="cb7-29"><a href="#cb7-29"></a></span>
+<span id="cb7-30"><a href="#cb7-30"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span><span class="op">*</span> argv<span class="op">)</span></span>
+<span id="cb7-31"><a href="#cb7-31"></a><span class="op">{</span></span>
+<span id="cb7-32"><a href="#cb7-32"></a>    KK_ASSERT<span class="op">(</span>argc <span class="op">==</span> <span class="dv">2</span> <span class="op">&amp;&amp;</span> <span class="st">&quot;Test requires 1 argument&quot;</span><span class="op">);</span></span>
+<span id="cb7-33"><a href="#cb7-33"></a><span class="op">}</span></span></code></pre></div>
+<p>prints:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb8-1"><a href="#cb8-1"></a>Error at &#39;...\main.cpp,32&#39;</span>
+<span id="cb8-2"><a href="#cb8-2"></a> -&gt; Verify failed: &#39;argc == 2 &amp;&amp; &quot;Test requires 1 argument&quot;&#39;.</span></code></pre></div>
+<h3 data-number="4" id="custom-assert-post-c23-with-callstack"><span
+class="header-section-number">4</span> <a
+href="#custom-assert-post-c23-with-callstack"># </a>custom assert
+post-C++23, with callstack</h3>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1"></a><span class="pp">#define KK_ABORT</span><span class="op">(</span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">...)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                             </span><span class="op">\</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="pp">    </span><span class="op">(::</span>log_abort<span class="op">(</span><span class="ot">__FILE__</span><span class="op">,</span><span class="pp"> </span><span class="ot">__LINE__</span><span class="op">,</span><span class="pp"> </span>KK_FMT<span class="op">,</span><span class="pp">                     </span><span class="op">\</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="pp">        </span><span class="bu">std::</span>make_format_args<span class="op">(</span><span class="ot">__VA_ARGS__</span><span class="op">)),</span><span class="pp">                     </span><span class="op">\</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="pp">            </span>__debugbreak<span class="op">(),</span><span class="pp">       </span><span class="co">/*MSVC-specific*/</span><span class="pp">              </span><span class="op">\</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="pp">            </span><span class="bu">std::</span>quick_exit<span class="op">(-</span><span class="dv">1</span><span class="op">))</span><span class="pp">  </span><span class="co">/*just to be extra-paranoid*/</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a></span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="pp">#define KK_VERIFY</span><span class="op">(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                           </span><span class="op">\</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="pp">    </span><span class="op">(!!(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">||</span><span class="pp">                                         </span><span class="op">\</span></span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="pp">        </span><span class="op">(</span>KK_ABORT<span class="op">(</span><span class="st">&quot;Verify failed: &#39;</span><span class="sc">{}</span><span class="st">&#39;.&quot;</span><span class="op">,</span><span class="pp"> </span><span class="op">#</span>KK_EXPRESSION<span class="op">),</span><span class="pp"> </span><span class="kw">false</span><span class="op">))</span></span>
+<span id="cb9-10"><a href="#cb9-10"></a></span>
+<span id="cb9-11"><a href="#cb9-11"></a><span class="pp">#define KK_ASSERT </span>KK_VERIFY<span class="pp"> </span><span class="co">// another name</span></span>
+<span id="cb9-12"><a href="#cb9-12"></a></span>
+<span id="cb9-13"><a href="#cb9-13"></a><span class="pp">#include </span><span class="im">&lt;format&gt;</span></span>
+<span id="cb9-14"><a href="#cb9-14"></a><span class="pp">#include </span><span class="im">&lt;print&gt;</span></span>
+<span id="cb9-15"><a href="#cb9-15"></a><span class="pp">#include </span><span class="im">&lt;stacktrace&gt;</span></span>
+<span id="cb9-16"><a href="#cb9-16"></a></span>
+<span id="cb9-17"><a href="#cb9-17"></a><span class="dt">void</span> log_abort<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file<span class="op">,</span> <span class="dt">unsigned</span> line</span>
+<span id="cb9-18"><a href="#cb9-18"></a>    <span class="op">,</span> <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> fmt<span class="op">,</span> <span class="bu">std::</span>format_args args<span class="op">)</span></span>
+<span id="cb9-19"><a href="#cb9-19"></a><span class="op">{</span></span>
+<span id="cb9-20"><a href="#cb9-20"></a>    <span class="dt">char</span> str<span class="op">[</span><span class="dv">1024</span><span class="op">]{};</span></span>
+<span id="cb9-21"><a href="#cb9-21"></a>    <span class="bu">std::</span>vformat_to<span class="op">(</span>str<span class="op">,</span> fmt<span class="op">,</span> <span class="bu">std::</span>move<span class="op">(</span>args<span class="op">));</span></span>
+<span id="cb9-22"><a href="#cb9-22"></a>    <span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="bu">std::</span>fflush<span class="op">(</span>stdout<span class="op">);</span></span>
+<span id="cb9-23"><a href="#cb9-23"></a>    <span class="bu">std::</span>println<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;Error at &#39;</span><span class="sc">{}</span><span class="st">,</span><span class="sc">{}</span><span class="st">&#39;</span><span class="sc">\n</span><span class="st"> -&gt; </span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> file<span class="op">,</span> line<span class="op">,</span> str<span class="op">);</span></span>
+<span id="cb9-24"><a href="#cb9-24"></a>    <span class="bu">std::</span>println<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;---- Callstack:</span><span class="sc">\n{}</span><span class="st">&quot;</span><span class="op">,</span> <span class="bu">std::</span>stacktrace::current<span class="op">());</span></span>
+<span id="cb9-25"><a href="#cb9-25"></a>    <span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="bu">std::</span>fflush<span class="op">(</span>stderr<span class="op">);</span></span>
+<span id="cb9-26"><a href="#cb9-26"></a><span class="op">}</span></span>
+<span id="cb9-27"><a href="#cb9-27"></a></span>
+<span id="cb9-28"><a href="#cb9-28"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span><span class="op">*</span> argv<span class="op">)</span></span>
+<span id="cb9-29"><a href="#cb9-29"></a><span class="op">{</span></span>
+<span id="cb9-30"><a href="#cb9-30"></a>    KK_ASSERT<span class="op">(</span>argc <span class="op">==</span> <span class="dv">2</span> <span class="op">&amp;&amp;</span> <span class="st">&quot;Test requires 1 argument&quot;</span><span class="op">);</span></span>
+<span id="cb9-31"><a href="#cb9-31"></a><span class="op">}</span></span></code></pre></div>
+<p>prints:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb10-1"><a href="#cb10-1"></a>Error at &#39;...\main.cpp,30&#39;</span>
+<span id="cb10-2"><a href="#cb10-2"></a> -&gt; Verify failed: &#39;argc == 2 &amp;&amp; &quot;Test requires 1 argument&quot;&#39;.</span>
+<span id="cb10-3"><a href="#cb10-3"></a>---- Callstack:</span>
+<span id="cb10-4"><a href="#cb10-4"></a>0&gt; ...\main.cpp(24): snippets!log_abort+0x1BC</span>
+<span id="cb10-5"><a href="#cb10-5"></a>1&gt; ...\main.cpp(30): snippets!main+0xCA</span>
+<span id="cb10-6"><a href="#cb10-6"></a>2&gt; ...\exe_common.inl(79): snippets!invoke_main+0x39</span>
+<span id="cb10-7"><a href="#cb10-7"></a>3&gt; ...\exe_common.inl(288): snippets!__scrt_common_main_seh+0x12E</span>
+<span id="cb10-8"><a href="#cb10-8"></a>4&gt; ...\exe_common.inl(331): snippets!__scrt_common_main+0xE</span>
+<span id="cb10-9"><a href="#cb10-9"></a>5&gt; ...\exe_main.cpp(17): snippets!mainCRTStartup+0xE</span>
+<span id="cb10-10"><a href="#cb10-10"></a>6&gt; KERNEL32!BaseThreadInitThunk+0x17</span>
+<span id="cb10-11"><a href="#cb10-11"></a>7&gt; ntdll!RtlUserThreadStart+0x2C</span></code></pre></div>
 <hr />
 <p>C++ snippets:</p>
 <ul>
