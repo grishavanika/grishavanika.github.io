@@ -2,7 +2,7 @@
 title: C++ notes around tooling
 ---
 
-#### clang-format, force multi-line formatting
+### clang-format, force multi-line formatting
 
 Add `// ` comment at the end of line to force clang-format to NOT merge
 everything into single line. This:
@@ -27,7 +27,7 @@ if ((status == e1)    //
 }
 ```
 
-#### initial clang-format setup
+### initial clang-format setup
 
  * Note clang-format version with `clang-format.exe --version`.
  * Dump some (any?) available style to .clang-format with `clang-format.exe --style=Microsoft --dump-config > .clang-format`.
@@ -45,7 +45,7 @@ Language:        Cpp
 ...
 ```
 
-#### disable clang-format for piece of code
+### disable clang-format for piece of code
 
 ``` cpp {.numberLines}
 // clang-format off
@@ -56,7 +56,7 @@ MyHandle(56
 // clang-format on
 ```
 
-#### clang-format command line for file formatting
+### clang-format command line for file formatting
 
 Single file:
 
@@ -71,7 +71,7 @@ ls -Path . -Recurse -File -Include *.h,*.cpp `
 	| % { clang-format.exe -i --style=file:.clang-format $_.FullName }
 ```
 
-#### MSVC: dump class/object memory layout
+### MSVC: dump class/object memory layout
 
 See [/d1reportAllClassLayout – Dumping Object Memory Layout](https://ofekshilon.com/2010/11/07/d1reportallclasslayout-dumping-object-memory-layout/) and [VC++ 2013 class Layout Change and Wasted Space](https://randomascii.wordpress.com/2013/12/01/vc-2013-class-layout-change-and-wasted-space/). For this code:
 

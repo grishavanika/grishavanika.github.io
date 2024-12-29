@@ -2,7 +2,7 @@
 title: C++ snippets
 ---
 
-#### add a value into sorted vector, trivial case
+### add a value into sorted vector, trivial case
 
 ```cpp {.numberLines}
 #include <vector>
@@ -74,7 +74,7 @@ void Sorted_Add(std::vector<T>& vs, U&& v)
 }
 ```
 
-#### parse string to int, strict version
+### parse string to int, strict version
 
 ```cpp {.numberLines}
 #include <string_view>

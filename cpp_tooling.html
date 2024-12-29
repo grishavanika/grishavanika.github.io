@@ -263,10 +263,10 @@ class="toc-section-number">5</span> # MSVC: dump class/object memory
 layout</a></li>
 </ul>
 </nav>
-<h4 data-number="1" id="clang-format-force-multi-line-formatting"><span
+<h3 data-number="1" id="clang-format-force-multi-line-formatting"><span
 class="header-section-number">1</span> <a
 href="#clang-format-force-multi-line-formatting"># </a>clang-format,
-force multi-line formatting</h4>
+force multi-line formatting</h3>
 <p>Add <code>//</code> comment at the end of line to force clang-format
 to NOT merge everything into single line. This:</p>
 <div class="sourceCode" id="cb1"><pre
@@ -284,9 +284,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb2-5"><a href="#cb2-5"></a><span class="op">{</span></span>
 <span id="cb2-6"><a href="#cb2-6"></a>    HandleMe<span class="op">();</span></span>
 <span id="cb2-7"><a href="#cb2-7"></a><span class="op">}</span></span></code></pre></div>
-<h4 data-number="2" id="initial-clang-format-setup"><span
+<h3 data-number="2" id="initial-clang-format-setup"><span
 class="header-section-number">2</span> <a
-href="#initial-clang-format-setup"># </a>initial clang-format setup</h4>
+href="#initial-clang-format-setup"># </a>initial clang-format setup</h3>
 <ul>
 <li>Note clang-format version with
 <code>clang-format.exe --version</code>.</li>
@@ -306,10 +306,10 @@ class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="c
 <span id="cb3-4"><a href="#cb3-4"></a>Language:        Cpp</span>
 <span id="cb3-5"><a href="#cb3-5"></a># BasedOnStyle:  Microsoft</span>
 <span id="cb3-6"><a href="#cb3-6"></a>...</span></code></pre></div>
-<h4 data-number="3" id="disable-clang-format-for-piece-of-code"><span
+<h3 data-number="3" id="disable-clang-format-for-piece-of-code"><span
 class="header-section-number">3</span> <a
 href="#disable-clang-format-for-piece-of-code"># </a>disable
-clang-format for piece of code</h4>
+clang-format for piece of code</h3>
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1"></a><span class="co">// clang-format off</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a>MyHandle<span class="op">(</span><span class="dv">56</span></span>
@@ -317,11 +317,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb4-4"><a href="#cb4-4"></a>    <span class="op">,</span> <span class="st">&quot;data&quot;</span></span>
 <span id="cb4-5"><a href="#cb4-5"></a>    <span class="op">);</span></span>
 <span id="cb4-6"><a href="#cb4-6"></a><span class="co">// clang-format on</span></span></code></pre></div>
-<h4 data-number="4"
+<h3 data-number="4"
 id="clang-format-command-line-for-file-formatting"><span
 class="header-section-number">4</span> <a
 href="#clang-format-command-line-for-file-formatting"># </a>clang-format
-command line for file formatting</h4>
+command line for file formatting</h3>
 <p>Single file:</p>
 <div class="sourceCode" id="cb5"><pre
 class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb5-1"><a href="#cb5-1"></a>clang-format.exe -i --style=file:.clang-format &quot;main.cpp&quot;</span></code></pre></div>
@@ -329,10 +329,10 @@ class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="c
 <div class="sourceCode" id="cb6"><pre
 class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb6-1"><a href="#cb6-1"></a>ls -Path . -Recurse -File -Include *.h,*.cpp `</span>
 <span id="cb6-2"><a href="#cb6-2"></a>    | % { clang-format.exe -i --style=file:.clang-format $_.FullName }</span></code></pre></div>
-<h4 data-number="5" id="msvc-dump-classobject-memory-layout"><span
+<h3 data-number="5" id="msvc-dump-classobject-memory-layout"><span
 class="header-section-number">5</span> <a
 href="#msvc-dump-classobject-memory-layout"># </a>MSVC: dump
-class/object memory layout</h4>
+class/object memory layout</h3>
 <p>See <a
 href="https://ofekshilon.com/2010/11/07/d1reportallclasslayout-dumping-object-memory-layout/">/d1reportAllClassLayout
 – Dumping Object Memory Layout</a> and <a
