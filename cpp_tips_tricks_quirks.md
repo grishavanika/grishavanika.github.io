@@ -2277,7 +2277,7 @@ of the assert fail. In short:
 
 #define KK_VERIFY(KK_EXPRESSION) (void)                           \
     (!!(KK_EXPRESSION) ||                                         \
-        (KK_ABORT("Verify failed: {}.", #KK_EXPRESSION), false))
+        (KK_ABORT("Verify failed: '%s'.", #KK_EXPRESSION), false))
 ```
 
 `__debugbreak()` hits under debugger and points exactly at assert/verify location:

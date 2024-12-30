@@ -245,17 +245,22 @@
 id="toc-add-a-value-into-sorted-vector-trivial-case"><span
 class="toc-section-number">1</span> # add a value into sorted vector,
 trivial case</a></li>
+<li><a href="#validate-printf-format-at-compile-time"
+id="toc-validate-printf-format-at-compile-time"><span
+class="toc-section-number">2</span> # validate printf format at compile
+time</a></li>
 <li><a href="#parse-string-to-int-strict-version"
 id="toc-parse-string-to-int-strict-version"><span
-class="toc-section-number">2</span> # parse string to int, strict
+class="toc-section-number">3</span> # parse string to int, strict
 version</a></li>
-<li><a href="#custom-assert-pre-c23"
-id="toc-custom-assert-pre-c23"><span class="toc-section-number">3</span>
-# custom assert pre-C++23</a></li>
-<li><a href="#custom-assert-post-c23-with-callstack"
-id="toc-custom-assert-post-c23-with-callstack"><span
-class="toc-section-number">4</span> # custom assert post-C++23, with
-callstack</a></li>
+<li><a href="#custom-assert-stdprintf-based-c17"
+id="toc-custom-assert-stdprintf-based-c17"><span
+class="toc-section-number">4</span> # custom assert, std::printf-based
+(&lt;=C++17)</a></li>
+<li><a href="#custom-assert-stdformat-based-c20"
+id="toc-custom-assert-stdformat-based-c20"><span
+class="toc-section-number">5</span> # custom assert, std::format-based
+(&gt;=C++20)</a></li>
 </ul>
 </nav>
 <h3 data-number="1"
@@ -320,120 +325,324 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb5-7"><a href="#cb5-7"></a>    <span class="kw">auto</span> it <span class="op">=</span> <span class="bu">std::</span>upper_bound<span class="op">(</span>vs<span class="op">.</span>begin<span class="op">(),</span> vs<span class="op">.</span>end<span class="op">(),</span> v<span class="op">);</span></span>
 <span id="cb5-8"><a href="#cb5-8"></a>    vs<span class="op">.</span>insert<span class="op">(</span>it<span class="op">,</span> <span class="bu">std::</span>forward<span class="op">&lt;</span>U<span class="op">&gt;(</span>v<span class="op">));</span></span>
 <span id="cb5-9"><a href="#cb5-9"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="2" id="parse-string-to-int-strict-version"><span
+<h3 data-number="2" id="validate-printf-format-at-compile-time"><span
 class="header-section-number">2</span> <a
+href="#validate-printf-format-at-compile-time"># </a>validate printf
+format at compile time</h3>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1"></a><span class="pp">#include </span><span class="im">&lt;cstdio&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="co">// GCC, Clang: -Werror=format</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="co">// GCC, Clang: error: format specifies type &#39;char *&#39; but the argument has type &#39;int&#39; [-Werror,-Wformat]</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co">// MSVC: /we4477</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co">// MSVC: error C4477: &#39;printf&#39; : format string &#39;%s&#39; requires an argument of type &#39;char *&#39;, but variadic argument 1 has type &#39;int&#39;</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="pp">#define KK_CHECK_PRINTF</span><span class="op">(</span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">...)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="pp">    </span><span class="op">(</span><span class="kw">false</span><span class="pp"> </span><span class="op">&amp;&amp;</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="pp">        </span><span class="bu">std::</span>printf<span class="op">(</span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">##</span><span class="ot">__VA_ARGS__</span><span class="op">))</span></span></code></pre></div>
+<p><code>KK_CHECK_PRINTF("%s", 10)</code> will fail to compile (/we4477
+for MSVC, -Werror=format for GCC, Clang). This relies on the fact that
+<code>std::printf</code> is validated by all compilers. There are ways
+to achieve similar effect for custom printf functions by using SAL
+Annotations for MSVC (see this <a
+href="https://stackoverflow.com/a/6849629">SO</a>) and
+<code>__attribute__((format(printf, 1, 2)))</code> for GCC/Clang.
+However, using printf directly is the easiest way.</p>
+<h3 data-number="3" id="parse-string-to-int-strict-version"><span
+class="header-section-number">3</span> <a
 href="#parse-string-to-int-strict-version"># </a>parse string to int,
 strict version</h3>
-<div class="sourceCode" id="cb6"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1"></a><span class="pp">#include </span><span class="im">&lt;string_view&gt;</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="pp">#include </span><span class="im">&lt;charconv&gt;</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="pp">#include </span><span class="im">&lt;cassert&gt;</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="pp">#include </span><span class="im">&lt;cstdint&gt;</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a></span>
-<span id="cb6-6"><a href="#cb6-6"></a><span class="bu">std::</span>uint64_t ParseToU64<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>string_view<span class="op">&amp;</span> str<span class="op">)</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a><span class="op">{</span></span>
-<span id="cb6-8"><a href="#cb6-8"></a>    <span class="bu">std::</span>uint64_t v <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb6-9"><a href="#cb6-9"></a>    <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> <span class="at">const</span> start <span class="op">=</span> str<span class="op">.</span>data<span class="op">();</span></span>
-<span id="cb6-10"><a href="#cb6-10"></a>    <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> <span class="at">const</span> end <span class="op">=</span> <span class="op">(</span>start <span class="op">+</span> str<span class="op">.</span>size<span class="op">());</span></span>
-<span id="cb6-11"><a href="#cb6-11"></a>    <span class="kw">auto</span><span class="op">&amp;&amp;</span> <span class="op">[</span>ptr<span class="op">,</span> ec<span class="op">]</span> <span class="op">=</span> <span class="bu">std::</span>from_chars<span class="op">(</span>start<span class="op">,</span> end<span class="op">,</span> v<span class="op">,</span> <span class="dv">10</span><span class="op">);</span></span>
-<span id="cb6-12"><a href="#cb6-12"></a>    <span class="ot">assert</span><span class="op">(</span>ptr <span class="op">==</span> end<span class="op">);</span></span>
-<span id="cb6-13"><a href="#cb6-13"></a>    <span class="ot">assert</span><span class="op">(</span>ec <span class="op">==</span> <span class="bu">std::</span>errc<span class="op">{});</span></span>
-<span id="cb6-14"><a href="#cb6-14"></a>    <span class="cf">return</span> v<span class="op">;</span></span>
-<span id="cb6-15"><a href="#cb6-15"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1"></a><span class="pp">#include </span><span class="im">&lt;string_view&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="pp">#include </span><span class="im">&lt;charconv&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="pp">#include </span><span class="im">&lt;cassert&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="pp">#include </span><span class="im">&lt;cstdint&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="bu">std::</span>uint64_t ParseToU64<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>string_view<span class="op">&amp;</span> str<span class="op">)</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="op">{</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a>    <span class="bu">std::</span>uint64_t v <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a>    <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> <span class="at">const</span> start <span class="op">=</span> str<span class="op">.</span>data<span class="op">();</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a>    <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> <span class="at">const</span> end <span class="op">=</span> <span class="op">(</span>start <span class="op">+</span> str<span class="op">.</span>size<span class="op">());</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>    <span class="kw">auto</span><span class="op">&amp;&amp;</span> <span class="op">[</span>ptr<span class="op">,</span> ec<span class="op">]</span> <span class="op">=</span> <span class="bu">std::</span>from_chars<span class="op">(</span>start<span class="op">,</span> end<span class="op">,</span> v<span class="op">,</span> <span class="dv">10</span><span class="op">);</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a>    <span class="ot">assert</span><span class="op">(</span>ptr <span class="op">==</span> end<span class="op">);</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a>    <span class="ot">assert</span><span class="op">(</span>ec <span class="op">==</span> <span class="bu">std::</span>errc<span class="op">{});</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a>    <span class="cf">return</span> v<span class="op">;</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a><span class="op">}</span></span></code></pre></div>
 <p>where it does not allow to have string leftovers, so
 <code>ParseToU64("10a")</code> fails, compared to regular
 <code>std::from_chars("10a", ...)</code> and old-style
 <code>atoi("10a")</code> analogs.</p>
-<h3 data-number="3" id="custom-assert-pre-c23"><span
-class="header-section-number">3</span> <a
-href="#custom-assert-pre-c23"># </a>custom assert pre-C++23</h3>
-<div class="sourceCode" id="cb7"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1"></a><span class="pp">#define KK_ABORT</span><span class="op">(</span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">...)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                              </span><span class="op">\</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="pp">    </span><span class="op">(::</span>log_abort<span class="op">(</span><span class="ot">__FILE__</span><span class="op">,</span><span class="pp"> </span><span class="ot">__LINE__</span><span class="op">,</span><span class="pp"> </span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">##</span><span class="ot">__VA_ARGS__</span><span class="op">),</span><span class="pp">      </span><span class="op">\</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="pp">        </span>__debugbreak<span class="op">(),</span><span class="pp">       </span><span class="co">/*MSVC-specific*/</span><span class="pp">                   </span><span class="op">\</span></span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="pp">        </span><span class="bu">std::</span>quick_exit<span class="op">(-</span><span class="dv">1</span><span class="op">))</span><span class="pp">  </span><span class="co">/*just to be extra-paranoid*/</span></span>
-<span id="cb7-5"><a href="#cb7-5"></a></span>
-<span id="cb7-6"><a href="#cb7-6"></a><span class="pp">#define KK_VERIFY</span><span class="op">(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                           </span><span class="op">\</span></span>
-<span id="cb7-7"><a href="#cb7-7"></a><span class="pp">    </span><span class="op">(!!(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">||</span><span class="pp">                                         </span><span class="op">\</span></span>
-<span id="cb7-8"><a href="#cb7-8"></a><span class="pp">        </span><span class="op">(</span>KK_ABORT<span class="op">(</span><span class="st">&quot;Verify failed: &#39;</span><span class="sc">%s</span><span class="st">&#39;.&quot;</span><span class="op">,</span><span class="pp"> </span><span class="op">#</span>KK_EXPRESSION<span class="op">),</span><span class="pp"> </span><span class="kw">false</span><span class="op">))</span></span>
-<span id="cb7-9"><a href="#cb7-9"></a></span>
-<span id="cb7-10"><a href="#cb7-10"></a><span class="pp">#define KK_ASSERT </span>KK_VERIFY<span class="pp"> </span><span class="co">// another name</span></span>
-<span id="cb7-11"><a href="#cb7-11"></a></span>
-<span id="cb7-12"><a href="#cb7-12"></a><span class="pp">#include </span><span class="im">&lt;cstdarg&gt;</span></span>
-<span id="cb7-13"><a href="#cb7-13"></a><span class="pp">#include </span><span class="im">&lt;cstdio&gt;</span></span>
-<span id="cb7-14"><a href="#cb7-14"></a><span class="pp">#include </span><span class="im">&lt;cstdlib&gt;</span></span>
-<span id="cb7-15"><a href="#cb7-15"></a></span>
-<span id="cb7-16"><a href="#cb7-16"></a><span class="dt">void</span> log_abort<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file<span class="op">,</span> <span class="dt">unsigned</span> line<span class="op">,</span> <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> fmt<span class="op">,</span> <span class="op">...)</span></span>
-<span id="cb7-17"><a href="#cb7-17"></a><span class="op">{</span></span>
-<span id="cb7-18"><a href="#cb7-18"></a>    <span class="dt">char</span> str<span class="op">[</span><span class="dv">1024</span><span class="op">]{};</span></span>
-<span id="cb7-19"><a href="#cb7-19"></a>    <span class="dt">va_list</span> args<span class="op">;</span></span>
-<span id="cb7-20"><a href="#cb7-20"></a>    va_start<span class="op">(</span>args<span class="op">,</span> fmt<span class="op">);</span></span>
-<span id="cb7-21"><a href="#cb7-21"></a>    <span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="bu">std::</span>vsnprintf<span class="op">(</span>str<span class="op">,</span> <span class="bu">std::</span>size_t<span class="op">(</span>str<span class="op">),</span> fmt<span class="op">,</span> args<span class="op">);</span></span>
-<span id="cb7-22"><a href="#cb7-22"></a>    va_end<span class="op">(</span>args<span class="op">);</span></span>
-<span id="cb7-23"><a href="#cb7-23"></a></span>
-<span id="cb7-24"><a href="#cb7-24"></a>    <span class="co">// Optionally, only file name could be cut and used from `file`.</span></span>
-<span id="cb7-25"><a href="#cb7-25"></a>    <span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="bu">std::</span>fflush<span class="op">(</span>stdout<span class="op">);</span></span>
-<span id="cb7-26"><a href="#cb7-26"></a>    <span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="bu">std::</span>fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;Error at &#39;</span><span class="sc">%s</span><span class="st">,</span><span class="sc">%u</span><span class="st">&#39;</span><span class="sc">\n</span><span class="st"> -&gt; </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> file<span class="op">,</span> line<span class="op">,</span> str<span class="op">);</span></span>
-<span id="cb7-27"><a href="#cb7-27"></a>    <span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="bu">std::</span>fflush<span class="op">(</span>stderr<span class="op">);</span></span>
-<span id="cb7-28"><a href="#cb7-28"></a><span class="op">}</span></span>
-<span id="cb7-29"><a href="#cb7-29"></a></span>
-<span id="cb7-30"><a href="#cb7-30"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span><span class="op">*</span> argv<span class="op">)</span></span>
-<span id="cb7-31"><a href="#cb7-31"></a><span class="op">{</span></span>
-<span id="cb7-32"><a href="#cb7-32"></a>    KK_ASSERT<span class="op">(</span>argc <span class="op">==</span> <span class="dv">2</span> <span class="op">&amp;&amp;</span> <span class="st">&quot;Test requires 1 argument&quot;</span><span class="op">);</span></span>
-<span id="cb7-33"><a href="#cb7-33"></a><span class="op">}</span></span></code></pre></div>
-<p>prints:</p>
-<div class="sourceCode" id="cb8"><pre
-class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb8-1"><a href="#cb8-1"></a>Error at &#39;...\main.cpp,32&#39;</span>
-<span id="cb8-2"><a href="#cb8-2"></a> -&gt; Verify failed: &#39;argc == 2 &amp;&amp; &quot;Test requires 1 argument&quot;&#39;.</span></code></pre></div>
-<h3 data-number="4" id="custom-assert-post-c23-with-callstack"><span
+<h3 data-number="4" id="custom-assert-stdprintf-based-c17"><span
 class="header-section-number">4</span> <a
-href="#custom-assert-post-c23-with-callstack"># </a>custom assert
-post-C++23, with callstack</h3>
+href="#custom-assert-stdprintf-based-c17"># </a>custom assert,
+std::printf-based (&lt;=C++17)</h3>
+<ul>
+<li>with std::printf format &amp; args validation</li>
+<li>with overload for optional message and or custom format</li>
+<li>up to 15 custom args, modify KK_SELECT_N() to support more</li>
+<li><code>__VA_OPT__</code> could be used to simplify KK_SELECT_N
+machinery, see <a
+href="https://www.dominikgrabiec.com/c++/2023/02/28/making_a_flexible_assert.html">Making
+a flexible assert in C++</a></li>
+</ul>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb8-1"><a href="#cb8-1"></a>KK_VERIFY(false);</span>
+<span id="cb8-2"><a href="#cb8-2"></a>KK_VERIFY(false, &quot;message&quot;);</span>
+<span id="cb8-3"><a href="#cb8-3"></a>KK_VERIFY(false, &quot;message %s %s&quot;, &quot;format&quot;, &quot;args&quot;);</span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1"></a><span class="pp">#define KK_ABORT</span><span class="op">(</span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">...)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                             </span><span class="op">\</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="pp">    </span><span class="op">(::</span>log_abort<span class="op">(</span><span class="ot">__FILE__</span><span class="op">,</span><span class="pp"> </span><span class="ot">__LINE__</span><span class="op">,</span><span class="pp"> </span>KK_FMT<span class="op">,</span><span class="pp">                     </span><span class="op">\</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a><span class="pp">        </span><span class="bu">std::</span>make_format_args<span class="op">(</span><span class="ot">__VA_ARGS__</span><span class="op">)),</span><span class="pp">                     </span><span class="op">\</span></span>
-<span id="cb9-4"><a href="#cb9-4"></a><span class="pp">            </span>__debugbreak<span class="op">(),</span><span class="pp">       </span><span class="co">/*MSVC-specific*/</span><span class="pp">              </span><span class="op">\</span></span>
-<span id="cb9-5"><a href="#cb9-5"></a><span class="pp">            </span><span class="bu">std::</span>quick_exit<span class="op">(-</span><span class="dv">1</span><span class="op">))</span><span class="pp">  </span><span class="co">/*just to be extra-paranoid*/</span></span>
-<span id="cb9-6"><a href="#cb9-6"></a></span>
-<span id="cb9-7"><a href="#cb9-7"></a><span class="pp">#define KK_VERIFY</span><span class="op">(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                           </span><span class="op">\</span></span>
-<span id="cb9-8"><a href="#cb9-8"></a><span class="pp">    </span><span class="op">(!!(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">||</span><span class="pp">                                         </span><span class="op">\</span></span>
-<span id="cb9-9"><a href="#cb9-9"></a><span class="pp">        </span><span class="op">(</span>KK_ABORT<span class="op">(</span><span class="st">&quot;Verify failed: &#39;</span><span class="sc">{}</span><span class="st">&#39;.&quot;</span><span class="op">,</span><span class="pp"> </span><span class="op">#</span>KK_EXPRESSION<span class="op">),</span><span class="pp"> </span><span class="kw">false</span><span class="op">))</span></span>
-<span id="cb9-10"><a href="#cb9-10"></a></span>
-<span id="cb9-11"><a href="#cb9-11"></a><span class="pp">#define KK_ASSERT </span>KK_VERIFY<span class="pp"> </span><span class="co">// another name</span></span>
-<span id="cb9-12"><a href="#cb9-12"></a></span>
-<span id="cb9-13"><a href="#cb9-13"></a><span class="pp">#include </span><span class="im">&lt;format&gt;</span></span>
-<span id="cb9-14"><a href="#cb9-14"></a><span class="pp">#include </span><span class="im">&lt;print&gt;</span></span>
-<span id="cb9-15"><a href="#cb9-15"></a><span class="pp">#include </span><span class="im">&lt;stacktrace&gt;</span></span>
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1"></a><span class="pp">#include </span><span class="im">&lt;cstdio&gt;</span><span class="pp">  </span><span class="co">// for std::printf validation</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="pp">#include </span><span class="im">&lt;cstdlib&gt;</span><span class="pp"> </span><span class="co">// std::abort()</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="pp">#define KK_CHECK_PRINTF</span><span class="op">(</span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">...)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="pp">    </span><span class="op">(</span><span class="kw">false</span><span class="pp"> </span><span class="op">&amp;&amp;</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="pp">        </span><span class="bu">std::</span>printf<span class="op">(</span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">##</span><span class="ot">__VA_ARGS__</span><span class="op">))</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a></span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="co">// Based on GET_MACRO() from https://stackoverflow.com/questions/11761703/overloading-macro-on-number-of-arguments/69945225#69945225</span></span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="pp">#define KK_EXPAND</span><span class="op">(</span>x<span class="op">)</span><span class="pp"> </span>x</span>
+<span id="cb9-10"><a href="#cb9-10"></a><span class="pp">#define KK_SELECT_N</span><span class="op">(</span><span class="pp">      </span><span class="op">\</span></span>
+<span id="cb9-11"><a href="#cb9-11"></a><span class="pp">      </span>_1<span class="op">,</span><span class="pp">  </span>_2<span class="op">,</span><span class="pp">  </span>_3<span class="op">,</span><span class="pp">  </span>_4<span class="pp">   </span><span class="op">\</span></span>
+<span id="cb9-12"><a href="#cb9-12"></a><span class="pp">    </span><span class="op">,</span><span class="pp"> </span>_5<span class="op">,</span><span class="pp">  </span>_6<span class="op">,</span><span class="pp">  </span>_7<span class="op">,</span><span class="pp">  </span>_8<span class="pp">   </span><span class="op">\</span></span>
+<span id="cb9-13"><a href="#cb9-13"></a><span class="pp">    </span><span class="op">,</span><span class="pp"> </span>_9<span class="op">,</span><span class="pp"> </span>_10<span class="op">,</span><span class="pp"> </span>_11<span class="op">,</span><span class="pp"> </span>_12<span class="pp">   </span><span class="op">\</span></span>
+<span id="cb9-14"><a href="#cb9-14"></a><span class="pp">    </span><span class="op">,</span><span class="pp"> </span>_13<span class="op">,</span><span class="pp"> </span>_14<span class="op">,</span><span class="pp"> </span>_15<span class="op">,</span><span class="pp"> </span>_16<span class="pp">  </span><span class="op">\</span></span>
+<span id="cb9-15"><a href="#cb9-15"></a><span class="pp">    </span><span class="op">,</span><span class="pp"> </span>NAME<span class="op">,</span><span class="pp"> </span><span class="op">...)</span><span class="pp"> </span>NAME</span>
 <span id="cb9-16"><a href="#cb9-16"></a></span>
-<span id="cb9-17"><a href="#cb9-17"></a><span class="dt">void</span> log_abort<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file<span class="op">,</span> <span class="dt">unsigned</span> line</span>
-<span id="cb9-18"><a href="#cb9-18"></a>    <span class="op">,</span> <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> fmt<span class="op">,</span> <span class="bu">std::</span>format_args args<span class="op">)</span></span>
-<span id="cb9-19"><a href="#cb9-19"></a><span class="op">{</span></span>
-<span id="cb9-20"><a href="#cb9-20"></a>    <span class="dt">char</span> str<span class="op">[</span><span class="dv">1024</span><span class="op">]{};</span></span>
-<span id="cb9-21"><a href="#cb9-21"></a>    <span class="bu">std::</span>vformat_to<span class="op">(</span>str<span class="op">,</span> fmt<span class="op">,</span> <span class="bu">std::</span>move<span class="op">(</span>args<span class="op">));</span></span>
-<span id="cb9-22"><a href="#cb9-22"></a>    <span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="bu">std::</span>fflush<span class="op">(</span>stdout<span class="op">);</span></span>
-<span id="cb9-23"><a href="#cb9-23"></a>    <span class="bu">std::</span>println<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;Error at &#39;</span><span class="sc">{}</span><span class="st">,</span><span class="sc">{}</span><span class="st">&#39;</span><span class="sc">\n</span><span class="st"> -&gt; </span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> file<span class="op">,</span> line<span class="op">,</span> str<span class="op">);</span></span>
-<span id="cb9-24"><a href="#cb9-24"></a>    <span class="bu">std::</span>println<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;---- Callstack:</span><span class="sc">\n{}</span><span class="st">&quot;</span><span class="op">,</span> <span class="bu">std::</span>stacktrace::current<span class="op">());</span></span>
-<span id="cb9-25"><a href="#cb9-25"></a>    <span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="bu">std::</span>fflush<span class="op">(</span>stderr<span class="op">);</span></span>
-<span id="cb9-26"><a href="#cb9-26"></a><span class="op">}</span></span>
-<span id="cb9-27"><a href="#cb9-27"></a></span>
-<span id="cb9-28"><a href="#cb9-28"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span><span class="op">*</span> argv<span class="op">)</span></span>
-<span id="cb9-29"><a href="#cb9-29"></a><span class="op">{</span></span>
-<span id="cb9-30"><a href="#cb9-30"></a>    KK_ASSERT<span class="op">(</span>argc <span class="op">==</span> <span class="dv">2</span> <span class="op">&amp;&amp;</span> <span class="st">&quot;Test requires 1 argument&quot;</span><span class="op">);</span></span>
-<span id="cb9-31"><a href="#cb9-31"></a><span class="op">}</span></span></code></pre></div>
-<p>prints:</p>
+<span id="cb9-17"><a href="#cb9-17"></a><span class="pp">#define KK_VERIFY</span><span class="op">(...)</span><span class="pp">                                              </span><span class="op">\</span></span>
+<span id="cb9-18"><a href="#cb9-18"></a><span class="pp">    </span>KK_EXPAND<span class="op">(</span>KK_SELECT_N<span class="op">(</span><span class="ot">__VA_ARGS__</span><span class="pp">                               </span><span class="op">\</span></span>
+<span id="cb9-19"><a href="#cb9-19"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="pp">        </span><span class="op">\</span></span>
+<span id="cb9-20"><a href="#cb9-20"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="pp">        </span><span class="op">\</span></span>
+<span id="cb9-21"><a href="#cb9-21"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="pp">        </span><span class="op">\</span></span>
+<span id="cb9-22"><a href="#cb9-22"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_EXPR<span class="op">)</span><span class="pp">    </span><span class="op">\</span></span>
+<span id="cb9-23"><a href="#cb9-23"></a><span class="pp">    </span><span class="op">(</span><span class="ot">__VA_ARGS__</span><span class="op">))</span></span>
+<span id="cb9-24"><a href="#cb9-24"></a></span>
+<span id="cb9-25"><a href="#cb9-25"></a><span class="pp">#define KK_DEBUGBREAK</span><span class="op">()</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb9-26"><a href="#cb9-26"></a><span class="pp">    </span>__debugbreak<span class="op">()</span><span class="pp"> </span><span class="co">/* MSVC-specific */</span></span>
+<span id="cb9-27"><a href="#cb9-27"></a><span class="pp">#define KK_EXIT</span><span class="op">()</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb9-28"><a href="#cb9-28"></a><span class="pp">    </span><span class="bu">std::</span>abort<span class="op">()</span><span class="pp"> </span><span class="co">/* OR std::quick_exit(-1)*/</span></span>
+<span id="cb9-29"><a href="#cb9-29"></a></span>
+<span id="cb9-30"><a href="#cb9-30"></a><span class="pp">#define KK_VERIFY_EXPR</span><span class="op">(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                        </span><span class="op">\</span></span>
+<span id="cb9-31"><a href="#cb9-31"></a><span class="pp">    </span><span class="op">(!!(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">||</span><span class="pp">                                           </span><span class="op">\</span></span>
+<span id="cb9-32"><a href="#cb9-32"></a><span class="pp">        </span><span class="op">(::</span>detail::dump_verify<span class="op">(</span><span class="ot">__FILE__</span><span class="op">,</span><span class="pp"> </span><span class="ot">__LINE__</span><span class="op">,</span><span class="pp"> </span><span class="op">#</span>KK_EXPRESSION<span class="op">)</span><span class="pp">  </span><span class="op">\</span></span>
+<span id="cb9-33"><a href="#cb9-33"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span>KK_DEBUGBREAK<span class="op">()</span><span class="pp">                                           </span><span class="op">\</span></span>
+<span id="cb9-34"><a href="#cb9-34"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span>KK_EXIT<span class="op">()</span><span class="pp">                                                 </span><span class="op">\</span></span>
+<span id="cb9-35"><a href="#cb9-35"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span><span class="kw">false</span><span class="op">)</span><span class="pp">                                                    </span><span class="op">\</span></span>
+<span id="cb9-36"><a href="#cb9-36"></a><span class="pp">    </span><span class="op">)</span></span>
+<span id="cb9-37"><a href="#cb9-37"></a></span>
+<span id="cb9-38"><a href="#cb9-38"></a><span class="pp">#define KK_VERIFY_F</span><span class="op">(</span>KK_EXPRESSION<span class="op">,</span><span class="pp"> </span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">...)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">      </span><span class="op">\</span></span>
+<span id="cb9-39"><a href="#cb9-39"></a><span class="pp">    </span><span class="op">(!!(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">||</span><span class="pp">                                   </span><span class="op">\</span></span>
+<span id="cb9-40"><a href="#cb9-40"></a><span class="pp">        </span><span class="op">(::</span>detail::dump_verify<span class="op">(</span><span class="ot">__FILE__</span><span class="op">,</span><span class="pp"> </span><span class="ot">__LINE__</span><span class="pp">           </span><span class="op">\</span></span>
+<span id="cb9-41"><a href="#cb9-41"></a><span class="pp">            </span><span class="op">,</span><span class="pp"> </span><span class="op">#</span>KK_EXPRESSION<span class="op">,</span><span class="pp"> </span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">##</span><span class="ot">__VA_ARGS__</span><span class="op">)</span><span class="pp">        </span><span class="op">\</span></span>
+<span id="cb9-42"><a href="#cb9-42"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span>KK_CHECK_PRINTF<span class="op">(</span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">##</span><span class="ot">__VA_ARGS__</span><span class="op">)</span><span class="pp">            </span><span class="op">\</span></span>
+<span id="cb9-43"><a href="#cb9-43"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span>KK_DEBUGBREAK<span class="op">()</span><span class="pp">                                   </span><span class="op">\</span></span>
+<span id="cb9-44"><a href="#cb9-44"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span>KK_EXIT<span class="op">()</span><span class="pp">                                         </span><span class="op">\</span></span>
+<span id="cb9-45"><a href="#cb9-45"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span><span class="kw">false</span><span class="op">)</span><span class="pp">                                            </span><span class="op">\</span></span>
+<span id="cb9-46"><a href="#cb9-46"></a><span class="pp">    </span><span class="op">)</span></span>
+<span id="cb9-47"><a href="#cb9-47"></a></span>
+<span id="cb9-48"><a href="#cb9-48"></a><span class="pp">#include </span><span class="im">&lt;cstdarg&gt;</span><span class="pp"> </span><span class="co">// va_list</span></span>
+<span id="cb9-49"><a href="#cb9-49"></a><span class="pp">#include </span><span class="im">&lt;cstring&gt;</span><span class="pp"> </span><span class="co">// optional, for prettify_filename()</span></span>
+<span id="cb9-50"><a href="#cb9-50"></a></span>
+<span id="cb9-51"><a href="#cb9-51"></a><span class="kw">namespace</span> detail</span>
+<span id="cb9-52"><a href="#cb9-52"></a><span class="op">{</span></span>
+<span id="cb9-53"><a href="#cb9-53"></a>    <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> prettify_filename<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file<span class="op">)</span></span>
+<span id="cb9-54"><a href="#cb9-54"></a>    <span class="op">{</span></span>
+<span id="cb9-55"><a href="#cb9-55"></a><span class="pp">#if (1)</span></span>
+<span id="cb9-56"><a href="#cb9-56"></a>        <span class="cf">if</span> <span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> end <span class="op">=</span> <span class="bu">std::</span>strrchr<span class="op">(</span>file<span class="op">,</span> <span class="ch">&#39;</span><span class="sc">\\</span><span class="ch">&#39;</span><span class="op">))</span></span>
+<span id="cb9-57"><a href="#cb9-57"></a>        <span class="op">{</span></span>
+<span id="cb9-58"><a href="#cb9-58"></a>            <span class="cf">return</span> <span class="op">(</span>end <span class="op">+</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb9-59"><a href="#cb9-59"></a>        <span class="op">}</span></span>
+<span id="cb9-60"><a href="#cb9-60"></a>        <span class="cf">if</span> <span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> end <span class="op">=</span> <span class="bu">std::</span>strrchr<span class="op">(</span>file<span class="op">,</span> <span class="ch">&#39;/&#39;</span><span class="op">))</span></span>
+<span id="cb9-61"><a href="#cb9-61"></a>        <span class="op">{</span></span>
+<span id="cb9-62"><a href="#cb9-62"></a>            <span class="cf">return</span> <span class="op">(</span>end <span class="op">+</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb9-63"><a href="#cb9-63"></a>        <span class="op">}</span></span>
+<span id="cb9-64"><a href="#cb9-64"></a><span class="pp">#endif</span></span>
+<span id="cb9-65"><a href="#cb9-65"></a>        <span class="cf">return</span> file<span class="op">;</span></span>
+<span id="cb9-66"><a href="#cb9-66"></a>    <span class="op">}</span></span>
+<span id="cb9-67"><a href="#cb9-67"></a></span>
+<span id="cb9-68"><a href="#cb9-68"></a>    <span class="dt">void</span> dump_verify<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file<span class="op">,</span> <span class="dt">unsigned</span> line</span>
+<span id="cb9-69"><a href="#cb9-69"></a>        <span class="op">,</span> <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> expression</span>
+<span id="cb9-70"><a href="#cb9-70"></a>        <span class="op">,</span> <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> fmt<span class="op">,</span> <span class="op">...)</span></span>
+<span id="cb9-71"><a href="#cb9-71"></a>    <span class="op">{</span></span>
+<span id="cb9-72"><a href="#cb9-72"></a>        <span class="dt">char</span> str<span class="op">[</span><span class="dv">1024</span><span class="op">];</span> <span class="co">// not initialized, vsnprintf zero-terminates</span></span>
+<span id="cb9-73"><a href="#cb9-73"></a>        <span class="dt">va_list</span> args<span class="op">;</span></span>
+<span id="cb9-74"><a href="#cb9-74"></a>        va_start<span class="op">(</span>args<span class="op">,</span> fmt<span class="op">);</span></span>
+<span id="cb9-75"><a href="#cb9-75"></a>        <span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="bu">std::</span>vsnprintf<span class="op">(</span>str<span class="op">,</span> <span class="bu">std::</span>size_t<span class="op">(</span>str<span class="op">),</span> fmt<span class="op">,</span> args<span class="op">);</span></span>
+<span id="cb9-76"><a href="#cb9-76"></a>        va_end<span class="op">(</span>args<span class="op">);</span></span>
+<span id="cb9-77"><a href="#cb9-77"></a>        <span class="co">// flush stdout if needed</span></span>
+<span id="cb9-78"><a href="#cb9-78"></a>        <span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="bu">std::</span>fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;Verify &#39;</span><span class="sc">%s</span><span class="st">&#39; failed at &#39;</span><span class="sc">%s</span><span class="st">,</span><span class="sc">%u</span><span class="st">&#39; -&gt; </span><span class="sc">%s\n</span><span class="st">&quot;</span></span>
+<span id="cb9-79"><a href="#cb9-79"></a>            <span class="op">,</span> expression<span class="op">,</span> prettify_filename<span class="op">(</span>file<span class="op">),</span> line<span class="op">,</span> str<span class="op">);</span></span>
+<span id="cb9-80"><a href="#cb9-80"></a>    <span class="op">}</span></span>
+<span id="cb9-81"><a href="#cb9-81"></a></span>
+<span id="cb9-82"><a href="#cb9-82"></a>    <span class="dt">void</span> dump_verify<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file<span class="op">,</span> <span class="dt">unsigned</span> line</span>
+<span id="cb9-83"><a href="#cb9-83"></a>        <span class="op">,</span> <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> expression<span class="op">)</span></span>
+<span id="cb9-84"><a href="#cb9-84"></a>    <span class="op">{</span></span>
+<span id="cb9-85"><a href="#cb9-85"></a>        <span class="co">// flush stdout if needed</span></span>
+<span id="cb9-86"><a href="#cb9-86"></a>        <span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="bu">std::</span>fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;Verify &#39;</span><span class="sc">%s</span><span class="st">&#39; failed at &#39;</span><span class="sc">%s</span><span class="st">,</span><span class="sc">%u</span><span class="st">&#39;</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb9-87"><a href="#cb9-87"></a>            <span class="op">,</span> expression<span class="op">,</span> prettify_filename<span class="op">(</span>file<span class="op">),</span> line<span class="op">);</span></span>
+<span id="cb9-88"><a href="#cb9-88"></a>    <span class="op">}</span></span>
+<span id="cb9-89"><a href="#cb9-89"></a><span class="op">}</span> <span class="co">// namespace detail</span></span></code></pre></div>
+<h3 data-number="5" id="custom-assert-stdformat-based-c20"><span
+class="header-section-number">5</span> <a
+href="#custom-assert-stdformat-based-c20"># </a>custom assert,
+std::format-based (&gt;=C++20)</h3>
+<ul>
+<li>with std::format</li>
+<li>with overload for optional message and or custom format</li>
+<li>up to 15 custom args, modify KK_SELECT_N() to support more</li>
+<li><code>__VA_OPT__</code> could be used to simplify KK_SELECT_N
+machinery, see <a
+href="https://www.dominikgrabiec.com/c++/2023/02/28/making_a_flexible_assert.html">Making
+a flexible assert in C++</a></li>
+</ul>
 <div class="sourceCode" id="cb10"><pre
-class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb10-1"><a href="#cb10-1"></a>Error at &#39;...\main.cpp,30&#39;</span>
-<span id="cb10-2"><a href="#cb10-2"></a> -&gt; Verify failed: &#39;argc == 2 &amp;&amp; &quot;Test requires 1 argument&quot;&#39;.</span>
-<span id="cb10-3"><a href="#cb10-3"></a>---- Callstack:</span>
-<span id="cb10-4"><a href="#cb10-4"></a>0&gt; ...\main.cpp(24): snippets!log_abort+0x1BC</span>
-<span id="cb10-5"><a href="#cb10-5"></a>1&gt; ...\main.cpp(30): snippets!main+0xCA</span>
-<span id="cb10-6"><a href="#cb10-6"></a>2&gt; ...\exe_common.inl(79): snippets!invoke_main+0x39</span>
-<span id="cb10-7"><a href="#cb10-7"></a>3&gt; ...\exe_common.inl(288): snippets!__scrt_common_main_seh+0x12E</span>
-<span id="cb10-8"><a href="#cb10-8"></a>4&gt; ...\exe_common.inl(331): snippets!__scrt_common_main+0xE</span>
-<span id="cb10-9"><a href="#cb10-9"></a>5&gt; ...\exe_main.cpp(17): snippets!mainCRTStartup+0xE</span>
-<span id="cb10-10"><a href="#cb10-10"></a>6&gt; KERNEL32!BaseThreadInitThunk+0x17</span>
-<span id="cb10-11"><a href="#cb10-11"></a>7&gt; ntdll!RtlUserThreadStart+0x2C</span></code></pre></div>
+class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb10-1"><a href="#cb10-1"></a>KK_VERIFY(false);</span>
+<span id="cb10-2"><a href="#cb10-2"></a>KK_VERIFY(false, &quot;message&quot;);</span>
+<span id="cb10-3"><a href="#cb10-3"></a>KK_VERIFY(false, &quot;message {} {}&quot;, &quot;format&quot;, &quot;args&quot;);</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb11-1"><a href="#cb11-1"></a><span class="pp">#include </span><span class="im">&lt;cstdlib&gt;</span><span class="pp"> </span><span class="co">// std::abort()</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="pp">#include </span><span class="im">&lt;print&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a></span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="co">// Based on GET_MACRO() from https://stackoverflow.com/questions/11761703/overloading-macro-on-number-of-arguments/69945225#69945225</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a><span class="pp">#define KK_EXPAND</span><span class="op">(</span>x<span class="op">)</span><span class="pp"> </span>x</span>
+<span id="cb11-6"><a href="#cb11-6"></a><span class="pp">#define KK_SELECT_N</span><span class="op">(</span><span class="pp">      </span><span class="op">\</span></span>
+<span id="cb11-7"><a href="#cb11-7"></a><span class="pp">      </span>_1<span class="op">,</span><span class="pp">  </span>_2<span class="op">,</span><span class="pp">  </span>_3<span class="op">,</span><span class="pp">  </span>_4<span class="pp">   </span><span class="op">\</span></span>
+<span id="cb11-8"><a href="#cb11-8"></a><span class="pp">    </span><span class="op">,</span><span class="pp"> </span>_5<span class="op">,</span><span class="pp">  </span>_6<span class="op">,</span><span class="pp">  </span>_7<span class="op">,</span><span class="pp">  </span>_8<span class="pp">   </span><span class="op">\</span></span>
+<span id="cb11-9"><a href="#cb11-9"></a><span class="pp">    </span><span class="op">,</span><span class="pp"> </span>_9<span class="op">,</span><span class="pp"> </span>_10<span class="op">,</span><span class="pp"> </span>_11<span class="op">,</span><span class="pp"> </span>_12<span class="pp">   </span><span class="op">\</span></span>
+<span id="cb11-10"><a href="#cb11-10"></a><span class="pp">    </span><span class="op">,</span><span class="pp"> </span>_13<span class="op">,</span><span class="pp"> </span>_14<span class="op">,</span><span class="pp"> </span>_15<span class="op">,</span><span class="pp"> </span>_16<span class="pp">  </span><span class="op">\</span></span>
+<span id="cb11-11"><a href="#cb11-11"></a><span class="pp">    </span><span class="op">,</span><span class="pp"> </span>NAME<span class="op">,</span><span class="pp"> </span><span class="op">...)</span><span class="pp"> </span>NAME</span>
+<span id="cb11-12"><a href="#cb11-12"></a></span>
+<span id="cb11-13"><a href="#cb11-13"></a><span class="pp">#define KK_VERIFY</span><span class="op">(...)</span><span class="pp">                                              </span><span class="op">\</span></span>
+<span id="cb11-14"><a href="#cb11-14"></a><span class="pp">    </span>KK_EXPAND<span class="op">(</span>KK_SELECT_N<span class="op">(</span><span class="ot">__VA_ARGS__</span><span class="pp">                               </span><span class="op">\</span></span>
+<span id="cb11-15"><a href="#cb11-15"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="pp">        </span><span class="op">\</span></span>
+<span id="cb11-16"><a href="#cb11-16"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="pp">        </span><span class="op">\</span></span>
+<span id="cb11-17"><a href="#cb11-17"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="pp">        </span><span class="op">\</span></span>
+<span id="cb11-18"><a href="#cb11-18"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_F<span class="op">,</span><span class="pp"> </span>KK_VERIFY_EXPR<span class="op">)</span><span class="pp">    </span><span class="op">\</span></span>
+<span id="cb11-19"><a href="#cb11-19"></a><span class="pp">    </span><span class="op">(</span><span class="ot">__VA_ARGS__</span><span class="op">))</span></span>
+<span id="cb11-20"><a href="#cb11-20"></a></span>
+<span id="cb11-21"><a href="#cb11-21"></a><span class="pp">#define KK_DEBUGBREAK</span><span class="op">()</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb11-22"><a href="#cb11-22"></a><span class="pp">    </span>__debugbreak<span class="op">()</span><span class="pp"> </span><span class="co">/* MSVC-specific */</span></span>
+<span id="cb11-23"><a href="#cb11-23"></a><span class="pp">#define KK_EXIT</span><span class="op">()</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb11-24"><a href="#cb11-24"></a><span class="pp">    </span><span class="bu">std::</span>abort<span class="op">()</span><span class="pp"> </span><span class="co">/* OR std::quick_exit(-1)*/</span></span>
+<span id="cb11-25"><a href="#cb11-25"></a></span>
+<span id="cb11-26"><a href="#cb11-26"></a><span class="pp">#define KK_VERIFY_EXPR</span><span class="op">(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                        </span><span class="op">\</span></span>
+<span id="cb11-27"><a href="#cb11-27"></a><span class="pp">    </span><span class="op">(!!(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">||</span><span class="pp">                                           </span><span class="op">\</span></span>
+<span id="cb11-28"><a href="#cb11-28"></a><span class="pp">        </span><span class="op">(::</span>detail::dump_verify<span class="op">(</span><span class="ot">__FILE__</span><span class="op">,</span><span class="pp"> </span><span class="ot">__LINE__</span><span class="op">,</span><span class="pp"> </span><span class="op">#</span>KK_EXPRESSION<span class="op">)</span><span class="pp">  </span><span class="op">\</span></span>
+<span id="cb11-29"><a href="#cb11-29"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span>KK_DEBUGBREAK<span class="op">()</span><span class="pp">                                           </span><span class="op">\</span></span>
+<span id="cb11-30"><a href="#cb11-30"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span>KK_EXIT<span class="op">()</span><span class="pp">                                                 </span><span class="op">\</span></span>
+<span id="cb11-31"><a href="#cb11-31"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span><span class="kw">false</span><span class="op">)</span><span class="pp">                                                    </span><span class="op">\</span></span>
+<span id="cb11-32"><a href="#cb11-32"></a><span class="pp">    </span><span class="op">)</span></span>
+<span id="cb11-33"><a href="#cb11-33"></a></span>
+<span id="cb11-34"><a href="#cb11-34"></a><span class="pp">#define KK_VERIFY_F</span><span class="op">(</span>KK_EXPRESSION<span class="op">,</span><span class="pp"> </span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">...)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">      </span><span class="op">\</span></span>
+<span id="cb11-35"><a href="#cb11-35"></a><span class="pp">    </span><span class="op">(!!(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">||</span><span class="pp">                                   </span><span class="op">\</span></span>
+<span id="cb11-36"><a href="#cb11-36"></a><span class="pp">        </span><span class="op">(::</span>detail::dump_verify<span class="op">(</span><span class="ot">__FILE__</span><span class="op">,</span><span class="pp"> </span><span class="ot">__LINE__</span><span class="pp">           </span><span class="op">\</span></span>
+<span id="cb11-37"><a href="#cb11-37"></a><span class="pp">            </span><span class="op">,</span><span class="pp"> </span><span class="op">#</span>KK_EXPRESSION<span class="pp">                                </span><span class="op">\</span></span>
+<span id="cb11-38"><a href="#cb11-38"></a><span class="pp">            </span><span class="op">,</span><span class="pp"> </span><span class="bu">std::</span>format_to_n<span class="op">(::</span>detail::FormatBuffer<span class="op">{}.</span>it<span class="op">()\</span></span>
+<span id="cb11-39"><a href="#cb11-39"></a><span class="pp">                </span><span class="op">,</span><span class="pp"> </span><span class="op">::</span>detail::FormatBuffer::available_size<span class="op">()</span><span class="pp">  </span><span class="op">\</span></span>
+<span id="cb11-40"><a href="#cb11-40"></a><span class="pp">                </span><span class="op">,</span><span class="pp"> </span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">##</span><span class="ot">__VA_ARGS__</span><span class="op">))</span><span class="pp">                   </span><span class="op">\</span></span>
+<span id="cb11-41"><a href="#cb11-41"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span>KK_DEBUGBREAK<span class="op">()</span><span class="pp">                                   </span><span class="op">\</span></span>
+<span id="cb11-42"><a href="#cb11-42"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span>KK_EXIT<span class="op">()</span><span class="pp">                                         </span><span class="op">\</span></span>
+<span id="cb11-43"><a href="#cb11-43"></a><span class="pp">        </span><span class="op">,</span><span class="pp"> </span><span class="kw">false</span><span class="op">)</span><span class="pp">                                            </span><span class="op">\</span></span>
+<span id="cb11-44"><a href="#cb11-44"></a><span class="pp">    </span><span class="op">)</span></span>
+<span id="cb11-45"><a href="#cb11-45"></a></span>
+<span id="cb11-46"><a href="#cb11-46"></a><span class="pp">#include </span><span class="im">&lt;cstring&gt;</span><span class="pp"> </span><span class="co">// optional, for prettify_filename()</span></span>
+<span id="cb11-47"><a href="#cb11-47"></a></span>
+<span id="cb11-48"><a href="#cb11-48"></a><span class="kw">namespace</span> detail</span>
+<span id="cb11-49"><a href="#cb11-49"></a><span class="op">{</span></span>
+<span id="cb11-50"><a href="#cb11-50"></a>    <span class="co">// Workaround to the fact that std::make_format_args(10, &#39;c&#39;) does not compile</span></span>
+<span id="cb11-51"><a href="#cb11-51"></a>    <span class="co">// since it requires lvalue references (see http://wg21.link/P2905R2),</span></span>
+<span id="cb11-52"><a href="#cb11-52"></a>    <span class="co">// hence std::format_to_n() is used.</span></span>
+<span id="cb11-53"><a href="#cb11-53"></a>    <span class="kw">struct</span> FormatBuffer</span>
+<span id="cb11-54"><a href="#cb11-54"></a>    <span class="op">{</span></span>
+<span id="cb11-55"><a href="#cb11-55"></a>        FormatBuffer<span class="op">(</span><span class="at">const</span> FormatBuffer<span class="op">&amp;)</span> <span class="kw">noexcept</span> <span class="op">=</span> <span class="kw">delete</span><span class="op">;</span></span>
+<span id="cb11-56"><a href="#cb11-56"></a>        FormatBuffer<span class="op">&amp;</span> <span class="kw">operator</span><span class="op">=(</span><span class="at">const</span> FormatBuffer<span class="op">&amp;)</span> <span class="kw">noexcept</span> <span class="op">=</span> <span class="kw">delete</span><span class="op">;</span></span>
+<span id="cb11-57"><a href="#cb11-57"></a></span>
+<span id="cb11-58"><a href="#cb11-58"></a>        <span class="at">static</span> <span class="kw">constexpr</span> <span class="dt">unsigned</span> BUFFER_SIZE <span class="op">=</span> <span class="dv">1024</span><span class="op">;</span></span>
+<span id="cb11-59"><a href="#cb11-59"></a>        <span class="dt">char</span> _buffer<span class="op">[</span>BUFFER_SIZE<span class="op">];</span> <span class="co">// not initialized</span></span>
+<span id="cb11-60"><a href="#cb11-60"></a>        FormatBuffer<span class="op">()</span> <span class="kw">noexcept</span> <span class="op">{}</span></span>
+<span id="cb11-61"><a href="#cb11-61"></a></span>
+<span id="cb11-62"><a href="#cb11-62"></a>        <span class="at">static</span> <span class="kw">constexpr</span> <span class="bu">std::</span>ptrdiff_t available_size<span class="op">()</span></span>
+<span id="cb11-63"><a href="#cb11-63"></a>        <span class="op">{</span></span>
+<span id="cb11-64"><a href="#cb11-64"></a>            <span class="cf">return</span> BUFFER_SIZE <span class="op">-</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb11-65"><a href="#cb11-65"></a>        <span class="op">}</span></span>
+<span id="cb11-66"><a href="#cb11-66"></a></span>
+<span id="cb11-67"><a href="#cb11-67"></a>        <span class="kw">struct</span> iterator</span>
+<span id="cb11-68"><a href="#cb11-68"></a>        <span class="op">{</span></span>
+<span id="cb11-69"><a href="#cb11-69"></a>            FormatBuffer<span class="op">*</span> _self<span class="op">;</span></span>
+<span id="cb11-70"><a href="#cb11-70"></a>            <span class="dt">char</span><span class="op">*</span> _it<span class="op">;</span></span>
+<span id="cb11-71"><a href="#cb11-71"></a></span>
+<span id="cb11-72"><a href="#cb11-72"></a>            <span class="kw">using</span> <span class="dt">difference_type</span> <span class="op">=</span> <span class="bu">std::</span>ptrdiff_t<span class="op">;</span></span>
+<span id="cb11-73"><a href="#cb11-73"></a></span>
+<span id="cb11-74"><a href="#cb11-74"></a>            iterator<span class="op">&amp;</span> <span class="kw">operator</span><span class="op">++()</span> <span class="kw">noexcept</span></span>
+<span id="cb11-75"><a href="#cb11-75"></a>            <span class="op">{</span></span>
+<span id="cb11-76"><a href="#cb11-76"></a>                <span class="op">++</span>_it<span class="op">;</span></span>
+<span id="cb11-77"><a href="#cb11-77"></a>                <span class="cf">return</span> <span class="op">*</span><span class="kw">this</span><span class="op">;</span></span>
+<span id="cb11-78"><a href="#cb11-78"></a>            <span class="op">}</span></span>
+<span id="cb11-79"><a href="#cb11-79"></a>            iterator <span class="kw">operator</span><span class="op">++(</span><span class="dt">int</span><span class="op">)</span> <span class="kw">noexcept</span></span>
+<span id="cb11-80"><a href="#cb11-80"></a>            <span class="op">{</span></span>
+<span id="cb11-81"><a href="#cb11-81"></a>                iterator copy<span class="op">{</span> <span class="op">*</span><span class="kw">this</span> <span class="op">};</span></span>
+<span id="cb11-82"><a href="#cb11-82"></a>                <span class="op">++</span>_it<span class="op">;</span></span>
+<span id="cb11-83"><a href="#cb11-83"></a>                <span class="cf">return</span> copy<span class="op">;</span></span>
+<span id="cb11-84"><a href="#cb11-84"></a>            <span class="op">}</span></span>
+<span id="cb11-85"><a href="#cb11-85"></a>            <span class="dt">char</span><span class="op">&amp;</span> <span class="kw">operator</span><span class="op">*()</span> <span class="kw">noexcept</span></span>
+<span id="cb11-86"><a href="#cb11-86"></a>            <span class="op">{</span></span>
+<span id="cb11-87"><a href="#cb11-87"></a>                <span class="cf">return</span> <span class="op">*</span>_it<span class="op">;</span></span>
+<span id="cb11-88"><a href="#cb11-88"></a>            <span class="op">}</span></span>
+<span id="cb11-89"><a href="#cb11-89"></a>            <span class="at">static</span> <span class="bu">std::</span>ptrdiff_t my_min<span class="op">(</span><span class="bu">std::</span>ptrdiff_t v1<span class="op">,</span> <span class="bu">std::</span>ptrdiff_t v2<span class="op">)</span></span>
+<span id="cb11-90"><a href="#cb11-90"></a>            <span class="op">{</span></span>
+<span id="cb11-91"><a href="#cb11-91"></a>                <span class="cf">return</span> <span class="op">((</span>v1 <span class="op">&lt;</span> v2<span class="op">)</span> <span class="op">?</span> v1 <span class="op">:</span> v2<span class="op">);</span></span>
+<span id="cb11-92"><a href="#cb11-92"></a>            <span class="op">}</span></span>
+<span id="cb11-93"><a href="#cb11-93"></a>            <span class="dt">void</span> finish<span class="op">(</span><span class="bu">std::</span>ptrdiff_t size<span class="op">)</span></span>
+<span id="cb11-94"><a href="#cb11-94"></a>            <span class="op">{</span></span>
+<span id="cb11-95"><a href="#cb11-95"></a>                <span class="at">const</span> <span class="bu">std::</span>ptrdiff_t p <span class="op">=</span> my_min<span class="op">(</span>size<span class="op">,</span> FormatBuffer<span class="op">::</span>available_size<span class="op">());</span></span>
+<span id="cb11-96"><a href="#cb11-96"></a>                _self<span class="op">-&gt;</span>_buffer<span class="op">[</span>p<span class="op">]</span> <span class="op">=</span> <span class="ch">&#39;</span><span class="sc">\0</span><span class="ch">&#39;</span><span class="op">;</span></span>
+<span id="cb11-97"><a href="#cb11-97"></a>            <span class="op">}</span></span>
+<span id="cb11-98"><a href="#cb11-98"></a>            <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> str<span class="op">()</span> <span class="at">const</span></span>
+<span id="cb11-99"><a href="#cb11-99"></a>            <span class="op">{</span></span>
+<span id="cb11-100"><a href="#cb11-100"></a>                <span class="cf">return</span> _self<span class="op">-&gt;</span>_buffer<span class="op">;</span></span>
+<span id="cb11-101"><a href="#cb11-101"></a>            <span class="op">}</span></span>
+<span id="cb11-102"><a href="#cb11-102"></a>        <span class="op">};</span></span>
+<span id="cb11-103"><a href="#cb11-103"></a></span>
+<span id="cb11-104"><a href="#cb11-104"></a>        iterator it<span class="op">()</span></span>
+<span id="cb11-105"><a href="#cb11-105"></a>        <span class="op">{</span></span>
+<span id="cb11-106"><a href="#cb11-106"></a>            <span class="cf">return</span> <span class="op">{</span> <span class="kw">this</span><span class="op">,</span> _buffer <span class="op">};</span></span>
+<span id="cb11-107"><a href="#cb11-107"></a>        <span class="op">}</span></span>
+<span id="cb11-108"><a href="#cb11-108"></a></span>
+<span id="cb11-109"><a href="#cb11-109"></a>        <span class="kw">using</span> format_result <span class="op">=</span> <span class="bu">std::</span>format_to_n_result<span class="op">&lt;</span>iterator<span class="op">&gt;;</span></span>
+<span id="cb11-110"><a href="#cb11-110"></a>    <span class="op">};</span></span>
+<span id="cb11-111"><a href="#cb11-111"></a></span>
+<span id="cb11-112"><a href="#cb11-112"></a>    <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> prettify_filename<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file<span class="op">)</span></span>
+<span id="cb11-113"><a href="#cb11-113"></a>    <span class="op">{</span></span>
+<span id="cb11-114"><a href="#cb11-114"></a><span class="pp">#if (1)</span></span>
+<span id="cb11-115"><a href="#cb11-115"></a>        <span class="cf">if</span> <span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> end <span class="op">=</span> <span class="bu">std::</span>strrchr<span class="op">(</span>file<span class="op">,</span> <span class="ch">&#39;</span><span class="sc">\\</span><span class="ch">&#39;</span><span class="op">))</span></span>
+<span id="cb11-116"><a href="#cb11-116"></a>        <span class="op">{</span></span>
+<span id="cb11-117"><a href="#cb11-117"></a>            <span class="cf">return</span> <span class="op">(</span>end <span class="op">+</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb11-118"><a href="#cb11-118"></a>        <span class="op">}</span></span>
+<span id="cb11-119"><a href="#cb11-119"></a>        <span class="cf">if</span> <span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> end <span class="op">=</span> <span class="bu">std::</span>strrchr<span class="op">(</span>file<span class="op">,</span> <span class="ch">&#39;/&#39;</span><span class="op">))</span></span>
+<span id="cb11-120"><a href="#cb11-120"></a>        <span class="op">{</span></span>
+<span id="cb11-121"><a href="#cb11-121"></a>            <span class="cf">return</span> <span class="op">(</span>end <span class="op">+</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb11-122"><a href="#cb11-122"></a>        <span class="op">}</span></span>
+<span id="cb11-123"><a href="#cb11-123"></a><span class="pp">#endif</span></span>
+<span id="cb11-124"><a href="#cb11-124"></a>        <span class="cf">return</span> file<span class="op">;</span></span>
+<span id="cb11-125"><a href="#cb11-125"></a>    <span class="op">}</span></span>
+<span id="cb11-126"><a href="#cb11-126"></a></span>
+<span id="cb11-127"><a href="#cb11-127"></a>    <span class="dt">void</span> dump_verify<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file<span class="op">,</span> <span class="dt">unsigned</span> line</span>
+<span id="cb11-128"><a href="#cb11-128"></a>        <span class="op">,</span> <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> expression</span>
+<span id="cb11-129"><a href="#cb11-129"></a>        <span class="op">,</span> FormatBuffer<span class="op">::</span>format_result<span class="op">&amp;&amp;</span> fmt<span class="op">)</span></span>
+<span id="cb11-130"><a href="#cb11-130"></a>    <span class="op">{</span></span>
+<span id="cb11-131"><a href="#cb11-131"></a>        fmt<span class="op">.</span>out<span class="op">.</span>finish<span class="op">(</span>fmt<span class="op">.</span>size<span class="op">);</span></span>
+<span id="cb11-132"><a href="#cb11-132"></a>        <span class="co">// flush stdout if needed</span></span>
+<span id="cb11-133"><a href="#cb11-133"></a>        <span class="bu">std::</span>println<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;Verify &#39;</span><span class="sc">{}</span><span class="st">&#39; failed at &#39;</span><span class="sc">{}</span><span class="st">,</span><span class="sc">{}</span><span class="st">&#39; -&gt; </span><span class="sc">{}</span><span class="st">&quot;</span></span>
+<span id="cb11-134"><a href="#cb11-134"></a>            <span class="op">,</span> expression<span class="op">,</span> prettify_filename<span class="op">(</span>file<span class="op">),</span> line<span class="op">,</span> fmt<span class="op">.</span>out<span class="op">.</span>str<span class="op">());</span></span>
+<span id="cb11-135"><a href="#cb11-135"></a>        <span class="co">// C++23 - use std::stacktrace::current() if needed</span></span>
+<span id="cb11-136"><a href="#cb11-136"></a></span>
+<span id="cb11-137"><a href="#cb11-137"></a>    <span class="op">}</span></span>
+<span id="cb11-138"><a href="#cb11-138"></a></span>
+<span id="cb11-139"><a href="#cb11-139"></a>    <span class="dt">void</span> dump_verify<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file<span class="op">,</span> <span class="dt">unsigned</span> line</span>
+<span id="cb11-140"><a href="#cb11-140"></a>        <span class="op">,</span> <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> expression<span class="op">)</span></span>
+<span id="cb11-141"><a href="#cb11-141"></a>    <span class="op">{</span></span>
+<span id="cb11-142"><a href="#cb11-142"></a>        <span class="co">// flush stdout if needed</span></span>
+<span id="cb11-143"><a href="#cb11-143"></a>        <span class="bu">std::</span>println<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;Verify &#39;</span><span class="sc">{}</span><span class="st">&#39; failed at &#39;</span><span class="sc">{}</span><span class="st">,</span><span class="sc">{}</span><span class="st">&#39;&quot;</span></span>
+<span id="cb11-144"><a href="#cb11-144"></a>            <span class="op">,</span> expression<span class="op">,</span> prettify_filename<span class="op">(</span>file<span class="op">),</span> line<span class="op">);</span></span>
+<span id="cb11-145"><a href="#cb11-145"></a>        <span class="co">// C++20 - do std::cerr &lt;&lt; std::format(...) instead of std::println</span></span>
+<span id="cb11-146"><a href="#cb11-146"></a>        <span class="co">// C++23 - use std::stacktrace::current() if needed</span></span>
+<span id="cb11-147"><a href="#cb11-147"></a>    <span class="op">}</span></span>
+<span id="cb11-148"><a href="#cb11-148"></a><span class="op">}</span> <span class="co">// namespace detail</span></span></code></pre></div>
 <hr />
 <p>C++ snippets:</p>
 <ul>
