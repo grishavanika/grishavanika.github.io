@@ -393,46 +393,28 @@ namespace detail
 
         iterator it()
         {
-            return { this, _buffer };
+            return {this, _buffer};
         }
 
         using format_result = std::format_to_n_result<iterator>;
     };
 
-    const char* prettify_filename(const char* file)
-    {
-#if (1)
-        if (const char* end = std::strrchr(file, '\\'))
-        {
-            return (end + 1);
-        }
-        if (const char* end = std::strrchr(file, '/'))
-        {
-            return (end + 1);
-        }
-#endif
-        return file;
-    }
-
-    void dump_verify(const char* file, unsigned line
-        , const char* expression
-        , FormatBuffer::format_result&& fmt)
+    void dump_verify(const char* file, unsigned line, const char* expression, FormatBuffer::format_result&& fmt)
     {
         fmt.out.finish(fmt.size);
         // flush stdout if needed
         std::println(stderr, "Verify '{}' failed at '{},{}' -> {}"
-            , expression, prettify_filename(file), line, fmt.out.str());
+            , expression, file, line, fmt.out.str());
         // C++23 - use std::stacktrace::current() if needed
 
     }
 
-    void dump_verify(const char* file, unsigned line
-        , const char* expression)
+    void dump_verify(const char* file, unsigned line, const char* expression)
     {
         // flush stdout if needed
         std::println(stderr, "Verify '{}' failed at '{},{}'"
-            , expression, prettify_filename(file), line);
-        // C++20 - do std::cerr << std::format(...) instead of std::println
+            , expression, file, line);
+        // C++20 - do std::cerr << std::format(...) instead of std::println()
         // C++23 - use std::stacktrace::current() if needed
     }
 } // namespace detail
