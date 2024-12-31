@@ -118,18 +118,84 @@ where it does not allow to have string leftovers, so `ParseToU64("10a")` fails,
 compared to regular `std::from_chars("10a", ...)` and old-style `atoi("10a")`
 analogs.
 
-### custom assert, std::printf-based (<=C++17)
+### custom assert, std::printf-based (<=C++17), simplest (?)
 
- * with std::printf format & args validation
- * with overload for optional message and or custom format
- * up to 15 custom args, modify KK_SELECT_N() to support more
- * `__VA_OPT__` could be used to simplify KK_SELECT_N machinery, see [Making a flexible assert in C++](https://www.dominikgrabiec.com/c++/2023/02/28/making_a_flexible_assert.html)
+ * with enabled printf format validation on GCC with `-Werror=format`, need to silence
+   one other warning with `-Wno-format-zero-length` caused by `KK_VERIFY(false)`
+
+Sample:
 
 ``` {.numberLines}
 KK_VERIFY(false);
 KK_VERIFY(false, "message");
 KK_VERIFY(false, "message %s %s", "format", "args");
 ```
+
+Code:
+
+```cpp {.numberLines}
+#include <cstdio>  // for std::printf validation
+#include <cstdlib> // std::abort()
+
+#define KK_CHECK_PRINTF(...) (void)     \
+    (false && std::printf(__VA_ARGS__))
+
+#define KK_VERIFY(KK_EXPRESSION, ...) (void)      \
+    (!!(KK_EXPRESSION) ||                         \
+        (::detail::dump_verify(__FILE__, __LINE__ \
+            , #KK_EXPRESSION, ##__VA_ARGS__)      \
+        , KK_CHECK_PRINTF("" __VA_ARGS__)         \
+        , KK_DEBUGBREAK()                         \
+        , KK_EXIT()                               \
+        , false)                                  \
+    )
+
+#define KK_DEBUGBREAK() \
+    __debugbreak() /* MSVC-specific */
+#define KK_EXIT() \
+    std::abort() /* OR std::quick_exit(-1)*/
+
+#include <cstdarg> // va_list
+
+namespace detail
+{
+    void dump_verify(const char* file, unsigned line, const char* expression, const char* fmt, ...)
+    {
+        char str[1024]; // not initialized, vsnprintf zero-terminates
+        va_list args;
+        va_start(args, fmt);
+        (void)std::vsnprintf(str, std::size_t(str), fmt, args);
+        va_end(args);
+        // flush stdout if needed
+        (void)std::fprintf(stderr, "Verify '%s' failed at '%s,%u' -> %s\n"
+            , expression, file, line, str);
+    }
+
+    void dump_verify(const char* file, unsigned line, const char* expression)
+    {
+        // flush stdout if needed
+        (void)std::fprintf(stderr, "Verify '%s' failed at '%s,%u'\n"
+            , expression, file, line);
+    }
+} // namespace detail
+```
+
+### custom assert, std::printf-based (<=C++17), ALT
+
+ * with std::printf format & args validation
+ * with overload for optional message and or custom format
+ * up to 15 custom args, modify KK_SELECT_N() to support more
+ * `__VA_OPT__` could be used to simplify KK_SELECT_N machinery, see [Making a flexible assert in C++](https://www.dominikgrabiec.com/c++/2023/02/28/making_a_flexible_assert.html)
+
+Sample:
+
+``` {.numberLines}
+KK_VERIFY(false);
+KK_VERIFY(false, "message");
+KK_VERIFY(false, "message %s %s", "format", "args");
+```
+
+Code:
 
 ```cpp {.numberLines}
 #include <cstdio>  // for std::printf validation
@@ -180,28 +246,10 @@ KK_VERIFY(false, "message %s %s", "format", "args");
     )
 
 #include <cstdarg> // va_list
-#include <cstring> // optional, for prettify_filename()
 
 namespace detail
 {
-    const char* prettify_filename(const char* file)
-    {
-#if (1)
-        if (const char* end = std::strrchr(file, '\\'))
-        {
-            return (end + 1);
-        }
-        if (const char* end = std::strrchr(file, '/'))
-        {
-            return (end + 1);
-        }
-#endif
-        return file;
-    }
-
-    void dump_verify(const char* file, unsigned line
-        , const char* expression
-        , const char* fmt, ...)
+    void dump_verify(const char* file, unsigned line, const char* expression, const char* fmt, ...)
     {
         char str[1024]; // not initialized, vsnprintf zero-terminates
         va_list args;
@@ -210,15 +258,14 @@ namespace detail
         va_end(args);
         // flush stdout if needed
         (void)std::fprintf(stderr, "Verify '%s' failed at '%s,%u' -> %s\n"
-            , expression, prettify_filename(file), line, str);
+            , expression, file, line, str);
     }
 
-    void dump_verify(const char* file, unsigned line
-        , const char* expression)
+    void dump_verify(const char* file, unsigned line, const char* expression)
     {
         // flush stdout if needed
         (void)std::fprintf(stderr, "Verify '%s' failed at '%s,%u'\n"
-            , expression, prettify_filename(file), line);
+            , expression, file, line);
     }
 } // namespace detail
 ```
@@ -230,11 +277,15 @@ namespace detail
  * up to 15 custom args, modify KK_SELECT_N() to support more
  * `__VA_OPT__` could be used to simplify KK_SELECT_N machinery, see [Making a flexible assert in C++](https://www.dominikgrabiec.com/c++/2023/02/28/making_a_flexible_assert.html)
 
+Sample:
+
 ``` {.numberLines}
 KK_VERIFY(false);
 KK_VERIFY(false, "message");
 KK_VERIFY(false, "message {} {}", "format", "args");
 ```
+
+Code:
 
 ```cpp {.numberLines}
 #include <cstdlib> // std::abort()
