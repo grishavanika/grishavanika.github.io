@@ -419,22 +419,3 @@ namespace detail
     }
 } // namespace detail
 ```
-
------------------------------------------------------------
-
-C++ snippets:
-
- * sorted add/remove/find for int/trivial type
- * sorted add/remove/find for struct/custom predicates, by given field
- * sorted iterate by group for custom struct
- * parse to double/int
- * io completion port
- * readdirectorychanges
- * basic threadpool
- * basic threadpool with work stealing
- * read file c-api
- * read file c++-api
- * read huge file (> 4 GBs)
- * read file winapi
- * read file mmap
- * read file async
