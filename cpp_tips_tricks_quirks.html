@@ -632,6 +632,10 @@ template argument</a></li>
 id="toc-underscores-and-_ugly-reserved-names"><span
 class="toc-section-number">107</span> # underscores and _Ugly reserved
 names</a></li>
+<li><a href="#invoke-private-method-with-mangled-name"
+id="toc-invoke-private-method-with-mangled-name"><span
+class="toc-section-number">108</span> # invoke private method with
+mangled name</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -3524,5 +3528,25 @@ namespace separators/class separators was <strong>__</strong> (see this
 href="https://www.reddit.com/r/cpp/comments/1jajhe0/comment/mhm3z8x/">reddit
 post</a>)</p></li>
 </ul>
+<h3 data-number="108" id="invoke-private-method-with-mangled-name"><span
+class="header-section-number">108</span> <a
+href="#invoke-private-method-with-mangled-name"># </a>invoke private
+method with mangled name</h3>
+<p>See this <a
+href="https://www.reddit.com/r/cpp/comments/jdlrg2/comment/g9a7pgp/">reddit
+comment</a>. <mark>NOT</mark> portable (<a
+href="https://godbolt.org/z/jsr8a8K7r">godbolt</a>):</p>
+<div class="sourceCode" id="cb159"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb159-1"><a href="#cb159-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb159-2"><a href="#cb159-2"></a><span class="kw">class</span> Class <span class="kw">final</span> <span class="op">{</span> <span class="kw">private</span><span class="op">:</span> <span class="dt">void</span> function<span class="op">();</span> <span class="op">};</span></span>
+<span id="cb159-3"><a href="#cb159-3"></a><span class="dt">void</span> Class<span class="op">::</span>function<span class="op">()</span> <span class="op">{</span> puts<span class="op">(</span><span class="st">&quot;Called&quot;</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb159-4"><a href="#cb159-4"></a><span class="co">// Expose mangled name; fine for Clang and GCC.</span></span>
+<span id="cb159-5"><a href="#cb159-5"></a><span class="co">// MSVC encodes with leading ? (?function@Class@@AEAAXXZ)</span></span>
+<span id="cb159-6"><a href="#cb159-6"></a><span class="co">// which is disallowed identifier name</span></span>
+<span id="cb159-7"><a href="#cb159-7"></a><span class="at">extern</span> <span class="st">&quot;C&quot;</span> <span class="dt">void</span> _ZN5Class8functionEv<span class="op">(</span>Class<span class="op">*);</span></span>
+<span id="cb159-8"><a href="#cb159-8"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb159-9"><a href="#cb159-9"></a>    Class c<span class="op">;</span></span>
+<span id="cb159-10"><a href="#cb159-10"></a>    _ZN5Class8functionEv<span class="op">(&amp;</span>c<span class="op">);</span></span>
+<span id="cb159-11"><a href="#cb159-11"></a><span class="op">}</span></span></code></pre></div>
 </body>
 </html>

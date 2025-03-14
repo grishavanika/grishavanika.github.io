@@ -2917,3 +2917,21 @@ Note that:
  * the double-underscore reservation is the only one that isn't well motivated anymore: It was originally because the CFront mangling of namespace separators/class separators was **\_\_** (see this [reddit post](https://www.reddit.com/r/cpp/comments/1jajhe0/comment/mhm3z8x/))
 
 
+### invoke private method with mangled name
+
+See this [reddit comment](https://www.reddit.com/r/cpp/comments/jdlrg2/comment/g9a7pgp/).
+[NOT]{.mark} portable ([godbolt](https://godbolt.org/z/jsr8a8K7r)):
+
+``` cpp {.numberLines}
+#include <stdio.h>
+class Class final { private: void function(); };
+void Class::function() { puts("Called"); }
+// Expose mangled name; fine for Clang and GCC.
+// MSVC encodes with leading ? (?function@Class@@AEAAXXZ)
+// which is disallowed identifier name
+extern "C" void _ZN5Class8functionEv(Class*);
+int main() {
+    Class c;
+    _ZN5Class8functionEv(&c);
+}
+```
