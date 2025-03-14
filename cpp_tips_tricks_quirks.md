@@ -2884,3 +2884,36 @@ int main() {
   f.fn(Bar{}); // static_assert, contrained not satisfied
 }
 ```
+
+### underscores and \_Ugly reserved names
+
+See [On leading underscores and names reserved by the C and C++ languages](https://devblogs.microsoft.com/oldnewthing/20230109-00/?p=107685). From Raymond Chen:
+
+  --------------------------------------------- --------------------------------------------
+  Pattern                                       Conditions
+  Begins with two underscores                   Reserved
+  Begins with underscore and uppercase letter   Reserved
+  Begins with underscore and something else     Reserved in global scope (includes macros)
+  Contains two consecutive underscores          Reserved in C++ (but okay in C)
+  --------------------------------------------- --------------------------------------------
+
+Note that:
+
+ * popular convention of prefixing private members with an underscore is fine:
+
+    ``` cpp {.numberLines}
+    class Widget
+    {
+    public:
+        Widget();
+
+    private:
+        int _size; // okay
+        void _Toggle(); // not okay
+    };
+    ```
+
+ * probably because of ambiguity, there is convention to postfix **`size_`** for members
+ * the double-underscore reservation is the only one that isn't well motivated anymore: It was originally because the CFront mangling of namespace separators/class separators was **\_\_** (see this [reddit post](https://www.reddit.com/r/cpp/comments/1jajhe0/comment/mhm3z8x/))
+
+

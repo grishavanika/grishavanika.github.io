@@ -628,6 +628,10 @@ Nifty Counter (static initialization)</a></li>
 id="toc-emulate-concept-passing-as-template-argument"><span
 class="toc-section-number">106</span> # emulate concept passing as
 template argument</a></li>
+<li><a href="#underscores-and-_ugly-reserved-names"
+id="toc-underscores-and-_ugly-reserved-names"><span
+class="toc-section-number">107</span> # underscores and _Ugly reserved
+names</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -3462,5 +3466,63 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb157-18"><a href="#cb157-18"></a>  f<span class="op">.</span>fn<span class="op">(</span>Foo<span class="op">{});</span></span>
 <span id="cb157-19"><a href="#cb157-19"></a>  f<span class="op">.</span>fn<span class="op">(</span>Bar<span class="op">{});</span> <span class="co">// static_assert, contrained not satisfied</span></span>
 <span id="cb157-20"><a href="#cb157-20"></a><span class="op">}</span></span></code></pre></div>
+<h3 data-number="107" id="underscores-and-_ugly-reserved-names"><span
+class="header-section-number">107</span> <a
+href="#underscores-and-_ugly-reserved-names"># </a>underscores and _Ugly
+reserved names</h3>
+<p>See <a
+href="https://devblogs.microsoft.com/oldnewthing/20230109-00/?p=107685">On
+leading underscores and names reserved by the C and C++ languages</a>.
+From Raymond Chen:</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Pattern</td>
+<td style="text-align: left;">Conditions</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Begins with two underscores</td>
+<td style="text-align: left;">Reserved</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Begins with underscore and uppercase
+letter</td>
+<td style="text-align: left;">Reserved</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Begins with underscore and something
+else</td>
+<td style="text-align: left;">Reserved in global scope (includes
+macros)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Contains two consecutive underscores</td>
+<td style="text-align: left;">Reserved in C++ (but okay in C)</td>
+</tr>
+</tbody>
+</table>
+<p>Note that:</p>
+<ul>
+<li><p>popular convention of prefixing private members with an
+underscore is fine:</p>
+<div class="sourceCode" id="cb158"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb158-1"><a href="#cb158-1"></a><span class="kw">class</span> Widget</span>
+<span id="cb158-2"><a href="#cb158-2"></a><span class="op">{</span></span>
+<span id="cb158-3"><a href="#cb158-3"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb158-4"><a href="#cb158-4"></a>    Widget<span class="op">();</span></span>
+<span id="cb158-5"><a href="#cb158-5"></a></span>
+<span id="cb158-6"><a href="#cb158-6"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb158-7"><a href="#cb158-7"></a>    <span class="dt">int</span> _size<span class="op">;</span> <span class="co">// okay</span></span>
+<span id="cb158-8"><a href="#cb158-8"></a>    <span class="dt">void</span> _Toggle<span class="op">();</span> <span class="co">// not okay</span></span>
+<span id="cb158-9"><a href="#cb158-9"></a><span class="op">};</span></span></code></pre></div></li>
+<li><p>probably because of ambiguity, there is convention to postfix
+<strong><code>size_</code></strong> for members</p></li>
+<li><p>the double-underscore reservation is the only one that isn’t well
+motivated anymore: It was originally because the CFront mangling of
+namespace separators/class separators was <strong>__</strong> (see this
+<a
+href="https://www.reddit.com/r/cpp/comments/1jajhe0/comment/mhm3z8x/">reddit
+post</a>)</p></li>
+</ul>
 </body>
 </html>
