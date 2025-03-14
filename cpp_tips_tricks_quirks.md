@@ -464,7 +464,7 @@ See also [GotW #5, Overriding Virtual Functions](http://www.gotw.ca/gotw/005.htm
 
 > Make base class destructors virtual
 
-### stateful metaprogramming
+### stateful metaprogramming / type loophole
 
 This [works](https://b.atch.se/posts/constexpr-counter/) and a and b
 have different values:
@@ -485,6 +485,7 @@ See, for instance, [Revisiting Stateful Metaprogramming in C++20](https://mc-del
  * [nonconstant constant expressions](https://b.atch.se/posts/non-constant-constant-expressions/)
  * [stateful metaprogramming via friend injection](https://www.open-std.org/jtc1/sc22/wg21/docs/cwg%5Factive.html#2118)
  * [hack C++ with templates and friends](https://www.worldcadaccess.com/blog/2020/05/how-to-hack-c-with-templates-and-friends.html)
+ * [The C++ Type Loophole](https://alexpolt.github.io/type-loophole.html)
 
 ### access private members
 

@@ -311,9 +311,10 @@ id="toc-stdshared_ptrbase-with-no-virtual-destructor"><span
 class="toc-section-number">18</span> #
 <code>std::shared_ptr&lt;base&gt;</code> with no virtual
 destructor</a></li>
-<li><a href="#stateful-metaprogramming"
-id="toc-stateful-metaprogramming"><span
-class="toc-section-number">19</span> # stateful metaprogramming</a></li>
+<li><a href="#stateful-metaprogramming-type-loophole"
+id="toc-stateful-metaprogramming-type-loophole"><span
+class="toc-section-number">19</span> # stateful metaprogramming / type
+loophole</a></li>
 <li><a href="#access-private-members"
 id="toc-access-private-members"><span
 class="toc-section-number">20</span> # access private members</a></li>
@@ -1086,9 +1087,10 @@ Overriding Virtual Functions</a>:</p>
 <blockquote>
 <p>Make base class destructors virtual</p>
 </blockquote>
-<h3 data-number="19" id="stateful-metaprogramming"><span
+<h3 data-number="19" id="stateful-metaprogramming-type-loophole"><span
 class="header-section-number">19</span> <a
-href="#stateful-metaprogramming"># </a>stateful metaprogramming</h3>
+href="#stateful-metaprogramming-type-loophole"># </a>stateful
+metaprogramming / type loophole</h3>
 <p>This <a href="https://b.atch.se/posts/constexpr-counter/">works</a>
 and a and b have different values:</p>
 <div class="sourceCode" id="cb28"><pre
@@ -1117,6 +1119,8 @@ metaprogramming via friend injection</a></li>
 <li><a
 href="https://www.worldcadaccess.com/blog/2020/05/how-to-hack-c-with-templates-and-friends.html">hack
 C++ with templates and friends</a></li>
+<li><a href="https://alexpolt.github.io/type-loophole.html">The C++ Type
+Loophole</a></li>
 </ul>
 <h3 data-number="20" id="access-private-members"><span
 class="header-section-number">20</span> <a
