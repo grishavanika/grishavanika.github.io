@@ -315,9 +315,10 @@ destructor</a></li>
 id="toc-stateful-metaprogramming-type-loophole"><span
 class="toc-section-number">19</span> # stateful metaprogramming / type
 loophole</a></li>
-<li><a href="#access-private-members"
-id="toc-access-private-members"><span
-class="toc-section-number">20</span> # access private members</a></li>
+<li><a href="#access-private-members-via-friend-injection"
+id="toc-access-private-members-via-friend-injection"><span
+class="toc-section-number">20</span> # access private members (via
+friend injection)</a></li>
 <li><a href="#extern-templates" id="toc-extern-templates"><span
 class="toc-section-number">21</span> # extern templates</a></li>
 <li><a href="#templates-in-.cpp-file"
@@ -1122,26 +1123,30 @@ C++ with templates and friends</a></li>
 <li><a href="https://alexpolt.github.io/type-loophole.html">The C++ Type
 Loophole</a></li>
 </ul>
-<h3 data-number="20" id="access-private-members"><span
+<h3 data-number="20"
+id="access-private-members-via-friend-injection"><span
 class="header-section-number">20</span> <a
-href="#access-private-members"># </a>access private members</h3>
-<p>See <a href="https://github.com/martong/access_private">this</a> for
-more details and explanations. Similar to stateful metaprogramming.</p>
-<p>Example <a href="https://github.com/schaumb/access_private_20">from
-C++20 version</a>:</p>
+href="#access-private-members-via-friend-injection"># </a>access private
+members (via friend injection)</h3>
+<p>Self-contained example from <a
+href="https://www.worldcadaccess.com/blog/2020/05/how-to-hack-c-with-templates-and-friends.html">How
+to Hack C++ with Templates and Friends</a>:</p>
 <div class="sourceCode" id="cb29"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb29-1"><a href="#cb29-1"></a><span class="kw">class</span> A <span class="op">{</span></span>
-<span id="cb29-2"><a href="#cb29-2"></a>  <span class="dt">int</span> <span class="va">m_i</span> <span class="op">=</span> <span class="dv">3</span><span class="op">;</span></span>
-<span id="cb29-3"><a href="#cb29-3"></a>  <span class="dt">int</span> <span class="va">m_f</span><span class="op">(</span><span class="dt">int</span> p<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="dv">14</span> <span class="op">*</span> p<span class="op">;</span> <span class="op">}</span></span>
-<span id="cb29-4"><a href="#cb29-4"></a><span class="op">};</span></span>
-<span id="cb29-5"><a href="#cb29-5"></a></span>
-<span id="cb29-6"><a href="#cb29-6"></a><span class="kw">template</span> <span class="kw">struct</span> access_private<span class="op">::</span>access<span class="op">&lt;&amp;</span>A<span class="op">::</span><span class="va">m_i</span><span class="op">&gt;;</span></span>
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb29-1"><a href="#cb29-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="dt">int</span> Private<span class="op">::*</span> Member<span class="op">&gt;</span></span>
+<span id="cb29-2"><a href="#cb29-2"></a><span class="kw">struct</span> Stealer <span class="op">{</span></span>
+<span id="cb29-3"><a href="#cb29-3"></a>  <span class="kw">friend</span> <span class="dt">int</span><span class="op">&amp;</span> dataGetter<span class="op">(</span>Private<span class="op">&amp;</span> iObj<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb29-4"><a href="#cb29-4"></a>    <span class="cf">return</span> iObj<span class="op">.*</span>Member<span class="op">;</span></span>
+<span id="cb29-5"><a href="#cb29-5"></a>  <span class="op">}</span></span>
+<span id="cb29-6"><a href="#cb29-6"></a><span class="op">};</span></span>
 <span id="cb29-7"><a href="#cb29-7"></a></span>
-<span id="cb29-8"><a href="#cb29-8"></a><span class="dt">void</span> foo<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb29-9"><a href="#cb29-9"></a>  A a<span class="op">;</span></span>
-<span id="cb29-10"><a href="#cb29-10"></a>  <span class="kw">auto</span> <span class="op">&amp;</span>i <span class="op">=</span> access_private<span class="op">::</span>accessor<span class="op">&lt;</span><span class="st">&quot;m_i&quot;</span><span class="op">&gt;(</span>a<span class="op">);</span></span>
-<span id="cb29-11"><a href="#cb29-11"></a>  <span class="ot">assert</span><span class="op">(</span>i <span class="op">==</span> <span class="dv">3</span><span class="op">);</span></span>
-<span id="cb29-12"><a href="#cb29-12"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb29-8"><a href="#cb29-8"></a><span class="kw">template</span> <span class="kw">struct</span> Stealer<span class="op">&lt;&amp;</span>Private<span class="op">::</span>data<span class="op">&gt;;</span></span>
+<span id="cb29-9"><a href="#cb29-9"></a><span class="dt">int</span><span class="op">&amp;</span> dataGetter<span class="op">(</span>Private<span class="op">&amp;);</span>  <span class="co">//redeclare in global ns</span></span>
+<span id="cb29-10"><a href="#cb29-10"></a></span>
+<span id="cb29-11"><a href="#cb29-11"></a><span class="co">// ...</span></span>
+<span id="cb29-12"><a href="#cb29-12"></a>Private obj<span class="op">;</span></span>
+<span id="cb29-13"><a href="#cb29-13"></a>dataGetter<span class="op">(</span>obj<span class="op">)</span> <span class="op">=</span> <span class="dv">31</span><span class="op">;</span>   <span class="co">// Ok</span></span></code></pre></div>
+<p>See <a href="https://github.com/martong/access_private">this</a> for
+more details and explanations.</p>
 <h3 data-number="21" id="extern-templates"><span
 class="header-section-number">21</span> <a href="#extern-templates">#
 </a>extern templates</h3>

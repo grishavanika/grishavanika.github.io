@@ -487,27 +487,28 @@ See, for instance, [Revisiting Stateful Metaprogramming in C++20](https://mc-del
  * [hack C++ with templates and friends](https://www.worldcadaccess.com/blog/2020/05/how-to-hack-c-with-templates-and-friends.html)
  * [The C++ Type Loophole](https://alexpolt.github.io/type-loophole.html)
 
-### access private members
+### access private members (via friend injection)
 
-See [this](https://github.com/martong/access_private) for more details and explanations.
-Similar to stateful metaprogramming.
-
-Example [from C++20 version](https://github.com/schaumb/access_private_20):
+Self-contained example from [How to Hack C++ with Templates and Friends](https://www.worldcadaccess.com/blog/2020/05/how-to-hack-c-with-templates-and-friends.html):
 
 ``` cpp {.numberLines}
-class A {
-  int m_i = 3;
-  int m_f(int p) { return 14 * p; }
+template<int Private::* Member>
+struct Stealer {
+  friend int& dataGetter(Private& iObj) {
+    return iObj.*Member;
+  }
 };
 
-template struct access_private::access<&A::m_i>;
+template struct Stealer<&Private::data>;
+int& dataGetter(Private&);  //redeclare in global ns
 
-void foo() {
-  A a;
-  auto &i = access_private::accessor<"m_i">(a);
-  assert(i == 3);
-}
+// ...
+Private obj;
+dataGetter(obj) = 31;   // Ok
 ```
+
+See [this](https://github.com/martong/access_private) for more details and explanations.
+
 
 ### extern templates
 
