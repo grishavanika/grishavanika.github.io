@@ -2937,3 +2937,57 @@ int main() {
     _ZN5Class8functionEv(&c);
 }
 ```
+
+### coroutines and std::source_location::current()
+
+You can inject `std::source_location` into all coroutines customization points to get information on where coroutine is created/suspended/awaited/etc, see <https://godbolt.org/z/5ooTcPPhx>:
+
+``` cpp {.numberLines}
+struct co_task
+{
+
+struct promise_type
+{
+    co_task get_return_object(std::source_location loc = std::source_location::current()) noexcept
+    {
+        print("get_return_object", loc);
+        return {};
+    }
+    // ...
+
+    struct awaitable
+    {
+        bool await_ready(std::source_location loc = std::source_location::current())
+        {
+            print("await_ready", loc);
+            return false;
+        }
+        // ...
+    };
+
+    auto await_transform(int)
+    {
+        return awaitable{};
+    }
+};
+
+};
+
+co_task co_test()
+{
+    co_await 1;
+    co_return;
+}
+```
+
+which outputs:
+
+``` {.numberLines}
+get_return_object   : '/app/example.cpp'/'co_task co_test()'/'63'
+initial_suspend     : '/app/example.cpp'/'co_task co_test()'/'63'
+await_ready         : '/app/example.cpp'/'co_task co_test()'/'65'
+await_suspend       : '/app/example.cpp'/'co_task co_test()'/'65'
+await_resume        : '/app/example.cpp'/'co_task co_test()'/'65'
+return_void         : '/app/example.cpp'/'co_task co_test()'/'66'
+final_suspend       : '/app/example.cpp'/'co_task co_test()'/'63'
+```

@@ -638,6 +638,10 @@ names</a></li>
 id="toc-invoke-private-method-with-mangled-name"><span
 class="toc-section-number">108</span> # invoke private method with
 mangled name</a></li>
+<li><a href="#coroutines-and-stdsource_locationcurrent"
+id="toc-coroutines-and-stdsource_locationcurrent"><span
+class="toc-section-number">109</span> # coroutines and
+std::source_location::current()</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -3557,5 +3561,60 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb159-9"><a href="#cb159-9"></a>    Class c<span class="op">;</span></span>
 <span id="cb159-10"><a href="#cb159-10"></a>    _ZN5Class8functionEv<span class="op">(&amp;</span>c<span class="op">);</span></span>
 <span id="cb159-11"><a href="#cb159-11"></a><span class="op">}</span></span></code></pre></div>
+<h3 data-number="109"
+id="coroutines-and-stdsource_locationcurrent"><span
+class="header-section-number">109</span> <a
+href="#coroutines-and-stdsource_locationcurrent"># </a>coroutines and
+std::source_location::current()</h3>
+<p>You can inject <code>std::source_location</code> into all coroutines
+customization points to get information on where coroutine is
+created/suspended/awaited/etc, see <a
+href="https://godbolt.org/z/5ooTcPPhx"
+class="uri">https://godbolt.org/z/5ooTcPPhx</a>:</p>
+<div class="sourceCode" id="cb160"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb160-1"><a href="#cb160-1"></a><span class="kw">struct</span> co_task</span>
+<span id="cb160-2"><a href="#cb160-2"></a><span class="op">{</span></span>
+<span id="cb160-3"><a href="#cb160-3"></a></span>
+<span id="cb160-4"><a href="#cb160-4"></a><span class="kw">struct</span> <span class="dt">promise_type</span></span>
+<span id="cb160-5"><a href="#cb160-5"></a><span class="op">{</span></span>
+<span id="cb160-6"><a href="#cb160-6"></a>    co_task get_return_object<span class="op">(</span><span class="bu">std::</span>source_location loc <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">())</span> <span class="kw">noexcept</span></span>
+<span id="cb160-7"><a href="#cb160-7"></a>    <span class="op">{</span></span>
+<span id="cb160-8"><a href="#cb160-8"></a>        print<span class="op">(</span><span class="st">&quot;get_return_object&quot;</span><span class="op">,</span> loc<span class="op">);</span></span>
+<span id="cb160-9"><a href="#cb160-9"></a>        <span class="cf">return</span> <span class="op">{};</span></span>
+<span id="cb160-10"><a href="#cb160-10"></a>    <span class="op">}</span></span>
+<span id="cb160-11"><a href="#cb160-11"></a>    <span class="co">// ...</span></span>
+<span id="cb160-12"><a href="#cb160-12"></a></span>
+<span id="cb160-13"><a href="#cb160-13"></a>    <span class="kw">struct</span> awaitable</span>
+<span id="cb160-14"><a href="#cb160-14"></a>    <span class="op">{</span></span>
+<span id="cb160-15"><a href="#cb160-15"></a>        <span class="dt">bool</span> await_ready<span class="op">(</span><span class="bu">std::</span>source_location loc <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">())</span></span>
+<span id="cb160-16"><a href="#cb160-16"></a>        <span class="op">{</span></span>
+<span id="cb160-17"><a href="#cb160-17"></a>            print<span class="op">(</span><span class="st">&quot;await_ready&quot;</span><span class="op">,</span> loc<span class="op">);</span></span>
+<span id="cb160-18"><a href="#cb160-18"></a>            <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb160-19"><a href="#cb160-19"></a>        <span class="op">}</span></span>
+<span id="cb160-20"><a href="#cb160-20"></a>        <span class="co">// ...</span></span>
+<span id="cb160-21"><a href="#cb160-21"></a>    <span class="op">};</span></span>
+<span id="cb160-22"><a href="#cb160-22"></a></span>
+<span id="cb160-23"><a href="#cb160-23"></a>    <span class="kw">auto</span> await_transform<span class="op">(</span><span class="dt">int</span><span class="op">)</span></span>
+<span id="cb160-24"><a href="#cb160-24"></a>    <span class="op">{</span></span>
+<span id="cb160-25"><a href="#cb160-25"></a>        <span class="cf">return</span> awaitable<span class="op">{};</span></span>
+<span id="cb160-26"><a href="#cb160-26"></a>    <span class="op">}</span></span>
+<span id="cb160-27"><a href="#cb160-27"></a><span class="op">};</span></span>
+<span id="cb160-28"><a href="#cb160-28"></a></span>
+<span id="cb160-29"><a href="#cb160-29"></a><span class="op">};</span></span>
+<span id="cb160-30"><a href="#cb160-30"></a></span>
+<span id="cb160-31"><a href="#cb160-31"></a>co_task co_test<span class="op">()</span></span>
+<span id="cb160-32"><a href="#cb160-32"></a><span class="op">{</span></span>
+<span id="cb160-33"><a href="#cb160-33"></a>    <span class="cf">co_await</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb160-34"><a href="#cb160-34"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
+<span id="cb160-35"><a href="#cb160-35"></a><span class="op">}</span></span></code></pre></div>
+<p>which outputs:</p>
+<div class="sourceCode" id="cb161"><pre
+class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb161-1"><a href="#cb161-1"></a>get_return_object   : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;63&#39;</span>
+<span id="cb161-2"><a href="#cb161-2"></a>initial_suspend     : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;63&#39;</span>
+<span id="cb161-3"><a href="#cb161-3"></a>await_ready         : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;65&#39;</span>
+<span id="cb161-4"><a href="#cb161-4"></a>await_suspend       : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;65&#39;</span>
+<span id="cb161-5"><a href="#cb161-5"></a>await_resume        : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;65&#39;</span>
+<span id="cb161-6"><a href="#cb161-6"></a>return_void         : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;66&#39;</span>
+<span id="cb161-7"><a href="#cb161-7"></a>final_suspend       : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;63&#39;</span></code></pre></div>
 </body>
 </html>
