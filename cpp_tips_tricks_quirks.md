@@ -2991,3 +2991,5 @@ await_resume        : '/app/example.cpp'/'co_task co_test()'/'65'
 return_void         : '/app/example.cpp'/'co_task co_test()'/'66'
 final_suspend       : '/app/example.cpp'/'co_task co_test()'/'63'
 ```
+
+Originally comes from reading [boost.cobalt](https://github.com/boostorg/cobalt/blob/0c6cf566471803dd8a53a5e98511da4516583e88/include/boost/cobalt/detail/task.hpp#L196).
