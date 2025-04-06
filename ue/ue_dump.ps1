@@ -8,6 +8,21 @@ function New-MakrdownLinkFromUrl($url)
 	return "[$($text)]($($url))"
 }
 
+function New-MakrdownLinkFromLearningUrl($url)
+{
+	$title = $url.Substring($url.LastIndexOf('/') + 1)
+	$title = $title.Replace('-', ' ')
+	$p = $title.IndexOf('unreal engine')
+	if ($p -eq 0)
+	{
+		$title = $title.Substring('unreal engine'.Length + 1)
+	}
+	$s = $url.IndexOf('/learning/') + '/learning/'.Length
+	$e = $url.IndexOf('/', $s + 1)
+	$kind = $url.Substring($s, $e - $s)
+	return "|$($kind)| [$($title)]($($url))"
+}
+
 function New-Dump($old, $old_version, $new, $new_version)
 {
 	$links_old=cat $old
@@ -111,3 +126,27 @@ function New-DumpAllLinksToMarkdown($links_file, $version)
 # New-DumpAllLinksToMarkdown 04.04.25_ue5.2.txt '?application_version=5.2'
 # New-DumpAllLinksToMarkdown 04.04.25_ue5.3.txt '?application_version=5.3'
 # New-DumpAllLinksToMarkdown 04.04.25_ue5.4.txt '?application_version=5.4'
+
+function New-DumpLearningLinksToMarkdown($links_file)
+{
+	$links = cat $links_file
+	$file_name = "utf16-ue_learning.md"
+
+	"## Learning links = $($links.Count)" > $file_name
+	"" >> $file_name
+	foreach ($link in $links)
+	{
+		$url = New-MakrdownLinkFromLearningUrl $link
+		" * $($url)" >> $file_name
+	}
+	"" >> $file_name
+	"" >> $file_name
+
+	$new_file = "ue_learning.md"
+	Get-Content $file_name | Set-Content -Encoding utf8 $new_file
+	Remove-Item $file_name -Force | Out-Null
+	# & "pandoc" $new_file -o "ue_$($title).html"
+	# Remove-Item $new_file -Force | Out-Null
+}
+
+# New-DumpLearningLinksToMarkdown 04.04.25_ue_learnings.txt
