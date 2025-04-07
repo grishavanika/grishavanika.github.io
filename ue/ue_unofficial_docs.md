@@ -285,6 +285,7 @@ As of 2025/04/06.
  * [blueprint splines in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-splines-in-unreal-engine?application_version=5.0)
  * [blueprint struct variables in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-struct-variables-in-unreal-engine?application_version=5.0)
  * [blueprint tutorials in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-tutorials-in-unreal-engine?application_version=5.0)
+   * Creating Blueprints, Adding and Connecting Nodes, Creating Variables / etc; tutorials
  * [blueprint variables in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-variables-in-unreal-engine?application_version=5.0)
  * [BlueprintAPI](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI?application_version=5.0)
  * [blueprints only example](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprints-only-example?application_version=5.0)
@@ -547,6 +548,7 @@ As of 2025/04/06.
  * [creating drag and drop ui in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-drag-and-drop-ui-in-unreal-engine?application_version=5.0)
  * [creating dynamic animations in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-dynamic-animations-in-unreal-engine?application_version=5.0)
  * [creating functions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-functions-in-unreal-engine?application_version=5.0)
+   * Functions are node graphs belonging to a particular Blueprint that can be executed, or called, from another graph within the Blueprint
  * [creating human skin in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-human-skin-in-unreal-engine?application_version=5.0)
  * [creating in game ui with slate in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-in-game-ui-with-slate-in-unreal-engine?application_version=5.0)
  * [creating landscapes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-landscapes-in-unreal-engine?application_version=5.0)
@@ -1190,6 +1192,8 @@ As of 2025/04/06.
  * [making interactive experiences and gameplay in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/making-interactive-experiences-and-gameplay-in-unreal-engine?application_version=5.0)
  * [making interactive xr experiences in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/making-interactive-xr-experiences-in-unreal-engine?application_version=5.0)
  * [making macros in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/making-macros-in-unreal-engine?application_version=5.0)
+   * Macros are essentially the same as collapsed graphs of nodes
+   * Creating Macros
  * [managing color in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/managing-color-in-unreal-engine?application_version=5.0)
  * [managing game code in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/managing-game-code-in-unreal-engine?application_version=5.0)
  * [managing multiplayer sessions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/managing-multiplayer-sessions-in-unreal-engine?application_version=5.0)
@@ -1511,6 +1515,10 @@ As of 2025/04/06.
  * [placing actors in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/placing-actors-in-unreal-engine?application_version=5.0)
  * [placing material expressions and functions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/placing-material-expressions-and-functions-in-unreal-engine?application_version=5.0)
  * [placing nodes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/placing-nodes-in-unreal-engine?application_version=5.0)
+   * add nodes to Blueprints
+   * Drag-and-Drop: drag in any Functions or Macros/variables
+   * Context Menu Search
+   * Keyboard Shortcuts: [Blueprint Editor Cheat Sheet](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-editor-cheat-sheet-in-unreal-engine?application_version=5.0)
  * [planar reflections in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/planar-reflections-in-unreal-engine?application_version=5.0)
  * [platform audio settings in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/platform-audio-settings-in-unreal-engine?application_version=5.0)
  * [platforms section of the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/platforms-section-of-the-unreal-engine-project-settings?application_version=5.0)
@@ -1721,6 +1729,12 @@ As of 2025/04/06.
  * [sequencer track list in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/sequencer-track-list-in-unreal-engine?application_version=5.0)
  * [sequences folder structure in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/sequences-folder-structure-in-unreal-engine?application_version=5.0)
  * [set and get an actor reference in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/set-and-get-an-actor-reference-in-unreal-engine?application_version=5.0)
+   * basic tutorial
+   * Create an Actor that References Another Actor
+   * Click the "eye icon" to ensure it is visible in the Details panel
+   * Get an Actor Reference in Blueprint and Teleport It to Another Location
+   * Set an Actor Reference in Blueprint
+   * Set an Actor Reference in the Details Panel
  * [set containers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/set-containers-in-unreal-engine?application_version=5.0)
  * [set spectator screen mode in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/set-spectator-screen-mode-in-unreal-engine?application_version=5.0)
  * [set spectator screen mode texture plus eye layout in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/set-spectator-screen-mode-texture-plus-eye-layout-in-unreal-engine?application_version=5.0)
@@ -2171,6 +2185,10 @@ As of 2025/04/06.
  * [using look up tables for color grading in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-look-up-tables-for-color-grading-in-unreal-engine?application_version=5.0)
  * [using lyra with epic online services in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-lyra-with-epic-online-services-in-unreal-engine?application_version=5.0)
  * [using macro libraries in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-macro-libraries-in-unreal-engine?application_version=5.0)
+   * Macro Library is a container that holds a collection of Macros or self-contained graphs 
+   * Changes to macros in a Blueprint Macro Library will not take effect until client Blueprints are recompiled
+   * Creating a Macro Library
+   * Creating a Macro
  * [using material layers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-material-layers-in-unreal-engine?application_version=5.0)
  * [using material parameter collections in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-material-parameter-collections-in-unreal-engine?application_version=5.0)
  * [using materials with static meshes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-materials-with-static-meshes-in-unreal-engine?application_version=5.0)
