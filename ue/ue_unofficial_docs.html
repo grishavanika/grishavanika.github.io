@@ -1593,7 +1593,15 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-level
 levels of detail in blueprints and python in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-objects-in-unreal-engine?application_version=5.0">creating
-objects in unreal engine</a></li>
+objects in unreal engine</a>
+<ul>
+<li>NewObject - simplest UObject factory method</li>
+<li>NewNamedObject - a name for the new instance as well as Object Flags
+and a template object</li>
+<li>ConstructObject - complete flexibility</li>
+<li>Object Flags - EObjectFlags: “describe an Object”.
+RF_Transactional/etc.</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-shiny-materials-in-unreal-engine?application_version=5.0">creating
 shiny materials in unreal engine</a></li>
@@ -2809,7 +2817,11 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/interface-quic
 quick start guide in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/interfaces-in-unreal-engine?application_version=5.0">interfaces
-in unreal engine</a></li>
+in unreal engine</a>
+<ul>
+<li>do not confuse with C++ interface/abstract class</li>
+<li></li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/introduction-to-blueprints-visual-scripting-in-unreal-engine?application_version=5.0">introduction
 to blueprints visual scripting in unreal engine</a></li>
@@ -3493,7 +3505,52 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/nvidia-sli-alt
 sli alternative frame rendering in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/objects-in-unreal-engine?application_version=5.0">objects
-in unreal engine</a></li>
+in unreal engine</a>
+<ul>
+<li>The base class for objects in Unreal is UObject</li>
+<li>The UCLASS macro can be used to tag classes derived from
+UObject</li>
+<li>UCLASS that describes its Unreal-based type</li>
+<li>Each UCLASS maintains one Object called the Class Default Object
+(CDO)</li>
+<li>UObject Creation: NewObject/CreateDefaultSubobject</li>
+<li>UObjects should never use the new operator</li>
+<li>Functionality Provided by UObjects
+<ul>
+<li>Garbage collection</li>
+<li>Reference updating</li>
+<li>Reflection</li>
+<li>Serialization</li>
+<li>Automatic updating of default property changes</li>
+<li>Automatic property initialization</li>
+<li>Automatic editor integration</li>
+<li>Type information available at runtime</li>
+<li>Network replication</li>
+</ul></li>
+<li>UStructs are considered value types and are not garbage
+collected</li>
+<li>The Unreal Header Tool: preprocessing step needs to be run on the
+header files</li>
+<li>“Header File Format”: MyObject.generated.h include, MYPROJECT_API,
+etc</li>
+<li>When wrapping parts of a UCLASS with custom #ifdefs macros, UHT will
+ignore macros that do not contain WITH_EDITOR or WITHEDITORONLY_DATA
+macros</li>
+<li>Updating Objects: ticking/FTickableGameObject/Tick()</li>
+<li>Destroying Objects:
+<ul>
+<li>function MarkPendingKill() can be called directly on an Object;</li>
+<li>This function sets all pointers to the Object to NULL and removes
+the Object from global searches;</li>
+<li>Object-&gt;MarkPendingKill() has been replaced with
+Obj-&gt;MarkAsGarbage()</li>
+<li>related to gc.PendingKillEnabled=true</li>
+<li>Strong references keep UObjects alive (TODO: test, more
+details)</li>
+<li>IsValid() is for checking if it’s null or garbage</li>
+<li>Existing checks for nullptr should be replaced with IsValid()</li>
+</ul></li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/oculus-development-requirements-in-unreal-engine?application_version=5.0">oculus
 development requirements in unreal engine</a></li>
@@ -4029,7 +4086,13 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-to
 tools for unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-with-cplusplus-in-unreal-engine?application_version=5.0">programming
-with cplusplus in unreal engine</a></li>
+with cplusplus in unreal engine</a>. References to:
+<ul>
+<li>Unreal Reflection System + Metadata property Specifier(s)</li>
+<li>Containers in Unreal</li>
+<li>Gameplay Architecture</li>
+<li>Delegates</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-with-cpp-in-unreal-engine?application_version=5.0">programming
 with cpp in unreal engine</a></li>
@@ -4176,7 +4239,18 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/referencing-as
 assets in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/reflection-system-in-unreal-engine?application_version=5.0">reflection
-system in unreal engine</a></li>
+system in unreal engine</a>
+<ul>
+<li>runtime reflection with macros to “provide engine and editor
+functionality”</li>
+<li>not to confuse with C++ reflection</li>
+<li>see also (type) introspection vs reflection</li>
+<li>mentions UCLASS/USTRUCT/UFUNCTION and UPROPERTY</li>
+<li>UClass and TSubclassOf type sefety</li>
+<li>C++11-like smart pointers and smart references</li>
+<li>unreal interfaces</li>
+<li>Metadata Specifiers</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/reflections-captures-in-unreal-engine?application_version=5.0">reflections
 captures in unreal engine</a></li>
@@ -4812,7 +4886,16 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/struct-viewer-
 viewer settings in the unreal engine project settings</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/structs-in-unreal-engine?application_version=5.0">structs
-in unreal engine</a></li>
+in unreal engine</a>
+<ul>
+<li>UStruct supports UProperty, but are not managed by the Garbage
+Collection</li>
+<li>cannot provide the functionality of a UFunction</li>
+<li>GENERATED_BODY()</li>
+<li>Struct Specifiers</li>
+<li>Unreal Engine can automatically create Make and Break functions for
+Structs</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/submixes-in-unreal-engine?application_version=5.0">submixes
 in unreal engine</a></li>
@@ -5056,7 +5139,14 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/twinmotion-mat
 materials pack in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/typed-object-pointer-properties-in-unreal-engine?application_version=5.0">typed
-object pointer properties in unreal engine</a></li>
+object pointer properties in unreal engine</a>
+<ul>
+<li>TSubclassOf is a template class that provides UClass type
+safety</li>
+<li><code>UPROPERTY(EditDefaultsOnly) TSubclassOf&lt;UDamageType&gt; DamageType</code>:
+tells the editor’s property windows to list only classes derived from
+UDamageType as choices for the property</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/types-of-blueprints-in-unreal-engine?application_version=5.0">types
 of blueprints in unreal engine</a></li>
@@ -5216,7 +5306,15 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-
 engine pixel streaming reference</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-programming-and-scripting?application_version=5.0">unreal
-engine programming and scripting</a></li>
+engine programming and scripting</a>. References to:
+<ul>
+<li>C++/Blueprints programming</li>
+<li>Slate UI programming</li>
+<li>Python Scripting</li>
+<li>Online Subsystems</li>
+<li>Unreal Architecture (modules, etc)</li>
+<li>Development Setup</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-sequencer-movie-tool-overview?application_version=5.0">unreal
 engine sequencer movie tool overview</a></li>
@@ -5231,7 +5329,16 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-
 engine terminology</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-uproperties?application_version=5.0">unreal
-engine uproperties</a></li>
+engine uproperties</a>
+<ul>
+<li>Property Declaration: UPROPERTY(specifier, meta(key=value))</li>
+<li>Core Data Types:
+Integers/Bitmasks(UENUM/UseEnumValuesAsMaskValuesInEditor)/Floating
+Point Types/Boolean Types/Strings(FString/FName/FText)</li>
+<li>Property Specifiers</li>
+<li>Metadata Specifiers: Metadata only exists in the editor; do not
+write game logic that accesses metadata</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-game-sync-client-setup-for-unreal-engine?application_version=5.0">unreal
 game sync client setup for unreal engine</a></li>
@@ -5267,7 +5374,47 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-insight
 insights reference in unreal engine 5</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-object-handling-in-unreal-engine?application_version=5.0">unreal
-object handling in unreal engine</a></li>
+object handling in unreal engine</a>
+<ul>
+<li>Automatic Property Initialization: UObjects are automatically zeroed
+on initialization</li>
+<li>Automatic Updating of References:
+<ul>
+<li>When an AActor or UActorComponent is destroyed or otherwise removed
+from play, all references to it that are visible to the reflection
+system are automatically nulled; (TODO: not clear on UObject*)</li>
+<li>UProperty pointers and pointers stored in Unreal Engine container
+classes such as TArray</li>
+</ul></li>
+<li>Serialization:
+<ul>
+<li>UProperty values are automatically written or read unless explicitly
+marked as “transient” or unchanged from the post-constructor default
+value</li>
+<li>UObject::Serialize - custom behavior</li>
+</ul></li>
+<li>Updating of Property Values: When the Class Default Object (or CDO)
+of a UClass has changed, the engine will try to apply those changes to
+all instances of the class when they are loaded</li>
+<li>Editor Integration: expose properties in Editor/Blueprints
+Editor/etc.</li>
+<li>Run-Time Type Information and Casting: Cast&lt;&gt;</li>
+<li>Garbage Collection:
+<ul>
+<li>The engine builds a reference graph to determine which UObjects are
+still in use</li>
+<li>At the root of this graph is a set of UObjects designated as the
+“root set”</li>
+<li>Any UObject can be added to the root set</li>
+<li>Actors can be explicitly marked for destruction by calling their
+Destroy function</li>
+<li>Components can be destroyed explicitly with the DestroyComponent
+function</li>
+<li>multithreaded reachability analysis</li>
+<li>Project Settings under Engine / Garbage Collection</li>
+</ul></li>
+<li>Network Replication</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-swarm-in-unreal-engine?application_version=5.0">unreal
 swarm in unreal engine</a></li>
@@ -7667,7 +7814,28 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/in-game-analyt
 game analytics for unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/incremental-garbage-collection-in-unreal-engine?application_version=5.4">incremental
-garbage collection in unreal engine</a></li>
+garbage collection in unreal engine</a>
+<ul>
+<li>Experimental in 5.4, 5.5</li>
+<li>UE uses a mark-and-sweep garbage collector</li>
+<li>drawback: reachability analysis leads to hitches</li>
+<li>The more objects reachability analysis has to scan, the longer the
+pause</li>
+<li>old mitigation: keeping tight UObject budgets/using UObject
+pools/disabling garbage collection during normal gameplay</li>
+<li>incremental reachability analysis: split the garbage collector’s
+reachability analysis phase across multiple frames</li>
+<li>engine tracks UObject references between reachability iterations
+through TObjectPtr properties</li>
+<li>garbage collector write barrier: assignment to a TObjectPtr-exposed
+UPROPERTY</li>
+<li>gc.AllowIncrementalReachability=1</li>
+<li>gc.AllowIncrementalGather=1</li>
+<li>gc.IncrementalReachabilityTimeLimit=0.002</li>
+<li><ul>
+<li>other gc. console variables</li>
+</ul></li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/instrumenting-your-game-with-analytics-in-unreal-engine?application_version=5.4">instrumenting
 your game with analytics in unreal engine</a></li>

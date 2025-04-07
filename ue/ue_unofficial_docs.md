@@ -460,6 +460,10 @@ As of 2025/04/06.
  * [creating level sequences with dynamic transforms in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-level-sequences-with-dynamic-transforms-in-unreal-engine?application_version=5.0)
  * [creating levels of detail in blueprints and python in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-levels-of-detail-in-blueprints-and-python-in-unreal-engine?application_version=5.0)
  * [creating objects in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-objects-in-unreal-engine?application_version=5.0)
+   * NewObject - simplest UObject factory method
+   * NewNamedObject - a name for the new instance as well as Object Flags and a template object
+   * ConstructObject - complete flexibility
+   * Object Flags - EObjectFlags: "describe an Object". RF_Transactional/etc.
  * [creating shiny materials in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-shiny-materials-in-unreal-engine?application_version=5.0)
  * [creating speedtree models for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-speedtree-models-for-unreal-engine?application_version=5.0)
  * [creating timelines in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-timelines-in-unreal-engine?application_version=5.0)
@@ -858,6 +862,8 @@ As of 2025/04/06.
  * [interchange settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/interchange-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [interface quick start guide in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/interface-quick-start-guide-in-unreal-engine?application_version=5.0)
  * [interfaces in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/interfaces-in-unreal-engine?application_version=5.0)
+   * do not confuse with C++ interface/abstract class
+   * 
  * [introduction to blueprints visual scripting in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/introduction-to-blueprints-visual-scripting-in-unreal-engine?application_version=5.0)
  * [invalidation in slate and umg for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/invalidation-in-slate-and-umg-for-unreal-engine?application_version=5.0)
  * [ios ipados and tvos development requirements for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/ios-ipados-and-tvos-development-requirements-for-unreal-engine?application_version=5.0)
@@ -1085,6 +1091,35 @@ As of 2025/04/06.
  * [nvidia nsight aftermath for gpu pipeline debugging in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/nvidia-nsight-aftermath-for-gpu-pipeline-debugging-in-unreal-engine?application_version=5.0)
  * [nvidia sli alternative frame rendering in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/nvidia-sli-alternative-frame-rendering-in-unreal-engine?application_version=5.0)
  * [objects in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/objects-in-unreal-engine?application_version=5.0)
+   * The base class for objects in Unreal is UObject
+   * The UCLASS macro can be used to tag classes derived from UObject
+   * UCLASS that describes its Unreal-based type
+   * Each UCLASS maintains one Object called the Class Default Object (CDO)
+   * UObject Creation: NewObject/CreateDefaultSubobject
+   * UObjects should never use the new operator
+   * Functionality Provided by UObjects
+     - Garbage collection
+     - Reference updating
+     - Reflection
+     - Serialization
+     - Automatic updating of default property changes
+     - Automatic property initialization
+     - Automatic editor integration
+     - Type information available at runtime
+     - Network replication
+   * UStructs are considered value types and are not garbage collected
+   * The Unreal Header Tool: preprocessing step needs to be run on the header files
+   * "Header File Format": MyObject.generated.h include, MYPROJECT_API, etc
+   * When wrapping parts of a UCLASS with custom #ifdefs macros, UHT will ignore macros that do not contain WITH_EDITOR or WITHEDITORONLY_DATA macros
+   * Updating Objects: ticking/FTickableGameObject/Tick()
+   * Destroying Objects:
+     - function MarkPendingKill() can be called directly on an Object; 
+     - This function sets all pointers to the Object to NULL and removes the Object from global searches;
+     - Object->MarkPendingKill() has been replaced with Obj->MarkAsGarbage()
+     - related to gc.PendingKillEnabled=true
+     - Strong references keep UObjects alive (TODO: test, more details)
+     - IsValid() is for checking if it's null or garbage
+     - Existing checks for nullptr should be replaced with IsValid()
  * [oculus development requirements in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/oculus-development-requirements-in-unreal-engine?application_version=5.0)
  * [oculus how to in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/oculus-how-to-in-unreal-engine?application_version=5.0)
  * [oculus prerequisites in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/oculus-prerequisites-in-unreal-engine?application_version=5.0)
@@ -1262,7 +1297,11 @@ As of 2025/04/06.
  * [programming subsystems in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-subsystems-in-unreal-engine?application_version=5.0)
  * [programming tools for the unreal editor with slate ui in cplusplus](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-tools-for-the-unreal-editor-with-slate-ui-in-cplusplus?application_version=5.0)
  * [programming tools for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-tools-for-unreal-engine?application_version=5.0)
- * [programming with cplusplus in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-with-cplusplus-in-unreal-engine?application_version=5.0)
+ * [programming with cplusplus in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-with-cplusplus-in-unreal-engine?application_version=5.0). References to:
+   * Unreal Reflection System + Metadata property Specifier(s)
+   * Containers in Unreal
+   * Gameplay Architecture
+   * Delegates
  * [programming with cpp in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-with-cpp-in-unreal-engine?application_version=5.0)
  * [project section of the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/project-section-of-the-unreal-engine-project-settings?application_version=5.0)
  * [project settings in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/project-settings-in-unreal-engine?application_version=5.0)
@@ -1312,6 +1351,14 @@ As of 2025/04/06.
  * [reference viewer in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/reference-viewer-in-unreal-engine?application_version=5.0)
  * [referencing assets in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/referencing-assets-in-unreal-engine?application_version=5.0)
  * [reflection system in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/reflection-system-in-unreal-engine?application_version=5.0)
+   * runtime reflection with macros to "provide engine and editor functionality"
+   * not to confuse with C++ reflection
+   * see also (type) introspection vs reflection
+   * mentions UCLASS/USTRUCT/UFUNCTION and UPROPERTY
+   * UClass and TSubclassOf type sefety
+   * C++11-like smart pointers and smart references
+   * unreal interfaces
+   * Metadata Specifiers
  * [reflections captures in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/reflections-captures-in-unreal-engine?application_version=5.0)
  * [reflections environment in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/reflections-environment-in-unreal-engine?application_version=5.0)
  * [reflections material functions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/reflections-material-functions-in-unreal-engine?application_version=5.0)
@@ -1522,6 +1569,11 @@ As of 2025/04/06.
  * [string handling in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/string-handling-in-unreal-engine?application_version=5.0)
  * [struct viewer settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/struct-viewer-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [structs in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/structs-in-unreal-engine?application_version=5.0)
+   * UStruct supports UProperty, but are not managed by the Garbage Collection
+   * cannot provide the functionality of a UFunction
+   * GENERATED_BODY()
+   * Struct Specifiers
+   * Unreal Engine can automatically create Make and Break functions for Structs
  * [submixes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/submixes-in-unreal-engine?application_version=5.0)
  * [subsurface profile shading model in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/subsurface-profile-shading-model-in-unreal-engine?application_version=5.0)
  * [subsurface shading model in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/subsurface-shading-model-in-unreal-engine?application_version=5.0)
@@ -1603,6 +1655,8 @@ As of 2025/04/06.
  * [tutorials settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/tutorials-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [twinmotion materials pack in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/twinmotion-materials-pack-in-unreal-engine?application_version=5.0)
  * [typed object pointer properties in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/typed-object-pointer-properties-in-unreal-engine?application_version=5.0)
+   * TSubclassOf is a template class that provides UClass type safety
+   * `UPROPERTY(EditDefaultsOnly) TSubclassOf<UDamageType> DamageType`: tells the editor's property windows to list only classes derived from UDamageType as choices for the property
  * [types of blueprints in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/types-of-blueprints-in-unreal-engine?application_version=5.0)
  * [udp messaging settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/udp-messaging-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [ufunctions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/ufunctions-in-unreal-engine?application_version=5.0)
@@ -1655,12 +1709,23 @@ As of 2025/04/06.
  * [unreal engine materials](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-materials?application_version=5.0)
  * [unreal engine modules](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-modules?application_version=5.0)
  * [unreal engine pixel streaming reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-pixel-streaming-reference?application_version=5.0)
- * [unreal engine programming and scripting](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-programming-and-scripting?application_version=5.0)
+ * [unreal engine programming and scripting](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-programming-and-scripting?application_version=5.0).
+   References to:
+   * C++/Blueprints programming
+   * Slate UI programming
+   * Python Scripting
+   * Online Subsystems
+   * Unreal Architecture (modules, etc)
+   * Development Setup
  * [unreal engine sequencer movie tool overview](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-sequencer-movie-tool-overview?application_version=5.0)
  * [unreal engine stats system overview](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-stats-system-overview?application_version=5.0)
  * [unreal engine templates reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-templates-reference?application_version=5.0)
  * [unreal engine terminology](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-terminology?application_version=5.0)
  * [unreal engine uproperties](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-uproperties?application_version=5.0)
+   * Property Declaration: UPROPERTY(specifier, meta(key=value))
+   * Core Data Types: Integers/Bitmasks(UENUM/UseEnumValuesAsMaskValuesInEditor)/Floating Point Types/Boolean Types/Strings(FString/FName/FText)
+   * Property Specifiers
+   * Metadata Specifiers: Metadata only exists in the editor; do not write game logic that accesses metadata
  * [unreal game sync client setup for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-game-sync-client-setup-for-unreal-engine?application_version=5.0)
  * [unreal game sync filters for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-game-sync-filters-for-unreal-engine?application_version=5.0)
  * [unreal game sync menu reference for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-game-sync-menu-reference-for-unreal-engine?application_version=5.0)
@@ -1673,6 +1738,25 @@ As of 2025/04/06.
  * [unreal insights overview in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-insights-overview-in-unreal-engine?application_version=5.0)
  * [unreal insights reference in unreal engine 5](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-insights-reference-in-unreal-engine-5?application_version=5.0)
  * [unreal object handling in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-object-handling-in-unreal-engine?application_version=5.0)
+   * Automatic Property Initialization: UObjects are automatically zeroed on initialization
+   * Automatic Updating of References:
+     * When an AActor or UActorComponent is destroyed or otherwise removed from play, all references to it that are visible to the reflection system are automatically nulled; (TODO: not clear on UObject*)
+     * UProperty pointers and pointers stored in Unreal Engine container classes such as TArray
+   * Serialization:
+     * UProperty values are automatically written or read unless explicitly marked as "transient" or unchanged from the post-constructor default value
+     * UObject::Serialize - custom behavior
+   * Updating of Property Values: When the Class Default Object (or CDO) of a UClass has changed, the engine will try to apply those changes to all instances of the class when they are loaded
+   * Editor Integration: expose properties in Editor/Blueprints Editor/etc.
+   * Run-Time Type Information and Casting: Cast<>
+   * Garbage Collection:
+     * The engine builds a reference graph to determine which UObjects are still in use
+     * At the root of this graph is a set of UObjects designated as the "root set"
+     * Any UObject can be added to the root set
+     * Actors can be explicitly marked for destruction by calling their Destroy function
+     * Components can be destroyed explicitly with the DestroyComponent function
+     * multithreaded reachability analysis
+     * Project Settings under Engine / Garbage Collection
+   * Network Replication
  * [unreal swarm in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-swarm-in-unreal-engine?application_version=5.0)
  * [updating to the latest changes from epic in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/updating-to-the-latest-changes-from-epic-in-unreal-engine?application_version=5.0)
  * [updating unreal engine projects with patches after release](https://dev.epicgames.com/documentation/en-us/unreal-engine/updating-unreal-engine-projects-with-patches-after-release?application_version=5.0)
@@ -2490,6 +2574,18 @@ As of 2025/04/06.
  * [importing grooms into unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/importing-grooms-into-unreal-engine?application_version=5.4)
  * [in game analytics for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/in-game-analytics-for-unreal-engine?application_version=5.4)
  * [incremental garbage collection in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/incremental-garbage-collection-in-unreal-engine?application_version=5.4)
+   * Experimental in 5.4, 5.5
+   * UE uses a mark-and-sweep garbage collector
+   * drawback: reachability analysis leads to hitches
+   * The more objects reachability analysis has to scan, the longer the pause
+   * old mitigation: keeping tight UObject budgets/using UObject pools/disabling garbage collection during normal gameplay
+   * incremental reachability analysis: split the garbage collector’s reachability analysis phase across multiple frames
+   * engine tracks UObject references between reachability iterations through TObjectPtr properties
+   * garbage collector write barrier: assignment to a TObjectPtr-exposed UPROPERTY
+   * gc.AllowIncrementalReachability=1
+   * gc.AllowIncrementalGather=1
+   * gc.IncrementalReachabilityTimeLimit=0.002
+   * + other gc. console variables
  * [instrumenting your game with analytics in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/instrumenting-your-game-with-analytics-in-unreal-engine?application_version=5.4)
  * [introduction to rendering in unreal engine for unity developers](https://dev.epicgames.com/documentation/en-us/unreal-engine/introduction-to-rendering-in-unreal-engine-for-unity-developers?application_version=5.4)
  * [iris filtering in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/iris-filtering-in-unreal-engine?application_version=5.4)
