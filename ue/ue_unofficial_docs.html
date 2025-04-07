@@ -3255,7 +3255,22 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/logging-for-ne
 for networked games in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/logging-in-unreal-engine?application_version=5.0">logging
-in unreal engine</a></li>
+in unreal engine</a>
+<ul>
+<li>Window &gt; Output Log; Saved/Logs directory</li>
+<li>UE_LOG:
+<code>UE_LOG(LogTemp, Warning, TEXT("Hello World"))</code></li>
+<li>Log Verbosity</li>
+<li>Command line:
+<code>-LogCmds="LogDerivedDataCache Verbose"</code></li>
+<li>Define Your Own Log Category:
+<code>DECLARE_LOG_CATEGORY_EXTERN(&lt;LOG_CATEGORY&gt;, &lt;VERBOSITY_LEVEL&gt;, All)</code></li>
+<li><code>DEFINE_LOG_CATEGORY(&lt;LOG_CATEGORY&gt;)</code></li>
+<li>UE_LOGFMT (UE5.2+): structured log event that supports Positional or
+Named parameters, Logging/StructuredLog.h</li>
+<li>On-screen debug messages:
+<code>GEngine-&gt;AddOnScreenDebugMessage</code></li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/low-latency-frame-syncing-in-unreal-engine?application_version=5.0">low
 latency frame syncing in unreal engine</a></li>
@@ -5796,7 +5811,26 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/using-gameplay
 gameplay abilities in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/using-gameplay-tags-in-unreal-engine?application_version=5.0">using
-gameplay tags in unreal engine</a></li>
+gameplay tags in unreal engine</a>
+<ul>
+<li>hierarchical label system</li>
+<li>Character.Enemy.Zombie</li>
+<li>Defining Gameplay Tags:
+<ul>
+<li>Directly adding or removing them in Project Settings:
+Config/DefaultGameplayTags.ini; Config/Tags; etc.</li>
+<li>Importing them from Data Table assets: GameplayTagTableRow</li>
+<li>Defining them with C++:
+UE_DECLARE_GAMEPLAY_TAG_EXTERN/UE_DEFINE_GAMEPLAY_TAG;
+UE_DEFINE_GAMEPLAY_TAG_COMMENT; UE_DEFINE_GAMEPLAY_TAG_STATIC</li>
+</ul></li>
+<li>Applying Tags to Objects: FGameplayTagContainer</li>
+<li>Gameplay Tag Queries: FGameplayTagQuery</li>
+<li>Setting Tag Editing Restrictions</li>
+<li>Streamlining Tag Access in C++:
+IGameplayTagAssetInterface/GetOwnedGameplayTags</li>
+<li>ALyraTaggedActor</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/using-google-play-achievements-in-unreal-engine-projects?application_version=5.0">using
 google play achievements in unreal engine projects</a></li>

@@ -1038,6 +1038,14 @@ As of 2025/04/06.
  * [locomotion in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/locomotion-in-unreal-engine?application_version=5.0)
  * [logging for networked games in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/logging-for-networked-games-in-unreal-engine?application_version=5.0)
  * [logging in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/logging-in-unreal-engine?application_version=5.0)
+   * Window > Output Log; Saved/Logs directory
+   * UE_LOG: `UE_LOG(LogTemp, Warning, TEXT("Hello World"))`
+   * Log Verbosity
+   * Command line: `-LogCmds="LogDerivedDataCache Verbose"`
+   * Define Your Own Log Category: `DECLARE_LOG_CATEGORY_EXTERN(<LOG_CATEGORY>, <VERBOSITY_LEVEL>, All)`
+   * `DEFINE_LOG_CATEGORY(<LOG_CATEGORY>)`
+   * UE_LOGFMT (UE5.2+): structured log event that supports Positional or Named parameters, Logging/StructuredLog.h
+   * On-screen debug messages: `GEngine->AddOnScreenDebugMessage`
  * [low latency frame syncing in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/low-latency-frame-syncing-in-unreal-engine?application_version=5.0)
  * [lumen global illumination and reflections in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/lumen-global-illumination-and-reflections-in-unreal-engine?application_version=5.0)
  * [lumen technical details in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/lumen-technical-details-in-unreal-engine?application_version=5.0)
@@ -1927,6 +1935,17 @@ As of 2025/04/06.
  * [using fresnel in your unreal engine materials](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-fresnel-in-your-unreal-engine-materials?application_version=5.0)
  * [using gameplay abilities in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-gameplay-abilities-in-unreal-engine?application_version=5.0)
  * [using gameplay tags in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-gameplay-tags-in-unreal-engine?application_version=5.0)
+   * hierarchical label system
+   * Character.Enemy.Zombie
+   * Defining Gameplay Tags:
+     * Directly adding or removing them in Project Settings: Config/DefaultGameplayTags.ini; Config/Tags; etc.
+     * Importing them from Data Table assets: GameplayTagTableRow
+     * Defining them with C++: UE_DECLARE_GAMEPLAY_TAG_EXTERN/UE_DEFINE_GAMEPLAY_TAG; UE_DEFINE_GAMEPLAY_TAG_COMMENT; UE_DEFINE_GAMEPLAY_TAG_STATIC
+   * Applying Tags to Objects: FGameplayTagContainer
+   * Gameplay Tag Queries: FGameplayTagQuery
+   * Setting Tag Editing Restrictions
+   * Streamlining Tag Access in C++: IGameplayTagAssetInterface/GetOwnedGameplayTags
+   * ALyraTaggedActor
  * [using google play achievements in unreal engine projects](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-google-play-achievements-in-unreal-engine-projects?application_version=5.0)
  * [using google play asset delivery in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-google-play-asset-delivery-in-unreal-engine?application_version=5.0)
  * [using google play services leaderboards in unreal engine projects](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-google-play-services-leaderboards-in-unreal-engine-projects?application_version=5.0)
