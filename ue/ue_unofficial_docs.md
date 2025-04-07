@@ -225,6 +225,11 @@ As of 2025/04/06.
  * [basic components in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/basic-components-in-unreal-engine?application_version=5.0)
  * [basic navigation in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/basic-navigation-in-unreal-engine?application_version=5.0)
  * [basic scripting with blueprints in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/basic-scripting-with-blueprints-in-unreal-engine?application_version=5.0)
+   * Variables: color-coded
+   * Execution Flow: the first node to execute is an event
+   * execution flows through the white execution wire from left to right
+   * Nodes with execution pins (impure nodes) store the values of their output pins when they execute
+   * while nodes without execution pins (pure nodes) reevaluate their outputs every time a node connected to their outputs executes
  * [basics of network multiplayer in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/basics-of-network-multiplayer-in-unreal-engine?application_version=5.0)
  * [batch exporting revit views with dynamo to a datasmith scene](https://dev.epicgames.com/documentation/en-us/unreal-engine/batch-exporting-revit-views-with-dynamo-to-a-datasmith-scene?application_version=5.0)
  * [behavior tree in unreal engine   overview](https://dev.epicgames.com/documentation/en-us/unreal-engine/behavior-tree-in-unreal-engine---overview?application_version=5.0)
@@ -1065,6 +1070,12 @@ As of 2025/04/06.
      * If you want a Blueprint to implement this interface, you must use the Blueprintable metadata specifier. Every interface function (other than static functions) must be a BlueprintNativeEvent or a BlueprintImplementableEvent.
      * From C++, only the Execute_ static wrapper functions will work properly
  * [introduction to blueprints visual scripting in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/introduction-to-blueprints-visual-scripting-in-unreal-engine?application_version=5.0)
+   * Commonly Used Blueprint Types: Level Blueprints and Blueprint Classes
+   * Level Blueprint: level-specific events within maps
+   * Blueprint Class
+   * Create Customizable Prefabs with Construction Scripts
+   * UMG = Unreal Motion Graphics
+   * Create a Character/UI/etc.
  * [invalidation in slate and umg for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/invalidation-in-slate-and-umg-for-unreal-engine?application_version=5.0)
  * [ios ipados and tvos development requirements for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/ios-ipados-and-tvos-development-requirements-for-unreal-engine?application_version=5.0)
  * [ios ipados and tvos support for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/ios-ipados-and-tvos-support-for-unreal-engine?application_version=5.0)
@@ -1407,6 +1418,13 @@ As of 2025/04/06.
  * [overview of advanced multiplatform user interfaces with common ui for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-advanced-multiplatform-user-interfaces-with-common-ui-for-unreal-engine?application_version=5.0)
  * [overview of audio modulation in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-audio-modulation-in-unreal-engine?application_version=5.0)
  * [overview of blueprints visual scripting in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-blueprints-visual-scripting-in-unreal-engine?application_version=5.0)
+   * The system, along with the objects you define, are often referred to as just "Blueprints"
+   * Does that mean Blueprints are a replacement for UnrealScript? Yes and no
+   * UnrealScript (UE3): .uc file; Blueprints (UE4 / UE5): Blueprint Asset; C++ (UE4 / UE5): .h/.cpp files
+   * UnrealScript (UE3): UClass; Blueprints (UE4 / UE5): UBlueprintGeneratedClass; C++ (UE4 / UE5): UClass
+   * Definitions for Types of Blueprints: Blueprint Class/Data-Only Blueprint/Level Blueprint/Blueprint Interface/Blueprint Macro Library
+   * Blueprint Utilities: editor-only Blueprint that can be used to perform editor actions
+   * Blueprint Anatomy: Components/Construction Script/Event Graph/Functions/Variables
  * [overview of containers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-containers-in-unreal-engine?application_version=5.0)
  * [overview of custom navigation areas and query filters in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-custom-navigation-areas-and-query-filters-in-unreal-engine?application_version=5.0)
  * [overview of how to modify the navigation mesh in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-how-to-modify-the-navigation-mesh-in-unreal-engine?application_version=5.0)
@@ -1556,6 +1574,13 @@ As of 2025/04/06.
  * [quick settings in the unreal engine level toolbar](https://dev.epicgames.com/documentation/en-us/unreal-engine/quick-settings-in-the-unreal-engine-level-toolbar?application_version=5.0)
  * [quick start for niagara effects in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/quick-start-for-niagara-effects-in-unreal-engine?application_version=5.0)
  * [quick start guide for blueprints visual scripting in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/quick-start-guide-for-blueprints-visual-scripting-in-unreal-engine?application_version=5.0)
+   * basic tutorial
+   * create launchpad blueprint class
+   * 2 - Construct your Launchpad
+   * 3 - Convert Your Actor to a Blueprint Class: Blueprint/Add Script button
+   * 4 - Create Your Starting Point
+   * 5 - Test the Overlapping Actor
+   * 6 - Launch Your Character
  * [quick start guide for unreal engine data registries](https://dev.epicgames.com/documentation/en-us/unreal-engine/quick-start-guide-for-unreal-engine-data-registries?application_version=5.0)
  * [quick start guide for using container images in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/quick-start-guide-for-using-container-images-in-unreal-engine?application_version=5.0)
  * [quick start guide to components and collision in unreal engine cpp](https://dev.epicgames.com/documentation/en-us/unreal-engine/quick-start-guide-to-components-and-collision-in-unreal-engine-cpp?application_version=5.0)
