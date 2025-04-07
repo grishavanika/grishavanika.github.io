@@ -257,6 +257,9 @@ As of 2025/04/06.
    * a way to modify Blueprint class CDO
    * GetClassDefaults function
  * [blueprint function libraries in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-function-libraries-in-unreal-engine?application_version=5.0)
+   * to expose shared utility functions
+   * collection of static functions that provide utility functionality not tied to a particular gameplay object
+   * inherit from UBlueprintFunctionLibrary + UCLASS + GENERATED_UCLASS_BODY
  * [blueprint interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-interface-in-unreal-engine?application_version=5.0)
  * [blueprint macro library in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-macro-library-in-unreal-engine?application_version=5.0)
  * [blueprint namespaces in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-namespaces-in-unreal-engine?application_version=5.0)
@@ -415,6 +418,23 @@ As of 2025/04/06.
  * [common user plugin in unreal engine for lyra sample game](https://dev.epicgames.com/documentation/en-us/unreal-engine/common-user-plugin-in-unreal-engine-for-lyra-sample-game?application_version=5.0)
  * [communicating with media components from unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/communicating-with-media-components-from-unreal-engine?application_version=5.0)
  * [compiler overview for blueprints visual scripting in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/compiler-overview-for-blueprints-visual-scripting-in-unreal-engine?application_version=5.0)
+   * FKismetCompilerContext : The class that does the work of compilation. A new instance is spawned for each compile
+   * FKismetFunctionContext : Holds the information for compiling a single function
+   * FKismetCompiledStatement : Unit of work in the compiler. The compiler translates nodes into a set of compiled statements, which the backend translates into bytecode operations
+   * FKismetTerm : A terminal in the graph (literal, const, or variable reference)
+   * You can also make your own terms in a NodeHandlingFunctor for scratch variables, intermediate results, etc
+   * Clean the Class: CleanAndSanitizeClass(), reset UBlueprintGeneratedClass 
+   * Create Class Properties: creates UProperties on the UClass's scope; CreateClassVariablesFromBlueprint()
+   * Create Function List: PrecompileFunction()
+   * Process Event Graphs: CreateAndProcessUberGraph()/FKismetFunctionContext 
+   * Process Function Graphs: ProcessOneFunctionGraph()/FKismetFunctionContext
+   * Pre-compile Functions: PrecompileFunction() 
+   * Bind and Link the Class: compiler is aware of all of the UProperties and UFunctions for the class + Class Default Object (CDO)
+   * Compile Functions: Compile()
+   * Finish Compiling Class
+   * Backend Emits Generated Code: FKismetCompilerVMBackend - Converts FKCS to UnrealScript VM bytecode which are then serialized into the function's script array
+   * Copy Class Default Object Properties
+   * Re-instance: re-instance all objects with the class that were just compiled; uses a TObjectIterator to find all instances of the class, spawn a new one/etc. 
  * [compiler results in the blueprints visual scripting editor for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/compiler-results-in-the-blueprints-visual-scripting-editor-for-unreal-engine?application_version=5.0)
    * navigate/clear/hover Blueprint compile results (from Window menu)
  * [compiling game projects in unreal engine using cplusplus](https://dev.epicgames.com/documentation/en-us/unreal-engine/compiling-game-projects-in-unreal-engine-using-cplusplus?application_version=5.0)
@@ -716,6 +736,7 @@ As of 2025/04/06.
  * [exporting datasmith content from vred to unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/exporting-datasmith-content-from-vred-to-unreal-engine?application_version=5.0)
  * [exposing cplusplus to blueprints visual scripting in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/exposing-cplusplus-to-blueprints-visual-scripting-in-unreal-engine?application_version=5.0)
  * [exposing gameplay elements to blueprints visual scripting in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/exposing-gameplay-elements-to-blueprints-visual-scripting-in-unreal-engine?application_version=5.0)
+   * 
  * [external audio control in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/external-audio-control-in-unreal-engine?application_version=5.0)
  * [eye dome lighting mode for point clouds in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/eye-dome-lighting-mode-for-point-clouds-in-unreal-engine?application_version=5.0)
  * [fabrik animation blueprint in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fabrik-animation-blueprint-in-unreal-engine?application_version=5.0)
@@ -1835,6 +1856,14 @@ As of 2025/04/06.
  * [tasks systems in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/tasks-systems-in-unreal-engine?application_version=5.0)
  * [tcp messaging settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/tcp-messaging-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [technical guide for blueprints visual scripting in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/technical-guide-for-blueprints-visual-scripting-in-unreal-engine?application_version=5.0)
+   * Blueprints are a way to create new UClasses
+   * you create a Blueprint, you can choose to extend a C++ class or another Blueprint class
+   * You can then add, arrange, and customize Components
+   * implement custom logic using a visual scripting languag
+   * respond to Events and interactions
+   * define custom Variables/etc
+   * Blueprint has a Construction Script, analogous to a constructor in C++, which is run when the object is created (and when Blueprint instance properties are modifiyed on the level)
+   * Blueprint can be thought of as a very powerful prefab system
  * [template sequences in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/template-sequences-in-unreal-engine?application_version=5.0)
  * [testing and debugging networked games in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/testing-and-debugging-networked-games-in-unreal-engine?application_version=5.0)
  * [testing and optimizing your content](https://dev.epicgames.com/documentation/en-us/unreal-engine/testing-and-optimizing-your-content?application_version=5.0)

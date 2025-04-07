@@ -934,7 +934,14 @@ editor defaults tab</a>
 </ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-function-libraries-in-unreal-engine?application_version=5.0">blueprint
-function libraries in unreal engine</a></li>
+function libraries in unreal engine</a>
+<ul>
+<li>to expose shared utility functions</li>
+<li>collection of static functions that provide utility functionality
+not tied to a particular gameplay object</li>
+<li>inherit from UBlueprintFunctionLibrary + UCLASS +
+GENERATED_UCLASS_BODY</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-interface-in-unreal-engine?application_version=5.0">blueprint
 interface in unreal engine</a></li>
@@ -1395,7 +1402,41 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/communicating-
 with media components from unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/compiler-overview-for-blueprints-visual-scripting-in-unreal-engine?application_version=5.0">compiler
-overview for blueprints visual scripting in unreal engine</a></li>
+overview for blueprints visual scripting in unreal engine</a>
+<ul>
+<li>FKismetCompilerContext : The class that does the work of
+compilation. A new instance is spawned for each compile</li>
+<li>FKismetFunctionContext : Holds the information for compiling a
+single function</li>
+<li>FKismetCompiledStatement : Unit of work in the compiler. The
+compiler translates nodes into a set of compiled statements, which the
+backend translates into bytecode operations</li>
+<li>FKismetTerm : A terminal in the graph (literal, const, or variable
+reference)</li>
+<li>You can also make your own terms in a NodeHandlingFunctor for
+scratch variables, intermediate results, etc</li>
+<li>Clean the Class: CleanAndSanitizeClass(), reset
+UBlueprintGeneratedClass</li>
+<li>Create Class Properties: creates UProperties on the UClass’s scope;
+CreateClassVariablesFromBlueprint()</li>
+<li>Create Function List: PrecompileFunction()</li>
+<li>Process Event Graphs:
+CreateAndProcessUberGraph()/FKismetFunctionContext</li>
+<li>Process Function Graphs:
+ProcessOneFunctionGraph()/FKismetFunctionContext</li>
+<li>Pre-compile Functions: PrecompileFunction()</li>
+<li>Bind and Link the Class: compiler is aware of all of the UProperties
+and UFunctions for the class + Class Default Object (CDO)</li>
+<li>Compile Functions: Compile()</li>
+<li>Finish Compiling Class</li>
+<li>Backend Emits Generated Code: FKismetCompilerVMBackend - Converts
+FKCS to UnrealScript VM bytecode which are then serialized into the
+function’s script array</li>
+<li>Copy Class Default Object Properties</li>
+<li>Re-instance: re-instance all objects with the class that were just
+compiled; uses a TObjectIterator to find all instances of the class,
+spawn a new one/etc.</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/compiler-results-in-the-blueprints-visual-scripting-editor-for-unreal-engine?application_version=5.0">compiler
 results in the blueprints visual scripting editor for unreal engine</a>
@@ -2256,8 +2297,10 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/exposing-cplus
 cplusplus to blueprints visual scripting in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/exposing-gameplay-elements-to-blueprints-visual-scripting-in-unreal-engine?application_version=5.0">exposing
-gameplay elements to blueprints visual scripting in unreal
-engine</a></li>
+gameplay elements to blueprints visual scripting in unreal engine</a>
+<ul>
+<li></li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/external-audio-control-in-unreal-engine?application_version=5.0">external
 audio control in unreal engine</a></li>
@@ -5435,7 +5478,20 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/tcp-messaging-
 messaging settings in the unreal engine project settings</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/technical-guide-for-blueprints-visual-scripting-in-unreal-engine?application_version=5.0">technical
-guide for blueprints visual scripting in unreal engine</a></li>
+guide for blueprints visual scripting in unreal engine</a>
+<ul>
+<li>Blueprints are a way to create new UClasses</li>
+<li>you create a Blueprint, you can choose to extend a C++ class or
+another Blueprint class</li>
+<li>You can then add, arrange, and customize Components</li>
+<li>implement custom logic using a visual scripting languag</li>
+<li>respond to Events and interactions</li>
+<li>define custom Variables/etc</li>
+<li>Blueprint has a Construction Script, analogous to a constructor in
+C++, which is run when the object is created (and when Blueprint
+instance properties are modifiyed on the level)</li>
+<li>Blueprint can be thought of as a very powerful prefab system</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/template-sequences-in-unreal-engine?application_version=5.0">template
 sequences in unreal engine</a></li>
