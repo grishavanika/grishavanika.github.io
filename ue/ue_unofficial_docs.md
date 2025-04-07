@@ -735,8 +735,25 @@ As of 2025/04/06.
  * [exporting datasmith content from sketchup pro to unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/exporting-datasmith-content-from-sketchup-pro-to-unreal-engine?application_version=5.0)
  * [exporting datasmith content from vred to unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/exporting-datasmith-content-from-vred-to-unreal-engine?application_version=5.0)
  * [exposing cplusplus to blueprints visual scripting in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/exposing-cplusplus-to-blueprints-visual-scripting-in-unreal-engine?application_version=5.0)
+   * Optional parameters are handled well in Blueprints
+   * Favor functions with lots of return parameters over functions that return structs
+   * Adding new parameters to an existing function is fine, but if you need to remove or change them, you should deprecate the original and add a new function
+   * If a function needs to take an enum, consider using the 'expand enum as execs'
+   * operations that take time to complete (e.g. move here) should be latent functions
+   * mark nodes as pure if possible, as this will avoid needing an execution pin on a node that requires wiring
+   * Marking a function as const will also cause the Blueprint node to not have execution pins
+   * if you're doing something that requires a lot of calculations, or operates at a high frequency, it might be better to use C++ instead of Blueprints
  * [exposing gameplay elements to blueprints visual scripting in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/exposing-gameplay-elements-to-blueprints-visual-scripting-in-unreal-engine?application_version=5.0)
-   * 
+   * Making Classes Blueprintable - UCLASS(Blueprintable): Exposes this class as an acceptable base class for creating Blueprints
+   * BlueprintType: Exposes this class as a type that can be used for variables in Blueprints
+   * NotBlueprintable: Negates the effect of a parent class having the Blueprintable keyword specified
+   * Readable and Writable Properties: BlueprintReadOnly/BlueprintReadWrite/BlueprintAssignable (for Multicast Delegate)
+   * To make a parameter pass by reference and still display as an input, use the UPARAM(ref) macro
+   * use UPARAM() to change the display name of a pin
+   * BlueprintCallable: native function that can be called from a Blueprint
+   * BlueprintPure: BlueprintCallable without side effects
+   * BlueprintImplementableEvent: primary way we allow native functions to call up into Blueprints
+   * BlueprintNativeEvent: same as above, except there is a native default implementation
  * [external audio control in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/external-audio-control-in-unreal-engine?application_version=5.0)
  * [eye dome lighting mode for point clouds in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/eye-dome-lighting-mode-for-point-clouds-in-unreal-engine?application_version=5.0)
  * [fabrik animation blueprint in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fabrik-animation-blueprint-in-unreal-engine?application_version=5.0)

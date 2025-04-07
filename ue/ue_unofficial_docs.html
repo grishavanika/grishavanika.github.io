@@ -2294,12 +2294,49 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/exporting-data
 datasmith content from vred to unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/exposing-cplusplus-to-blueprints-visual-scripting-in-unreal-engine?application_version=5.0">exposing
-cplusplus to blueprints visual scripting in unreal engine</a></li>
+cplusplus to blueprints visual scripting in unreal engine</a>
+<ul>
+<li>Optional parameters are handled well in Blueprints</li>
+<li>Favor functions with lots of return parameters over functions that
+return structs</li>
+<li>Adding new parameters to an existing function is fine, but if you
+need to remove or change them, you should deprecate the original and add
+a new function</li>
+<li>If a function needs to take an enum, consider using the ‘expand enum
+as execs’</li>
+<li>operations that take time to complete (e.g. move here) should be
+latent functions</li>
+<li>mark nodes as pure if possible, as this will avoid needing an
+execution pin on a node that requires wiring</li>
+<li>Marking a function as const will also cause the Blueprint node to
+not have execution pins</li>
+<li>if you’re doing something that requires a lot of calculations, or
+operates at a high frequency, it might be better to use C++ instead of
+Blueprints</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/exposing-gameplay-elements-to-blueprints-visual-scripting-in-unreal-engine?application_version=5.0">exposing
 gameplay elements to blueprints visual scripting in unreal engine</a>
 <ul>
-<li></li>
+<li>Making Classes Blueprintable - UCLASS(Blueprintable): Exposes this
+class as an acceptable base class for creating Blueprints</li>
+<li>BlueprintType: Exposes this class as a type that can be used for
+variables in Blueprints</li>
+<li>NotBlueprintable: Negates the effect of a parent class having the
+Blueprintable keyword specified</li>
+<li>Readable and Writable Properties:
+BlueprintReadOnly/BlueprintReadWrite/BlueprintAssignable (for Multicast
+Delegate)</li>
+<li>To make a parameter pass by reference and still display as an input,
+use the UPARAM(ref) macro</li>
+<li>use UPARAM() to change the display name of a pin</li>
+<li>BlueprintCallable: native function that can be called from a
+Blueprint</li>
+<li>BlueprintPure: BlueprintCallable without side effects</li>
+<li>BlueprintImplementableEvent: primary way we allow native functions
+to call up into Blueprints</li>
+<li>BlueprintNativeEvent: same as above, except there is a native
+default implementation</li>
 </ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/external-audio-control-in-unreal-engine?application_version=5.0">external
