@@ -644,7 +644,26 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/artists-tools-
 tools and workflows for rendering in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/asserts-in-unreal-engine?application_version=5.0">asserts
-in unreal engine</a></li>
+in unreal engine</a>
+<ul>
+<li>different families of assert equivalents: check, verify, and
+ensure</li>
+<li>AssertionMacros.h</li>
+<li>check: halt execution if false, and do not run in shipping builds
+(by default)</li>
+<li>check/checkSlow/checkf/checkfSlow/checkCode/checkNoEntry/checkNoReentry/checkNoRecursion/unimplemented</li>
+<li>check: “Slow” macros only operate in Debug builds</li>
+<li>check: USE_CHECKS_IN_SHIPPING=1 enables check macros in Test and
+Shipping builds</li>
+<li>Verify: evaluate their expressions even in builds where Check macros
+are disabled</li>
+<li>verify/verifySlow/verifyf/verifyfSlow</li>
+<li>Verify: operate fully in Debug, Development, Test, and Shipping
+Editor builds, except those ending in “Slow” (Debug only)</li>
+<li>Verify: USE_CHECKS_IN_SHIPPING=1 changes behavior</li>
+<li>Ensure: non-fatal errors</li>
+<li>ensure/ensureMsgf/ensureAlways/ensureAlwaysMsgf</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-localization-in-unreal-engine?application_version=5.0">asset
 localization in unreal engine</a></li>
@@ -1205,7 +1224,12 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/class-creation
 creation basics in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/class-specifiers?application_version=5.0">class
-specifiers</a></li>
+specifiers</a>
+<ul>
+<li>Class Specifiers:
+Abstract/Blueprintable/BlueprintType/Const/etc.</li>
+<li>Metadata Specifiers: BlueprintThreadSafe/ChildCannotTick/etc.</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/class-viewer-in-unreal-engine?application_version=5.0">class
 viewer in unreal engine</a></li>
@@ -2318,7 +2342,46 @@ attributes and gameplay effects for the gameplay ability system in
 unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-classes-in-unreal-engine?application_version=5.0">gameplay
-classes in unreal engine</a></li>
+classes in unreal engine</a>
+<ul>
+<li>Classes in Unreal Engine have a standardized naming scheme</li>
+<li>“A” - AActor - Extends from the base class of spawnable gameplay
+objects. These are Actors, and can be spawned directly into the
+world.</li>
+<li>“U” - UComponent - Extend from the base class of all gameplay
+objects. These are generally objects like Components</li>
+<li>C++ Class Wizard/Class Headers with
+<code>#include "ClassName.generated.h"</code></li>
+<li>Class Declaration: UCLASS/GENERATED_BODY()</li>
+<li>Class Specifiers: Abstract/etc.</li>
+<li>Metadata Specifiers: BlueprintSpawnableComponent/etc.</li>
+<li>Some constructors may be located in a special “constructors” file on
+a per-module basis. For example, the AActor::AActor constructor may be
+found in EngineConstructors.cpp. This is the result of an automatic
+conversion process from the previous use of a DEFAULTS block to the use
+of constructors.</li>
+<li>It is also possible to place the constructor inline in the class
+header file. However, if the constructor is in the class header file,
+the UClass must be declared with the CustomConstructor</li>
+<li>Constructor Format: <code>UMyObject::UMyObject()</code> or
+<code>UMyObject::UMyObject(const FObjectInitializer&amp; ObjectInitializer)</code></li>
+<li>any initialization code written into the constructor will be applied
+to the CDO, and will therefore be copied to any new instances of the
+object created properly within the engine</li>
+<li>The FObjectInitializer parameter that is passed into the
+constructor, despite being marked as const, can be configured via
+built-in mutable functions to override properties and subobjects</li>
+<li><code>ObjectInitializer.DoNotCreateDefaultSubobject()</code></li>
+<li>Constructor Statics and Helpers: ConstructorStatics
+<ul>
+<li>Asset References - ConstructorHelpers::FObjectFinder</li>
+<li>Class References - FClassFinder</li>
+</ul></li>
+<li>Components and Sub-Objects: Creating component subobjects and
+attaching them to the actor’s hierarchy can also be done inside of the
+constructor; When spawning an actor, its components will be cloned from
+the CDO</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-debugger-settings-in-the-unreal-engine-project-settings?application_version=5.0">gameplay
 debugger settings in the unreal engine project settings</a></li>
@@ -2330,7 +2393,21 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-frame
 framework quick reference in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-modules-in-unreal-engine?application_version=5.0">gameplay
-modules in unreal engine</a></li>
+modules in unreal engine</a>
+<ul>
+<li>Collections of gameplay classes belonging to a game project compiled
+into DLLs</li>
+<li>Module Creation: *.Build.cs, Public/Private folder</li>
+<li>At least one module in your game must be registered using
+IMPLEMENT_PRIMARY_GAME_MODULE</li>
+<li>TODO: difference between primary and non-primary modules</li>
+<li>Additional modules can use the alternative IMPLEMENT_GAME_MODULE
+method</li>
+<li>INI File Setup: UnrealEd.EditorEngine/EditPackages; Launch/Module;
+UObjectPackages/NativePackages - TODO: is it up to date?</li>
+<li>We do support creating modules that are cross-dependent (with
+limitations)</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-timers-in-unreal-engine?application_version=5.0">gameplay
 timers in unreal engine</a></li>
@@ -4195,7 +4272,15 @@ with cplusplus in unreal engine</a>. References to:
 </ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-with-cpp-in-unreal-engine?application_version=5.0">programming
-with cpp in unreal engine</a></li>
+with cpp in unreal engine</a>
+<ul>
+<li>says that there are “Game Modules” with “Classes” where Class -
+“class defines a template for a new Actor or Object”; you can use
+functions, properties, structs with Unreal’s property (reflection)
+system; mentions interfaces, UPARAM()</li>
+<li>sub-categories: Asserts/gameplay tags/Gameplay Classes/Gameplay
+Modules/Logging</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/project-section-of-the-unreal-engine-project-settings?application_version=5.0">project
 section of the unreal engine project settings</a></li>

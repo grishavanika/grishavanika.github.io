@@ -149,6 +149,18 @@ As of 2025/04/06.
  * [artist quick start in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/artist-quick-start-in-unreal-engine?application_version=5.0)
  * [artists tools and workflows for rendering in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/artists-tools-and-workflows-for-rendering-in-unreal-engine?application_version=5.0)
  * [asserts in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/asserts-in-unreal-engine?application_version=5.0)
+   * different families of assert equivalents: check, verify, and ensure
+   * AssertionMacros.h
+   * check: halt execution if false, and do not run in shipping builds (by default)
+   * check/checkSlow/checkf/checkfSlow/checkCode/checkNoEntry/checkNoReentry/checkNoRecursion/unimplemented
+   * check: "Slow" macros only operate in Debug builds
+   * check: USE_CHECKS_IN_SHIPPING=1 enables check macros in Test and Shipping builds
+   * Verify: evaluate their expressions even in builds where Check macros are disabled
+   * verify/verifySlow/verifyf/verifyfSlow
+   * Verify: operate fully in Debug, Development, Test, and Shipping Editor builds, except those ending in "Slow" (Debug only)
+   * Verify: USE_CHECKS_IN_SHIPPING=1 changes behavior
+   * Ensure: non-fatal errors
+   * ensure/ensureMsgf/ensureAlways/ensureAlwaysMsgf
  * [asset localization in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-localization-in-unreal-engine?application_version=5.0)
  * [asset management in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-management-in-unreal-engine?application_version=5.0)
  * [asset metadata in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-metadata-in-unreal-engine?application_version=5.0)
@@ -333,6 +345,8 @@ As of 2025/04/06.
  * [city sample quick start for generating a city and freeway using houdini](https://dev.epicgames.com/documentation/en-us/unreal-engine/city-sample-quick-start-for-generating-a-city-and-freeway-using-houdini?application_version=5.0)
  * [class creation basics in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/class-creation-basics-in-unreal-engine?application_version=5.0)
  * [class specifiers](https://dev.epicgames.com/documentation/en-us/unreal-engine/class-specifiers?application_version=5.0)
+   * Class Specifiers: Abstract/Blueprintable/BlueprintType/Const/etc.
+   * Metadata Specifiers: BlueprintThreadSafe/ChildCannotTick/etc.
  * [class viewer in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/class-viewer-in-unreal-engine?application_version=5.0)
  * [class viewer settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/class-viewer-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [clipping for umg widgets in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/clipping-for-umg-widgets-in-unreal-engine?application_version=5.0)
@@ -711,10 +725,34 @@ As of 2025/04/06.
  * [gameplay attributes and attribute sets for the gameplay ability system in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-attributes-and-attribute-sets-for-the-gameplay-ability-system-in-unreal-engine?application_version=5.0)
  * [gameplay attributes and gameplay effects for the gameplay ability system in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-attributes-and-gameplay-effects-for-the-gameplay-ability-system-in-unreal-engine?application_version=5.0)
  * [gameplay classes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-classes-in-unreal-engine?application_version=5.0)
+   * Classes in Unreal Engine have a standardized naming scheme
+   * "A" - AActor - Extends from the base class of spawnable gameplay objects. These are Actors, and can be spawned directly into the world.
+   * "U" - UComponent - Extend from the base class of all gameplay objects. These are generally objects like Components
+   * C++ Class Wizard/Class Headers with `#include "ClassName.generated.h"`
+   * Class Declaration: UCLASS/GENERATED_BODY()
+   * Class Specifiers: Abstract/etc.
+   * Metadata Specifiers: BlueprintSpawnableComponent/etc.
+   * Some constructors may be located in a special "constructors" file on a per-module basis. For example, the AActor::AActor constructor may be found in EngineConstructors.cpp. This is the result of an automatic conversion process from the previous use of a DEFAULTS block to the use of constructors.
+   * It is also possible to place the constructor inline in the class header file. However, if the constructor is in the class header file, the UClass must be declared with the CustomConstructor
+   * Constructor Format: `UMyObject::UMyObject()` or `UMyObject::UMyObject(const FObjectInitializer& ObjectInitializer)`
+   * any initialization code written into the constructor will be applied to the CDO, and will therefore be copied to any new instances of the object created properly within the engine
+   * The FObjectInitializer parameter that is passed into the constructor, despite being marked as const, can be configured via built-in mutable functions to override properties and subobjects
+   * `ObjectInitializer.DoNotCreateDefaultSubobject()`
+   * Constructor Statics and Helpers: ConstructorStatics
+     * Asset References - ConstructorHelpers::FObjectFinder
+     * Class References - FClassFinder
+   * Components and Sub-Objects: Creating component subobjects and attaching them to the actor's hierarchy can also be done inside of the constructor; When spawning an actor, its components will be cloned from the CDO
  * [gameplay debugger settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-debugger-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [gameplay framework in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-framework-in-unreal-engine?application_version=5.0)
  * [gameplay framework quick reference in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-framework-quick-reference-in-unreal-engine?application_version=5.0)
  * [gameplay modules in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-modules-in-unreal-engine?application_version=5.0)
+   * Collections of gameplay classes belonging to a game project compiled into DLLs
+   * Module Creation: \*.Build.cs, Public/Private folder
+   * At least one module in your game must be registered using IMPLEMENT_PRIMARY_GAME_MODULE
+   * TODO: difference between primary and non-primary modules
+   * Additional modules can use the alternative IMPLEMENT_GAME_MODULE method
+   * INI File Setup: UnrealEd.EditorEngine/EditPackages; Launch/Module; UObjectPackages/NativePackages - TODO: is it up to date?
+   * We do support creating modules that are cross-dependent (with limitations)
  * [gameplay timers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-timers-in-unreal-engine?application_version=5.0)
  * [gameplay tutorials for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-tutorials-for-unreal-engine?application_version=5.0)
  * [garbage collection settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/garbage-collection-settings-in-the-unreal-engine-project-settings?application_version=5.0)
@@ -1360,6 +1398,8 @@ As of 2025/04/06.
    * Gameplay Architecture
    * Delegates
  * [programming with cpp in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-with-cpp-in-unreal-engine?application_version=5.0)
+   * says that there are "Game Modules" with "Classes" where Class - "class defines a template for a new Actor or Object"; you can use functions, properties, structs with Unreal's property (reflection) system; mentions interfaces, UPARAM()
+   * sub-categories: Asserts/gameplay tags/Gameplay Classes/Gameplay Modules/Logging
  * [project section of the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/project-section-of-the-unreal-engine-project-settings?application_version=5.0)
  * [project settings in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/project-settings-in-unreal-engine?application_version=5.0)
  * [projection policies in ndisplay in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/projection-policies-in-ndisplay-in-unreal-engine?application_version=5.0)
