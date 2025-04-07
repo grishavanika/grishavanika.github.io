@@ -627,7 +627,12 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/arpins-in-unre
 in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/array-containers-in-unreal-engine?application_version=5.0">array
-containers in unreal engine</a></li>
+containers in unreal engine</a>
+<ul>
+<li>Slack: capacity - size</li>
+<li>Raw Memory: AddUninitialized / InsertUninitialized</li>
+<li>TInlineAllocator</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/artificial-intelligence-in-unreal-engine?application_version=5.0">artificial
 intelligence in unreal engine</a></li>
@@ -1370,7 +1375,10 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/container-depl
 deployments and images for unreal editor and unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/containers-in-unreal-engine?application_version=5.0">containers
-in unreal engine</a></li>
+in unreal engine</a>
+<ul>
+<li>TArray/TMap/TSet</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/content-browser-in-unreal-engine?application_version=5.0">content
 browser in unreal engine</a></li>
@@ -2036,7 +2044,30 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/envs-folder-st
 folder structure in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/epic-cplusplus-coding-standard-for-unreal-engine?application_version=5.0">epic
-cplusplus coding standard for unreal engine</a></li>
+cplusplus coding standard for unreal engine</a>
+<ul>
+<li>TODO: list good/bad suggestions</li>
+<li>Class Organization</li>
+<li>Copyright Notice</li>
+<li>Naming Conventions</li>
+<li>Inclusive Word Choice</li>
+<li>Portable C++ code</li>
+<li>Use of standard libraries</li>
+<li>Comments</li>
+<li>Const Correctness</li>
+<li>Modern C++ Language: Static Assert/Override and
+Final/Nullptr/Auto/Range-Based For/Lambdas and Anonymous
+Functions/Strongly-Typed Enums/Move Semantics/Default Member
+Initializers</li>
+<li>Third Party Code</li>
+<li>Code Formatting</li>
+<li>Namespaces</li>
+<li>Physical Dependencies</li>
+<li>Encapsulation</li>
+<li>General Style Issues</li>
+<li>API Design Guidelines</li>
+<li>Platform-Specific Code</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/eqs-node-reference-contexts-in-unreal-engine?application_version=5.0">eqs
 node reference contexts in unreal engine</a></li>
@@ -2820,7 +2851,50 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/interfaces-in-
 in unreal engine</a>
 <ul>
 <li>do not confuse with C++ interface/abstract class</li>
-<li></li>
+<li>Declare an Interface in C++: UINTERFACE macro instead of the UCLASS;
+inherit from UInterface instead of UObject</li>
+<li>UINTERFACE class is not the actual interface, but rather an empty
+class that provides visibility to the reflection system</li>
+<li>UReactToTriggerInterface vs IReactToTriggerInterface +
+GENERATED_BODY()</li>
+<li>the actual interface has the same name as the empty class, but the
+U-prefix is replaced by I</li>
+<li>The Blueprintable specifier is required if you want a Blueprint to
+implement this interface</li>
+<li>Interface Specifiers:
+MinimalAPI/BlueprintType/Blueprintable/DependsOn</li>
+<li>Blueprint Callable Interface Functions:
+<ul>
+<li>Specify a UFUNCTION macro in the function’s declaration with the
+BlueprintCallable specifier</li>
+<li>Use either the BlueprintImplementableEvent or BlueprintNativeEvent
+specifiers</li>
+<li>Blueprint callable interface functions cannot be virtual</li>
+<li>If your Blueprint callable function does not return a value, Unreal
+Engine treats your function as an event in Blueprint</li>
+</ul></li>
+<li>Call a Blueprint Event from C++:
+<code>IReactToTriggerInterface::Execute_ReactToTrigger</code></li>
+<li>Determine Whether a Class Implements an Interface:
+<ul>
+<li><code>OriginalObject-&gt;GetClass()-&gt;ImplementsInterface</code></li>
+<li><code>OriginalObject-&gt;Implements&lt;UReactToTriggerInterface&gt;()</code></li>
+<li><code>Cast&lt;IReactToTriggerInterface&gt;</code></li>
+</ul></li>
+<li>Cast to Other Unreal Types: casting system supports casting from one
+interface to another, or from an interface to an Unreal type where
+appropriate</li>
+<li>Safely Store Object and Interface Pointers:
+TScriptInterface/FScriptInterface</li>
+<li>Blueprint Implementable Interfaces:
+<ul>
+<li>If you want a Blueprint to implement this interface, you must use
+the Blueprintable metadata specifier. Every interface function (other
+than static functions) must be a BlueprintNativeEvent or a
+BlueprintImplementableEvent.</li>
+<li>From C++, only the Execute_ static wrapper functions will work
+properly</li>
+</ul></li>
 </ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/introduction-to-blueprints-visual-scripting-in-unreal-engine?application_version=5.0">introduction
@@ -3164,7 +3238,18 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/map-check-erro
 check errors in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/map-containers-in-unreal-engine?application_version=5.0">map
-containers in unreal engine</a></li>
+containers in unreal engine</a>
+<ul>
+<li>TMap is a hashing container</li>
+<li>key type must support the GetTypeHash function and provide an
+operator==</li>
+<li>Sort: KeySort/ValueSort - You can sort a TMap by key or by value.
+TODO: what’s the complexity of Find() then?</li>
+<li>After sorting, iteration over the map presents the elements in
+sorted order, but this behavior is only guaranteed until the next time
+you modify the map</li>
+<li>KeyFuncs: GetSetKey/Matches/GetKeyHash</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/mass-avoidance-in-unreal-engine?application_version=5.0">mass
 avoidance in unreal engine</a></li>
@@ -3272,7 +3357,22 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/mesh-simplific
 simplification settings in the unreal engine project settings</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/metadata-specifiers-in-unreal-engine?application_version=5.0">metadata
-specifiers in unreal engine</a></li>
+specifiers in unreal engine</a>
+<ul>
+<li>Metadata keywords used when declaring UClasses, UFunctions,
+UProperties, UEnums, and UInterfaces to specify how they behave with
+various aspects of Unreal Engine and the editor</li>
+<li>Metadata only exists in the editor; do not write game logic that
+accesses metadata</li>
+<li>To add Metadata Specifiers, use the word meta</li>
+<li>UENUM -&gt; UMETA</li>
+<li>Class Metadata Specifiers</li>
+<li>Enum Metadata Specifiers</li>
+<li>Interface Metadata Specifiers</li>
+<li>Struct Metadata Specifiers</li>
+<li>Function Metadata Specifiers</li>
+<li>Property Metadata Specifiers</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/metasounds-in-unreal-engine?application_version=5.0">metasounds
 in unreal engine</a></li>
@@ -4629,10 +4729,22 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/shadowing-in-u
 in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/shared-pointers-in-unreal-engine?application_version=5.0">shared
-pointers in unreal engine</a></li>
+pointers in unreal engine</a><br />
+
+<ul>
+<li>Converting Between Shared Pointers and Shared References:
+ToSharedRef</li>
+<li>Shared Pointers: main distinction being that Shared References are
+not nullable and therefore always reference valid objects</li>
+<li>Custom Deleters</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/shared-references-in-unreal-engine?application_version=5.0">shared
-references in unreal engine</a></li>
+references in unreal engine</a>
+<ul>
+<li>Shared References always contain a valid object, and do not even
+have an IsValid method</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/sharing-and-releasing-projects-for-unreal-engine?application_version=5.0">sharing
 and releasing projects for unreal engine</a></li>
@@ -4739,7 +4851,19 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/smart-objects-
 objects in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/smart-pointers-in-unreal-engine?application_version=5.0">smart
-pointers in unreal engine</a></li>
+pointers in unreal engine</a>
+<ul>
+<li>Custom implementation of shared pointers, including weak pointers
+and non-nullable shared references</li>
+<li>Shared Pointers (TSharedPtr)/Weak Pointers (TWeakPtr)/Unique
+Pointers (TUniquePtr)/Shared References (TSharedRef)</li>
+<li>These classes CANNOT be used with the UObject</li>
+<li>Helper Classes and Functions:
+TSharedFromThis/MakeShared/MakeShareable/StaticCastSharedRef/StaticCastSharedPtr/ConstCastSharedRef/ConstCastSharedPtr</li>
+<li>Intrusive Accessors: AsShared</li>
+<li>Casting: StaticCastSharedPtr</li>
+<li>Thread Safety: ESPMode::ThreadSafe</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-attenuation-in-unreal-engine?application_version=5.0">sound
 attenuation in unreal engine</a></li>
@@ -5155,7 +5279,19 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/udp-messaging-
 messaging settings in the unreal engine project settings</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/ufunctions-in-unreal-engine?application_version=5.0">ufunctions
-in unreal engine</a></li>
+in unreal engine</a>
+<ul>
+<li>UFunction is a C++ function that is recognized by the Unreal Engine
+reflection system</li>
+<li>UFunctions are able to bind to Delegates</li>
+<li>act as network callbacks</li>
+<li>create your own console commands (with UFUNCTION)</li>
+<li>Function Specifiers</li>
+<li>Metadata Specifiers</li>
+<li>Function Parameter Specifiers</li>
+<li>Delegates/Even Dispatchers/UFUNCTION</li>
+<li>Timers/UFUNCTION</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/umg-anchors-in-unreal-engine-ui?application_version=5.0">umg
 anchors in unreal engine ui</a></li>
@@ -6018,7 +6154,11 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/water-system-i
 system in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/weak-pointers-in-unreal-engine?application_version=5.0">weak
-pointers in unreal engine</a></li>
+pointers in unreal engine</a>
+<ul>
+<li>Usage Warnings: Usage as keys in Sets or Maps. Because Weak Pointers
+can become invalid at any time, and will not notify the container</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/welding-physics-bodies-in-unreal-engine-by-using-the-physics-asset-editor?application_version=5.0">welding
 physics bodies in unreal engine by using the physics asset

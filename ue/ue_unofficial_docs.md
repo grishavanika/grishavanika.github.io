@@ -142,6 +142,9 @@ As of 2025/04/06.
  * [arpin overview in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/arpin-overview-in-unreal-engine?application_version=5.0)
  * [arpins in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/arpins-in-unreal-engine?application_version=5.0)
  * [array containers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/array-containers-in-unreal-engine?application_version=5.0)
+   * Slack: capacity - size
+   * Raw Memory: AddUninitialized / InsertUninitialized
+   * TInlineAllocator
  * [artificial intelligence in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/artificial-intelligence-in-unreal-engine?application_version=5.0)
  * [artist quick start in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/artist-quick-start-in-unreal-engine?application_version=5.0)
  * [artists tools and workflows for rendering in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/artists-tools-and-workflows-for-rendering-in-unreal-engine?application_version=5.0)
@@ -386,6 +389,7 @@ As of 2025/04/06.
  * [contact shadows in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/contact-shadows-in-unreal-engine?application_version=5.0)
  * [container deployments and images for unreal editor and unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/container-deployments-and-images-for-unreal-editor-and-unreal-engine?application_version=5.0)
  * [containers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/containers-in-unreal-engine?application_version=5.0)
+   * TArray/TMap/TSet
  * [content browser in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/content-browser-in-unreal-engine?application_version=5.0)
  * [content browser interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/content-browser-interface-in-unreal-engine?application_version=5.0)
  * [content browser settings in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/content-browser-settings-in-unreal-engine?application_version=5.0)
@@ -607,6 +611,24 @@ As of 2025/04/06.
  * [environmental light with fog clouds sky and atmosphere in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/environmental-light-with-fog-clouds-sky-and-atmosphere-in-unreal-engine?application_version=5.0)
  * [envs folder structure in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/envs-folder-structure-in-unreal-engine?application_version=5.0)
  * [epic cplusplus coding standard for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/epic-cplusplus-coding-standard-for-unreal-engine?application_version=5.0)
+   * TODO: list good/bad suggestions
+   * Class Organization
+   * Copyright Notice
+   * Naming Conventions
+   * Inclusive Word Choice
+   * Portable C++ code
+   * Use of standard libraries
+   * Comments
+   * Const Correctness
+   * Modern C++ Language: Static Assert/Override and Final/Nullptr/Auto/Range-Based For/Lambdas and Anonymous Functions/Strongly-Typed Enums/Move Semantics/Default Member Initializers
+   * Third Party Code
+   * Code Formatting
+   * Namespaces
+   * Physical Dependencies
+   * Encapsulation
+   * General Style Issues
+   * API Design Guidelines
+   * Platform-Specific Code
  * [eqs node reference contexts in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/eqs-node-reference-contexts-in-unreal-engine?application_version=5.0)
  * [eqs node reference generators in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/eqs-node-reference-generators-in-unreal-engine?application_version=5.0)
  * [eqs node reference tests in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/eqs-node-reference-tests-in-unreal-engine?application_version=5.0)
@@ -863,7 +885,27 @@ As of 2025/04/06.
  * [interface quick start guide in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/interface-quick-start-guide-in-unreal-engine?application_version=5.0)
  * [interfaces in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/interfaces-in-unreal-engine?application_version=5.0)
    * do not confuse with C++ interface/abstract class
-   * 
+   * Declare an Interface in C++: UINTERFACE macro instead of the UCLASS; inherit from UInterface instead of UObject
+   * UINTERFACE class is not the actual interface, but rather an empty class that provides visibility to the reflection system
+   * UReactToTriggerInterface vs IReactToTriggerInterface + GENERATED_BODY()
+   * the actual interface has the same name as the empty class, but the U-prefix is replaced by I
+   * The Blueprintable specifier is required if you want a Blueprint to implement this interface
+   * Interface Specifiers: MinimalAPI/BlueprintType/Blueprintable/DependsOn
+   * Blueprint Callable Interface Functions:
+     * Specify a UFUNCTION macro in the function’s declaration with the BlueprintCallable specifier
+     * Use either the BlueprintImplementableEvent or BlueprintNativeEvent specifiers
+     * Blueprint callable interface functions cannot be virtual
+     * If your Blueprint callable function does not return a value, Unreal Engine treats your function as an event in Blueprint
+   * Call a Blueprint Event from C++: `IReactToTriggerInterface::Execute_ReactToTrigger`
+   * Determine Whether a Class Implements an Interface:
+     * `OriginalObject->GetClass()->ImplementsInterface`
+     * `OriginalObject->Implements<UReactToTriggerInterface>()`
+     * `Cast<IReactToTriggerInterface>`
+   * Cast to Other Unreal Types: casting system supports casting from one interface to another, or from an interface to an Unreal type where appropriate
+   * Safely Store Object and Interface Pointers: TScriptInterface/FScriptInterface 
+   * Blueprint Implementable Interfaces:
+     * If you want a Blueprint to implement this interface, you must use the Blueprintable metadata specifier. Every interface function (other than static functions) must be a BlueprintNativeEvent or a BlueprintImplementableEvent.
+     * From C++, only the Execute_ static wrapper functions will work properly
  * [introduction to blueprints visual scripting in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/introduction-to-blueprints-visual-scripting-in-unreal-engine?application_version=5.0)
  * [invalidation in slate and umg for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/invalidation-in-slate-and-umg-for-unreal-engine?application_version=5.0)
  * [ios ipados and tvos development requirements for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/ios-ipados-and-tvos-development-requirements-for-unreal-engine?application_version=5.0)
@@ -978,6 +1020,11 @@ As of 2025/04/06.
  * [managing the active culture at runtime](https://dev.epicgames.com/documentation/en-us/unreal-engine/managing-the-active-culture-at-runtime?application_version=5.0)
  * [map check errors in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/map-check-errors-in-unreal-engine?application_version=5.0)
  * [map containers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/map-containers-in-unreal-engine?application_version=5.0)
+   * TMap is a hashing container
+   * key type must support the GetTypeHash function and provide an operator==
+   * Sort: KeySort/ValueSort - You can sort a TMap by key or by value. TODO: what's the complexity of Find() then?
+   * After sorting, iteration over the map presents the elements in sorted order, but this behavior is only guaranteed until the next time you modify the map
+   * KeyFuncs: GetSetKey/Matches/GetKeyHash
  * [mass avoidance in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/mass-avoidance-in-unreal-engine?application_version=5.0)
  * [mass avoidance overview in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/mass-avoidance-overview-in-unreal-engine?application_version=5.0)
  * [mass entity in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/mass-entity-in-unreal-engine?application_version=5.0)
@@ -1014,6 +1061,16 @@ As of 2025/04/06.
  * [mesh paint tool reference in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/mesh-paint-tool-reference-in-unreal-engine?application_version=5.0)
  * [mesh simplification settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/mesh-simplification-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [metadata specifiers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/metadata-specifiers-in-unreal-engine?application_version=5.0)
+   * Metadata keywords used when declaring UClasses, UFunctions, UProperties, UEnums, and UInterfaces to specify how they behave with various aspects of Unreal Engine and the editor
+   * Metadata only exists in the editor; do not write game logic that accesses metadata
+   * To add Metadata Specifiers, use the word meta
+   * UENUM -> UMETA 
+   * Class Metadata Specifiers
+   * Enum Metadata Specifiers
+   * Interface Metadata Specifiers
+   * Struct Metadata Specifiers
+   * Function Metadata Specifiers
+   * Property Metadata Specifiers
  * [metasounds in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/metasounds-in-unreal-engine?application_version=5.0)
  * [metasounds reference guide in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/metasounds-reference-guide-in-unreal-engine?application_version=5.0)
  * [metasounds the next generation sound sources in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/metasounds-the-next-generation-sound-sources-in-unreal-engine?application_version=5.0)
@@ -1483,8 +1540,12 @@ As of 2025/04/06.
  * [shading material functions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/shading-material-functions-in-unreal-engine?application_version=5.0)
  * [shading models in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/shading-models-in-unreal-engine?application_version=5.0)
  * [shadowing in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/shadowing-in-unreal-engine?application_version=5.0)
- * [shared pointers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/shared-pointers-in-unreal-engine?application_version=5.0)
+ * [shared pointers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/shared-pointers-in-unreal-engine?application_version=5.0)\
+   * Converting Between Shared Pointers and Shared References: ToSharedRef
+   * Shared Pointers: main distinction being that Shared References are not nullable and therefore always reference valid objects
+   * Custom Deleters
  * [shared references in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/shared-references-in-unreal-engine?application_version=5.0)
+   * Shared References always contain a valid object, and do not even have an IsValid method
  * [sharing and releasing projects for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/sharing-and-releasing-projects-for-unreal-engine?application_version=5.0)
  * [sharing xr experiences in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/sharing-xr-experiences-in-unreal-engine?application_version=5.0)
  * [significance manager in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/significance-manager-in-unreal-engine?application_version=5.0)
@@ -1520,6 +1581,13 @@ As of 2025/04/06.
  * [smart objects in unreal engine   quick start](https://dev.epicgames.com/documentation/en-us/unreal-engine/smart-objects-in-unreal-engine---quick-start?application_version=5.0)
  * [smart objects in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/smart-objects-in-unreal-engine?application_version=5.0)
  * [smart pointers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/smart-pointers-in-unreal-engine?application_version=5.0)
+   * Custom implementation of shared pointers, including weak pointers and non-nullable shared references
+   * Shared Pointers (TSharedPtr)/Weak Pointers (TWeakPtr)/Unique Pointers (TUniquePtr)/Shared References (TSharedRef)
+   * These classes CANNOT be used with the UObject
+   * Helper Classes and Functions: TSharedFromThis/MakeShared/MakeShareable/StaticCastSharedRef/StaticCastSharedPtr/ConstCastSharedRef/ConstCastSharedPtr
+   * Intrusive Accessors: AsShared
+   * Casting: StaticCastSharedPtr
+   * Thread Safety: ESPMode::ThreadSafe
  * [sound attenuation in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-attenuation-in-unreal-engine?application_version=5.0)
  * [sound classes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-classes-in-unreal-engine?application_version=5.0)
  * [sound cue editor in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-cue-editor-in-unreal-engine?application_version=5.0)
@@ -1660,6 +1728,15 @@ As of 2025/04/06.
  * [types of blueprints in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/types-of-blueprints-in-unreal-engine?application_version=5.0)
  * [udp messaging settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/udp-messaging-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [ufunctions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/ufunctions-in-unreal-engine?application_version=5.0)
+   * UFunction is a C++ function that is recognized by the Unreal Engine reflection system
+   * UFunctions are able to bind to Delegates
+   * act as network callbacks
+   * create your own console commands (with UFUNCTION)
+   * Function Specifiers
+   * Metadata Specifiers
+   * Function Parameter Specifiers
+   * Delegates/Even Dispatchers/UFUNCTION
+   * Timers/UFUNCTION
  * [umg anchors in unreal engine ui](https://dev.epicgames.com/documentation/en-us/unreal-engine/umg-anchors-in-unreal-engine-ui?application_version=5.0)
  * [umg and slate optimization for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/umg-and-slate-optimization-for-unreal-engine?application_version=5.0)
  * [umg best practices in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/umg-best-practices-in-unreal-engine?application_version=5.0)
@@ -1957,6 +2034,7 @@ As of 2025/04/06.
  * [water meshing system and surface rendering in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/water-meshing-system-and-surface-rendering-in-unreal-engine?application_version=5.0)
  * [water system in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/water-system-in-unreal-engine?application_version=5.0)
  * [weak pointers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/weak-pointers-in-unreal-engine?application_version=5.0)
+   * Usage Warnings: Usage as keys in Sets or Maps. Because Weak Pointers can become invalid at any time, and will not notify the container
  * [welding physics bodies in unreal engine by using the physics asset editor](https://dev.epicgames.com/documentation/en-us/unreal-engine/welding-physics-bodies-in-unreal-engine-by-using-the-physics-asset-editor?application_version=5.0)
  * [what happens when my cinematic ends in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/what-happens-when-my-cinematic-ends-in-unreal-engine?application_version=5.0)
  * [whats new](https://dev.epicgames.com/documentation/en-us/unreal-engine/whats-new?application_version=5.0)
