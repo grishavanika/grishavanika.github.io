@@ -242,16 +242,26 @@ As of 2025/04/06.
  * [bloom in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/bloom-in-unreal-engine?application_version=5.0)
  * [blueprint basic user guide in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-basic-user-guide-in-unreal-engine?application_version=5.0)
  * [blueprint best practices in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-best-practices-in-unreal-engine?application_version=5.0)
+   * Level Blueprints vs. Blueprint Classes: UE3's Kismet - prefer Blueprint classes
+   * Class Variables vs. Local Variables: prefer local variables if applicable
+   * Functions vs. Macros:
+     * you can place latent nodes in a macro, but not in a function
+     * you can have multiple execution wires in and out of a macro
+   * Blueprint Communication Types: Event Dispatchers or Blueprint Interfaces
  * [blueprint class assets in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-class-assets-in-unreal-engine?application_version=5.0)
  * [blueprint communication usage in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-communication-usage-in-unreal-engine?application_version=5.0)
  * [blueprint debugger in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-debugger-in-unreal-engine?application_version=5.0)
  * [blueprint debugging example in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-debugging-example-in-unreal-engine?application_version=5.0)
  * [blueprint editor cheat sheet in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-editor-cheat-sheet-in-unreal-engine?application_version=5.0)
  * [blueprint editor defaults tab](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-editor-defaults-tab?application_version=5.0)
+   * a way to modify Blueprint class CDO
+   * GetClassDefaults function
  * [blueprint function libraries in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-function-libraries-in-unreal-engine?application_version=5.0)
  * [blueprint interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-interface-in-unreal-engine?application_version=5.0)
  * [blueprint macro library in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-macro-library-in-unreal-engine?application_version=5.0)
  * [blueprint namespaces in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-namespaces-in-unreal-engine?application_version=5.0)
+   * Blueprint Namespaces optimize the time it takes to open a Blueprint Asset in the editor by preventing unnecessary Assets from loading
+   * Engine performs initialization tasks by loading all Blueprint Function Libraries and Macro Library assets regardless of whether the Blueprint you were opening was referencing those Libraries
  * [blueprint project settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-project-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [blueprint spline component property reference in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-spline-component-property-reference-in-unreal-engine?application_version=5.0)
  * [blueprint spline components overview in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-spline-components-overview-in-unreal-engine?application_version=5.0)
@@ -263,11 +273,34 @@ As of 2025/04/06.
  * [BlueprintAPI](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI?application_version=5.0)
  * [blueprints only example](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprints-only-example?application_version=5.0)
  * [blueprints visual scripting editor user interace for data only blueprints in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprints-visual-scripting-editor-user-interace-for-data-only-blueprints-in-unreal-engine?application_version=5.0)
+   * Data-Only Blueprint is a Blueprint Class that contains only the code, variables, and components inherited from its parent
+   * These are essentially a replacement for archetypes
+   * allow those inherited properties to be tweaked and modified, but no new elements can be added
+   * can be converted to class blueprint
  * [blueprints visual scripting editor user interface for blueprint interfaces in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprints-visual-scripting-editor-user-interface-for-blueprint-interfaces-in-unreal-engine?application_version=5.0)
+   * Blueprint Interface is a collection of one or more functions - name only, no implementation
+   * Editor UI is similar to that of a Blueprint Class Editor UI
  * [blueprints visual scripting editor user interface for level blueprints in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprints-visual-scripting-editor-user-interface-for-level-blueprints-in-unreal-engine?application_version=5.0)
+   * Level Blueprint is a specialized type of Blueprint that acts as a level-wide global event graph
  * [blueprints visual scripting editor user interface for macro libraries in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprints-visual-scripting-editor-user-interface-for-macro-libraries-in-unreal-engine?application_version=5.0)
+   * Blueprint Macro Library is a container that holds a collection of Macros or self-contained graphs that can be placed as nodes in other Blueprints
+   * Macros are shared among all graphs that reference them, but they are auto-expanded into graphs
+   * changes to a Macro are only reflected in graphs that reference that Macro when the Blueprint containing those graphs is recompiled
  * [blueprints visual scripting in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprints-visual-scripting-in-unreal-engine?application_version=5.0)
+   * Blueprint Visual Scripting system in Unreal Engine is a complete gameplay scripting system
+   * used to define object-oriented (OO) classes or objects in the engine
+   * General Scripting
+   * Building Blueprints
+   * Blueprint Communication
+   * Blueprints Technical Guide
+   * Blueprint Best Practices
+   * Blueprint Namespaces
+   * Anatomy of a Blueprint
+   * Blueprint Debugger
+   * Introduction to Blueprints
  * [blueprints visual scripting user interface for blueprint classes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprints-visual-scripting-user-interface-for-blueprint-classes-in-unreal-engine?application_version=5.0)
+   * Default Visible UI Components: Menu/Toolbar/Components/My Blueprint/Graph Editor/Details panel
+   * Available in the Window Menu: Debug/Compiler Results/Find Results/Viewport
  * [broadcast esports hype chamber sample with motion graphics in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/broadcast-esports-hype-chamber-sample-with-motion-graphics-in-unreal-engine?application_version=5.0)
  * [build configuration for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/build-configuration-for-unreal-engine?application_version=5.0)
  * [build configurations reference for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/build-configurations-reference-for-unreal-engine?application_version=5.0)
@@ -383,9 +416,13 @@ As of 2025/04/06.
  * [communicating with media components from unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/communicating-with-media-components-from-unreal-engine?application_version=5.0)
  * [compiler overview for blueprints visual scripting in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/compiler-overview-for-blueprints-visual-scripting-in-unreal-engine?application_version=5.0)
  * [compiler results in the blueprints visual scripting editor for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/compiler-results-in-the-blueprints-visual-scripting-editor-for-unreal-engine?application_version=5.0)
+   * navigate/clear/hover Blueprint compile results (from Window menu)
  * [compiling game projects in unreal engine using cplusplus](https://dev.epicgames.com/documentation/en-us/unreal-engine/compiling-game-projects-in-unreal-engine-using-cplusplus?application_version=5.0)
  * [components in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/components-in-unreal-engine?application_version=5.0)
  * [components mode viewport in the blueprints visual scripting editor for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/components-mode-viewport-in-the-blueprints-visual-scripting-editor-for-unreal-engine?application_version=5.0)
+   * view and manipulate your Blueprint's components
+   * Selecting a component in the Component list selects that component in the Viewport too
+   * use the transformation widgets in the Viewport to adjust the location
  * [components window in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/components-window-in-unreal-engine?application_version=5.0)
  * [compositing elements reference for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/compositing-elements-reference-for-unreal-engine?application_version=5.0)
  * [compositing material nodes reference for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/compositing-material-nodes-reference-for-unreal-engine?application_version=5.0)
@@ -534,6 +571,7 @@ As of 2025/04/06.
  * [datasmith tutorials in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/datasmith-tutorials-in-unreal-engine?application_version=5.0)
  * [debug camera controller settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/debug-camera-controller-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [debug panel in the blueprints visual scripting editor for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/debug-panel-in-the-blueprints-visual-scripting-editor-for-unreal-engine?application_version=5.0)
+   * Breakpoints and Watch Values of Blueprint + Execution Trace (stack trace)
  * [debugging and optimization in niagara effects for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/debugging-and-optimization-in-niagara-effects-for-unreal-engine?application_version=5.0)
  * [debugging and troubleshooting slate ui programming in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/debugging-and-troubleshooting-slate-ui-programming-in-unreal-engine?application_version=5.0)
  * [debugging for android devices in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/debugging-for-android-devices-in-unreal-engine?application_version=5.0)
@@ -557,6 +595,11 @@ As of 2025/04/06.
  * [destruction quick start](https://dev.epicgames.com/documentation/en-us/unreal-engine/destruction-quick-start?application_version=5.0)
  * [details panel customization in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/details-panel-customization-in-unreal-engine?application_version=5.0)
  * [details panel in the blueprints visual scriting editor for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/details-panel-in-the-blueprints-visual-scriting-editor-for-unreal-engine?application_version=5.0)
+   * Details panel is a context-sensitive area
+   * Editing process for Blueprint variables
+   * Implement Blueprint interfaces
+   * Adding inputs and outputs for Blueprint functions
+   * Add Events for selected Components
  * [detect oculus rift guardian system activation in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/detect-oculus-rift-guardian-system-activation-in-unreal-engine?application_version=5.0)
  * [detect steamvr chaperone system activation in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/detect-steamvr-chaperone-system-activation-in-unreal-engine?application_version=5.0)
  * [developer guide to tracing in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/developer-guide-to-tracing-in-unreal-engine?application_version=5.0)
@@ -695,6 +738,7 @@ As of 2025/04/06.
  * [filling gaps using the proxy geometry tool in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/filling-gaps-using-the-proxy-geometry-tool-in-unreal-engine?application_version=5.0)
  * [filters and collections in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/filters-and-collections-in-unreal-engine?application_version=5.0)
  * [find result panel in the blueprints visual scripting editor for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/find-result-panel-in-the-blueprints-visual-scripting-editor-for-unreal-engine?application_version=5.0)
+   * available by pressing Ctrl-F
  * [finding actors in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/finding-actors-in-unreal-engine?application_version=5.0)
  * [fire blueprint events during cinematics in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fire-blueprint-events-during-cinematics-in-unreal-engine?application_version=5.0)
  * [first person shooter tutorial in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/first-person-shooter-tutorial-in-unreal-engine?application_version=5.0)
@@ -805,6 +849,8 @@ As of 2025/04/06.
  * [gpudump viewer tool in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/gpudump-viewer-tool-in-unreal-engine?application_version=5.0)
  * [gradient material functions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/gradient-material-functions-in-unreal-engine?application_version=5.0)
  * [graph editor for the blueprints visual scripting editor in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/graph-editor-for-the-blueprints-visual-scripting-editor-in-unreal-engine?application_version=5.0)
+   * Editable, visual representation of a network of nodes within a Blueprint
+   * Graph Editor Controls
  * [graphics programming for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/graphics-programming-for-unreal-engine?application_version=5.0)
  * [graphics programming overview for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/graphics-programming-overview-for-unreal-engine?application_version=5.0)
  * [graphing in animation blueprints in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/graphing-in-animation-blueprints-in-unreal-engine?application_version=5.0)
@@ -1125,6 +1171,7 @@ As of 2025/04/06.
  * [meerkat sample project for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/meerkat-sample-project-for-unreal-engine?application_version=5.0)
  * [memory insights in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/memory-insights-in-unreal-engine?application_version=5.0)
  * [menu for the blueprints visual scripting editor in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/menu-for-the-blueprints-visual-scripting-editor-in-unreal-engine?application_version=5.0)
+   * Blueprint File/Edit/Asset/View/Debug/Window menus
  * [merging actors in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/merging-actors-in-unreal-engine?application_version=5.0)
  * [mesh distance fields in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/mesh-distance-fields-in-unreal-engine?application_version=5.0)
  * [mesh distance fields properties in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/mesh-distance-fields-properties-in-unreal-engine?application_version=5.0)
@@ -1190,6 +1237,10 @@ As of 2025/04/06.
  * [multiple launcher unreal engine installs](https://dev.epicgames.com/documentation/en-us/unreal-engine/multiple-launcher-unreal-engine-installs?application_version=5.0)
  * [music systems in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/music-systems-in-unreal-engine?application_version=5.0)
  * [my blueprint panel in the blueprints visual scripting editor for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/my-blueprint-panel-in-the-blueprints-visual-scripting-editor-for-unreal-engine?application_version=5.0)
+   * displays a tree list of the graphs, scripts, functions, macros, etc. contained within the Blueprint
+   * Different types of Blueprints will have different types of items shown in the My Blueprint tab tree list
+   * Creation Buttons: New Variable/New Function/New Macro/New Event Graph/New Event Dispatcher
+   * My Blueprint Sections: Add New (component)
  * [nanite virtualized geometry in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine?application_version=5.0)
  * [native soundfield ambisonics rendering in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/native-soundfield-ambisonics-rendering-in-unreal-engine?application_version=5.0)
  * [navigating the world in vr mode](https://dev.epicgames.com/documentation/en-us/unreal-engine/navigating-the-world-in-vr-mode?application_version=5.0)
@@ -1332,6 +1383,8 @@ As of 2025/04/06.
  * [painter tool 2.0 material functions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/painter-tool-2.0-material-functions-in-unreal-engine?application_version=5.0)
  * [painting on instances in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/painting-on-instances-in-unreal-engine?application_version=5.0)
  * [palette in the bleprints visual scripting editor for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/palette-in-the-bleprints-visual-scripting-editor-for-unreal-engine?application_version=5.0)
+   * displays a list of all functions and variables that can be used in Blueprints (non-context sensitive)
+   * Class Filtering - filter by class
  * [panini projection in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/panini-projection-in-unreal-engine?application_version=5.0)
  * [panoramic capture reference for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/panoramic-capture-reference-for-unreal-engine?application_version=5.0)
  * [panoramic capture tips and tricks for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/panoramic-capture-tips-and-tricks-for-unreal-engine?application_version=5.0)
@@ -1812,6 +1865,7 @@ As of 2025/04/06.
  * [timelines nodes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/timelines-nodes-in-unreal-engine?application_version=5.0)
  * [timing insights in unreal engine 5](https://dev.epicgames.com/documentation/en-us/unreal-engine/timing-insights-in-unreal-engine-5?application_version=5.0)
  * [toolbar in the blueprints visual scripting editor for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/toolbar-in-the-blueprints-visual-scripting-editor-for-unreal-engine?application_version=5.0)
+   * easy access to common commands needed when editing Blueprints: Compile/Class Settings/Class Defaults/etc.
  * [tools and editors in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/tools-and-editors-in-unreal-engine?application_version=5.0)
  * [tools folder structure in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/tools-folder-structure-in-unreal-engine?application_version=5.0)
  * [tools for general platform support in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/tools-for-general-platform-support-in-unreal-engine?application_version=5.0)
@@ -1959,8 +2013,11 @@ As of 2025/04/06.
  * [upgrading the lyra starter game to the latest engine release in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/upgrading-the-lyra-starter-game-to-the-latest-engine-release-in-unreal-engine?application_version=5.0)
  * [usd stage editor quick start in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/usd-stage-editor-quick-start-in-unreal-engine?application_version=5.0)
  * [user interface breakdown in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/user-interface-breakdown-in-unreal-engine?application_version=5.0)
+   * same as [Blueprint Editor Reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/user-interface-reference-for-the-blueprints-visual-scripting-editor-in-unreal-engine?application_version=5.0)
  * [user interface components in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/user-interface-components-in-unreal-engine?application_version=5.0)
+   * more subsections on Editor Blueprint UI, like Blueprint Editor Compiler Results 
  * [user interface reference for the blueprints visual scripting editor in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/user-interface-reference-for-the-blueprints-visual-scripting-editor-in-unreal-engine?application_version=5.0)
+   * Level/Class/Interface/Macro Library/Animation Blueprints Editor UI
  * [user interface settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/user-interface-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [user interfaces and huds in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/user-interfaces-and-huds-in-unreal-engine?application_version=5.0)
  * [using a multi line trace raycast by channel in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-a-multi-line-trace-raycast-by-channel-in-unreal-engine?application_version=5.0)
@@ -2181,6 +2238,10 @@ As of 2025/04/06.
  * [working with audio in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-audio-in-unreal-engine?application_version=5.0)
  * [working with bookmark in the collab viewer template in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-bookmark-in-the-collab-viewer-template-in-unreal-engine?application_version=5.0)
  * [working with bookmarks for blueprint graphs in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-bookmarks-for-blueprint-graphs-in-unreal-engine?application_version=5.0)
+   * you can create named Bookmarks in any function graph in the Blueprint Editor
+   * Star icon in the upper-left of the graph to bookmark
+   * Window/Bookmarks to view
+   * Quick Jump Bookmark: Ctrl + 0-9 to add; Shift + 0-9 to view
  * [working with camera components in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-camera-components-in-unreal-engine?application_version=5.0)
  * [working with content in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-content-in-unreal-engine?application_version=5.0)
  * [working with dataprep instances in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-dataprep-instances-in-unreal-engine?application_version=5.0)
@@ -2251,6 +2312,7 @@ As of 2025/04/06.
  * [achievements interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/achievements-interface-in-unreal-engine?application_version=5.1)
  * [actor editor context in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-editor-context-in-unreal-engine?application_version=5.1)
  * [an overview of the blueprint header view in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/an-overview-of-the-blueprint-header-view-in-unreal-engine?application_version=5.1)
+   * Blueprint Header View converts Unreal Engine Blueprint Classes and Blueprint Structs to C++ HEADER-only code
  * [animating ik retarget settings in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/animating-ik-retarget-settings-in-unreal-engine?application_version=5.1)
  * [animation constraint tools in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-constraint-tools-in-unreal-engine?application_version=5.1)
  * [anti aliasing and upscaling in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/anti-aliasing-and-upscaling-in-unreal-engine?application_version=5.1)
@@ -2477,6 +2539,8 @@ As of 2025/04/06.
  * [temporal upscalers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/temporal-upscalers-in-unreal-engine?application_version=5.2)
  * [texture asset editor in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/texture-asset-editor-in-unreal-engine?application_version=5.2)
  * [ue diff tool in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/ue-diff-tool-in-unreal-engine?application_version=5.2)
+   * Blueprints diff tool (and ONLY blueprints for now)
+   * in a combination with 'UE Review Tool'
  * [unreal engine 5.2 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.2-release-notes?application_version=5.2)
  * [unreal stage app for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-stage-app-for-unreal-engine?application_version=5.2)
  * [upgrading control rig cplusplus units for unreal engine 5.2](https://dev.epicgames.com/documentation/en-us/unreal-engine/upgrading-control-rig-cplusplus-units-for-unreal-engine-5.2?application_version=5.2)
