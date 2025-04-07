@@ -38,6 +38,12 @@ As of 2025/04/06.
  * [add event handler group reference for niagara effects in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/add-event-handler-group-reference-for-niagara-effects-in-unreal-engine?application_version=5.0)
  * [add simple collision to a static mesh in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/add-simple-collision-to-a-static-mesh-in-unreal-engine?application_version=5.0)
  * [adding character animation in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/adding-character-animation-in-unreal-engine?application_version=5.0)
+   * basic tutorial
+   * Animate Your Character
+   * Set Up Your Event Graph
+   * Add an Animation State Machine
+   * Add Transition States to Your Animation
+   * Associate the Animation Blueprint with the Character Blueprint
  * [adding commands to automation projects for unreal automation tool](https://dev.epicgames.com/documentation/en-us/unreal-engine/adding-commands-to-automation-projects-for-unreal-automation-tool?application_version=5.0)
  * [adding components to an actor in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/adding-components-to-an-actor-in-unreal-engine?application_version=5.0)
  * [adding detail textures to unreal engine materials](https://dev.epicgames.com/documentation/en-us/unreal-engine/adding-detail-textures-to-unreal-engine-materials?application_version=5.0)
@@ -593,6 +599,10 @@ As of 2025/04/06.
  * [dpi scaling in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/dpi-scaling-in-unreal-engine?application_version=5.0)
  * [driving ui updates with events in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/driving-ui-updates-with-events-in-unreal-engine?application_version=5.0)
  * [dynamic delegates in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/dynamic-delegates-in-unreal-engine?application_version=5.0)
+   * Dynamic delegates can be serialized, their functions can be found by name, and they are slower than regular delegates
+   * DECLARE_DYNAMIC_DELEGATE/DECLARE_DYNAMIC_MULTICAST_DELEGATE
+   * Dynamic Delegate Binding: BindDynamic/AddDynamic/RemoveDynamic
+   * Executing Dynamic Delegates: Execute/ExecuteIfBound
  * [dynamic resolution in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/dynamic-resolution-in-unreal-engine?application_version=5.0)
  * [edit a physical material in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/edit-a-physical-material-in-unreal-engine?application_version=5.0)
  * [edit tools user guide in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/edit-tools-user-guide-in-unreal-engine?application_version=5.0)
@@ -688,6 +698,9 @@ As of 2025/04/06.
  * [finding actors in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/finding-actors-in-unreal-engine?application_version=5.0)
  * [fire blueprint events during cinematics in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fire-blueprint-events-during-cinematics-in-unreal-engine?application_version=5.0)
  * [first person shooter tutorial in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/first-person-shooter-tutorial-in-unreal-engine?application_version=5.0)
+   * basic tutorial
+   * Learn how to implement mechanics for a First Person Shooter game
+   * Objectives: Set up a Project/Implement a Character/Implement a Projectile/Animate a Character
  * [first person template in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/first-person-template-in-unreal-engine?application_version=5.0)
  * [fk control rig in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fk-control-rig-in-unreal-engine?application_version=5.0)
  * [flipbook components in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/flipbook-components-in-unreal-engine?application_version=5.0)
@@ -879,7 +892,22 @@ As of 2025/04/06.
  * [implementing blueprint interfaces in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/implementing-blueprint-interfaces-in-unreal-engine?application_version=5.0)
  * [implementing chunkdownloader in your gameplay in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/implementing-chunkdownloader-in-your-gameplay-in-unreal-engine?application_version=5.0)
  * [implementing projectiles in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/implementing-projectiles-in-unreal-engine?application_version=5.0)
+   * basic tutorial
+   * Add Projectiles to Your Game
+   * Implement Shooting
+   * Set Up Projectile Collision and Lifetime
+   * Get Your Projectiles to Interact with the World
+   * Add Crosshairs to Your Viewport
  * [implementing your character in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/implementing-your-character-in-unreal-engine?application_version=5.0)
+   * basic tutorial
+   * Make a New Character
+   * Set Up Axis Mapping
+   * Implement Character Movement Functions
+   * Implement Mouse Camera Control
+   * Implement Character Jumping
+   * Add a Mesh to Your Character
+   * Change the Camera View
+   * Add a First Person Mesh to Your Character
  * [import and export cinematic fbx animations in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/import-and-export-cinematic-fbx-animations-in-unreal-engine?application_version=5.0)
  * [import and export edl in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/import-and-export-edl-in-unreal-engine?application_version=5.0)
  * [import sprites in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/import-sprites-in-unreal-engine?application_version=5.0)
@@ -1155,6 +1183,9 @@ As of 2025/04/06.
  * [multi user editing reference for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/multi-user-editing-reference-for-unreal-engine?application_version=5.0)
  * [multi user take recorder in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/multi-user-take-recorder-in-unreal-engine?application_version=5.0)
  * [multicast delegates in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/multicast-delegates-in-unreal-engine?application_version=5.0)
+   * DECLARE_MULTICAST_DELEGATE/DECLARE_DYNAMIC_MULTICAST_DELEGATE
+   * Binding Multi-Cast Delegates: Add/AddStatic/etc.
+   * Multi-Cast Execution: Broadcast()
  * [multiplayer programming quick start for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/multiplayer-programming-quick-start-for-unreal-engine?application_version=5.0)
  * [multiple launcher unreal engine installs](https://dev.epicgames.com/documentation/en-us/unreal-engine/multiple-launcher-unreal-engine-installs?application_version=5.0)
  * [music systems in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/music-systems-in-unreal-engine?application_version=5.0)
@@ -1429,10 +1460,36 @@ As of 2025/04/06.
  * [quick start guide for unreal engine data registries](https://dev.epicgames.com/documentation/en-us/unreal-engine/quick-start-guide-for-unreal-engine-data-registries?application_version=5.0)
  * [quick start guide for using container images in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/quick-start-guide-for-using-container-images-in-unreal-engine?application_version=5.0)
  * [quick start guide to components and collision in unreal engine cpp](https://dev.epicgames.com/documentation/en-us/unreal-engine/quick-start-guide-to-components-and-collision-in-unreal-engine-cpp?application_version=5.0)
+   * basic tutorial
+   * Learn how Components can enable Pawns to interact with physics, use particle effects, and more.
+   * 1. Creating and Attaching Components
+   * 2. Configuring Input and Creating a Pawn Movement Component
+   * 3. Coding Our Pawn Movement Component's Behavior
+   * 4. Using Our Pawn and Components Together
  * [quick start guide to implementing automatic camera control in unreal engine cpp](https://dev.epicgames.com/documentation/en-us/unreal-engine/quick-start-guide-to-implementing-automatic-camera-control-in-unreal-engine-cpp?application_version=5.0)
+   * basic tutorial
+   * Learn to activate and switch between different view perspectives
+   * 1 - Place Cameras in the World
+   * 2 - Control Camera View in C++
+   * 3 - Place a Camera Director in the World
  * [quick start guide to player controlled cameras in unreal engine cpp](https://dev.epicgames.com/documentation/en-us/unreal-engine/quick-start-guide-to-player-controlled-cameras-in-unreal-engine-cpp?application_version=5.0)
+   * basic tutorial
+   * Learn to manipulate a Camera and a Pawn at the same time, using player input
+   * 1. Attach a Camera to a Pawn
+   * 2. Configure Input to Control the Camera
+   * 3. Write C++ Code to React to Input
  * [quick start guide to player input in unreal engine cpp](https://dev.epicgames.com/documentation/en-us/unreal-engine/quick-start-guide-to-player-input-in-unreal-engine-cpp?application_version=5.0)
+   * basic tutorial
+   * React to player input by extending the Pawn class
+   * 1 - Customize a Pawn
+   * 2 - Configure Game Input
+   * 3 - Program and Bind Game Actions
  * [quick start guide to variables timers and events in unreal engine cpp](https://dev.epicgames.com/documentation/en-us/unreal-engine/quick-start-guide-to-variables-timers-and-events-in-unreal-engine-cpp?application_version=5.0)
+   * basic tutorial
+   * Expose variables and functions to the editor, use timers, and override C++ functions with Blueprints
+   * 1. Creating an Actor that Uses a Timer: GetWorldTimerManager().SetTimer
+   * 2. Exposing Variables and Functions to the Editor: UPROPERTY(EditAnywhere)/BlueprintCallable/BlueprintImplementableEvent/BlueprintNativeEvent
+   * 3. Extend and Override C++ with Blueprints
  * [quixel bridge plugin for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/quixel-bridge-plugin-for-unreal-engine?application_version=5.0)
  * [random streams in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/random-streams-in-unreal-engine?application_version=5.0)
  * [rawinput plugin in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/rawinput-plugin-in-unreal-engine?application_version=5.0)
@@ -1582,6 +1639,13 @@ As of 2025/04/06.
  * [setting up your development environment for cplusplus in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-your-development-environment-for-cplusplus-in-unreal-engine?application_version=5.0)
  * [setting up your production pipeline in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-your-production-pipeline-in-unreal-engine?application_version=5.0)
  * [setting up your project in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-your-project-in-unreal-engine?application_version=5.0)
+   * basic tutorial
+   * Set Up a New Project
+   * Set the Editor Startup Map
+   * Open Your Project in Visual Studio
+   * Add Log Messaging to Your Project
+   * Compile Your First C++ Class
+   * Set the Default Game Mode
  * [shader debugging workflows unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/shader-debugging-workflows-unreal-engine?application_version=5.0)
  * [shader development in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/shader-development-in-unreal-engine?application_version=5.0)
  * [shaders in plugins for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/shaders-in-plugins-for-unreal-engine?application_version=5.0)
@@ -1818,7 +1882,14 @@ As of 2025/04/06.
  * [unreal engine behavior tree node reference tasks](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-behavior-tree-node-reference-tasks?application_version=5.0)
  * [unreal engine build tool target reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-build-tool-target-reference?application_version=5.0)
  * [unreal engine cpp programming tutorials](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-cpp-programming-tutorials?application_version=5.0)
+   * basic tutorial
+   * Game-Controlled Cameras/Components and Collision/Player-Controlled Cameras/Player Input and Pawns/Variables, Timers, and Events/First Person Shooter Tutorial
+   * Programming Quick Start
  * [unreal engine cpp quick start](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-cpp-quick-start?application_version=5.0)
+   * basic tutorial
+   * 2. Create a New C++ Class
+   * 3. Edit Your C++ Class
+   * 4. Compile and Test Your C++ Code
  * [unreal engine directory structure](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-directory-structure?application_version=5.0)
  * [unreal engine for unity developers](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-for-unity-developers?application_version=5.0)
  * [unreal engine ik rig](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-ik-rig?application_version=5.0)
@@ -2876,6 +2947,13 @@ As of 2025/04/06.
  * [debugging grooms in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/debugging-grooms-in-unreal-engine?application_version=5.5)
  * [debugging unreal engine projects with virtual devices using the android emulator](https://dev.epicgames.com/documentation/en-us/unreal-engine/debugging-unreal-engine-projects-with-virtual-devices-using-the-android-emulator?application_version=5.5)
  * [delegates and lambda functions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/delegates-and-lambda-functions-in-unreal-engine?application_version=5.5)
+   * see C# delegates
+   * see benui [Advanced Delegates in C++](https://benui.ca/unreal/delegates-advanced/)
+   * three types of delegates: Single/Multicast/Dynamic (UObject, serializable)
+   * Declaring Delegates: DECLARE_DELEGATE/DECLARE_MULTICAST_DELEGATE/DECLARE_DYNAMIC_DELEGATE/DECLARE_DYNAMIC_MULTICAST_DELEGATE/DECLARE_DYNAMIC_DELEGATE/DECLARE_DYNAMIC_MULTICAST_DELEGATE/etc
+   * Binding Delegates: Bind/BindStatic/BindRaw/BindLambda/BindSP/BindUObject/UnBind
+   * Payload Data
+   * Executing Delegates: Execute/ExecuteIfBound
  * [electric dreams procedural content generation glossary](https://dev.epicgames.com/documentation/en-us/unreal-engine/electric-dreams-procedural-content-generation-glossary?application_version=5.5)
  * [game objects in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/game-objects-in-unreal-engine?application_version=5.5)
  * [gameplay camera system](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-camera-system?application_version=5.5)
