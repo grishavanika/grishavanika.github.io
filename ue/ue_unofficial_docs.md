@@ -272,7 +272,11 @@ As of 2025/04/06.
      * you can place latent nodes in a macro, but not in a function
      * you can have multiple execution wires in and out of a macro
    * Blueprint Communication Types: Event Dispatchers or Blueprint Interfaces
- * [blueprint class assets in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-class-assets-in-unreal-engine?application_version=5.0)
+ * [blueprint class assets in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-class-assets-in-unreal-engine?application_version=5.0) - {bp}
+   * Blueprint Class, often shortened as Blueprint, is an asset that allows content creators to easily add functionality on top of existing gameplay classes
+   * Parent Classes
+   * Working with Blueprint Classes
+   * Data-Only Blueprint
  * [blueprint communication usage in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-communication-usage-in-unreal-engine?application_version=5.0)
  * [blueprint debugger in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-debugger-in-unreal-engine?application_version=5.0)
  * [blueprint debugging example in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-debugging-example-in-unreal-engine?application_version=5.0) - {bp}
@@ -287,8 +291,14 @@ As of 2025/04/06.
    * to expose shared utility functions
    * collection of static functions that provide utility functionality not tied to a particular gameplay object
    * inherit from UBlueprintFunctionLibrary + UCLASS + GENERATED_UCLASS_BODY
- * [blueprint interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-interface-in-unreal-engine?application_version=5.0)
- * [blueprint macro library in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-macro-library-in-unreal-engine?application_version=5.0)
+ * [blueprint interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-interface-in-unreal-engine?application_version=5.0) - {bp, interface}
+   * Creating Blueprint Interfaces
+   * Input parameters can be given a default value
+   * You can use the Replicates checkbox for any Interfaces
+ * [blueprint macro library in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-macro-library-in-unreal-engine?application_version=5.0) - {bp}
+   * Creating a Blueprint Macro Library
+   * Creating Blueprint Macros
+   * Using Macros stored in Blueprint Macro Libraries
  * [blueprint namespaces in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-namespaces-in-unreal-engine?application_version=5.0)
    * Blueprint Namespaces optimize the time it takes to open a Blueprint Asset in the editor by preventing unnecessary Assets from loading
    * Engine performs initialization tasks by loading all Blueprint Function Libraries and Macro Library assets regardless of whether the Blueprint you were opening was referencing those Libraries
@@ -505,7 +515,8 @@ As of 2025/04/06.
  * [consolidating assets in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/consolidating-assets-in-unreal-engine?application_version=5.0)
  * [constant material expressions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/constant-material-expressions-in-unreal-engine?application_version=5.0)
  * [constraints user guide in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/constraints-user-guide-in-unreal-engine?application_version=5.0)
- * [construction script in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/construction-script-in-unreal-engine?application_version=5.0)
+ * [construction script in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/construction-script-in-unreal-engine?application_version=5.0) - {bp}
+   * Executed when instances of a Blueprint are created to perform initialization actions
  * [contact shadows in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/contact-shadows-in-unreal-engine?application_version=5.0)
  * [container deployments and images for unreal editor and unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/container-deployments-and-images-for-unreal-editor-and-unreal-engine?application_version=5.0)
  * [containers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/containers-in-unreal-engine?application_version=5.0)
@@ -569,7 +580,16 @@ As of 2025/04/06.
  * [creating and using material functions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-and-using-material-functions-in-unreal-engine?application_version=5.0)
  * [creating and using material instances in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-and-using-material-instances-in-unreal-engine?application_version=5.0)
  * [creating animation keyframes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-animation-keyframes-in-unreal-engine?application_version=5.0)
- * [creating blueprint classes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-blueprint-classes-in-unreal-engine?application_version=5.0)
+ * [creating blueprint classes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-blueprint-classes-in-unreal-engine?application_version=5.0) - {bp}
+   * how-to guide on ways to create new Blueprint classes
+   * Using the Add New Button
+   * Using the Asset View
+   * Using the Asset Tree
+   * create a Blueprint Asset from one or more selected Actors in the Level Editor
+   * selected actor/New Subclass
+   * Child Actors
+   * Harvest Components: harvests the Components of all the selected Actors and attaches them to the new Actor
+   * Creating in the Class Viewer
  * [creating custom dataprep blocks in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-custom-dataprep-blocks-in-unreal-engine?application_version=5.0)
  * [creating custom landscape importers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-custom-landscape-importers-in-unreal-engine?application_version=5.0)
  * [creating custom modules in niagara effects for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-custom-modules-in-niagara-effects-for-unreal-engine?application_version=5.0)
@@ -593,6 +613,8 @@ As of 2025/04/06.
  * [creating shiny materials in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-shiny-materials-in-unreal-engine?application_version=5.0)
  * [creating speedtree models for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-speedtree-models-for-unreal-engine?application_version=5.0)
  * [creating timelines in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-timelines-in-unreal-engine?application_version=5.0)
+   * Add Timeline
+   * Opening the Timeline Editor
  * [creating umg widget templates in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-umg-widget-templates-in-unreal-engine?application_version=5.0)
  * [creating visual effects in niagara for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-visual-effects-in-niagara-for-unreal-engine?application_version=5.0)
  * [creating widgets in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-widgets-in-unreal-engine?application_version=5.0)
@@ -726,6 +748,8 @@ As of 2025/04/06.
  * [editing physics asset constraints in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/editing-physics-asset-constraints-in-unreal-engine?application_version=5.0)
  * [editing the physics asset of a physics body in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/editing-the-physics-asset-of-a-physics-body-in-unreal-engine?application_version=5.0)
  * [editing timelines in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/editing-timelines-in-unreal-engine?application_version=5.0)
+   * Double-clicking on the Timeline node 
+   * Adding Tracks/Adding Keys
  * [editor section of the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/editor-section-of-the-unreal-engine-project-settings?application_version=5.0)
  * [editor ui reference for niagara effects in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/editor-ui-reference-for-niagara-effects-in-unreal-engine?application_version=5.0)
  * [editor utility widgets in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/editor-utility-widgets-in-unreal-engine?application_version=5.0)
@@ -832,7 +856,9 @@ As of 2025/04/06.
  * [fabrik animation blueprint in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fabrik-animation-blueprint-in-unreal-engine?application_version=5.0)
  * [face ar sample in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/face-ar-sample-in-unreal-engine?application_version=5.0)
  * [facial animation sharing in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/facial-animation-sharing-in-unreal-engine?application_version=5.0)
- * [fading lights in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fading-lights-in-unreal-engine?application_version=5.0)
+ * [fading lights in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fading-lights-in-unreal-engine?application_version=5.0) - {bp, timeline}
+   * basic tutorial
+   * C++ and Blueprint versions of sample code with timeline & light component
  * [fbx animation pipeline in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fbx-animation-pipeline-in-unreal-engine?application_version=5.0)
  * [fbx asset metadata pipeline in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fbx-asset-metadata-pipeline-in-unreal-engine?application_version=5.0)
  * [fbx attributes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fbx-attributes-in-unreal-engine?application_version=5.0)
@@ -1058,7 +1084,14 @@ As of 2025/04/06.
  * [image adjustment material functions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/image-adjustment-material-functions-in-unreal-engine?application_version=5.0)
  * [image sequence mipmapping in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/image-sequence-mipmapping-in-unreal-engine?application_version=5.0)
  * [img media settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/img-media-settings-in-the-unreal-engine-project-settings?application_version=5.0)
- * [implementing blueprint interfaces in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/implementing-blueprint-interfaces-in-unreal-engine?application_version=5.0)
+ * [implementing blueprint interfaces in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/implementing-blueprint-interfaces-in-unreal-engine?application_version=5.0) - {bp, interface}
+   * Create an Interface: in Blueprint, in C++
+   * Example of C++ Interface
+   * Add an Interface to an Existing Blueprint: Class Settings/Interfaces > Implemented Interfaces
+   * Implement Interface Functions
+   * Override Interface Functions
+   * Override Blueprint Native Event in Blueprint
+   * Call Interface Functions: Object/Interface/Message
  * [implementing chunkdownloader in your gameplay in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/implementing-chunkdownloader-in-your-gameplay-in-unreal-engine?application_version=5.0)
  * [implementing projectiles in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/implementing-projectiles-in-unreal-engine?application_version=5.0)
    * basic tutorial
@@ -1154,7 +1187,11 @@ As of 2025/04/06.
  * [ios material quality settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/ios-material-quality-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [ios settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/ios-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [key concepts in niagara effects for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/key-concepts-in-niagara-effects-for-unreal-engine?application_version=5.0)
- * [keys and curves in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/keys-and-curves-in-unreal-engine?application_version=5.0)
+ * [keys and curves in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/keys-and-curves-in-unreal-engine?application_version=5.0) - {bp, timeline}
+   * A Curve defines a track of interpolated points 
+   * Working with Keys and Curves
+   * Editing Keys/Key Interpolation/External Curves, curve asset (UCurveBase)
+   * Working with Keys and Curves
  * [known limitations of containers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/known-limitations-of-containers-in-unreal-engine?application_version=5.0)
  * [landscape blueprint brushes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/landscape-blueprint-brushes-in-unreal-engine?application_version=5.0)
  * [landscape brushes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/landscape-brushes-in-unreal-engine?application_version=5.0)
@@ -1191,7 +1228,11 @@ As of 2025/04/06.
  * [layered materials in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/layered-materials-in-unreal-engine?application_version=5.0)
  * [layering materials in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/layering-materials-in-unreal-engine?application_version=5.0)
  * [layers panel in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/layers-panel-in-unreal-engine?application_version=5.0)
- * [level blueprint in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/level-blueprint-in-unreal-engine?application_version=5.0)
+ * [level blueprint in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/level-blueprint-in-unreal-engine?application_version=5.0) - {bp}
+   * act as a level-wide global event graph
+   * Level Blueprints also provide a control mechanism for level streaming and Sequencer
+   * Default Level Blueprint/Opening a Level Blueprint
+   * Referencing Actors: Create a reference to [SelectedActor] OR Drag and drop an Actor from the World Outliner
  * [level designer quick start in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/level-designer-quick-start-in-unreal-engine?application_version=5.0)
  * [level editor details panel in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/level-editor-details-panel-in-unreal-engine?application_version=5.0)
  * [level editor in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/level-editor-in-unreal-engine?application_version=5.0)
@@ -1483,7 +1524,9 @@ As of 2025/04/06.
  * [open world tools tips in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/open-world-tools-tips-in-unreal-engine?application_version=5.0)
  * [opencolorio quick start for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/opencolorio-quick-start-for-unreal-engine?application_version=5.0)
  * [opening an existing unreal engine project](https://dev.epicgames.com/documentation/en-us/unreal-engine/opening-an-existing-unreal-engine-project?application_version=5.0)
- * [opening doors in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/opening-doors-in-unreal-engine?application_version=5.0)
+ * [opening doors in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/opening-doors-in-unreal-engine?application_version=5.0) - {bp, timeline}
+   * set up a proximity-based opening door; C++ and Blueprint versions
+   * SetRelativeRotation
  * [openxr input in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/openxr-input-in-unreal-engine?application_version=5.0)
  * [openxr loading screens in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/openxr-loading-screens-in-unreal-engine?application_version=5.0)
  * [openxr prerequisites in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/openxr-prerequisites-in-unreal-engine?application_version=5.0)
@@ -2045,8 +2088,11 @@ As of 2025/04/06.
  * [timecode and genlock in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/timecode-and-genlock-in-unreal-engine?application_version=5.0)
  * [timed data monitor in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/timed-data-monitor-in-unreal-engine?application_version=5.0)
  * [timelines in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/timelines-in-unreal-engine?application_version=5.0) - {bp}
-   * 
- * [timelines nodes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/timelines-nodes-in-unreal-engine?application_version=5.0)
+   * Timeline nodes are special nodes within Blueprints that provide time-based animation
+   * UTimelineComponent holds a series of events, floats, vectors or colors with their associated keyframes
+   * Examples: Fading Lights/Opening Doors
+ * [timelines nodes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/timelines-nodes-in-unreal-engine?application_version=5.0) - {timeline}
+   * timeline component API: Is Playing/Stop/etc
  * [timing insights in unreal engine 5](https://dev.epicgames.com/documentation/en-us/unreal-engine/timing-insights-in-unreal-engine-5?application_version=5.0)
  * [toolbar in the blueprints visual scripting editor for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/toolbar-in-the-blueprints-visual-scripting-editor-for-unreal-engine?application_version=5.0)
    * easy access to common commands needed when editing Blueprints: Compile/Class Settings/Class Defaults/etc.
@@ -2075,7 +2121,8 @@ As of 2025/04/06.
  * [typed object pointer properties in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/typed-object-pointer-properties-in-unreal-engine?application_version=5.0)
    * TSubclassOf is a template class that provides UClass type safety
    * `UPROPERTY(EditDefaultsOnly) TSubclassOf<UDamageType> DamageType`: tells the editor's property windows to list only classes derived from UDamageType as choices for the property
- * [types of blueprints in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/types-of-blueprints-in-unreal-engine?application_version=5.0)
+ * [types of blueprints in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/types-of-blueprints-in-unreal-engine?application_version=5.0) - {bp}
+   * Level Blueprint/Blueprint Class/Data-Only Blueprint/Blueprint Interface/Blueprint Macro Library/
  * [udp messaging settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/udp-messaging-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [ufunctions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/ufunctions-in-unreal-engine?application_version=5.0)
    * UFunction is a C++ function that is recognized by the Unreal Engine reflection system
