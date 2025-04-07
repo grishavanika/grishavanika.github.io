@@ -2838,7 +2838,17 @@ As of 2025/04/06.
 
 ## Added in 5.4 (vs 5.3) = 141 links
 
-[Unreal Engine 5.4 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-4-documentation?application_version=5.4)
+ - [Unreal Engine 5.4 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-4-documentation?application_version=5.4)
+ - Unreal Engine [5.4 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.4-release-notes?application_version=5.4) (most detailed docs)
+ - Unreal Engine [5.4 blog post](https://www.unrealengine.com/en-US/blog/unreal-engine-5-4-is-now-available)
+ - Unreal Engine [5.4 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-4-released/1817064)
+ - Unreal Engine [5.4.0 Preview 1 forum thread](https://forums.unrealengine.com/t/unreal-engine-5-4-preview/1763516) release notes
+ - Unreal Engine [5.4.1 forum thread](https://forums.unrealengine.com/t/5-4-1-hotfix-released/1834672) release notes
+ - Unreal Engine [5.4.3 forum thread](https://forums.unrealengine.com/t/5-4-3-hotfix-released/1939378) release notes
+ - Unreal Engine [5.4.2 forum thread](https://forums.unrealengine.com/t/5-4-2-hotfix-released/1889074) release notes
+ - Unreal Engine [5.4.4 forum thread](https://forums.unrealengine.com/t/5-4-4-hotfix-released/1993894) release notes
+
+---------------------------------------------------
 
  * [activating the virtual scouting legacy tools](https://dev.epicgames.com/documentation/en-us/unreal-engine/activating-the-virtual-scouting-legacy-tools?application_version=5.4)
  * [advanced setup and troubleshooting guide for using android sdk](https://dev.epicgames.com/documentation/en-us/unreal-engine/advanced-setup-and-troubleshooting-guide-for-using-android-sdk?application_version=5.4)
@@ -3028,7 +3038,16 @@ As of 2025/04/06.
 
 ## Added in 5.5 (vs 5.4) = 145 links
 
-[Unreal Engine 5.5 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-5-documentation)
+ - [Unreal Engine 5.5 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-5-documentation)
+ - Unreal Engine [5.5 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.5-release-notes) (most detailed docs)
+ - Unreal Engine [5.5 blog post](https://www.unrealengine.com/en-US/blog/unreal-engine-5-5-is-now-available)
+ - Unreal Engine [5.5 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-5-released/2117936)
+ - Unreal Engine [5.5.1 forum thread](https://forums.unrealengine.com/t/5-5-1-hotfix-released/2194649) release notes
+ - Unreal Engine [5.5.2 forum thread](https://forums.unrealengine.com/t/5-5-2-hotfix-released/2307374) release notes
+ - Unreal Engine [5.5.3 forum thread](https://forums.unrealengine.com/t/5-5-3-hotfix-released/2320552) release notes
+ - Unreal Engine [5.5.4 forum thread](https://forums.unrealengine.com/t/5-5-4-hotfix-released/2385193) release notes
+
+-------------------------------------------------------
 
  * [2d in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/2d-in-unreal-engine?application_version=5.5)
  * [activating and using mesh paint mode in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/activating-and-using-mesh-paint-mode-in-unreal-engine?application_version=5.5)
