@@ -7,10 +7,18 @@ as a single page with no deep tree for simple grep/search with Ctrl+F.
 
 As of 2025/04/06.
 
-## Topics in Unreal Engine UE5.0 = 1903 links
+## [Topics in Unreal Engine 5.0]{.mark} = 1903 links
 
-[Unreal Engine 5.0 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-0-documentation?application_version=5.0)
+ - [Unreal Engine 5.0 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-0-documentation?application_version=5.0)
+ - Unreal Engine [5.0 Early Access](https://www.unrealengine.com/en-US/blog/unreal-engine-5-is-now-available-in-early-access)
+ - Unreal Engine [5.0 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.0-release-notes?application_version=5.0) (most detailed)
+ - Unreal Engine [5.0 blog post](https://www.unrealengine.com/en-US/blog/unreal-engine-5-is-now-available)
+ - Unreal Engine [5.0 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-0-released/512996)
+ - Unreal Engine [5.0.1 forum thread](https://forums.unrealengine.com/t/5-0-1-hotfix-released/533481) release notes
+ - Unreal Engine [5.0.2 forum thread](https://forums.unrealengine.com/t/5-0-2-hotfix-released/566149) release notes
+ - Unreal Engine [5.0.3 forum thread](https://forums.unrealengine.com/t/5-0-3-hotfix-released/603149) release notes
 
+----------------------------------------------
 
  * [2d settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/2d-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [3d text actor in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/3d-text-actor-in-unreal-engine?application_version=5.0)
@@ -2350,10 +2358,15 @@ As of 2025/04/06.
  * [writing code snippets in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/writing-code-snippets-in-unreal-engine?application_version=5.0)
 
 
-## Added in 5.1 (vs 5.0) = 105 links
+## [Added in 5.1]{.mark} (vs 5.0) = 105 links
 
-[Unreal Engine 5.1 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-1-documentation?application_version=5.1)
+ - [Unreal Engine 5.1 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-1-documentation?application_version=5.1)
+ - Unreal Engine [5.1 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.1-release-notes?application_version=5.1) (most detailed)
+ - Unreal Engine [5.1 blog post](https://www.unrealengine.com/en-US/blog/unreal-engine-5-1-is-now-available)
+ - Unreal Engine [5.1 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-1-released/691237)
+ - Unreal Engine [5.1.1 forum thread](https://forums.unrealengine.com/t/5-1-1-hotfix-released/765638) release notes
 
+-------------------------------------------------
 
  * [achievements interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/achievements-interface-in-unreal-engine?application_version=5.1)
  * [actor editor context in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-editor-context-in-unreal-engine?application_version=5.1)
@@ -2500,9 +2513,15 @@ As of 2025/04/06.
  * [virtual camera component in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/virtual-camera-component-in-unreal-engine?application_version=5.1)
 
 
-## Added in 5.2 (vs 5.1) = 95 links
+## [Added in 5.2]{.mark} (vs 5.1) = 95 links
 
-[Unreal Engine 5.2 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-2-documentation?application_version=5.2)
+ - [Unreal Engine 5.2 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-2-documentation?application_version=5.2)
+ - Unreal Engine [5.2 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.2-release-notes?application_version=5.2) (most detailed)
+ - Unreal Engine [5.2 blog post](https://www.unrealengine.com/en-US/blog/unreal-engine-5-2-is-now-available)
+ - Unreal Engine [5.2 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-2-released/1161700)
+ - Unreal Engine [5.2.1 forum thread](https://forums.unrealengine.com/t/5-2-1-hotfix-released/1206307) release notes
+
+-------------------------------------------
 
  * [animation blueprint node functions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-blueprint-node-functions-in-unreal-engine?application_version=5.2)
  * [animation budget allocator in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-budget-allocator-in-unreal-engine?application_version=5.2)
@@ -2654,9 +2673,16 @@ As of 2025/04/06.
  * [working with speedtree models in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-speedtree-models-in-unreal-engine?application_version=5.2)
 
 
-## Added in 5.3 (vs 5.2) = 146 links
+## [Added in 5.3]{.mark} (vs 5.2) = 146 links
 
-[Unreal Engine 5.3 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-3-documentation?application_version=5.3)
+ - [Unreal Engine 5.3 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-3-documentation?application_version=5.3)
+ - Unreal Engine [5.3 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.3-release-notes?application_version=5.3) (most detailed)
+ - Unreal Engine [5.3 blog post](https://www.unrealengine.com/en-US/blog/unreal-engine-5-3-is-now-available)
+ - Unreal Engine [5.3 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-3-released/1284817)
+ - Unreal Engine [5.3.1 forum thread](https://forums.unrealengine.com/t/5-3-1-hotfix-released/1314082) release notes
+ - Unreal Engine [5.3.2 forum thread](https://forums.unrealengine.com/t/5-3-2-hotfix-released/1370927) release notes
+
+--------------------------------------------------
 
  * [actor network dormancy in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-network-dormancy-in-unreal-engine?application_version=5.3)
  * [actor owner and owning connection in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-owner-and-owning-connection-in-unreal-engine?application_version=5.3)
@@ -2836,10 +2862,10 @@ As of 2025/04/06.
  * [zen store in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/zen-store-in-unreal-engine?application_version=5.3)
 
 
-## Added in 5.4 (vs 5.3) = 141 links
+## [Added in 5.4]{.mark} (vs 5.3) = 141 links
 
  - [Unreal Engine 5.4 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-4-documentation?application_version=5.4)
- - Unreal Engine [5.4 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.4-release-notes?application_version=5.4) (most detailed docs)
+ - Unreal Engine [5.4 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.4-release-notes?application_version=5.4) (most detailed)
  - Unreal Engine [5.4 blog post](https://www.unrealengine.com/en-US/blog/unreal-engine-5-4-is-now-available)
  - Unreal Engine [5.4 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-4-released/1817064)
  - Unreal Engine [5.4.0 Preview 1 forum thread](https://forums.unrealengine.com/t/unreal-engine-5-4-preview/1763516) release notes
@@ -3036,10 +3062,10 @@ As of 2025/04/06.
  * [vertex color materials in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/vertex-color-materials-in-unreal-engine?application_version=5.4)
 
 
-## Added in 5.5 (vs 5.4) = 145 links
+## [Added in 5.5]{.mark} (vs 5.4) = 145 links
 
  - [Unreal Engine 5.5 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-5-documentation)
- - Unreal Engine [5.5 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.5-release-notes) (most detailed docs)
+ - Unreal Engine [5.5 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.5-release-notes) (most detailed)
  - Unreal Engine [5.5 blog post](https://www.unrealengine.com/en-US/blog/unreal-engine-5-5-is-now-available)
  - Unreal Engine [5.5 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-5-released/2117936)
  - Unreal Engine [5.5.1 forum thread](https://forums.unrealengine.com/t/5-5-1-hotfix-released/2194649) release notes
@@ -3202,7 +3228,7 @@ As of 2025/04/06.
  * [working with multiple uv channels with mutable in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-multiple-uv-channels-with-mutable-in-unreal-engine?application_version=5.5)
  * [world partition builder commandlet reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/world-partition-builder-commandlet-reference?application_version=5.5)
 
-## Learning
+## [Learning]{.mark} library
 
 From [Learn Unreal Engine](https://dev.epicgames.com/community/unreal-engine/learning?source=epic_games&sort_by=first_published_at)/Epic Games/Published On.
 
