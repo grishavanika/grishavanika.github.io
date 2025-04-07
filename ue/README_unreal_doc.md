@@ -1,6 +1,7 @@
 For docs:
 
-1. Get all the links by expanding all sections in the side menu: https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-3-documentation.
+0. Go to docs (https://dev.epicgames.com/documentation/en-us/unreal-engine/)
+1. Get all the links by expanding all sections in the side menu:
    This script should do the trick:
 
 ```
@@ -23,6 +24,7 @@ document.querySelectorAll('.contents-table-link').forEach((element) => console.l
 
 For Learnings:
 
+0. Go to [Learn Unreal Engine](https://dev.epicgames.com/community/unreal-engine/learning?source=epic_games&sort_by=first_published_at)/Epic Games/Published On
 1. Run
 
 ```

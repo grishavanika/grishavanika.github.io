@@ -64,7 +64,7 @@ function New-DumpInMarkdown($old, $old_version, $new, $new_version)
 
 	$file_name = "utf16-ue_diff_$($old_title)_vs_$($new_title).md"
 
-	"## Removed in $($old_title) (vs $($new_title)) = $($removed_links.Count) links" > $file_name
+	"## Removed in $($new_title) (vs $($old_title)) = $($removed_links.Count) links" > $file_name
 	"" >> $file_name
 	foreach ($link in $removed_links)
 	{
