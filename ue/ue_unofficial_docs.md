@@ -1837,8 +1837,8 @@ As of 2025/04/06.
  * [programming network multiplayer games for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-network-multiplayer-games-for-unreal-engine?application_version=5.0)
  * [programming subsystems in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-subsystems-in-unreal-engine?application_version=5.0) - {engine}
    * Subsystems - UE singletons
-   * Engine - UEngineSubsystem 
-   * Editor - UEditorSubsystem 
+   * Engine - UEngineSubsystem
+   * Editor - UEditorSubsystem
    * GameInstance - UGameInstanceSubsystem 
    * LocalPlayer - ULocalPlayerSubsystem
    * Reasons to Use Subsystems:
@@ -2232,8 +2232,21 @@ As of 2025/04/06.
  * [taking screenshots in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/taking-screenshots-in-unreal-engine?application_version=5.0)
  * [target point actors in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/target-point-actors-in-unreal-engine?application_version=5.0)
  * [task graph insights in unreal engine 5](https://dev.epicgames.com/documentation/en-us/unreal-engine/task-graph-insights-in-unreal-engine-5?application_version=5.0)
- * [tasks system references in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/tasks-system-references-in-unreal-engine?application_version=5.0)
- * [tasks systems in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/tasks-systems-in-unreal-engine?application_version=5.0)
+ * [tasks system references in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/tasks-system-references-in-unreal-engine?application_version=5.0) - {engine}
+   * UE::Tasks/Task.h/TasksTest.cpp
+   * TTask/FTaskEvent/FPipe
+ * [tasks systems in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/tasks-systems-in-unreal-engine?application_version=5.0) - {engine}
+   * Tasks System - job manager, improves on the TaskGraph
+   * Launching: `FTask Task = Launch(UE_SOURCE_LOCATION, []{});`
+   * Waiting: `Task.IsCompleted()`/`Task.Wait()`/`Wait(Tasks)`/`Task.GetResult()`
+   * oversubscription: wake other threads during waits
+   * Prerequisites: Tasks can have dependencies on other tasks
+   * `Prerequisites(B, C)`
+   * `FTask Subsequent = Launch(UE_SOURCE_LOCATION, []{}, Prerequisite);`
+   * Nested Tasks: AddNested()
+   * Pipes/FPipe: chain of tasks that are executed one after another (not concurrently)
+   * Task Events/FTaskEvent - similar to the one-time FEvent
+   * Debugging and Profiling: `task` trace channel
  * [tcp messaging settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/tcp-messaging-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [technical guide for blueprints visual scripting in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/technical-guide-for-blueprints-visual-scripting-in-unreal-engine?application_version=5.0)
    * Blueprints are a way to create new UClasses

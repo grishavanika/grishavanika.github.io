@@ -6169,10 +6169,30 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/task-graph-ins
 graph insights in unreal engine 5</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/tasks-system-references-in-unreal-engine?application_version=5.0">tasks
-system references in unreal engine</a></li>
+system references in unreal engine</a> - {engine}
+<ul>
+<li>UE::Tasks/Task.h/TasksTest.cpp</li>
+<li>TTask/FTaskEvent/FPipe</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/tasks-systems-in-unreal-engine?application_version=5.0">tasks
-systems in unreal engine</a></li>
+systems in unreal engine</a> - {engine}
+<ul>
+<li>Tasks System - job manager, improves on the TaskGraph</li>
+<li>Launching:
+<code>FTask Task = Launch(UE_SOURCE_LOCATION, []{});</code></li>
+<li>Waiting:
+<code>Task.IsCompleted()</code>/<code>Task.Wait()</code>/<code>Wait(Tasks)</code>/<code>Task.GetResult()</code></li>
+<li>oversubscription: wake other threads during waits</li>
+<li>Prerequisites: Tasks can have dependencies on other tasks</li>
+<li><code>Prerequisites(B, C)</code></li>
+<li><code>FTask Subsequent = Launch(UE_SOURCE_LOCATION, []{}, Prerequisite);</code></li>
+<li>Nested Tasks: AddNested()</li>
+<li>Pipes/FPipe: chain of tasks that are executed one after another (not
+concurrently)</li>
+<li>Task Events/FTaskEvent - similar to the one-time FEvent</li>
+<li>Debugging and Profiling: <code>task</code> trace channel</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/tcp-messaging-settings-in-the-unreal-engine-project-settings?application_version=5.0">tcp
 messaging settings in the unreal engine project settings</a></li>
