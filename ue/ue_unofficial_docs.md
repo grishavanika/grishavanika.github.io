@@ -277,13 +277,25 @@ As of 2025/04/06.
    * Parent Classes
    * Working with Blueprint Classes
    * Data-Only Blueprint
- * [blueprint communication usage in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-communication-usage-in-unreal-engine?application_version=5.0)
- * [blueprint debugger in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-debugger-in-unreal-engine?application_version=5.0)
+ * [blueprint communication usage in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-communication-usage-in-unreal-engine?application_version=5.0) - {bp}
+   * Direct Blueprint Communication (+ Casts): reference to the target Blueprint+call. Same Level or Highler->Lower levels
+   * Event Dispatchers (delegates): suited for telling other "listening" Blueprints that an event has happened. Lower->Higher levels
+   * Blueprint Interfaces: interacting with multiple types of objects that all share some specific functionality
+ * [blueprint debugger in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-debugger-in-unreal-engine?application_version=5.0) - {bp}
+   * Blueprint Debugger window + Debugging Controls
+   * Breakpoints
+   * Watches: keep track of Blueprint node pin values so they can be viewed during debugging sessions
+   * Call Stack: `{,,UnrealEditor-Core}::PrintScriptCallstack()`
+   * Execution Trace: shows a list of nodes executed with the most recent node listed at the top
  * [blueprint debugging example in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-debugging-example-in-unreal-engine?application_version=5.0) - {bp}
    * Play In Editor(PIE) or Simulate In Editor(SIE) mode
    * Debugging Controls/Enable Debugging/Breakpoints/Watches
    * `{,,UnrealEditor-Core}::PrintScriptCallstack()` in the Immediate window
- * [blueprint editor cheat sheet in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-editor-cheat-sheet-in-unreal-engine?application_version=5.0)
+ * [blueprint editor cheat sheet in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-editor-cheat-sheet-in-unreal-engine?application_version=5.0) - {bp}
+   * [Blueprint Editor Cheat Sheet VI](https://d1iv7db44yhgxn.cloudfront.net/documentation/attachments/adab697d-c625-4777-98c3-d96fb060b753/blueprintcheatsheet_blackandwhite-1276559864.pdf)
+   * Graph Actions: Right-Click on a Graph
+   * Selection/Navigation/Generic Commands/Variable Actions (My Blueprint)/Node Actions/Pin Actions
+   * Creation Shortcuts: B + Left-Click/etc.
  * [blueprint editor defaults tab](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-editor-defaults-tab?application_version=5.0)
    * a way to modify Blueprint class CDO
    * GetClassDefaults function
@@ -307,12 +319,26 @@ As of 2025/04/06.
  * [blueprint spline components overview in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-spline-components-overview-in-unreal-engine?application_version=5.0)
  * [blueprint spline mesh component property reference in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-spline-mesh-component-property-reference-in-unreal-engine?application_version=5.0)
  * [blueprint splines in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-splines-in-unreal-engine?application_version=5.0)
- * [blueprint struct variables in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-struct-variables-in-unreal-engine?application_version=5.0)
+ * [blueprint struct variables in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-struct-variables-in-unreal-engine?application_version=5.0) - {bp}
+   * Splitting Struct Pins
+   * Breaking Structs
+   * Making Structs
+   * Setting Members in Structs
+   * Using Custom Structs: Create/Blueprint/Structure
  * [blueprint tutorials in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-tutorials-in-unreal-engine?application_version=5.0)
    * Creating Blueprints, Adding and Connecting Nodes, Creating Variables / etc; tutorials
- * [blueprint variables in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-variables-in-unreal-engine?application_version=5.0)
+ * [blueprint variables in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-variables-in-unreal-engine?application_version=5.0) - {bp}
+   * Variables are displayed as rounded boxes
+   * Variable Types: color-coded
+   * Variables in the My Blueprint Tab: + component instance variables added in the Components List
+   * Public Variables/Private Variables: By default the eye is closed (private)
+   * Variable Tooltips: set in details
+   * Expose on Spawn
+   * Expose to Cinematics
+   * Promoting to Variable: Right-click any input or output data pins
  * [BlueprintAPI](https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI?application_version=5.0)
- * [blueprints only example](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprints-only-example?application_version=5.0)
+ * [blueprints only example](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprints-only-example?application_version=5.0) - {bp}
+   * vaguely talks about Blueprint basics with references to other topics like Components/variables
  * [blueprints visual scripting editor user interace for data only blueprints in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprints-visual-scripting-editor-user-interace-for-data-only-blueprints-in-unreal-engine?application_version=5.0)
    * Data-Only Blueprint is a Blueprint Class that contains only the code, variables, and components inherited from its parent
    * These are essentially a replacement for archetypes
@@ -424,7 +450,9 @@ As of 2025/04/06.
  * [city sample project unreal engine demonstration](https://dev.epicgames.com/documentation/en-us/unreal-engine/city-sample-project-unreal-engine-demonstration?application_version=5.0)
  * [city sample quick start for generating a city and freeway in unreal engine 5](https://dev.epicgames.com/documentation/en-us/unreal-engine/city-sample-quick-start-for-generating-a-city-and-freeway-in-unreal-engine-5?application_version=5.0)
  * [city sample quick start for generating a city and freeway using houdini](https://dev.epicgames.com/documentation/en-us/unreal-engine/city-sample-quick-start-for-generating-a-city-and-freeway-using-houdini?application_version=5.0)
- * [class creation basics in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/class-creation-basics-in-unreal-engine?application_version=5.0)
+ * [class creation basics in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/class-creation-basics-in-unreal-engine?application_version=5.0) - {bp}
+   * basic tutorial
+   * create classes with Blueprints alone, C++ alone, and a combination of C++ and Blueprints
  * [class specifiers](https://dev.epicgames.com/documentation/en-us/unreal-engine/class-specifiers?application_version=5.0)
    * Class Specifiers: Abstract/Blueprintable/BlueprintType/Const/etc.
    * Metadata Specifiers: BlueprintThreadSafe/ChildCannotTick/etc.
@@ -557,8 +585,13 @@ As of 2025/04/06.
  * [copy a pose in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/copy-a-pose-in-unreal-engine?application_version=5.0)
  * [copy and paste region in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/copy-and-paste-region-in-unreal-engine?application_version=5.0)
  * [core redirects in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/core-redirects-in-unreal-engine?application_version=5.0)
- * [cpp and blueprints example](https://dev.epicgames.com/documentation/en-us/unreal-engine/cpp-and-blueprints-example?application_version=5.0)
- * [cpp only example](https://dev.epicgames.com/documentation/en-us/unreal-engine/cpp-only-example?application_version=5.0)
+ * [cpp and blueprints example](https://dev.epicgames.com/documentation/en-us/unreal-engine/cpp-and-blueprints-example?application_version=5.0) - {bp}
+   * C++ Class Wizard
+   * shows UPROPERTY()/UFUNCTION()/UCLASS()
+   * create Blueprint from native parent class
+   * Show inherited variables
+ * [cpp only example](https://dev.epicgames.com/documentation/en-us/unreal-engine/cpp-only-example?application_version=5.0) - {bp}
+   * C++ class is in the Class Viewer, and can be dragged into the level from there
  * [cpu lightmass global illumination in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/cpu-lightmass-global-illumination-in-unreal-engine?application_version=5.0)
  * [crash reporting in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/crash-reporting-in-unreal-engine?application_version=5.0)
  * [create a material for 2 way texture blending in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/create-a-material-for-2-way-texture-blending-in-unreal-engine?application_version=5.0)
@@ -664,7 +697,7 @@ As of 2025/04/06.
  * [datasmith tutorials in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/datasmith-tutorials-in-unreal-engine?application_version=5.0)
  * [debug camera controller settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/debug-camera-controller-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [debug panel in the blueprints visual scripting editor for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/debug-panel-in-the-blueprints-visual-scripting-editor-for-unreal-engine?application_version=5.0)
-   * Breakpoints and Watch Values of Blueprint + Execution Trace (stack trace)
+   * Breakpoints and Watch Values of Blueprint + Execution Trace + stack trace
  * [debugging and optimization in niagara effects for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/debugging-and-optimization-in-niagara-effects-for-unreal-engine?application_version=5.0)
  * [debugging and troubleshooting slate ui programming in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/debugging-and-troubleshooting-slate-ui-programming-in-unreal-engine?application_version=5.0)
  * [debugging for android devices in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/debugging-for-android-devices-in-unreal-engine?application_version=5.0)
@@ -885,7 +918,9 @@ As of 2025/04/06.
  * [first person template in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/first-person-template-in-unreal-engine?application_version=5.0)
  * [fk control rig in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fk-control-rig-in-unreal-engine?application_version=5.0)
  * [flipbook components in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/flipbook-components-in-unreal-engine?application_version=5.0)
- * [flow control in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/flow-control-in-unreal-engine?application_version=5.0)
+ * [flow control in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/flow-control-in-unreal-engine?application_version=5.0) - {bp}
+   * Switch Nodes: Switch on Int/etc.
+   * Standard: Branch/DoN/DoOnce/FlipFlop/ForLoop/ForLoopWithBreak/Gate(Enter/Opem/Close/Toggle/Exit)/MultiGate/Sequence/WhileLoop/
  * [fluid simulation in unreal engine   overview](https://dev.epicgames.com/documentation/en-us/unreal-engine/fluid-simulation-in-unreal-engine---overview?application_version=5.0)
  * [fluid simulation in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fluid-simulation-in-unreal-engine?application_version=5.0)
  * [fluid simulation tutorials in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fluid-simulation-tutorials-in-unreal-engine?application_version=5.0)
@@ -1457,7 +1492,13 @@ As of 2025/04/06.
  * [niagara fluids quick start guide for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/niagara-fluids-quick-start-guide-for-unreal-engine?application_version=5.0)
  * [niagara fluids reference in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/niagara-fluids-reference-in-unreal-engine?application_version=5.0)
  * [niagara settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/niagara-settings-in-the-unreal-engine-project-settings?application_version=5.0)
- * [nodes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/nodes-in-unreal-engine?application_version=5.0)
+ * [nodes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/nodes-in-unreal-engine?application_version=5.0) - {bp}
+   * Placing Nodes/Selecting Nodes/Moving Nodes
+   * Pins on the left are input pins, while those on the right of the node are outputs
+   * Execution Pins/Data Pins/Auto-Casting/Promote to Variable
+   * Wires can represent either the flow of execution or the flow of data
+   * Execution Wires/Data Wires
+   * Collapsed Graphs: collapsed graph uses tunnel nodes to communicate and interact externally with the graph that contains it
  * [normal calculation methods with the proxy geometry tool in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/normal-calculation-methods-with-the-proxy-geometry-tool-in-unreal-engine?application_version=5.0)
  * [nvidia nsight aftermath for gpu pipeline debugging in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/nvidia-nsight-aftermath-for-gpu-pipeline-debugging-in-unreal-engine?application_version=5.0)
  * [nvidia sli alternative frame rendering in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/nvidia-sli-alternative-frame-rendering-in-unreal-engine?application_version=5.0)
@@ -2875,7 +2916,13 @@ As of 2025/04/06.
  * [audio modulation overview in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/audio-modulation-overview-in-unreal-engine?application_version=5.3)
  * [audio modulation reference guide in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/audio-modulation-reference-guide-in-unreal-engine?application_version=5.3)
  * [basics of user interface development in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/basics-of-user-interface-development-in-unreal-engine?application_version=5.3)
- * [blueprint communications in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-communications-in-unreal-engine?application_version=5.3)
+ * [blueprint communications in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-communications-in-unreal-engine?application_version=5.3) - {bp}
+   * basic tutorial/examples
+   * Direct Blueprint Communications + Blueprint Casting
+   * Direct Blueprint Communication for Spawned Actors
+   * Event Dispatchers (delegates)
+   * Blueprint Interfaces
+   * Passing Variables through Blueprint Interfaces
  * [boolean tool in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/boolean-tool-in-unreal-engine?application_version=5.3)
  * [build and run low level tests in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/build-and-run-low-level-tests-in-unreal-engine?application_version=5.3)
  * [building your ui in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/building-your-ui-in-unreal-engine?application_version=5.3)

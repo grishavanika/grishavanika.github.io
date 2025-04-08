@@ -976,10 +976,28 @@ gameplay classes</li>
 </ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-communication-usage-in-unreal-engine?application_version=5.0">blueprint
-communication usage in unreal engine</a></li>
+communication usage in unreal engine</a> - {bp}
+<ul>
+<li>Direct Blueprint Communication (+ Casts): reference to the target
+Blueprint+call. Same Level or Highler-&gt;Lower levels</li>
+<li>Event Dispatchers (delegates): suited for telling other “listening”
+Blueprints that an event has happened. Lower-&gt;Higher levels</li>
+<li>Blueprint Interfaces: interacting with multiple types of objects
+that all share some specific functionality</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-debugger-in-unreal-engine?application_version=5.0">blueprint
-debugger in unreal engine</a></li>
+debugger in unreal engine</a> - {bp}
+<ul>
+<li>Blueprint Debugger window + Debugging Controls</li>
+<li>Breakpoints</li>
+<li>Watches: keep track of Blueprint node pin values so they can be
+viewed during debugging sessions</li>
+<li>Call Stack:
+<code>{,,UnrealEditor-Core}::PrintScriptCallstack()</code></li>
+<li>Execution Trace: shows a list of nodes executed with the most recent
+node listed at the top</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-debugging-example-in-unreal-engine?application_version=5.0">blueprint
 debugging example in unreal engine</a> - {bp}
@@ -991,7 +1009,16 @@ Immediate window</li>
 </ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-editor-cheat-sheet-in-unreal-engine?application_version=5.0">blueprint
-editor cheat sheet in unreal engine</a></li>
+editor cheat sheet in unreal engine</a> - {bp}
+<ul>
+<li><a
+href="https://d1iv7db44yhgxn.cloudfront.net/documentation/attachments/adab697d-c625-4777-98c3-d96fb060b753/blueprintcheatsheet_blackandwhite-1276559864.pdf">Blueprint
+Editor Cheat Sheet VI</a></li>
+<li>Graph Actions: Right-Click on a Graph</li>
+<li>Selection/Navigation/Generic Commands/Variable Actions (My
+Blueprint)/Node Actions/Pin Actions</li>
+<li>Creation Shortcuts: B + Left-Click/etc.</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-editor-defaults-tab?application_version=5.0">blueprint
 editor defaults tab</a>
@@ -1052,7 +1079,14 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-spli
 splines in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-struct-variables-in-unreal-engine?application_version=5.0">blueprint
-struct variables in unreal engine</a></li>
+struct variables in unreal engine</a> - {bp}
+<ul>
+<li>Splitting Struct Pins</li>
+<li>Breaking Structs</li>
+<li>Making Structs</li>
+<li>Setting Members in Structs</li>
+<li>Using Custom Structs: Create/Blueprint/Structure</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-tutorials-in-unreal-engine?application_version=5.0">blueprint
 tutorials in unreal engine</a>
@@ -1062,12 +1096,29 @@ tutorials in unreal engine</a>
 </ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-variables-in-unreal-engine?application_version=5.0">blueprint
-variables in unreal engine</a></li>
+variables in unreal engine</a> - {bp}
+<ul>
+<li>Variables are displayed as rounded boxes</li>
+<li>Variable Types: color-coded</li>
+<li>Variables in the My Blueprint Tab: + component instance variables
+added in the Components List</li>
+<li>Public Variables/Private Variables: By default the eye is closed
+(private)</li>
+<li>Variable Tooltips: set in details</li>
+<li>Expose on Spawn</li>
+<li>Expose to Cinematics</li>
+<li>Promoting to Variable: Right-click any input or output data
+pins</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI?application_version=5.0">BlueprintAPI</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprints-only-example?application_version=5.0">blueprints
-only example</a></li>
+only example</a> - {bp}
+<ul>
+<li>vaguely talks about Blueprint basics with references to other topics
+like Components/variables</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprints-visual-scripting-editor-user-interace-for-data-only-blueprints-in-unreal-engine?application_version=5.0">blueprints
 visual scripting editor user interace for data only blueprints in unreal
@@ -1392,7 +1443,12 @@ sample quick start for generating a city and freeway using
 houdini</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/class-creation-basics-in-unreal-engine?application_version=5.0">class
-creation basics in unreal engine</a></li>
+creation basics in unreal engine</a> - {bp}
+<ul>
+<li>basic tutorial</li>
+<li>create classes with Blueprints alone, C++ alone, and a combination
+of C++ and Blueprints</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/class-specifiers?application_version=5.0">class
 specifiers</a>
@@ -1757,10 +1813,20 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/core-redirects
 redirects in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/cpp-and-blueprints-example?application_version=5.0">cpp
-and blueprints example</a></li>
+and blueprints example</a> - {bp}
+<ul>
+<li>C++ Class Wizard</li>
+<li>shows UPROPERTY()/UFUNCTION()/UCLASS()</li>
+<li>create Blueprint from native parent class</li>
+<li>Show inherited variables</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/cpp-only-example?application_version=5.0">cpp
-only example</a></li>
+only example</a> - {bp}
+<ul>
+<li>C++ class is in the Class Viewer, and can be dragged into the level
+from there</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/cpu-lightmass-global-illumination-in-unreal-engine?application_version=5.0">cpu
 lightmass global illumination in unreal engine</a></li>
@@ -2054,8 +2120,8 @@ settings</a></li>
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/debug-panel-in-the-blueprints-visual-scripting-editor-for-unreal-engine?application_version=5.0">debug
 panel in the blueprints visual scripting editor for unreal engine</a>
 <ul>
-<li>Breakpoints and Watch Values of Blueprint + Execution Trace (stack
-trace)</li>
+<li>Breakpoints and Watch Values of Blueprint + Execution Trace + stack
+trace</li>
 </ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/debugging-and-optimization-in-niagara-effects-for-unreal-engine?application_version=5.0">debugging
@@ -2624,7 +2690,12 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/flipbook-compo
 components in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/flow-control-in-unreal-engine?application_version=5.0">flow
-control in unreal engine</a></li>
+control in unreal engine</a> - {bp}
+<ul>
+<li>Switch Nodes: Switch on Int/etc.</li>
+<li>Standard:
+Branch/DoN/DoOnce/FlipFlop/ForLoop/ForLoopWithBreak/Gate(Enter/Opem/Close/Toggle/Exit)/MultiGate/Sequence/WhileLoop/</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/fluid-simulation-in-unreal-engine---overview?application_version=5.0">fluid
 simulation in unreal engine overview</a></li>
@@ -4191,7 +4262,18 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/niagara-settin
 settings in the unreal engine project settings</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/nodes-in-unreal-engine?application_version=5.0">nodes
-in unreal engine</a></li>
+in unreal engine</a> - {bp}
+<ul>
+<li>Placing Nodes/Selecting Nodes/Moving Nodes</li>
+<li>Pins on the left are input pins, while those on the right of the
+node are outputs</li>
+<li>Execution Pins/Data Pins/Auto-Casting/Promote to Variable</li>
+<li>Wires can represent either the flow of execution or the flow of
+data</li>
+<li>Execution Wires/Data Wires</li>
+<li>Collapsed Graphs: collapsed graph uses tunnel nodes to communicate
+and interact externally with the graph that contains it</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/normal-calculation-methods-with-the-proxy-geometry-tool-in-unreal-engine?application_version=5.0">normal
 calculation methods with the proxy geometry tool in unreal
@@ -8196,7 +8278,15 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/basics-of-user
 of user interface development in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-communications-in-unreal-engine?application_version=5.3">blueprint
-communications in unreal engine</a></li>
+communications in unreal engine</a> - {bp}
+<ul>
+<li>basic tutorial/examples</li>
+<li>Direct Blueprint Communications + Blueprint Casting</li>
+<li>Direct Blueprint Communication for Spawned Actors</li>
+<li>Event Dispatchers (delegates)</li>
+<li>Blueprint Interfaces</li>
+<li>Passing Variables through Blueprint Interfaces</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/boolean-tool-in-unreal-engine?application_version=5.3">boolean
 tool in unreal engine</a></li>
