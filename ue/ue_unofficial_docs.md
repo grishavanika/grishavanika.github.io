@@ -880,6 +880,12 @@ As of 2025/04/06.
  * [dmx template in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/dmx-template-in-unreal-engine?application_version=5.0)
  * [dmx unreal editor button](https://dev.epicgames.com/documentation/en-us/unreal-engine/dmx-unreal-editor-button?application_version=5.0)
  * [downloading source code in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/downloading-source-code-in-unreal-engine?application_version=5.0)
+   * for Windows/Mac/Linux
+   * Accessing Unreal Engine Source Code on GitHub
+   * Source Code Branches: Release/ue5-main
+   * Downloading the Source Code
+   * Additional target platforms: Android support will be downloaded by the setup script if you have the Android NDK installed
+   * Console Development Request
  * [dpi scaling in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/dpi-scaling-in-unreal-engine?application_version=5.0)
  * [driving ui updates with events in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/driving-ui-updates-with-events-in-unreal-engine?application_version=5.0)
  * [dynamic delegates in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/dynamic-delegates-in-unreal-engine?application_version=5.0)
@@ -2109,10 +2115,27 @@ As of 2025/04/06.
  * [setting up unreal engine projects for android development](https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-unreal-engine-projects-for-android-development?application_version=5.0)
  * [setting up user inputs in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-user-inputs-in-unreal-engine?application_version=5.0)
  * [setting up visual studio code for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-visual-studio-code-for-unreal-engine?application_version=5.0)
+   * Visual Studio Code (VS Code)
+   * You do not need a full Visual Studio installation to use VS Code
+   * Installing VS Code and Required Extensions for Your OS
+   * Installing the Compiler Toolset
+   * Setting Up IntelliSense for VS Code
+   * Building and Launching Projects in VS Code
  * [setting up visual studio development environment for cplusplus projects in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-visual-studio-development-environment-for-cplusplus-projects-in-unreal-engine?application_version=5.0)
+   * Tips, tricks, and techniques for setting up Visual Studio to work with Unreal Engine
+   * Version Compatibility
+   * Visual Studio Workloads/C++ Tools
+   * Recommended Settings
+   * UnrealVS Extension
  * [setting up xr explode animations in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-xr-explode-animations-in-unreal-engine?application_version=5.0)
  * [setting up your android device for developing applications in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-your-android-device-for-developing-applications-in-unreal-engine?application_version=5.0)
  * [setting up your development environment for cplusplus in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-your-development-environment-for-cplusplus-in-unreal-engine?application_version=5.0)
+   * Xcode/Setting Up Visual Studio/Setting Up VS Code for Unreal Engine
+   * Downloading Unreal Engine Source Code/Building Unreal Engine from Source/Compiling Game Projects
+   * Build Configurations Reference
+   * Managing Game Code
+   * Live Coding
+   * Programming Tools: Sparse Class Data/Low-Level Memory Tracker
  * [setting up your production pipeline in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-your-production-pipeline-in-unreal-engine?application_version=5.0)
  * [setting up your project in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-your-project-in-unreal-engine?application_version=5.0)
    * basic tutorial
@@ -2482,6 +2505,7 @@ As of 2025/04/06.
    * Network Replication
  * [unreal swarm in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-swarm-in-unreal-engine?application_version=5.0)
  * [updating to the latest changes from epic in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/updating-to-the-latest-changes-from-epic-in-unreal-engine?application_version=5.0)
+   * 
  * [updating unreal engine projects with patches after release](https://dev.epicgames.com/documentation/en-us/unreal-engine/updating-unreal-engine-projects-with-patches-after-release?application_version=5.0)
  * [upgrading the lyra starter game to the latest engine release in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/upgrading-the-lyra-starter-game-to-the-latest-engine-release-in-unreal-engine?application_version=5.0)
  * [usd stage editor quick start in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/usd-stage-editor-quick-start-in-unreal-engine?application_version=5.0)
@@ -2634,6 +2658,11 @@ As of 2025/04/06.
  * [using the unreal frontend tool](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-unreal-frontend-tool?application_version=5.0)
  * [using the unreal plugin language for mobile projects in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-unreal-plugin-language-for-mobile-projects-in-unreal-engine?application_version=5.0)
  * [using the unrealvs extension for unreal engine cplusplus projects](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-unrealvs-extension-for-unreal-engine-cplusplus-projects?application_version=5.0)
+   * \Engine\Extras\UnrealVS\VS_VERSION\UnrealVS.vsix
+   * Setting the Startup Project
+   * Building the Startup Project
+   * Iterating on a Single Source File
+   * Command Line Arguments
  * [using the windows metal shader compiler for ios in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-windows-metal-shader-compiler-for-ios-in-unreal-engine?application_version=5.0)
  * [using timers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-timers-in-unreal-engine?application_version=5.0)
  * [using transparency in unreal engine materials](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-transparency-in-unreal-engine-materials?application_version=5.0)
@@ -2651,7 +2680,21 @@ As of 2025/04/06.
  * [vehicle debug commands in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/vehicle-debug-commands-in-unreal-engine?application_version=5.0)
  * [vehicles in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/vehicles-in-unreal-engine?application_version=5.0)
  * [versioning modules in niagara effects for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/versioning-modules-in-niagara-effects-for-unreal-engine?application_version=5.0)
- * [versioning of assets and packages in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/versioning-of-assets-and-packages-in-unreal-engine?application_version=5.0)
+ * [versioning of assets and packages in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/versioning-of-assets-and-packages-in-unreal-engine?application_version=5.0) - {engine}
+   * Engine Version, Serialization Version, and Build ID
+   * \Engine\Source\Runtime\Launch\Resources\Version.h
+   * FEngineVersion/FEngineVersionBase
+   * Incompatible Engine Versions will cause the Engine to fail to load Assets
+   * Engine Versions with Changelist 0 are considered compatible with all other Engine Versions.
+   * serialized data from any given version of the Engine will be legible only to the same or newer versions
+   * ZeroEngineVersionWarning=0 in [Core.System] to disable Changelist 0 warning
+   * Updating the Engine Version: /Build/Build.version + `RunUAT.bat UpdateLocalVersion <ARGS>`
+   * Object Version: customize UObject::Serialize
+   * Engine-Level Serialization and Versioning: EUnrealEngineObjectUE5Version
+   * Object-Level Serialization and Versioning: FGuid-based custom versions
+   * FCustomVersionRegistration / UsingCustomVersion
+   * Ar.UsingCustomVersion / Ar.CustomVer
+   * Versioning of Binaries
  * [vertex animation tool   key framed meshes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/vertex-animation-tool---key-framed-meshes-in-unreal-engine?application_version=5.0)
  * [vertex animation tool   timeline meshes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/vertex-animation-tool---timeline-meshes-in-unreal-engine?application_version=5.0)
  * [vertex animation tool in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/vertex-animation-tool-in-unreal-engine?application_version=5.0)
@@ -2677,6 +2720,15 @@ As of 2025/04/06.
  * [visual design and layout tools for umg in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/visual-design-and-layout-tools-for-umg-in-unreal-engine?application_version=5.0)
  * [visual logger in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/visual-logger-in-unreal-engine?application_version=5.0)
  * [visual studio tips and tricks in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/visual-studio-tips-and-tricks-in-unreal-engine?application_version=5.0)
+   * `{,,UnrealEditor-Core}::PrintScriptCallstack()`
+   * `{,,UnrealEditor-Core}::GFrameNumber`
+   * `{,,UnrealEditor-Core}::GPlayInEditorID`
+   * `UnrealEditor-Engine!GPlayInEditorContextString`
+   * Disabling/Enabling Optimizations: PRAGMA_DISABLE_OPTIMIZATION/PRAGMA_ENABLE_OPTIMIZATION
+   * [C++ Dynamic Debugging](https://devblogs.microsoft.com/cppblog/cpp-dynamic-debugging-full-debuggability-for-optimized-builds/)
+   * Debug Lines: DrawDebugHelpers.h/DrawDebugLine
+   * Debug Text: `GEngine->AddOnScreenDebugMessage`
+   * Enum to String: `StaticEnum<EMyEnum::Type>()->GetNameStringByValue`
  * [visualizing play area bounds in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/visualizing-play-area-bounds-in-unreal-engine?application_version=5.0)
  * [voice chat interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/voice-chat-interface-in-unreal-engine?application_version=5.0)
  * [voice chat with epic online services](https://dev.epicgames.com/documentation/en-us/unreal-engine/voice-chat-with-epic-online-services?application_version=5.0)
@@ -3240,6 +3292,16 @@ As of 2025/04/06.
  * [using decal materials in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-decal-materials-in-unreal-engine?application_version=5.3)
  * [using fonts in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-fonts-in-unreal-engine?application_version=5.3)
  * [using modern xcode in unreal engine 5.3 and newer](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-modern-xcode-in-unreal-engine-5.3-and-newer?application_version=5.3)
+   * Xcode workflow in UE 5.3 and newer
+   * Projects, Schemes, and Build Configurations
+   * Per-Platform Workspaces
+   * Self-Contained Apps
+   * Package and Distribute
+   * Content/Blueprint-Only Projects
+   * Standard Xcode Practices
+   * Entitlements
+   * Frameworks
+   * Access Logs
  * [using multi process cooking for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-multi-process-cooking-for-unreal-engine?application_version=5.3)
  * [using nanite with landscapes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-nanite-with-landscapes-in-unreal-engine?application_version=5.3)
  * [using pcg generation modes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-pcg-generation-modes-in-unreal-engine?application_version=5.3)
@@ -3251,6 +3313,7 @@ As of 2025/04/06.
  * [using the unreal stage outliner in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-unreal-stage-outliner-in-unreal-engine?application_version=5.3)
  * [using the xcode ios simulator with unreal engine projects](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-xcode-ios-simulator-with-unreal-engine-projects?application_version=5.3)
  * [using xcode with unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-xcode-with-unreal-engine?application_version=5.3)
+   * Use Xcode to program on MacOS
  * [vertex sculpt tool in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/vertex-sculpt-tool-in-unreal-engine?application_version=5.3)
  * [warp tool in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/warp-tool-in-unreal-engine?application_version=5.3)
  * [wavetables overview in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/wavetables-overview-in-unreal-engine?application_version=5.3)
