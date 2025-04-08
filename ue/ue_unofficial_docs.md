@@ -1494,6 +1494,16 @@ As of 2025/04/06.
    * Creating Macros
  * [managing color in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/managing-color-in-unreal-engine?application_version=5.0)
  * [managing game code in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/managing-game-code-in-unreal-engine?application_version=5.0)
+   * different types of projects: native and foreign
+   * Native Projects: exist within the same root directory as the engine
+   * Native Projects: Default.uprojectdirs
+   * Foreign projects: project directory is in some location other than under the root directory of the engine
+   * Foreign projects: EngineAssociation field in its .uproject
+   * In case you created the project from a source-built version of the Unreal Editor, EngineAssociation = Globally Unique Identifier (GUID) of that editor
+   * Registry: Computer\HKEY_CURRENT_USER\SOFTWARE\Epic Games\Unreal Engine\Builds
+   * if created from UE launcher version - EngineAssociation = version
+   * Change a Project's Unreal Engine Version: Switch Unreal Engine version... (there is command line)
+   * C++ Class Wizard
  * [managing multiplayer sessions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/managing-multiplayer-sessions-in-unreal-engine?application_version=5.0)
  * [managing multiple levels in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/managing-multiple-levels-in-unreal-engine?application_version=5.0)
  * [managing the active culture at runtime](https://dev.epicgames.com/documentation/en-us/unreal-engine/managing-the-active-culture-at-runtime?application_version=5.0)
