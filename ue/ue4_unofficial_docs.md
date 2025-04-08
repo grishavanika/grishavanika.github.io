@@ -1,5 +1,5 @@
 ---
-title: Unofficial dump of Unreal Engine 4 (UE4) docs
+title: Dump of Unreal Engine 4 (UE4) docs
 ---
 
 Dump of all links/topics available on [Unreal Engine 4.27 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-4-27-documentation?application_version=4.27)

@@ -1,5 +1,5 @@
 ---
-title: Unofficial dump of Unreal Engine 5 (UE5) docs
+title: Dump of Unreal Engine 5 (UE5) docs
 ---
 
 Dump of all links/topics available on [Unreal Engine 5 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-5-documentation)
