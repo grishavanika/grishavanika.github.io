@@ -392,6 +392,10 @@ As of 2025/04/06.
  * [broadcast esports hype chamber sample with motion graphics in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/broadcast-esports-hype-chamber-sample-with-motion-graphics-in-unreal-engine?application_version=5.0)
  * [build configuration for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/build-configuration-for-unreal-engine?application_version=5.0)
  * [build configurations reference for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/build-configurations-reference-for-unreal-engine?application_version=5.0)
+   * Windows/macOS/Linux
+   * Build Configuration: (the state of the engine and your game project) (the target you are building for)
+   * Build Configuration - State: Debug/DebugGame/Development/Shipping/Test
+   * Build Configuration - Target: Game/Editor/Client/Server
  * [build operations cooking packaging deploying and running projects in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/build-operations-cooking-packaging-deploying-and-running-projects-in-unreal-engine?application_version=5.0)
  * [buildgraph for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/buildgraph-for-unreal-engine?application_version=5.0)
  * [buildgraph script anatomy for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/buildgraph-script-anatomy-for-unreal-engine?application_version=5.0)
@@ -407,6 +411,8 @@ As of 2025/04/06.
  * [building the windows container images from source](https://dev.epicgames.com/documentation/en-us/unreal-engine/building-the-windows-container-images-from-source?application_version=5.0)
  * [building unreal engine as a library](https://dev.epicgames.com/documentation/en-us/unreal-engine/building-unreal-engine-as-a-library?application_version=5.0)
  * [building unreal engine from source](https://dev.epicgames.com/documentation/en-us/unreal-engine/building-unreal-engine-from-source?application_version=5.0)
+   * Windows/macOS/Linux
+   * GenerateProjectFiles.bat
  * [building virtual worlds in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/building-virtual-worlds-in-unreal-engine?application_version=5.0)
  * [bump mapping without tangent space in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/bump-mapping-without-tangent-space-in-unreal-engine?application_version=5.0)
  * [cable components in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/cable-components-in-unreal-engine?application_version=5.0)
@@ -643,6 +649,8 @@ As of 2025/04/06.
  * [content examples sample project for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/content-examples-sample-project-for-unreal-engine?application_version=5.0)
  * [context switches in unreal engine 5](https://dev.epicgames.com/documentation/en-us/unreal-engine/context-switches-in-unreal-engine-5?application_version=5.0)
  * [contributing to the unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/contributing-to-the-unreal-engine?application_version=5.0)
+   * Set Up your Branch
+   * Start your Pull Request
  * [control animation blueprint parameters from sequencer in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/control-animation-blueprint-parameters-from-sequencer-in-unreal-engine?application_version=5.0)
  * [control rig debugging in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/control-rig-debugging-in-unreal-engine?application_version=5.0)
  * [control rig editor in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/control-rig-editor-in-unreal-engine?application_version=5.0)
@@ -886,6 +894,7 @@ As of 2025/04/06.
    * Downloading the Source Code
    * Additional target platforms: Android support will be downloaded by the setup script if you have the Android NDK installed
    * Console Development Request
+   * Setup.bat
  * [dpi scaling in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/dpi-scaling-in-unreal-engine?application_version=5.0)
  * [driving ui updates with events in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/driving-ui-updates-with-events-in-unreal-engine?application_version=5.0)
  * [dynamic delegates in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/dynamic-delegates-in-unreal-engine?application_version=5.0)
@@ -2505,7 +2514,8 @@ As of 2025/04/06.
    * Network Replication
  * [unreal swarm in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-swarm-in-unreal-engine?application_version=5.0)
  * [updating to the latest changes from epic in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/updating-to-the-latest-changes-from-epic-in-unreal-engine?application_version=5.0)
-   * 
+   * Use an Upstream Remote
+   * Use a GitHub Pull Request
  * [updating unreal engine projects with patches after release](https://dev.epicgames.com/documentation/en-us/unreal-engine/updating-unreal-engine-projects-with-patches-after-release?application_version=5.0)
  * [upgrading the lyra starter game to the latest engine release in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/upgrading-the-lyra-starter-game-to-the-latest-engine-release-in-unreal-engine?application_version=5.0)
  * [usd stage editor quick start in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/usd-stage-editor-quick-start-in-unreal-engine?application_version=5.0)
