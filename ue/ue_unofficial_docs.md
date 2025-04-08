@@ -183,7 +183,16 @@ As of 2025/04/06.
  * [asset metadata in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-metadata-in-unreal-engine?application_version=5.0)
  * [asset redirectors in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-redirectors-in-unreal-engine?application_version=5.0)
  * [asset registry in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-registry-in-unreal-engine?application_version=5.0)
-   * 
+   * How assets are discovered by the editor and how to make it know more about asset types before they are loaded
+   * Asset Registry is an editor subsystem; The Content Browser is the primary consumer
+   * `FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");`
+   * Obtaining a List of Assets: `AssetRegistryModule.Get().GetAssetsByClass()`
+   * GetAssetsByPackageName/GetAssetsByPath/GetAssetByObjectPath/GetAssetsByTagValues/GetAllAssets
+   * Converting FAssetData to UObject*: GetAsset() will load asset
+   * Creating a Filter: FARFilter
+   * Tags and Values: FAssetData::TagsAndValues - AssetRegistrySearchable + virtual GetAssetRegistryTags
+   * Asynchronous Data Gathering
+   * The LoadModule() call will block until the gather is complete
  * [assets and content packs in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/assets-and-content-packs-in-unreal-engine?application_version=5.0)
  * [assets folder structure in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/assets-folder-structure-in-unreal-engine?application_version=5.0)
  * [assign a physical material in the static mesh editor in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/assign-a-physical-material-in-the-static-mesh-editor-in-unreal-engine?application_version=5.0)
@@ -431,7 +440,20 @@ As of 2025/04/06.
  * [chaos destruction key concepts in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/chaos-destruction-key-concepts-in-unreal-engine?application_version=5.0)
  * [chaos fields user guide in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/chaos-fields-user-guide-in-unreal-engine?application_version=5.0)
  * [chaos solver settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/chaos-solver-settings-in-the-unreal-engine-project-settings?application_version=5.0)
- * [character encoding in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/character-encoding-in-unreal-engine?application_version=5.0)
+ * [character encoding in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/character-encoding-in-unreal-engine?application_version=5.0) - {engine}
+   * Assumed knowledge: [The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!)](https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/)
+   * talks about why or why not binary/utf-8/utf-16
+   * UE Internal String Representation: UTF-16; strings with all TCHAR characters less than 0xff are stored as a series of 8-bit bytes, and otherwise as 2-byte UTF-16 strings; endian-ness appropriate for the current platform
+   * Text Files Loaded by UE: UTF-16 if Unicode byte-order-mark; otherwise try to convert to UTF-16 on Windows
+   * Note that there is no code to detect or decode UTF-8 encoded text files loaded with appLoadFileToString()
+   * Text Files Saved by UE: appSaveStringToFile()
+   * Strings with all TCHAR characters representable by a single byte will be stored as a series of 8-bit bytes, and otherwise as UTF-16 unless the bAlwaysSaveAsAnsi
+   * Recommended Encoding for Text Files Used by UE
+   * Storing UTF-16 Text Files in Perforce
+   * Conversion Routines: TStringConversion - TCHAR_TO_ANSI/TCHAR_TO_OEM/ANSI_TO_TCHAR/TCHAR_TO_UTF8/UTF8_TO_TCHAR
+   * StringConv.h
+   * ToUpper() and ToLower() Non-Trivial in Unicode
+   * Notes about C++ Source Code: Both UTF-8 and the default Windows encodings can cause problems with the C++ compiler [...]
  * [characters in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/characters-in-unreal-engine?application_version=5.0)
  * [cinematic actor tracks in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/cinematic-actor-tracks-in-unreal-engine?application_version=5.0)
  * [cinematic animation blending in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/cinematic-animation-blending-in-unreal-engine?application_version=5.0)
@@ -984,7 +1006,10 @@ As of 2025/04/06.
  * [fluid simulation in unreal engine   overview](https://dev.epicgames.com/documentation/en-us/unreal-engine/fluid-simulation-in-unreal-engine---overview?application_version=5.0)
  * [fluid simulation in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fluid-simulation-in-unreal-engine?application_version=5.0)
  * [fluid simulation tutorials in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fluid-simulation-tutorials-in-unreal-engine?application_version=5.0)
- * [fname in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fname-in-unreal-engine?application_version=5.0)
+ * [fname in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fname-in-unreal-engine?application_version=5.0) - {engine}
+   * Reference for creating, converting, and comparing FNames
+   * INVALID_NAME_CHARACTERS / IsValidObjectName
+   * Searching the Name Table: `FName(TEXT("pelvis"), FNAME_Find) != NAME_None`
  * [foliage mode in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/foliage-mode-in-unreal-engine?application_version=5.0)
  * [font asset and editor in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/font-asset-and-editor-in-unreal-engine?application_version=5.0)
  * [font material expressions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/font-material-expressions-in-unreal-engine?application_version=5.0)
@@ -999,7 +1024,15 @@ As of 2025/04/06.
  * [from material expression shading model in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/from-material-expression-shading-model-in-unreal-engine?application_version=5.0)
  * [fshadercache in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fshadercache-in-unreal-engine?application_version=5.0)
  * [fstring in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fstring-in-unreal-engine?application_version=5.0)
- * [ftext in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/ftext-in-unreal-engine?application_version=5.0)
+   * Reference for creating, converting, comparing, and more with FStrings
+ * [ftext in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/ftext-in-unreal-engine?application_version=5.0) - {engine}
+   * Reference for creating, converting, comparing, and more with FText
+   * Creating localized text literals
+   * Formatting Text (to generate text from a placeholder pattern)
+   * Generating text from numbers
+   * Generating text from dates and times
+   * Generating derived text, such as making text upper or lower case
+   * AsCultureInvariant/FromString/FromName
  * [full screen movies in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/full-screen-movies-in-unreal-engine?application_version=5.0)
  * [function calls in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/function-calls-in-unreal-engine?application_version=5.0) - {bp}
    * Self Function Calls
@@ -1802,7 +1835,20 @@ As of 2025/04/06.
    * Command-Line Arguments
    * Versioning of Assets and Packages
  * [programming network multiplayer games for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-network-multiplayer-games-for-unreal-engine?application_version=5.0)
- * [programming subsystems in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-subsystems-in-unreal-engine?application_version=5.0)
+ * [programming subsystems in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-subsystems-in-unreal-engine?application_version=5.0) - {engine}
+   * Subsystems - UE singletons
+   * Engine - UEngineSubsystem 
+   * Editor - UEditorSubsystem 
+   * GameInstance - UGameInstanceSubsystem 
+   * LocalPlayer - ULocalPlayerSubsystem
+   * Reasons to Use Subsystems:
+     * Subsystems enable access to Blueprints
+     * Subsystems enable access to Python scripts
+   * Subsystems are automatically exposed to Blueprints
+   * `unreal.get_engine_subsystem(unreal.MyEngineSubsystem)`
+   * `unreal.get_editor_subsystem(unreal.MyEditorSubsystem)`
+   * Subsystem Lifetimes in Detail
+   * Subsystems Example
  * [programming tools for the unreal editor with slate ui in cplusplus](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-tools-for-the-unreal-editor-with-slate-ui-in-cplusplus?application_version=5.0)
  * [programming tools for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-tools-for-unreal-engine?application_version=5.0)
  * [programming with cplusplus in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-with-cplusplus-in-unreal-engine?application_version=5.0). References to:
@@ -2144,7 +2190,17 @@ As of 2025/04/06.
  * [stream tuning guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/stream-tuning-guide?application_version=5.0)
  * [streaming settings of the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/streaming-settings-of-the-unreal-engine-project-settings?application_version=5.0)
  * [streaming virtual texturing in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/streaming-virtual-texturing-in-unreal-engine?application_version=5.0)
- * [string handling in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/string-handling-in-unreal-engine?application_version=5.0)
+ * [string handling in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/string-handling-in-unreal-engine?application_version=5.0) - {engine}
+   * string classes available in Unreal: FName/FText/FString
+   * FName: global table of unique strings - string interning
+   * FName: object names, identifiers, and other strings that are frequently compared
+   * FNames are case-insensitive, immutable, and cannot be manipulated
+   * FText: text localization
+   * AsCultureInvariant/INVTEXT - non-localized, or "culture invariant" text; player name
+   * FString: can be searched, modified, and compared
+   * Printf
+   * Conversions: from/to FName/FString/FText
+   * Encoding: mentions wrong reasons why `TEXT()` macro should be used
  * [struct viewer settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/struct-viewer-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [structs in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/structs-in-unreal-engine?application_version=5.0)
    * UStruct supports UProperty, but are not managed by the Garbage Collection

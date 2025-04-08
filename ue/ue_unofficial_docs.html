@@ -718,7 +718,20 @@ redirectors in unreal engine</a></li>
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-registry-in-unreal-engine?application_version=5.0">asset
 registry in unreal engine</a>
 <ul>
-<li></li>
+<li>How assets are discovered by the editor and how to make it know more
+about asset types before they are loaded</li>
+<li>Asset Registry is an editor subsystem; The Content Browser is the
+primary consumer</li>
+<li><code>FAssetRegistryModule&amp; AssetRegistryModule = FModuleManager::LoadModuleChecked&lt;FAssetRegistryModule&gt;("AssetRegistry");</code></li>
+<li>Obtaining a List of Assets:
+<code>AssetRegistryModule.Get().GetAssetsByClass()</code></li>
+<li>GetAssetsByPackageName/GetAssetsByPath/GetAssetByObjectPath/GetAssetsByTagValues/GetAllAssets</li>
+<li>Converting FAssetData to UObject*: GetAsset() will load asset</li>
+<li>Creating a Filter: FARFilter</li>
+<li>Tags and Values: FAssetData::TagsAndValues - AssetRegistrySearchable
++ virtual GetAssetRegistryTags</li>
+<li>Asynchronous Data Gathering</li>
+<li>The LoadModule() call will block until the gather is complete</li>
 </ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/assets-and-content-packs-in-unreal-engine?application_version=5.0">assets
@@ -1371,7 +1384,34 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/chaos-solver-s
 solver settings in the unreal engine project settings</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/character-encoding-in-unreal-engine?application_version=5.0">character
-encoding in unreal engine</a></li>
+encoding in unreal engine</a> - {engine}
+<ul>
+<li>Assumed knowledge: <a
+href="https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/">The
+Absolute Minimum Every Software Developer Absolutely, Positively Must
+Know About Unicode and Character Sets (No Excuses!)</a></li>
+<li>talks about why or why not binary/utf-8/utf-16</li>
+<li>UE Internal String Representation: UTF-16; strings with all TCHAR
+characters less than 0xff are stored as a series of 8-bit bytes, and
+otherwise as 2-byte UTF-16 strings; endian-ness appropriate for the
+current platform</li>
+<li>Text Files Loaded by UE: UTF-16 if Unicode byte-order-mark;
+otherwise try to convert to UTF-16 on Windows</li>
+<li>Note that there is no code to detect or decode UTF-8 encoded text
+files loaded with appLoadFileToString()</li>
+<li>Text Files Saved by UE: appSaveStringToFile()</li>
+<li>Strings with all TCHAR characters representable by a single byte
+will be stored as a series of 8-bit bytes, and otherwise as UTF-16
+unless the bAlwaysSaveAsAnsi</li>
+<li>Recommended Encoding for Text Files Used by UE</li>
+<li>Storing UTF-16 Text Files in Perforce</li>
+<li>Conversion Routines: TStringConversion -
+TCHAR_TO_ANSI/TCHAR_TO_OEM/ANSI_TO_TCHAR/TCHAR_TO_UTF8/UTF8_TO_TCHAR</li>
+<li>StringConv.h</li>
+<li>ToUpper() and ToLower() Non-Trivial in Unicode</li>
+<li>Notes about C++ Source Code: Both UTF-8 and the default Windows
+encodings can cause problems with the C++ compiler […]</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/characters-in-unreal-engine?application_version=5.0">characters
 in unreal engine</a></li>
@@ -2822,7 +2862,13 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/fluid-simulati
 simulation tutorials in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/fname-in-unreal-engine?application_version=5.0">fname
-in unreal engine</a></li>
+in unreal engine</a> - {engine}
+<ul>
+<li>Reference for creating, converting, and comparing FNames</li>
+<li>INVALID_NAME_CHARACTERS / IsValidObjectName</li>
+<li>Searching the Name Table:
+<code>FName(TEXT("pelvis"), FNAME_Find) != NAME_None</code></li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/foliage-mode-in-unreal-engine?application_version=5.0">foliage
 mode in unreal engine</a></li>
@@ -2864,10 +2910,25 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/fshadercache-i
 in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/fstring-in-unreal-engine?application_version=5.0">fstring
-in unreal engine</a></li>
+in unreal engine</a>
+<ul>
+<li>Reference for creating, converting, comparing, and more with
+FStrings</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/ftext-in-unreal-engine?application_version=5.0">ftext
-in unreal engine</a></li>
+in unreal engine</a> - {engine}
+<ul>
+<li>Reference for creating, converting, comparing, and more with
+FText</li>
+<li>Creating localized text literals</li>
+<li>Formatting Text (to generate text from a placeholder pattern)</li>
+<li>Generating text from numbers</li>
+<li>Generating text from dates and times</li>
+<li>Generating derived text, such as making text upper or lower
+case</li>
+<li>AsCultureInvariant/FromString/FromName</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/full-screen-movies-in-unreal-engine?application_version=5.0">full
 screen movies in unreal engine</a></li>
@@ -5036,7 +5097,24 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-ne
 network multiplayer games for unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-subsystems-in-unreal-engine?application_version=5.0">programming
-subsystems in unreal engine</a></li>
+subsystems in unreal engine</a> - {engine}
+<ul>
+<li>Subsystems - UE singletons</li>
+<li>Engine - UEngineSubsystem</li>
+<li>Editor - UEditorSubsystem</li>
+<li>GameInstance - UGameInstanceSubsystem</li>
+<li>LocalPlayer - ULocalPlayerSubsystem</li>
+<li>Reasons to Use Subsystems:
+<ul>
+<li>Subsystems enable access to Blueprints</li>
+<li>Subsystems enable access to Python scripts</li>
+</ul></li>
+<li>Subsystems are automatically exposed to Blueprints</li>
+<li><code>unreal.get_engine_subsystem(unreal.MyEngineSubsystem)</code></li>
+<li><code>unreal.get_editor_subsystem(unreal.MyEditorSubsystem)</code></li>
+<li>Subsystem Lifetimes in Detail</li>
+<li>Subsystems Example</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-tools-for-the-unreal-editor-with-slate-ui-in-cplusplus?application_version=5.0">programming
 tools for the unreal editor with slate ui in cplusplus</a></li>
@@ -5984,7 +6062,23 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/streaming-virt
 virtual texturing in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/string-handling-in-unreal-engine?application_version=5.0">string
-handling in unreal engine</a></li>
+handling in unreal engine</a> - {engine}
+<ul>
+<li>string classes available in Unreal: FName/FText/FString</li>
+<li>FName: global table of unique strings - string interning</li>
+<li>FName: object names, identifiers, and other strings that are
+frequently compared</li>
+<li>FNames are case-insensitive, immutable, and cannot be
+manipulated</li>
+<li>FText: text localization</li>
+<li>AsCultureInvariant/INVTEXT - non-localized, or “culture invariant”
+text; player name</li>
+<li>FString: can be searched, modified, and compared</li>
+<li>Printf</li>
+<li>Conversions: from/to FName/FString/FText</li>
+<li>Encoding: mentions wrong reasons why <code>TEXT()</code> macro
+should be used</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/struct-viewer-settings-in-the-unreal-engine-project-settings?application_version=5.0">struct
 viewer settings in the unreal engine project settings</a></li>
