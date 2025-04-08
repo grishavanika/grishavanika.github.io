@@ -183,6 +183,7 @@ As of 2025/04/06.
  * [asset metadata in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-metadata-in-unreal-engine?application_version=5.0)
  * [asset redirectors in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-redirectors-in-unreal-engine?application_version=5.0)
  * [asset registry in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-registry-in-unreal-engine?application_version=5.0)
+   * 
  * [assets and content packs in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/assets-and-content-packs-in-unreal-engine?application_version=5.0)
  * [assets folder structure in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/assets-folder-structure-in-unreal-engine?application_version=5.0)
  * [assign a physical material in the static mesh editor in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/assign-a-physical-material-in-the-static-mesh-editor-in-unreal-engine?application_version=5.0)
@@ -191,7 +192,18 @@ As of 2025/04/06.
  * [assign a physical material to a physics asset body in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/assign-a-physical-material-to-a-physics-asset-body-in-unreal-engine?application_version=5.0)
  * [assign a physical material to a physics asset in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/assign-a-physical-material-to-a-physics-asset-in-unreal-engine?application_version=5.0)
  * [asynccompute in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/asynccompute-in-unreal-engine?application_version=5.0)
- * [asynchronous asset loading in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/asynchronous-asset-loading-in-unreal-engine?application_version=5.0)
+ * [asynchronous asset loading in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/asynchronous-asset-loading-in-unreal-engine?application_version=5.0) - {engine, assets}
+   * FSoftObjectPath: contains a string with the full name of an asset
+   * TSoftObjectPtr: TWeakObjectPtr + FSoftObjectPath
+   * The Asset Registry
+   * AssetRegistrySearchable tag: To make data about an asset searchable
+   * Queries to the asset registry return objects of type FAssetData
+   * UObjectLibrary: contains a list of either loaded objects or FAssetData for unloaded objects
+   * StreamableManager and Asynchronous Loading
+   * FStreamableManager: suggest putting it in some sort of global game singleton object
+   * use RequestAsyncLoad
+   * StreamableManager keeps hard references to any assets it loads until the delegate is called
+   * It releases those references after the delegate is called: so you need to hard reference them somewhere else if you want to ensure they will stay around
  * [atmosphere material expressions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/atmosphere-material-expressions-in-unreal-engine?application_version=5.0)
  * [attaching items to the hmd in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/attaching-items-to-the-hmd-in-unreal-engine?application_version=5.0)
  * [audio analysis and visualization in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/audio-analysis-and-visualization-in-unreal-engine?application_version=5.0)
@@ -538,7 +550,28 @@ As of 2025/04/06.
  * [console commands for network debugging in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/console-commands-for-network-debugging-in-unreal-engine?application_version=5.0)
  * [console settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/console-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [console slate debugger in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/console-slate-debugger-in-unreal-engine?application_version=5.0)
- * [console variables cplusplus in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/console-variables-cplusplus-in-unreal-engine?application_version=5.0)
+ * [console variables cplusplus in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/console-variables-cplusplus-in-unreal-engine?application_version=5.0) - {engine}
+   * Console Command/Console Variable/Console Manager
+   * you should avoid the old Exec interface
+   * `MyConsoleVar` to read value; `MyConsoleVar 123` to set value; `MyConsoleVar ?` to get help
+   * Creating / Registering a Console Variable: `TAutoConsoleVariable<int32>`/EConsoleVariableFlags 
+   * `IConsoleManager::Get()` is the global access point
+   * FAutoConsoleVariableRef
+   * Getting the State of a Console Variable: GetValueOnGameThread(), `IConsoleManager::Get().FindConsoleVariable()`
+   * How to Track Console Variable Changes: FAutoConsoleVariableSink / `.AsVariable()->SetOnChangedCallback`
+   * Intended Console Variable Behavior and Style:
+     * Console variable should reflect the user input, not necessarily the state of the system
+     * The variable state should not be changed by code
+     * Most console variables are intended for development only so specifying the ECVF_Cheat flag early would be a good idea
+   * DumpConsoleCommands / Help -- list/dump variables
+   * Loading Console Variables:
+     * Engine/Config/ConsoleVariables.ini: the state of Console Variables; reserved for the local developer
+     * Engine/Config/BaseEngine.ini,
+     * Script/Engine.RendererSettings + `UPROPERTY(, meta=(ConsoleVariable))`
+     * Config/BaseScalability.ini: Other settings
+   * Command line: `-ExecCmds="r.BloomQuality 12,vis 21,Quit"`
+   * Priority: variables can be overridden; ECVF_SetByConstructor / ECVF_SetByCode / etc.
+   * Unregistering Console Variables: The variable is still kept (with the unregistered flags) to not crash when pointers access the data
  * [console variables editor](https://dev.epicgames.com/documentation/en-us/unreal-engine/console-variables-editor?application_version=5.0)
  * [consolidating assets in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/consolidating-assets-in-unreal-engine?application_version=5.0)
  * [constant material expressions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/constant-material-expressions-in-unreal-engine?application_version=5.0)
@@ -584,7 +617,18 @@ As of 2025/04/06.
  * [coordinates material expressions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/coordinates-material-expressions-in-unreal-engine?application_version=5.0)
  * [copy a pose in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/copy-a-pose-in-unreal-engine?application_version=5.0)
  * [copy and paste region in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/copy-and-paste-region-in-unreal-engine?application_version=5.0)
- * [core redirects in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/core-redirects-in-unreal-engine?application_version=5.0)
+ * [core redirects in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/core-redirects-in-unreal-engine?application_version=5.0) - {engine}
+   * Core Redirects enable remapping classes, enums, functions, packages, properties, and structs at load time
+   * [CoreRedirects]
+   * When specifying a name of a class or struct in an Core Redirect, the name should be written as it appears to the Unreal Engine's reflection system, meaning the prefix letter is dropped. For example, AMyActor would be written as MyActor
+   * ClassRedirects - Changes objects and properties using an obsolete (or removed) UCLASS to refer to a new UCLASS
+   * EnumRedirects - Remaps obsolete UENUM types and/or obsolete values within an enumerated type.
+   * FunctionRedirects - Remaps an obsolete UFUNCTION to a new one.
+   * PackageRedirects - Remapping from one package to another, or suppressing warnings about references to a deleted package (references will be cleared or set to null)
+   * PropertyRedirects - Remaps removed properties to new properties.
+   * StructRedirects - Changes properties using an obsolete (or removed) USTRUCT to refer to a new USTRUCT.
+   * Substring Matching/MatchSubstring 
+   * Debug Core Redirects: `-DebugCoreRedirects`
  * [cpp and blueprints example](https://dev.epicgames.com/documentation/en-us/unreal-engine/cpp-and-blueprints-example?application_version=5.0) - {bp}
    * C++ Class Wizard
    * shows UPROPERTY()/UFUNCTION()/UCLASS()
@@ -673,11 +717,27 @@ As of 2025/04/06.
  * [customizing the datasmith import process in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/customizing-the-datasmith-import-process-in-unreal-engine?application_version=5.0)
  * [customizing the player web page in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/customizing-the-player-web-page-in-unreal-engine?application_version=5.0)
  * [customizing unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/customizing-unreal-engine?application_version=5.0)
- * [data assets in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/data-assets-in-unreal-engine?application_version=5.0)
+ * [data assets in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/data-assets-in-unreal-engine?application_version=5.0) - {engine}
+   * A Data Asset is an asset that stores data as an instance of a class
+   * With Blueprint subclasses, we recommend using Data Only Blueprints instead of the Data Asset instance to handle data inheritance and update the parent class
+   * Creating a Data Asset
+   * Primary Data Asset: Data Asset that implements a GetPrimaryAssetId
+   * Creating a Primary Data Asset: `public UPrimaryDataAsset`
  * [data driven cvars settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/data-driven-cvars-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [data driven gameplay elements in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/data-driven-gameplay-elements-in-unreal-engine?application_version=5.0)
  * [data registries in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/data-registries-in-unreal-engine?application_version=5.0)
- * [data validation in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/data-validation-in-unreal-engine?application_version=5.0)
+ * [data validation in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/data-validation-in-unreal-engine?application_version=5.0) - {engine}
+   * Data Validation plugin 
+   * Checking that assets meet name conventions
+   * Enforcing space and performance budgets
+   * `UnrealEditor.exe <PROJECT_NAME> -run=DataValidation`
+   * The Data Validation system only runs C++ validation rules by default
+   * Developers can extend the Data Validation system to support Blueprint and Python validation rules
+   * Have a custom UObject-derived class that overrides IsDataValid
+   * Creating a UEditorValidatorBase derived class using C++, Blueprints, or Python
+   * CanValidateAsset / ValidateLoadedAsset
+   * Continuous Integration System (CIS)
+   * Both types of validation are run by CIS, on asset save (enabled by default), and through menu options in the editor and Content Browser
  * [dataprep import customization in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/dataprep-import-customization-in-unreal-engine?application_version=5.0)
  * [dataprep operation reference in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/dataprep-operation-reference-in-unreal-engine?application_version=5.0)
  * [dataprep overview in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/dataprep-overview-in-unreal-engine?application_version=5.0)
@@ -1095,7 +1155,13 @@ As of 2025/04/06.
  * [how to generate unreal engine project files for your ide](https://dev.epicgames.com/documentation/en-us/unreal-engine/how-to-generate-unreal-engine-project-files-for-your-ide?application_version=5.0)
  * [how to get animation variables in animation blueprints in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/how-to-get-animation-variables-in-animation-blueprints-in-unreal-engine?application_version=5.0)
  * [how to import audio in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/how-to-import-audio-in-unreal-engine?application_version=5.0)
- * [how to make a gameplay module in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/how-to-make-a-gameplay-module-in-unreal-engine?application_version=5.0)
+ * [how to make a gameplay module in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/how-to-make-a-gameplay-module-in-unreal-engine?application_version=5.0) - {engine}
+   * Set Up Your Directories
+   * Create the Build.cs File
+   * Implement Your Module in C++
+   * Compile Your Module
+   * Compile Only Your Module: `Build.bat [...] -Module="<MODULE_NAME>"`
+   * Include Your Module In Your Project
  * [how to make movies in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/how-to-make-movies-in-unreal-engine?application_version=5.0)
  * [how to perform ar hit testing in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/how-to-perform-ar-hit-testing-in-unreal-engine?application_version=5.0)
  * [how to set up android sdk and ndk for your unreal engine development environment](https://dev.epicgames.com/documentation/en-us/unreal-engine/how-to-set-up-android-sdk-and-ndk-for-your-unreal-engine-development-environment?application_version=5.0)
@@ -1437,7 +1503,8 @@ As of 2025/04/06.
  * [modifying the navigation mesh in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/modifying-the-navigation-mesh-in-unreal-engine?application_version=5.0)
  * [modifying the navigation mesh preparation guide in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/modifying-the-navigation-mesh-preparation-guide-in-unreal-engine?application_version=5.0)
  * [modular characters in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/modular-characters-in-unreal-engine?application_version=5.0)
- * [module api specifiers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/module-api-specifiers-in-unreal-engine?application_version=5.0)
+ * [module api specifiers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/module-api-specifiers-in-unreal-engine?application_version=5.0) - {engine}
+   * ENGINE_API/`__declspec( dllimport )`/`__declspec( dllexport )`
  * [module properties in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/module-properties-in-unreal-engine?application_version=5.0)
  * [morph target previewer](https://dev.epicgames.com/documentation/en-us/unreal-engine/morph-target-previewer?application_version=5.0)
  * [motion controller component setup in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/motion-controller-component-setup-in-unreal-engine?application_version=5.0)
@@ -1719,7 +1786,21 @@ As of 2025/04/06.
  * [product configurator template in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/product-configurator-template-in-unreal-engine?application_version=5.0)
  * [professional video io in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/professional-video-io-in-unreal-engine?application_version=5.0)
  * [programming and scripting with umg in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-and-scripting-with-umg-in-unreal-engine?application_version=5.0)
- * [programming in the unreal engine architecture](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-in-the-unreal-engine-architecture?application_version=5.0)
+ * [programming in the unreal engine architecture](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-in-the-unreal-engine-architecture?application_version=5.0). References to
+   * Asynchronous Asset Loading
+   * Core Redirects
+   * Data Validation
+   * Unreal Engine Modules
+   * Referencing Assets
+   * Asset Registry
+   * Programming Subsystems
+   * Console Variables and Commands
+   * Data Assets
+   * String Handling
+   * Tasks System
+   * Configuration Files
+   * Command-Line Arguments
+   * Versioning of Assets and Packages
  * [programming network multiplayer games for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-network-multiplayer-games-for-unreal-engine?application_version=5.0)
  * [programming subsystems in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-subsystems-in-unreal-engine?application_version=5.0)
  * [programming tools for the unreal editor with slate ui in cplusplus](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-tools-for-the-unreal-editor-with-slate-ui-in-cplusplus?application_version=5.0)
@@ -1812,7 +1893,12 @@ As of 2025/04/06.
  * [reference for niagara effects in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/reference-for-niagara-effects-in-unreal-engine?application_version=5.0)
  * [reference guide for physics field in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/reference-guide-for-physics-field-in-unreal-engine?application_version=5.0)
  * [reference viewer in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/reference-viewer-in-unreal-engine?application_version=5.0)
- * [referencing assets in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/referencing-assets-in-unreal-engine?application_version=5.0)
+ * [referencing assets in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/referencing-assets-in-unreal-engine?application_version=5.0) - {engine}
+   * hard references/soft references
+   * Direct Property Reference: `UPROPERTY(...) USoundCue* Asset;`
+   * Construction Time Reference: `ConstructorHelpers::FObjectFinder`
+   * Indirect Property Reference: TSoftObjectPtr / FStreamingManager 
+   * Find/Load Object: LoadClass/LoadObject/FindObject
  * [reflection system in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/reflection-system-in-unreal-engine?application_version=5.0)
    * runtime reflection with macros to "provide engine and editor functionality"
    * not to confuse with C++ reflection
@@ -2229,7 +2315,20 @@ As of 2025/04/06.
  * [unreal engine material properties](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-material-properties?application_version=5.0)
  * [unreal engine materials tutorials](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-materials-tutorials?application_version=5.0)
  * [unreal engine materials](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-materials?application_version=5.0)
- * [unreal engine modules](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-modules?application_version=5.0)
+ * [unreal engine modules](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-modules?application_version=5.0) - {engine}
+   * see also [Modules - Overview and Structure](https://dev.epicgames.com/community/learning/knowledge-base/GDD9/unreal-engine-modules-overview-and-structure)
+   * modules encapsulate specific editor tools, runtime features, libraries, or other functionality in standalone units of code
+   * All projects and plugins have their own primary module by default
+   * Unreal Engine modules are not related to C++ 20 modules
+   * Setting Up a Module: You can place modules in any subdirectory within your Source folder, at any number of levels deep
+   * [ModuleName].Build.cs
+   * To control how and when your module loads, add configuration information for your module in your .uproject
+   * Understanding the Structure of a Module
+   * Configuring Dependencies in the Build.cs File
+   * Private and Public Dependencies
+   * Implementing the Module in C++: IModuleInterface/IMPLEMENT_MODULE
+   * Using Modules in Your Projects
+   * Controlling How Modules Load
  * [unreal engine pixel streaming reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-pixel-streaming-reference?application_version=5.0)
  * [unreal engine programming and scripting](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-programming-and-scripting?application_version=5.0).
    References to:
@@ -3233,8 +3332,10 @@ As of 2025/04/06.
  * [unity to unreal engine overview](https://dev.epicgames.com/documentation/en-us/unreal-engine/unity-to-unreal-engine-overview?application_version=5.4)
  * [unreal engine 5.4 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.4-release-notes?application_version=5.4)
  * [unreal engine command line arguments reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-command-line-arguments-reference?application_version=5.4)
- * [unreal engine console commands reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-console-commands-reference?application_version=5.4)
- * [unreal engine console variables reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-console-variables-reference?application_version=5.4)
+ * [unreal engine console commands reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-console-commands-reference?application_version=5.4) - {engine}
+   * Probably outdated "List of console commands". Use Help console command instead
+ * [unreal engine console variables reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-console-variables-reference?application_version=5.4) - {engine}
+   * Probably outdated "List of console variables". Use Help console command instead
  * [unreal insights session browser for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-insights-session-browser-for-unreal-engine?application_version=5.4)
  * [unreal vcam tools and configuration in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-vcam-tools-and-configuration-in-unreal-engine?application_version=5.4)
  * [unreal vcam virtual camera settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-vcam-virtual-camera-settings?application_version=5.4)
