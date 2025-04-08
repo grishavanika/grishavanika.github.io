@@ -514,7 +514,14 @@ As of 2025/04/06.
  * [color management in ndisplay in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/color-management-in-ndisplay-in-unreal-engine?application_version=5.0)
  * [color management with opencolorio in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/color-management-with-opencolorio-in-unreal-engine?application_version=5.0)
  * [color material expressions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/color-material-expressions-in-unreal-engine?application_version=5.0)
- * [command line arguments in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/command-line-arguments-in-unreal-engine?application_version=5.0)
+ * [command line arguments in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/command-line-arguments-in-unreal-engine?application_version=5.0) - {engine}
+   * pass command line from: command line/editor (Server Map Name Override/Additional Server Game Options/etc)
+   * Standalone from editor: Additional Launch Parameters
+   * Command-Line Arguments on Non-Desktop Platforms: create & deploy UECommandLine.txt
+   * Flags: `-game`, parse with FParse::Param
+   * Key-Value Pairs: `-ResX=1080`, parse with FParse::Value
+   * map URL Parameters
+   * Read Command-Line Arguments from a File: `-CmdLineFile=FILE.txt`
  * [comments in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/comments-in-unreal-engine?application_version=5.0) - {bp}
    * Node Comments: Right-click / Node Comment
    * Creating Comment Boxes
@@ -559,7 +566,33 @@ As of 2025/04/06.
  * [compositing passes reference for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/compositing-passes-reference-for-unreal-engine?application_version=5.0)
  * [computing speedtree lightmap uv coordinates in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/computing-speedtree-lightmap-uv-coordinates-in-unreal-engine?application_version=5.0)
  * [conditional property replication in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/conditional-property-replication-in-unreal-engine?application_version=5.0)
- * [configuration files in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/configuration-files-in-unreal-engine?application_version=5.0)
+ * [configuration files in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/configuration-files-in-unreal-engine?application_version=5.0) - {engine}
+   * Configuration Files or Config Files: settings for Unreal Engine
+   * Every config variable must belong to a [SECTION] and consist of a KEY followed by the = symbol
+   * The VALUE can be empty
+   * Modules: Section for objects contained in modules - `[/Script/ModuleName.ClassName]`
+   * Plugins:  Section for objects contained in plugins - `[/Script/PluginName.ClassName]`
+   * Blueprints: Section for assets contained in blueprints - `[/PathToUAsset/UAssetName.UAssetName_C]`
+   * Custom Section Names - any valid section string: you must manually query the config variables
+   * Comments: `; semicolon starts comment`
+   * Key-Value Pairs - types: Strings/Numerics/Arrays/Structs
+   * Arrays: clear (`!MyArray=ClearArray`), append (`+MyArray=Value`), remove (`-MyArray=Value`), append duplicate (`.MyArray=Value`)
+   * Structs: `MyStruct=(Property1=Value1,Property2=Value2,...)`
+   * Strings: escaped characters, hexadecimal, and UTF sequences
+   * Configuration File Categories: Engine/Game/DeviceProfiles/etc.
+   * Editor-Only Categories: EditorPerProjectUserSettings/EditorSettings/Editor/etc.
+   * Configuration File Hierarchy: Configuration files within the same category are organized into a hierarchical structure
+   * duplicate key-value pairs among files in the same category, key-value assignments in latter files override those from files earlier in the hierarchy
+   * see ConfigHierarchy.h
+   * Hierarchy Example
+   * Automatically Load Config Variables: `UCLASS(config=Game) + UPROPERTY(Config)`
+   * Manually: `GConfig->GetInt`
+   * Configuration Categories: GGameIni/GEngineIni/etc., see CoreGlobals.h
+   * Save Configuration Example
+   * Console command: `GetIni [Platform@]IniCategory:Section Key`
+   * Override with command line example: `-ini:Engine:[/Script/Engine.Engine]:bSmoothFrameRate=False,[TextureStreaming]:PoolSize=100`
+   * command line to override Default File in Category/All Files in a Category
+   * Set Console Variables in Configuration Files: [ConsoleVariables] section in DefaultEngine.ini + other places
  * [connecting nodes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/connecting-nodes-in-unreal-engine?application_version=5.0) - {bp}
    * Pin to Pin Connection
    * Pin Actions: break/move
@@ -3400,7 +3433,10 @@ As of 2025/04/06.
  * [unity to unreal engine frequently asked questions faq](https://dev.epicgames.com/documentation/en-us/unreal-engine/unity-to-unreal-engine-frequently-asked-questions-faq?application_version=5.4)
  * [unity to unreal engine overview](https://dev.epicgames.com/documentation/en-us/unreal-engine/unity-to-unreal-engine-overview?application_version=5.4)
  * [unreal engine 5.4 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.4-release-notes?application_version=5.4)
- * [unreal engine command line arguments reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-command-line-arguments-reference?application_version=5.4)
+ * [unreal engine command line arguments reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-command-line-arguments-reference?application_version=5.4) - {engine}
+   * Command-line arguments are not case-sensitive
+   * Flags/Table of Flags, probably outdated
+   * Keyword Arguments/List of Keyword Arguments, probably outdated
  * [unreal engine console commands reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-console-commands-reference?application_version=5.4) - {engine}
    * Probably outdated "List of console commands". Use Help console command instead
  * [unreal engine console variables reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-console-variables-reference?application_version=5.4) - {engine}
