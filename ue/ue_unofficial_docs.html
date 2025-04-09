@@ -7960,11 +7960,26 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/commerce-inter
 interface in unreal engine</a>
 <ul>
 <li>Purchase and redeem game content outside of gameplay</li>
-<li></li>
+<li>two primary components: Transactions and Entitlements</li>
+<li>Transactions: the process of purchasing store items with platform
+currency</li>
+<li>Entitlements: content that a player is entitled to receive or
+use</li>
+<li>API Overview</li>
+<li>Process Flow</li>
+<li>Converting Code from the Online Subsystem</li>
+<li>Commerce.h</li>
 </ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/connectivity-interface-in-unreal-engine?application_version=5.1">connectivity
-interface in unreal engine</a></li>
+interface in unreal engine</a>
+<ul>
+<li>Determine whether your game is connected to your platform’s online
+services</li>
+<li>API Overview</li>
+<li>Connection Status</li>
+<li>Connectivity.h</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/convert-media-into-the-exr-format-with-the-process-exr-tool-in-unreal-engine?application_version=5.1">convert
 media into the exr format with the process exr tool in unreal
@@ -8028,10 +8043,25 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/importing-gltf
 gltf files into unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/leaderboards-interface-in-unreal-engine?application_version=5.1">leaderboards
-interface in unreal engine</a></li>
+interface in unreal engine</a>
+<ul>
+<li>Display and update leaderboards from within your game</li>
+<li>API Overview</li>
+<li>Configuration: Leaderboard Definition/etc.</li>
+<li>Read Leaderboard Entries</li>
+<li>Leaderboards.h</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/lobbies-interface-in-unreal-engine?application_version=5.1">lobbies
-interface in unreal engine</a></li>
+interface in unreal engine</a>
+<ul>
+<li>Create and manage online lobbies</li>
+<li>API Overview</li>
+<li>Configuration</li>
+<li>Process Flow: Join/Leave/etc.</li>
+<li>Converting Code from Online Subsystem</li>
+<li>Lobbies.h</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/metasounds-quick-start?application_version=5.1">metasounds
 quick start</a></li>
@@ -8128,10 +8158,25 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/pixel-streamin
 streaming infrastructure</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/presence-interface-in-unreal-engine?application_version=5.1">presence
-interface in unreal engine</a></li>
+interface in unreal engine</a>
+<ul>
+<li>Access the presence and joinability status of friends and
+followers</li>
+<li>platform-specific user states across online services</li>
+<li>API Overview</li>
+<li>Converting Code from Online Subsystem</li>
+<li>Presence.h</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/privileges-interface-in-unreal-engine?application_version=5.1">privileges
-interface in unreal engine</a></li>
+interface in unreal engine</a>
+<ul>
+<li>Access player privileges including online and crossplay as well as
+voice and text chat</li>
+<li>API Overview</li>
+<li>User Privilege</li>
+<li>Privileges.h</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/rendering-from-multiple-camera-angles-in-unreal-engine?application_version=5.1">rendering
 from multiple camera angles in unreal engine</a></li>
@@ -8149,7 +8194,18 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/scripting-gltf
 gltf exports in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/sessions-interface-in-unreal-engine?application_version=5.1">sessions
-interface in unreal engine</a></li>
+interface in unreal engine</a>
+<ul>
+<li>Create and manage online game sessions</li>
+<li>session is the representation of an online match in a game, running
+on either a player’s machine or a dedicated server</li>
+<li>have the following join policies: Invite Only/Friends
+Only/Public</li>
+<li>API Overview</li>
+<li>Process Flow</li>
+<li>Converting Code from Online Subsystem</li>
+<li>Sessions.h</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/shapes-category-in-unreal-engine?application_version=5.1">shapes
 category in unreal engine</a></li>
@@ -8158,7 +8214,19 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/simulation-bla
 blank template in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/social-interface-in-unreal-engine?application_version=5.1">social
-interface in unreal engine</a></li>
+interface in unreal engine</a>
+<ul>
+<li>Manage relationships with friends and blocked users</li>
+<li>Retrieving and viewing a player’s friends list.</li>
+<li>Sending friend invites.</li>
+<li>Accepting/Rejecting friend invites.</li>
+<li>Viewing a list of blocked players.</li>
+<li>Blocking other players.</li>
+<li>API Overview</li>
+<li>Process Flow</li>
+<li>Converting Code from Online Subsystem</li>
+<li>Social.h</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-concurrency-reference-guide?application_version=5.1">sound
 concurrency reference guide</a></li>
@@ -8179,7 +8247,17 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/static-code-an
 code analysis in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/stats-interface-in-unreal-engine?application_version=5.1">stats
-interface in unreal engine</a></li>
+interface in unreal engine</a>
+<ul>
+<li>Upload stats and data to online services and complete stats
+queries</li>
+<li>user gameplay statistics + data for other services like
+leaderboards</li>
+<li>API Overview</li>
+<li>Configuration</li>
+<li>Reset Stats Data</li>
+<li>Stats.h</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/the-datasmith-3ds-max-ui-for-exporting-to-unreal-engine?application_version=5.1">the
 datasmith 3ds max ui for exporting to unreal engine</a></li>
@@ -8191,7 +8269,15 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/the-media-plat
 media plate actor in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/title-file-interface-in-unreal-engine?application_version=5.1">title
-file interface in unreal engine</a></li>
+file interface in unreal engine</a>
+<ul>
+<li>read files from your platform’s backend online services at
+runtime</li>
+<li>configuration files or a message of the day</li>
+<li>API Overview</li>
+<li>Process Flow</li>
+<li>TitleFile.h</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/trigger-level-blueprint-events-from-sequencer-in-unreal-engine?application_version=5.1">trigger
 level blueprint events from sequencer in unreal engine</a></li>
@@ -8215,10 +8301,28 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/updating-proje
 projects to newer versions of unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/user-file-interface-in-unreal-engine?application_version=5.1">user
-file interface in unreal engine</a></li>
+file interface in unreal engine</a>
+<ul>
+<li>read user-specific files from your platform’s backend online
+services at runtime</li>
+<li>game save files</li>
+<li>API Overview</li>
+<li>Process Flow for Reading Files</li>
+<li>Modifying Files</li>
+<li>UserFile.h</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/user-info-interface-in-unreal-engine?application_version=5.1">user
-info interface in unreal engine</a></li>
+info interface in unreal engine</a>
+<ul>
+<li>tools to retrieve user information from an online service such as
+Steam or Epic Online Services for display in your game</li>
+<li>Platform Profile/Display Name/Avatar</li>
+<li>API Overview</li>
+<li>Access User Info</li>
+<li>Platform User Profile</li>
+<li>UserInfo.h</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/using-control-rig-with-usd-files-in-unreal-engine?application_version=5.1">using
 control rig with usd files in unreal engine</a></li>
@@ -9033,7 +9137,15 @@ Online Subsystem plugins</li>
 </ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/external-ui-interface-in-unreal-engine?application_version=5.3">external
-ui interface in unreal engine</a></li>
+ui interface in unreal engine</a>
+<ul>
+<li>Display your platform’s online services external user interface</li>
+<li>External UI can be useful for: User login/Friends and social
+interaction</li>
+<li>API Overview</li>
+<li>Accessing the External UI Interface</li>
+<li>ExternalUI.h</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/font-dpi-scaling-in-unreal-engine?application_version=5.3">font
 dpi scaling in unreal engine</a></li>

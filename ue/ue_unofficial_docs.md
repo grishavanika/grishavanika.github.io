@@ -2940,8 +2940,18 @@ As of 2025/04/06.
  * [building packaging and publishing unreal engine projects for ios tvos and ipados](https://dev.epicgames.com/documentation/en-us/unreal-engine/building-packaging-and-publishing-unreal-engine-projects-for-ios-tvos-and-ipados?application_version=5.1)
  * [commerce interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/commerce-interface-in-unreal-engine?application_version=5.1)
    * Purchase and redeem game content outside of gameplay
-   * 
+   * two primary components: Transactions and Entitlements
+   * Transactions: the process of purchasing store items with platform currency
+   * Entitlements: content that a player is entitled to receive or use
+   * API Overview
+   * Process Flow
+   * Converting Code from the Online Subsystem
+   * Commerce.h
  * [connectivity interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/connectivity-interface-in-unreal-engine?application_version=5.1)
+   * Determine whether your game is connected to your platform's online services
+   * API Overview
+   * Connection Status
+   * Connectivity.h
  * [convert media into the exr format with the process exr tool in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/convert-media-into-the-exr-format-with-the-process-exr-tool-in-unreal-engine?application_version=5.1)
  * [create an automation project in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/create-an-automation-project-in-unreal-engine?application_version=5.1)
  * [creating procedural music with metasounds](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-procedural-music-with-metasounds?application_version=5.1)
@@ -2963,7 +2973,18 @@ As of 2025/04/06.
  * [importing audio files](https://dev.epicgames.com/documentation/en-us/unreal-engine/importing-audio-files?application_version=5.1)
  * [importing gltf files into unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/importing-gltf-files-into-unreal-engine?application_version=5.1)
  * [leaderboards interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/leaderboards-interface-in-unreal-engine?application_version=5.1)
+   * Display and update leaderboards from within your game
+   * API Overview
+   * Configuration: Leaderboard Definition/etc.
+   * Read Leaderboard Entries
+   * Leaderboards.h
  * [lobbies interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/lobbies-interface-in-unreal-engine?application_version=5.1)
+   * Create and manage online lobbies
+   * API Overview
+   * Configuration
+   * Process Flow: Join/Leave/etc.
+   * Converting Code from Online Subsystem
+   * Lobbies.h
  * [metasounds quick start](https://dev.epicgames.com/documentation/en-us/unreal-engine/metasounds-quick-start?application_version=5.1)
  * [modeling tools in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/modeling-tools-in-unreal-engine?application_version=5.1)
  * [multi user server user interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/multi-user-server-user-interface-in-unreal-engine?application_version=5.1)
@@ -3015,16 +3036,42 @@ As of 2025/04/06.
  * [pixel streaming in editor](https://dev.epicgames.com/documentation/en-us/unreal-engine/pixel-streaming-in-editor?application_version=5.1)
  * [pixel streaming infrastructure](https://dev.epicgames.com/documentation/en-us/unreal-engine/pixel-streaming-infrastructure?application_version=5.1)
  * [presence interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/presence-interface-in-unreal-engine?application_version=5.1)
+   * Access the presence and joinability status of friends and followers
+   * platform-specific user states across online services
+   * API Overview
+   * Converting Code from Online Subsystem
+   * Presence.h
  * [privileges interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/privileges-interface-in-unreal-engine?application_version=5.1)
+   * Access player privileges including online and crossplay as well as voice and text chat
+   * API Overview
+   * User Privilege
+   * Privileges.h
  * [rendering from multiple camera angles in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/rendering-from-multiple-camera-angles-in-unreal-engine?application_version=5.1)
  * [replicated subobjects in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/replicated-subobjects-in-unreal-engine?application_version=5.1)
  * [retargeting bipeds with ik rig in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/retargeting-bipeds-with-ik-rig-in-unreal-engine?application_version=5.1)
  * [runtime ik retargeting in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/runtime-ik-retargeting-in-unreal-engine?application_version=5.1)
  * [scripting gltf exports in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/scripting-gltf-exports-in-unreal-engine?application_version=5.1)
  * [sessions interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/sessions-interface-in-unreal-engine?application_version=5.1)
+   * Create and manage online game sessions
+   * session is the representation of an online match in a game, running on either a player's machine or a dedicated server
+   * have the following join policies: Invite Only/Friends Only/Public
+   * API Overview
+   * Process Flow
+   * Converting Code from Online Subsystem
+   * Sessions.h
  * [shapes category in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/shapes-category-in-unreal-engine?application_version=5.1)
  * [simulation blank template in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/simulation-blank-template-in-unreal-engine?application_version=5.1)
  * [social interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/social-interface-in-unreal-engine?application_version=5.1)
+   * Manage relationships with friends and blocked users
+   * Retrieving and viewing a player's friends list.
+   * Sending friend invites.
+   * Accepting/Rejecting friend invites.
+   * Viewing a list of blocked players.
+   * Blocking other players.
+   * API Overview
+   * Process Flow
+   * Converting Code from Online Subsystem
+   * Social.h
  * [sound concurrency reference guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-concurrency-reference-guide?application_version=5.1)
  * [sound waves](https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-waves?application_version=5.1)
  * [soundscape in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/soundscape-in-unreal-engine?application_version=5.1)
@@ -3032,10 +3079,21 @@ As of 2025/04/06.
  * [statetree quick start guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/statetree-quick-start-guide?application_version=5.1)
  * [static code analysis in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/static-code-analysis-in-unreal-engine?application_version=5.1)
  * [stats interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/stats-interface-in-unreal-engine?application_version=5.1)
+   * Upload stats and data to online services and complete stats queries
+   * user gameplay statistics + data for other services like leaderboards
+   * API Overview
+   * Configuration
+   * Reset Stats Data
+   * Stats.h
  * [the datasmith 3ds max ui for exporting to unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/the-datasmith-3ds-max-ui-for-exporting-to-unreal-engine?application_version=5.1)
  * [the gl transmission format gltf in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/the-gl-transmission-format-gltf-in-unreal-engine?application_version=5.1)
  * [the media plate actor in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/the-media-plate-actor-in-unreal-engine?application_version=5.1)
  * [title file interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/title-file-interface-in-unreal-engine?application_version=5.1)
+   * read files from your platform's backend online services at runtime
+   * configuration files or a message of the day
+   * API Overview
+   * Process Flow
+   * TitleFile.h
  * [trigger level blueprint events from sequencer in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/trigger-level-blueprint-events-from-sequencer-in-unreal-engine?application_version=5.1)
  * [umg viewmodel](https://dev.epicgames.com/documentation/en-us/unreal-engine/umg-viewmodel?application_version=5.1)
  * [understanding polygroups in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/understanding-polygroups-in-unreal-engine?application_version=5.1)
@@ -3044,7 +3102,19 @@ As of 2025/04/06.
  * [unreal engine 5.1 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.1-release-notes?application_version=5.1)
  * [updating projects to newer versions of unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/updating-projects-to-newer-versions-of-unreal-engine?application_version=5.1)
  * [user file interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/user-file-interface-in-unreal-engine?application_version=5.1)
+   * read user-specific files from your platform's backend online services at runtime
+   * game save files
+   * API Overview
+   * Process Flow for Reading Files
+   * Modifying Files
+   * UserFile.h
  * [user info interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/user-info-interface-in-unreal-engine?application_version=5.1)
+   * tools to retrieve user information from an online service such as Steam or Epic Online Services for display in your game
+   * Platform Profile/Display Name/Avatar
+   * API Overview
+   * Access User Info
+   * Platform User Profile
+   * UserInfo.h
  * [using control rig with usd files in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-control-rig-with-usd-files-in-unreal-engine?application_version=5.1)
  * [using direct link to synchronize 3ds max and unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-direct-link-to-synchronize-3ds-max-and-unreal-engine?application_version=5.1)
  * [using livelink with the usd importer in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-livelink-with-the-usd-importer-in-unreal-engine?application_version=5.1)
@@ -3335,6 +3405,11 @@ As of 2025/04/06.
    * Online Services EOS Developer Portal
    * Configure Unreal Engine
  * [external ui interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/external-ui-interface-in-unreal-engine?application_version=5.3)
+   * Display your platform's online services external user interface
+   * External UI can be useful for: User login/Friends and social interaction
+   * API Overview
+   * Accessing the External UI Interface
+   * ExternalUI.h
  * [font dpi scaling in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/font-dpi-scaling-in-unreal-engine?application_version=5.3)
  * [gameplay effects for the gameplay ability system in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-effects-for-the-gameplay-ability-system-in-unreal-engine?application_version=5.3)
  * [generate polygroups tool in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/generate-polygroups-tool-in-unreal-engine?application_version=5.3)
