@@ -1749,9 +1749,25 @@ As of 2025/04/06.
    * Retrieving Leaderboard Data
    * Uploading Leaderboard Data
  * [online subsystem presence interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-presence-interface-in-unreal-engine?application_version=5.0)
+   * Defining Presence
+   * Retrieving Information About Other Users
+   * Setting a User's Presence
  * [online subsystem purchase interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-purchase-interface-in-unreal-engine?application_version=5.0)
+   * The Store Interface, which provides the ability to make offers to your users
+   * Purchase Interface, which enables users to accept these offers
+   * Check to see whether a user is able to make purchases.
+   * Begin the process of purchasing.
+   * See the history of past purchases.
  * [online subsystem session interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-session-interface-in-unreal-engine?application_version=5.0)
+   * setting up advertisement of matches and handling matchmaking of players
+   * basic lifetime of a session
+   * Session Interface
+   * Session Settings
+   * Session Management
+   * Matchmaking - Finding sessions
+   * Joining Sessions
  * [online subsystem steam interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-steam-interface-in-unreal-engine?application_version=5.0)
+   * 
  * [online subsystem store interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-store-interface-in-unreal-engine?application_version=5.0)
  * [online subsystem types in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-types-in-unreal-engine?application_version=5.0)
  * [online subsystem user interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-user-interface-in-unreal-engine?application_version=5.0)
