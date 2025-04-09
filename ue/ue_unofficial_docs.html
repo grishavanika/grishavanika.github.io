@@ -4702,7 +4702,21 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsyst
 subsystem user interface in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystems-and-services-in-unreal-engine?application_version=5.0">online
-subsystems and services in unreal engine</a></li>
+subsystems and services in unreal engine</a> - {online}
+<ul>
+<li>online services such as Xbox Live, Playstation Network, Steam, Epic
+Online Services (EOS), and so on</li>
+<li>Online Subsystem is an Unreal Engine plugin that helps you implement
+online services</li>
+<li>Online Subsystem Steam</li>
+<li>Online Services Overview</li>
+<li>Use the Online Services Plugins</li>
+<li>Online Services EOS</li>
+<li>Online Services Interfaces</li>
+<li>Debugging Online Services Plugin</li>
+<li>Epic Online Services in Unreal Engine</li>
+<li>Voice Chat Interface</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/oodle-data?application_version=5.0">oodle
 data</a></li>
@@ -7865,7 +7879,21 @@ forum thread</a> release notes</li>
 <ul>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/achievements-interface-in-unreal-engine?application_version=5.1">achievements
-interface in unreal engine</a></li>
+interface in unreal engine</a>
+<ul>
+<li>Read and update player achievements</li>
+<li>achievement is a goal or trophy, awarded outside of a game
+environment, unlocked or rewarded for accomplishing in-game tasks</li>
+<li>set up the following mechanisms to unlock achievements depending on
+the interface’s configuration
+<ul>
+<li>Platform-service Managed/Title-managed (automatic)/Title-managed
+(manual)</li>
+</ul></li>
+<li>API Overview</li>
+<li>Read: read achievement definitions and state</li>
+<li>Achievements.h</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-editor-context-in-unreal-engine?application_version=5.1">actor
 editor context in unreal engine</a></li>
@@ -7911,7 +7939,15 @@ reference guide</a></li>
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/audiolink?application_version=5.1">audiolink</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/auth-interface-in-unreal-engine?application_version=5.1">auth
-interface in unreal engine</a></li>
+interface in unreal engine</a>
+<ul>
+<li>Authenticate and verify a local user with online services</li>
+<li>API Overview</li>
+<li>Process Flow: Login/Authenticate with an External Server/Link
+Authenticated User with Another Online Service/etc.</li>
+<li>Example Login with Platform Services</li>
+<li>Auth.h</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/backend-graphs-for-virtual-assets-in-unreal-engine?application_version=5.1">backend
 graphs for virtual assets in unreal engine</a></li>
@@ -7921,7 +7957,11 @@ packaging and publishing unreal engine projects for ios tvos and
 ipados</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/commerce-interface-in-unreal-engine?application_version=5.1">commerce
-interface in unreal engine</a></li>
+interface in unreal engine</a>
+<ul>
+<li>Purchase and redeem game content outside of gameplay</li>
+<li></li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/connectivity-interface-in-unreal-engine?application_version=5.1">connectivity
 interface in unreal engine</a></li>
@@ -8009,16 +8049,71 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/ndisplay-quick
 quick launch local tool in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/online-services-in-unreal-engine?application_version=5.1">online
-services in unreal engine</a></li>
+services in unreal engine</a> - {online}
+<ul>
+<li>Beta feature (UE5.1)</li>
+<li>common way to access the functionality of various online
+services</li>
+<li>Online Services Overview</li>
+<li>Online Services Achievements Interface</li>
+<li>Auth Interface</li>
+<li>Commerce Interface</li>
+<li>Connectivity Interface</li>
+<li>Online Services External UI Interface</li>
+<li>Leaderboards Interface</li>
+<li>Lobbies Interface</li>
+<li>Online Services Presence Interface</li>
+<li>Privileges Interface</li>
+<li>Sessions Interface</li>
+<li>Social Interface</li>
+<li>Stats Interface</li>
+<li>Title File Interface</li>
+<li>User File Interface</li>
+<li>User Info Interface</li>
+<li>Setup and Configure the Online Services Plugins</li>
+<li>Structure and Implement the Online Services Plugins</li>
+<li>Enable and Configure Online Services EOS</li>
+<li>Online Services Console Commands</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/online-services-interfaces-in-unreal-engine?application_version=5.1">online
-services interfaces in unreal engine</a></li>
+services interfaces in unreal engine</a> - {online}
+<ul>
+<li>List of Online Services Interfaces</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-mass-gameplay-in-unreal-engine?application_version=5.1">overview
 of mass gameplay in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-online-services-in-unreal-engine?application_version=5.1">overview
-of online services in unreal engine</a></li>
+of online services in unreal engine</a> - {online}
+<ul>
+<li>plugin ensures that the only changes developers need to make when
+working on a game that ships on multiple platforms, or supports multiple
+online services, are configuration adjustments for each supported
+service</li>
+<li>Design Philosophy: organized into modular, service-specific
+Interfaces /that group supported features</li>
+<li>Online Services Interfaces return a TOnlineAsyncOpHandle for all
+remote operations that guarantees the OnComplete event callback to the
+handle will be called</li>
+<li>Specific functions that a particular online service does not support
+will return Errors::NotImplemented</li>
+<li>Event Callback and Listening: responds to requests as they
+finish/can query in-flight requests/uses a single code path</li>
+<li>Interfaces: Achievements/Leaderboard/etc.</li>
+<li>three different return types:
+TOnlineResult/TOnlineAsyncOpHandle/TOnlineEvent</li>
+<li>TOnlineResult: Synchronous functions</li>
+<li>TOnlineAsyncOpHandle: asynchronous</li>
+<li>TOnlineEvent: Functions used for event listening</li>
+<li>two frameworks for accessing online services: Online Services and
+Online Subsystem</li>
+<li>Online Services: have not been tested in shipping titles as of UE
+5.1; recommend for developers targeting their own backend</li>
+<li>OnlineServices Configuration</li>
+<li>Run an Interface with a Console Command</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-virtual-assets-in-unreal-engine?application_version=5.1">overview
 of virtual assets in unreal engine</a></li>
@@ -8924,7 +9019,18 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/edit-pivot-too
 pivot tool in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/enable-and-configure-online-services-eos-in-unreal-engine?application_version=5.3">enable
-and configure online services eos in unreal engine</a></li>
+and configure online services eos in unreal engine</a>
+<ul>
+<li>two plugins: Online Services EOSGS and Online Services EOS
+plugins</li>
+<li>Implemented Interfaces</li>
+<li>Choosing Online Services or Online Subsystem</li>
+<li>Online Services EOSGS and EOS plugins are an improved version of the
+Online Subsystem plugins</li>
+<li>Enable Online Services EOS Plugins</li>
+<li>Online Services EOS Developer Portal</li>
+<li>Configure Unreal Engine</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/external-ui-interface-in-unreal-engine?application_version=5.3">external
 ui interface in unreal engine</a></li>
@@ -9008,7 +9114,12 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/online-service
 services console commands in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/online-services-eos-plugins-in-unreal-engine?application_version=5.3">online
-services eos plugins in unreal engine</a></li>
+services eos plugins in unreal engine</a> - {online}
+<ul>
+<li>Online Services EOSGS and Online Services EOS plugins help you to
+implement EOS SDK functionality</li>
+<li>Enable and Configure Online Services EOS</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-substrate-materials-in-unreal-engine?application_version=5.3">overview
 of substrate materials in unreal engine</a></li>
@@ -9100,7 +9211,14 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-smp
 up smpte 2110 in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/setup-and-configure-the-online-services-plugins-in-unreal-engine?application_version=5.3">setup
-and configure the online services plugins in unreal engine</a></li>
+and configure the online services plugins in unreal engine</a>
+<ul>
+<li>Set Up Online Services Plugins</li>
+<li>Enable the Online Services Plugins</li>
+<li>Add the Online Services Plugins to Project Dependencies</li>
+<li>Configure Default Platform Services</li>
+<li>Access Online Services in Your Project</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/skeleton-editing-in-unreal-engine?application_version=5.3">skeleton
 editing in unreal engine</a></li>
@@ -9118,7 +9236,15 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/sparse-volume-
 volume textures in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/structure-and-implement-the-online-services-plugins-in-unreal-engine?application_version=5.3">structure
-and implement the online services plugins in unreal engine</a></li>
+and implement the online services plugins in unreal engine</a>
+<ul>
+<li>basic sample how to use online services API</li>
+<li>Obtain information about a local player from the online
+services</li>
+<li>Retrieve a title file from the backend services</li>
+<li>Display the title file contents in your game</li>
+<li>guide uses a project titled OnlineSample</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/subdivide-tool-in-unreal-engine?application_version=5.3">subdivide
 tool in unreal engine</a></li>
@@ -9160,7 +9286,11 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/use-clang-to-b
 clang to build microsoft platforms in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/use-the-online-services-plugins-in-unreal-engine?application_version=5.3">use
-the online services plugins in unreal engine</a></li>
+the online services plugins in unreal engine</a>
+<ul>
+<li>Setup and Configure the Online Services Plugins</li>
+<li>Structure and Implement the Online Services Plugins</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/using-decal-materials-in-unreal-engine?application_version=5.3">using
 decal materials in unreal engine</a></li>
