@@ -1685,7 +1685,15 @@ menu)</li>
 </ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/compiling-game-projects-in-unreal-engine-using-cplusplus?application_version=5.0">compiling
-game projects in unreal engine using cplusplus</a></li>
+game projects in unreal engine using cplusplus</a>
+<ul>
+<li>Unreal projects have multiple targets, described by *.target.cs
+files</li>
+<li>The solution configurations are named as “Configuration+Target
+Type”</li>
+<li>Include Debug Files to debug non-debug configurations</li>
+<li>shows where to press buttons in Visual Studio to build targets</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/components-in-unreal-engine?application_version=5.0">components
 in unreal engine</a></li>
@@ -5223,7 +5231,10 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-to
 tools for the unreal editor with slate ui in cplusplus</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-tools-for-unreal-engine?application_version=5.0">programming
-tools for unreal engine</a></li>
+tools for unreal engine</a>
+<ul>
+<li>Sparse Class Data/Low-Level Memory Tracker</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-with-cplusplus-in-unreal-engine?application_version=5.0">programming
 with cplusplus in unreal engine</a>. References to:
@@ -6080,7 +6091,23 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/sources-panel-
 panel reference in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/sparse-class-data-in-unreal-engine?application_version=5.0">sparse
-class data in unreal engine</a></li>
+class data in unreal engine</a>
+<ul>
+<li>Sparse Class Data system eliminates wasted memory from redundant
+properties</li>
+<li>Beta feature (UE5.0)</li>
+<li>determine if a property is a good candidate for Sparse Class
+Data</li>
+<li>Implementing the Sparse Class Data feature requires native (C++)
+code; Blueprint-declared variables must move to C++</li>
+<li>Any property tagged with EditAnywhere, EditInstanceOnly, or
+BlueprintReadWrite is NOT a candidate for Sparse Class Data</li>
+<li>Add #if WITH_EDITORONLY_DATA to properties and mark them with
+_DEPRECATED</li>
+<li>In Editor (#if WITH_EDITOR) override
+MoveDataToSparseClassDataStruct</li>
+<li><code>UCLASS(BlueprintType, SparseClassDataTypes = MySparseClassData)</code></li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/spatialization-and-sound-attenuation-in-unreal-engine?application_version=5.0">spatialization
 and sound attenuation in unreal engine</a></li>
@@ -7085,7 +7112,21 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/using-lighting
 lighting channels in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/using-live-coding-to-recompile-unreal-engine-applications-at-runtime?application_version=5.0">using
-live coding to recompile unreal engine applications at runtime</a></li>
+live coding to recompile unreal engine applications at runtime</a>
+<ul>
+<li>Unreal Engine supports Live Coding using an integration of Live++
+(LPP_VERSION “1.6.10” as of UE5.5.4)</li>
+<li>How to Use Live Coding: CTRL+ALT+F11</li>
+<li>Changing Default Values for Variables With Live Coding (.cpp - does
+not work, .h - works)</li>
+<li>Configuration: Editor Preferences &gt; General &gt; Live Coding</li>
+<li>Object Reinstancing With Live Coding</li>
+<li>replaces existing instances of objects throughout the application
+and the editor</li>
+<li>If your code maintains pointers to objects that can be reinstanced,
+you need to use
+ReloadReinstancingCompleteDelegate/ReloadCompleteDelegate</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/using-live-link-data-in-unreal-engine?application_version=5.0">using
 live link data in unreal engine</a></li>
@@ -7229,7 +7270,11 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-back
 the background blur widget in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-cplusplus-class-wizard-in-unreal-engine?application_version=5.0">using
-the cplusplus class wizard in unreal engine</a></li>
+the cplusplus class wizard in unreal engine</a>
+<ul>
+<li>fast and easy way to add native C++ code class</li>
+<li>converts a content-only project into a code project</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-emissive-material-input-in-unreal-engine?application_version=5.0">using
 the emissive material input in unreal engine</a></li>
@@ -7241,7 +7286,28 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-inva
 the invalidation box for umg in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-low-level-memory-tracker-in-unreal-engine?application_version=5.0">using
-the low level memory tracker in unreal engine</a></li>
+the low level memory tracker in unreal engine</a>
+<ul>
+<li>Track memory usage in your Unreal Projects</li>
+<li>LLM uses a scoped-tag system to keep an account of all memory
+allocated by the Unreal Engine and the OS</li>
+<li>LLM Trackers: 2 trackers
+<ul>
+<li>Default Tracker is for all allocations from the Engine - allocations
+made through the FMemory class</li>
+<li>stat LLM</li>
+<li>Platform Tracker: records all allocations made from the OS -
+internal allocations made by functions like Binned2</li>
+<li>stat LLMPlatform</li>
+</ul></li>
+<li>command line: -LLM, -LLMCSV, -llmtagsets=Assets,
+-llmtagsets=AssetClasses</li>
+<li>tweak LLM.LLMWriteInterval</li>
+<li>LLM Tags: LLM_DECLARE_TAG/LLM_DEFINE_TAG/LLM_SCOPE_BYTAG</li>
+<li>allocation is tracked with the OnLowLevelAlloc</li>
+<li>ENABLE_LOW_LEVEL_MEM_TRACKER=1</li>
+<li>LLM_SCOPE/LLM_PLATFORM_SCOPE</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-machine-learning-deformer-in-unreal-engine?application_version=5.0">using
 the machine learning deformer in unreal engine</a></li>

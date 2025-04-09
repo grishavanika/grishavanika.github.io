@@ -556,6 +556,10 @@ As of 2025/04/06.
  * [compiler results in the blueprints visual scripting editor for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/compiler-results-in-the-blueprints-visual-scripting-editor-for-unreal-engine?application_version=5.0)
    * navigate/clear/hover Blueprint compile results (from Window menu)
  * [compiling game projects in unreal engine using cplusplus](https://dev.epicgames.com/documentation/en-us/unreal-engine/compiling-game-projects-in-unreal-engine-using-cplusplus?application_version=5.0)
+   * Unreal projects have multiple targets, described by \*.target.cs files
+   * The solution configurations are named as "Configuration+Target Type"
+   * Include Debug Files to debug non-debug configurations
+   * shows where to press buttons in Visual Studio to build targets
  * [components in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/components-in-unreal-engine?application_version=5.0)
  * [components mode viewport in the blueprints visual scripting editor for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/components-mode-viewport-in-the-blueprints-visual-scripting-editor-for-unreal-engine?application_version=5.0)
    * view and manipulate your Blueprint's components
@@ -1909,6 +1913,7 @@ As of 2025/04/06.
    * Subsystems Example
  * [programming tools for the unreal editor with slate ui in cplusplus](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-tools-for-the-unreal-editor-with-slate-ui-in-cplusplus?application_version=5.0)
  * [programming tools for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-tools-for-unreal-engine?application_version=5.0)
+   * Sparse Class Data/Low-Level Memory Tracker
  * [programming with cplusplus in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-with-cplusplus-in-unreal-engine?application_version=5.0). References to:
    * Unreal Reflection System + Metadata property Specifier(s)
    * Containers in Unreal
@@ -2229,6 +2234,14 @@ As of 2025/04/06.
  * [source control settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/source-control-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [sources panel reference in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/sources-panel-reference-in-unreal-engine?application_version=5.0)
  * [sparse class data in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/sparse-class-data-in-unreal-engine?application_version=5.0)
+   * Sparse Class Data system eliminates wasted memory from redundant properties
+   * Beta feature (UE5.0)
+   * determine if a property is a good candidate for Sparse Class Data
+   * Implementing the Sparse Class Data feature requires native (C++) code; Blueprint-declared variables must move to C++
+   * Any property tagged with EditAnywhere, EditInstanceOnly, or BlueprintReadWrite is NOT a candidate for Sparse Class Data
+   * Add #if WITH_EDITORONLY_DATA to properties and mark them with \_DEPRECATED
+   * In Editor (#if WITH_EDITOR) override MoveDataToSparseClassDataStruct 
+   * `UCLASS(BlueprintType, SparseClassDataTypes = MySparseClassData)`
  * [spatialization and sound attenuation in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/spatialization-and-sound-attenuation-in-unreal-engine?application_version=5.0)
  * [spatialization overview in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/spatialization-overview-in-unreal-engine?application_version=5.0)
  * [spawn temporary actors in unreal engine cinematics](https://dev.epicgames.com/documentation/en-us/unreal-engine/spawn-temporary-actors-in-unreal-engine-cinematics?application_version=5.0)
@@ -2605,6 +2618,13 @@ As of 2025/04/06.
  * [using light shafts in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-light-shafts-in-unreal-engine?application_version=5.0)
  * [using lighting channels in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-lighting-channels-in-unreal-engine?application_version=5.0)
  * [using live coding to recompile unreal engine applications at runtime](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-live-coding-to-recompile-unreal-engine-applications-at-runtime?application_version=5.0)
+   * Unreal Engine supports Live Coding using an integration of Live++ (LPP_VERSION "1.6.10" as of UE5.5.4)
+   * How to Use Live Coding: CTRL+ALT+F11
+   * Changing Default Values for Variables With Live Coding (.cpp - does not work, .h - works)
+   * Configuration: Editor Preferences > General > Live Coding
+   * Object Reinstancing With Live Coding
+   * replaces existing instances of objects throughout the application and the editor
+   * If your code maintains pointers to objects that can be reinstanced, you need to use ReloadReinstancingCompleteDelegate/ReloadCompleteDelegate
  * [using live link data in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-live-link-data-in-unreal-engine?application_version=5.0)
  * [using look up tables for color grading in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-look-up-tables-for-color-grading-in-unreal-engine?application_version=5.0)
  * [using lyra with epic online services in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-lyra-with-epic-online-services-in-unreal-engine?application_version=5.0)
@@ -2654,10 +2674,25 @@ As of 2025/04/06.
  * [using the autosdk system in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-autosdk-system-in-unreal-engine?application_version=5.0)
  * [using the background blur widget in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-background-blur-widget-in-unreal-engine?application_version=5.0)
  * [using the cplusplus class wizard in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-cplusplus-class-wizard-in-unreal-engine?application_version=5.0)
+   * fast and easy way to add native C++ code class
+   * converts a content-only project into a code project
  * [using the emissive material input in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-emissive-material-input-in-unreal-engine?application_version=5.0)
  * [using the gameplay debugger in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-gameplay-debugger-in-unreal-engine?application_version=5.0)
  * [using the invalidation box for umg in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-invalidation-box-for-umg-in-unreal-engine?application_version=5.0)
  * [using the low level memory tracker in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-low-level-memory-tracker-in-unreal-engine?application_version=5.0)
+   * Track memory usage in your Unreal Projects
+   * LLM uses a scoped-tag system to keep an account of all memory allocated by the Unreal Engine and the OS
+   * LLM Trackers: 2 trackers
+     * Default Tracker is for all allocations from the Engine - allocations made through the FMemory class 
+     * stat LLM
+     * Platform Tracker: records all allocations made from the OS - internal allocations made by functions like Binned2
+     * stat LLMPlatform
+   * command line: -LLM, -LLMCSV, -llmtagsets=Assets, -llmtagsets=AssetClasses
+   * tweak LLM.LLMWriteInterval
+   * LLM Tags: LLM_DECLARE_TAG/LLM_DEFINE_TAG/LLM_SCOPE_BYTAG
+   * allocation is tracked with the OnLowLevelAlloc
+   * ENABLE_LOW_LEVEL_MEM_TRACKER=1
+   * LLM_SCOPE/LLM_PLATFORM_SCOPE
  * [using the machine learning deformer in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-machine-learning-deformer-in-unreal-engine?application_version=5.0)
  * [using the main material node in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-main-material-node-in-unreal-engine?application_version=5.0)
  * [using the mobile previewer in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-the-mobile-previewer-in-unreal-engine?application_version=5.0)
