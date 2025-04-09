@@ -1704,12 +1704,50 @@ As of 2025/04/06.
  * [onboarding guide for unreal engine non games licensees](https://dev.epicgames.com/documentation/en-us/unreal-engine/onboarding-guide-for-unreal-engine-non-games-licensees?application_version=5.0)
  * [one file per actor in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/one-file-per-actor-in-unreal-engine?application_version=5.0)
  * [online subsystem achievements interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-achievements-interface-in-unreal-engine?application_version=5.0)
+   * Achievements give developers a way to incentivize, reward, or challenge players
+   * Getting Achievement Data
+   * Setting Achievement Data
  * [online subsystem eos plugin in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-eos-plugin-in-unreal-engine?application_version=5.0)
- * [online subsystem external ui interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-external-ui-interface-in-unreal-engine?application_version=5.0)
+   * Epic Online Services (EOS)
+   * register and configure your product or products with the EOS Developer Portal
+   * Overview of EOS Plugins
+   * If you ship your game on the Epic Games Store
+   * [The EOS Online Subsystem (OSS) Plugin](https://dev.epicgames.com/community/learning/courses/1px/unreal-engine-the-eos-online-subsystem-oss-plugin/Lnjn/unreal-engine-introduction)
+   * Setup: Enable the OSS EOS Plugins/etc.
+   * How OSS EOS Finds Artifacts: `-epicsandboxid`
+   * Login, Login with OSS EOS
+   * Login Flow with External Account Credentials
+   * Interfaces: mapping from OSS EOS Interfaces to EOS SDK Interface
+ * [online subsystem external ui interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-external-ui-interface-in-unreal-engine?application_version=5.0) - {online}
+   * Showing a Message Box
+   * Viewing a User Profile
+   * Logging In
+   * Using the Friends List
+   * Sending an Invitation
+   * Sending a Message to Another User
+   * Viewing Achievements
+   * Creating or Upgrading an Account
+   * Visiting the Store
+   * Visiting External Websites
  * [online subsystem friends interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-friends-interface-in-unreal-engine?application_version=5.0)
+   * Managing Friends
+   * Inviting a Friend
+   * Dealing with Players Met Online
+   * Managing the Block List
  * [online subsystem identity interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-identity-interface-in-unreal-engine?application_version=5.0)
- * [online subsystem in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-in-unreal-engine?application_version=5.0)
+   * handles account-related interactions with these services, providing the ability to authenticate users and obtain access tokens
+   * Authentication Functions
+   * Player Identification And Information
+ * [online subsystem in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-in-unreal-engine?application_version=5.0) - {online}
+   * Online Subsystem and its interfaces provide a common way to access the functionality of online services such as Steam, Xbox Live, Facebook, and so on
+   * Design Philosophy
+   * List of services
+   * Basic Structure and Usage
  * [online subsystem leaderboard interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-leaderboard-interface-in-unreal-engine?application_version=5.0)
+   * reading and updating leaderboards
+   * Scoring Methods
+   * Retrieving Leaderboard Data
+   * Uploading Leaderboard Data
  * [online subsystem presence interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-presence-interface-in-unreal-engine?application_version=5.0)
  * [online subsystem purchase interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-purchase-interface-in-unreal-engine?application_version=5.0)
  * [online subsystem session interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-session-interface-in-unreal-engine?application_version=5.0)
@@ -3376,6 +3414,7 @@ As of 2025/04/06.
  * [creating user interfaces with umg and slate in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-user-interfaces-with-umg-and-slate-in-unreal-engine?application_version=5.3)
  * [cubegrid tool in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/cubegrid-tool-in-unreal-engine?application_version=5.3)
  * [debugging online services plugin in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/debugging-online-services-plugin-in-unreal-engine?application_version=5.3)
+   * link to Online Services Console Commands
  * [decal materials in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/decal-materials-in-unreal-engine?application_version=5.3)
  * [decals in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/decals-in-unreal-engine?application_version=5.3)
  * [deform polygroups tool in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/deform-polygroups-tool-in-unreal-engine?application_version=5.3)
@@ -3436,6 +3475,10 @@ As of 2025/04/06.
  * [nintendo switch development in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/nintendo-switch-development-in-unreal-engine?application_version=5.3)
  * [offset tool in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/offset-tool-in-unreal-engine?application_version=5.3)
  * [online services console commands in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-services-console-commands-in-unreal-engine?application_version=5.3)
+   * Use console commands to debug and test the Online Services plugin during gameplay
+   * `OnlineServices Index=<NUM> <INTERFACE> <FUNCTION> [ARG1] [ARG2] ...`
+   * Console Command Examples
+   * List Available Online Services
  * [online services eos plugins in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-services-eos-plugins-in-unreal-engine?application_version=5.3) - {online}
    * Online Services EOSGS and Online Services EOS plugins help you to implement EOS SDK functionality
    * Enable and Configure Online Services EOS
