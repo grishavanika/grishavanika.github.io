@@ -1767,10 +1767,22 @@ As of 2025/04/06.
    * Matchmaking - Finding sessions
    * Joining Sessions
  * [online subsystem steam interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-steam-interface-in-unreal-engine?application_version=5.0)
-   * 
+   * enables you to ship Unreal Engine (UE) applications to Valve's Steam platform
+   * supporting most of what is offered by the Steamworks Software Development Kit (SDK)
+   * Downloading Steamworks
+   * Setting up the Steamworks SDK
+   * Servers and Lobbies: Steam supports peer-to-peer matchmaking
+   * Steam Online Authentication
  * [online subsystem store interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-store-interface-in-unreal-engine?application_version=5.0)
+   * describing and filtering offers for in-game purchases
+   * Offers and Categories
+   * Retrieving Offers and Categories
  * [online subsystem types in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-types-in-unreal-engine?application_version=5.0)
+   * online subsystem API core types, like FUniqueNetId/FSessionInfo
  * [online subsystem user interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-user-interface-in-unreal-engine?application_version=5.0)
+   * repository for all cached information and metadata about users, both remote and local
+   * Retrieving and Examining User Metadata
+   * Mapping External User IDs
  * [online subsystems and services in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystems-and-services-in-unreal-engine?application_version=5.0) - {online}
    * online services such as Xbox Live, Playstation Network, Steam, Epic Online Services (EOS), and so on
    * Online Subsystem is an Unreal Engine plugin that helps you implement online services
@@ -2850,7 +2862,12 @@ As of 2025/04/06.
    * Enum to String: `StaticEnum<EMyEnum::Type>()->GetNameStringByValue`
  * [visualizing play area bounds in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/visualizing-play-area-bounds-in-unreal-engine?application_version=5.0)
  * [voice chat interface in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/voice-chat-interface-in-unreal-engine?application_version=5.0)
+   * provides an agnostic API that supports all the features needed to integrate voice chat
+   * User Management
+   * Communicating with Other Users
  * [voice chat with epic online services](https://dev.epicgames.com/documentation/en-us/unreal-engine/voice-chat-with-epic-online-services?application_version=5.0)
+   * Integrating with the EOS Voice Interface
+   * Testing and Debugging
  * [volume actors in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/volume-actors-in-unreal-engine?application_version=5.0)
  * [volumetric cloud component in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/volumetric-cloud-component-in-unreal-engine?application_version=5.0)
  * [volumetric cloud component properties in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/volumetric-cloud-component-properties-in-unreal-engine?application_version=5.0)
@@ -3265,6 +3282,9 @@ As of 2025/04/06.
  * [dmx quick start in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/dmx-quick-start-in-unreal-engine?application_version=5.2)
  * [electric dreams environment in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/electric-dreams-environment-in-unreal-engine?application_version=5.2)
  * [epic online services in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/epic-online-services-in-unreal-engine?application_version=5.2)
+   * Epic Online Services (EOS)
+   * EOS documentation, see the [Epic Developer Resources Documentation](https://dev.epicgames.com/docs)
+   * Upgrading the EOS SDK
  * [gameplay targeting system debugging in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-targeting-system-debugging-in-unreal-engine?application_version=5.2)
  * [gameplay targeting system in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-targeting-system-in-unreal-engine?application_version=5.2)
  * [gameplay targeting system reference in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-targeting-system-reference-in-unreal-engine?application_version=5.2)
@@ -3325,6 +3345,11 @@ As of 2025/04/06.
  * [unreal stage app for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-stage-app-for-unreal-engine?application_version=5.2)
  * [upgrading control rig cplusplus units for unreal engine 5.2](https://dev.epicgames.com/documentation/en-us/unreal-engine/upgrading-control-rig-cplusplus-units-for-unreal-engine-5.2?application_version=5.2)
  * [upgrading the eos sdk in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/upgrading-the-eos-sdk-in-unreal-engine?application_version=5.2)
+   * Epic Online Services (EOS) Software Development Kit (SDK)
+   * Plugins depend on the EOS SDK: Online Subsystem EOS Plugin (OSS EOS)/Online Services EOS Plugin (OSSv2 EOS)/EOS Voice Chat Plugin
+   * Location of the EOS SDK
+   * Upgrade the EOS SDK
+   * Set EOS SDK Product Name
  * [using command line rendering with move render queue in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-command-line-rendering-with-move-render-queue-in-unreal-engine?application_version=5.2)
  * [using commonui with enhnaced input in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-commonui-with-enhnaced-input-in-unreal-engine?application_version=5.2)
  * [using multiple virtual cameras in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-multiple-virtual-cameras-in-unreal-engine?application_version=5.2)
@@ -3645,6 +3670,8 @@ As of 2025/04/06.
  * [automation test framework in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/automation-test-framework-in-unreal-engine?application_version=5.4)
  * [automotive configurator sample in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/automotive-configurator-sample-in-unreal-engine?application_version=5.4)
  * [blueprint analytics plugin for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-analytics-plugin-for-unreal-engine?application_version=5.4)
+   * set of Blueprint nodes for communicating with analytics services
+   * Record Event/etc.
  * [chaos visual debugger in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/chaos-visual-debugger-in-unreal-engine?application_version=5.4)
  * [chaos visual debugger overview in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/chaos-visual-debugger-overview-in-unreal-engine?application_version=5.4)
  * [color picker in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/color-picker-in-unreal-engine?application_version=5.4)
@@ -3670,7 +3697,10 @@ As of 2025/04/06.
  * [enabling physics simulation on grooms in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/enabling-physics-simulation-on-grooms-in-unreal-engine?application_version=5.4)
  * [external statetree quickstart guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/external-statetree-quickstart-guide?application_version=5.4)
  * [file logging analytics provider for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/file-logging-analytics-provider-for-unreal-engine?application_version=5.4)
+   * for debugging the analytics process
  * [flurry analytics provider for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/flurry-analytics-provider-for-unreal-engine?application_version=5.4)
+   * [Flurry](https://www.flurry.com/) is a widely used free analytics service
+   * Flurry Mobile Analytics, including SDK and Analytics UI, has sunsetted on March 15, 2024
  * [game animation sample project in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/game-animation-sample-project-in-unreal-engine?application_version=5.4)
  * [gauntlet controller in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/gauntlet-controller-in-unreal-engine?application_version=5.4)
  * [getting started with multi process rendering in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/getting-started-with-multi-process-rendering-in-unreal-engine?application_version=5.4)
@@ -3690,6 +3720,12 @@ As of 2025/04/06.
  * [import a metahuman to the game animation sample project in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/import-a-metahuman-to-the-game-animation-sample-project-in-unreal-engine?application_version=5.4)
  * [importing grooms into unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/importing-grooms-into-unreal-engine?application_version=5.4)
  * [in game analytics for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/in-game-analytics-for-unreal-engine?application_version=5.4)
+   * analytics to track player engagement and find balance issues
+   * Instrumenting Your Game
+   * Blueprint Analytics Plugin
+   * File Logging Analytics Provider
+   * Flurry Analytics Provider
+   * Multicast Analytics Provider
  * [incremental garbage collection in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/incremental-garbage-collection-in-unreal-engine?application_version=5.4)
    * Experimental in 5.4, 5.5
    * UE uses a mark-and-sweep garbage collector
@@ -3704,6 +3740,8 @@ As of 2025/04/06.
    * gc.IncrementalReachabilityTimeLimit=0.002
    * + other gc. console variables
  * [instrumenting your game with analytics in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/instrumenting-your-game-with-analytics-in-unreal-engine?application_version=5.4)
+   * example for IOSApsalar which is outdated
+   * `FAnalytics::Get().GetDefaultConfiguredProvider()->StartSession()`
  * [introduction to rendering in unreal engine for unity developers](https://dev.epicgames.com/documentation/en-us/unreal-engine/introduction-to-rendering-in-unreal-engine-for-unity-developers?application_version=5.4)
  * [iris filtering in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/iris-filtering-in-unreal-engine?application_version=5.4)
  * [iris prioritization in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/iris-prioritization-in-unreal-engine?application_version=5.4)
@@ -3726,6 +3764,7 @@ As of 2025/04/06.
  * [mrg transitioning to the movie render graph in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/mrg-transitioning-to-the-movie-render-graph-in-unreal-engine?application_version=5.4)
  * [multi process rendering with unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/multi-process-rendering-with-unreal-engine?application_version=5.4)
  * [multicast analytics provider for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/multicast-analytics-provider-for-unreal-engine?application_version=5.4)
+   * set of Blueprint nodes provided to allow you to communicate with analytics services
  * [nanite and lumen for xr in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-and-lumen-for-xr-in-unreal-engine?application_version=5.4)
  * [networked physics overview](https://dev.epicgames.com/documentation/en-us/unreal-engine/networked-physics-overview?application_version=5.4)
  * [networked physics](https://dev.epicgames.com/documentation/en-us/unreal-engine/networked-physics?application_version=5.4)
