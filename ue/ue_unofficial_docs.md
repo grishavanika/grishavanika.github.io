@@ -1439,10 +1439,24 @@ As of 2025/04/06.
    * World Composition
    * Level Streaming using Volumes
    * World Composition: Levels are arranged in a planar grid, and streamed in as the player approaches them
-   * World Composition is a legacy system used for level streaming. It is recommended to use World Partition
+   * World Composition is a legacy system, use World Partition
  * [level streaming overview in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/level-streaming-overview-in-unreal-engine?application_version=5.0)
+   * Streaming Levels can be loaded with Level Streaming Volumes or programmatically 
+   * The Persistent Level: must have, "master Level that is primarily used to govern which Levels will be streamed in and out"
+   * Streaming Levels: managed through the Levels window
+   * streaming Level can be set to Always Loaded or Blueprint for the streaming type
+   * Always Loaded: loaded together with the persistent Level, ignores streaming volumes, as well as any loading or unloading requests, never streamed out
+   * Blueprint streaming type: can be controlled with Level Streaming Volumes, Blueprints, or C++ code
+   * Level Streaming Volumes: load/unload requests for a streaming Level are issued based on whether the viewpoint is inside any of the Level Streaming Volumes associated with a Level
+   * Scripted Level Streaming: Load Stream Level and Unload Stream Level
  * [level streaming using volumes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/level-streaming-using-volumes-in-unreal-engine?application_version=5.0)
+   * How to use volumes to control the streaming of Levels based on the player's viewpoint
  * [level streaming volumes reference in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/level-streaming-volumes-reference-in-unreal-engine?application_version=5.0)
+   * Associating Streaming Volumes With Levels
+   * All Level Streaming Volumes must exist in the persistent Level
+   * A single Level Streaming Volume can affect multiple Levels
+   * a single Level can be affected by multiple Level Streaming Volumes
+   * Adding Hysteresis to Unloading Requests: Min Time Between Volume Unload Requests
  * [levels in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/levels-in-unreal-engine?application_version=5.0)
  * [lidar point cloud plugin for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/lidar-point-cloud-plugin-for-unreal-engine?application_version=5.0)
  * [lidar point cloud plugin overview in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/lidar-point-cloud-plugin-overview-in-unreal-engine?application_version=5.0)
@@ -1467,7 +1481,9 @@ As of 2025/04/06.
  * [live link vrpn in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/live-link-vrpn-in-unreal-engine?application_version=5.0)
  * [livelinkxr in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/livelinkxr-in-unreal-engine?application_version=5.0)
  * [loading and unloading levels using blueprints in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/loading-and-unloading-levels-using-blueprints-in-unreal-engine?application_version=5.0)
+   * Load Stream Level/Unload Stream Level nodes
  * [loading and unloading levels using cplusplus in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/loading-and-unloading-levels-using-cplusplus-in-unreal-engine?application_version=5.0)
+   * `UGameplayStatics::LoadStreamLevel`/`UGameplayStatics::UnloadStreamLevel`
  * [local notifications for android and ios in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/local-notifications-for-android-and-ios-in-unreal-engine?application_version=5.0)
  * [localization overview for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/localization-overview-for-unreal-engine?application_version=5.0)
  * [localization tools in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/localization-tools-in-unreal-engine?application_version=5.0)
@@ -2927,6 +2943,12 @@ As of 2025/04/06.
  * [working with scene variants in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-scene-variants-in-unreal-engine?application_version=5.0)
  * [working with speedtree models in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-speedtree-models-in-unreal-engine?application_version=5.0)
  * [world composition in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/world-composition-in-unreal-engine?application_version=5.0)
+   * scans a folder and treats all found levels as streaming levels
+   * Each streaming level has information stored in the package header, which World Composition can read without loading the level into memory
+   * World Composition relies on a world origin shifting feature
+   * World Composition is a legacy system, use World Partition
+   * TODO: see [this article](https://habr.com/ru/articles/565330/)
+   * 
  * [world partition   data layers in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/world-partition---data-layers-in-unreal-engine?application_version=5.0)
  * [world partition   hierarchical level of detail in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/world-partition---hierarchical-level-of-detail-in-unreal-engine?application_version=5.0)
  * [world partition in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/world-partition-in-unreal-engine?application_version=5.0)
