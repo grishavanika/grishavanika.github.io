@@ -7890,7 +7890,54 @@ memory</li>
 <li>World Composition is a legacy system, use World Partition</li>
 <li>TODO: see <a href="https://habr.com/ru/articles/565330/">this
 article</a></li>
-<li></li>
+<li>Activating World Composition: Enable World Composition flag in World
+Settings</li>
+<li>(after activation) all the levels in your project will be visible in
+the Levels window</li>
+<li>To load a level in the world composition, just double-click its
+name</li>
+<li>drag-and-drop, you can establish relationships between individual
+levels</li>
+<li>Child levels store position relative to the parent level</li>
+<li>Levels Composition: button to open World Composition at the top of
+the Levels window (see the layout of your world)</li>
+<li>Layers: By default, all levels are assigned to an Uncategorized
+layer</li>
+<li>Layers hold information about streaming distances</li>
+<li>Levels assigned to a layer with streaming distance disabled will be
+excluded from distance streaming, and can instead be controlled using
+Blueprints</li>
+<li>Each level has an image and position in the world, which are
+displayed in the minimap</li>
+<li>arrange the position of levels by dragging them</li>
+<li>Level Bounds Actor is automatically created in the level</li>
+<li>By default, the Level Bounds Actor automatically resizes to include
+all Actors found in the level</li>
+<li>some Actors, like skyboxes, can have very large bounding boxes, you
+can disable automatic level bounds calculations and set a fixed
+size</li>
+<li>minimap has a yellow square indicating the safe edit area, equal to
+the WORLD_MAX constant</li>
+<li>Level Details: LOD Settings</li>
+<li>level in the world composition can have up to 4 LOD streaming
+levels</li>
+<li>Depending on streaming distance settings streaming level will be
+replaced with corresponding LOD level</li>
+<li>LOD levels automatically discovered by World Composition using
+pattern <code>[Package name]_LOD#</code></li>
+<li>World Origin Shifting: ApplyWorldOffset</li>
+<li>world origin shifting is not supported in the multiplayer games</li>
+<li>However if you disable world origin, shifting you can run a tiled
+world with a dedicated server</li>
+<li>Creating Landscape Levels</li>
+<li>Tiled Landscape Import</li>
+<li>you can press ‘alt’ in the world composition window to see what
+levels will be loaded considering your cursor position is your player
+position</li>
+<li>Consider breaking up your levels into exterior and interior
+ones</li>
+<li>Level Streaming section in Project settings in the Engine category:
+adjust options</li>
 </ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/world-partition---data-layers-in-unreal-engine?application_version=5.0">world
