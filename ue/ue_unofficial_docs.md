@@ -4096,8 +4096,11 @@ As of 2025/04/06.
 
 From [Learn Unreal Engine](https://dev.epicgames.com/community/unreal-engine/learning?source=epic_games&sort_by=first_published_at)/Epic Games/Published On.
 
-As of 2025/04/09 = 1482 links.
+As of 2025/04/12 = 1485 links.
 
+ * |tutorials| [eos player reports](https://dev.epicgames.com/community/learning/tutorials/DBnX/unreal-engine-eos-player-reports)
+ * |knowledge-base| [ue 5 5 x most common rendering issues](https://dev.epicgames.com/community/learning/knowledge-base/j2yV/unreal-engine-ue-5-5-x-most-common-rendering-issues)
+ * |tutorials| [epic for indies switching to unreal engine i tutorial series](https://dev.epicgames.com/community/learning/tutorials/a6a9/epic-for-indies-switching-to-unreal-engine-i-tutorial-series)
  * |knowledge-base| [tech note potential memory overhead in editor due to tinlineallocator setting in 5 5 x](https://dev.epicgames.com/community/learning/knowledge-base/2Xdy/unreal-engine-tech-note-potential-memory-overhead-in-editor-due-to-tinlineallocator-setting-in-5-5-x)
  * |tutorials| [epic for indies your first 60 minutes with gameplay ability system](https://dev.epicgames.com/community/learning/tutorials/8Xn9/unreal-engine-epic-for-indies-your-first-60-minutes-with-gameplay-ability-system)
  * |tutorials| [eos sanctions](https://dev.epicgames.com/community/learning/tutorials/1b84/unreal-engine-eos-sanctions)
