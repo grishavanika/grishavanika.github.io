@@ -75,7 +75,7 @@ Surprisingly, you can declare a function with using declaration:
 ``` cpp {.numberLines}
 using MyFunction = void (int);
 
-// same as `void Foo(int);`
+// same as `void Foo(int)`. NOT a variable
 MyFunction Foo;
 
 // actual definition
@@ -204,9 +204,9 @@ struct MyDerived1 : MyBase {}; // same as : public  MyBase
 class  MyDerived2 : MyBase {}; // same as : private MyBase
 ```
 
-### `(void)0` to force `;` for macros
+### `(void)0` to force `;` (semicolon) for macros
 
-To be consistent and force the user of the macro to put `;` at the line end:
+To be consistent and force the user of the macro to put `;` (semicolon) at the line end:
 
 ``` cpp {.numberLines}
 #define MY_FOO(MY_INPUT) \
@@ -290,8 +290,8 @@ void MyHandle(char) = delete;
 void MyHandle(int);
 ```
 
-`MyHandle('x')` does not compile now.
-
+`MyHandle('x')` does not compile now, see [std::ref](https://en.cppreference.com/w/cpp/utility/functional/ref), [std::as_const](https://en.cppreference.com/w/cpp/utility/as_const)
+for the use in STL.
 
 ### `#line` and file renaming
 
@@ -402,6 +402,7 @@ private:
 ```
 
 See [cppreference example](https://en.cppreference.com/w/cpp/memory/enable_shared_from_this#Example).
+Most-likely, you also want class copy/move ctor/assignments to be deleted.
 
 ### `std::shared_ptr` aliasing constructor
 
@@ -1985,6 +1986,12 @@ template <typename... Args> void foo2(Args... ...);
 template <typename... Args> void foo3(Args..., ...);
 ```
 
++Update: depracated, valid up until C++26, see [The Oxford variadic comma](https://wg21.link/P3176):
+
+> Deprecate ellipsis parameters without a preceding comma.
+> The syntax (int...) is incompatible with C, detrimental to C++,
+> and easily replaceable with (int, ...)
+
 ### `assert(x && "message")`
 
 Used to print "message" when assert fails. Compare the output of:
@@ -3062,3 +3069,49 @@ if (std::exchange(dirty_, false))
 See Ben Deane ["std:: exchange Idioms" talk](https://youtu.be/OqJUBIJOojI?si=2CNQJ9zHTlujqL1u) and ["std::exchange Patterns" article](https://www.fluentcpp.com/2020/09/25/stdexchange-patterns-fast-safe-expressive-and-probably-underused/).
 
 Has nothing to do with `atomic::exchange()`.
+
+### std::tie idiom for comparisons operators {#113}
+
+For quick-and-dirty (but 100% correct) code to generate comparison operator with multiple members:
+
+``` cpp {.numberLines}
+struct Person
+{
+    std::string name;
+    int age = 0;
+};
+
+inline bool operator<(const Person& lhs, const Person& rhs) noexcept
+{
+    return std::tie(lhs.name, lhs.age) <
+           std::tie(rhs.name, rhs.age);
+}
+```
+
+std::tie forms `std::tuple<const std::string&, const int&>`; std::tuple has generic implementation for operator<.
+
+Same could be done for operator==. Is it an outdated idiom with spaceship operator ([default comparisons](https://en.cppreference.com/w/cpp/language/default_comparisons)) since C++20? Probably.
+See also [this article](https://bajamircea.github.io/coding/cpp/2017/03/10/std-tie.html).
+
+### std::tie idiom to decompose/unpack {#114}
+
+Consider
+
+``` cpp {.numberLines}
+extern std::set<int> vs;
+bool was_inserted = false;
+std::tie(std::ignore, was_inserted) = vs.insert(42);
+```
+
+`vs.insert()` returns pair, std::tie here forms a tuple with a reference to `was_inserted`,
+effectively having assigning of `tuple<X, bool&> = pair<X, bool>`. Note, how `std::ignore` is
+used as poor man's `_` placeholder.
+
+With C++17 structure bindings, same could be done:
+
+``` cpp {.numberLines}
+extern std::set<int> vs;
+auto [_, was_inserted] = vs.insert(42);
+```
+
+Note, `_` here is a usual variable, nothing special (up until C++26, see [A nice placeholder with no name](http://wg21.link/P2169R4)).
