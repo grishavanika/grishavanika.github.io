@@ -2272,14 +2272,14 @@ right at assert definition so you can get breakpoint hit exactly at the location
 of the assert fail. In short:
 
 ``` cpp {.numberLines}
-#define KK_ABORT(KK_FMT, ...) (void)                              \
-    (::log_abort(__FILE__, __LINE__, KK_FMT, ##__VA_ARGS__),      \
-        __debugbreak(),       /*MSVC-specific*/                   \
-        std::quick_exit(-1))  /*just to be extra-paranoid*/
+#define KK_ABORT(KK_FMT, ...) (void)                                 \
+    (::log_abort(__FILE__, __LINE__, KK_FMT, ##__VA_ARGS__),         \
+        __debugbreak(),       /*MSVC-specific*/                      \
+        std::quick_exit(-1))  /*in case of non-debugbreak platforms*/
 
 #define KK_VERIFY(KK_EXPRESSION) (void)                           \
     (!!(KK_EXPRESSION) ||                                         \
-        (KK_ABORT("Verify failed: '%s'.", #KK_EXPRESSION), false))
+        (KK_ABORT("Verify failed: '%s'", #KK_EXPRESSION), false))
 ```
 
 `__debugbreak()` hits under debugger and points exactly at assert/verify location:
@@ -2352,8 +2352,8 @@ resolution; only to select move constructor instead of copy constructor if both
 present, etc.
 
 
-See [C++ Rvalue References Explained](https://web.archive.org/web/20230604062855/http://thbecker.net/articles/rvalue_references/section_01.html)
-archive.
+See [C++ Rvalue References Explained](https://web.archive.org/web/20240719173118/http://thbecker.net/articles/rvalue_references/section_01.html)
+web archive (July 2024).
 
 ### no destructive move
 
@@ -2366,6 +2366,34 @@ After std::move object still alive and invokes destructor.
 See [On harmful overuse of std::move](https://devblogs.microsoft.com/oldnewthing/20231124-00/?p=109059).
 
 [TODO]{.mark}
+
+### `const T&&` (const rvalue)
+
+rvalue is still a **REFERENCE**, const rvalue can be formed and as normal as const lvalue:
+
+``` cpp {.numberLines}
+void Foo(const int&)  { std::puts("(const int&)"); }
+void Foo(int&)        { std::puts("(int&)"); }
+void Foo(int&&)       { std::puts("(int&&)"); }
+void Foo(const int&&) { std::puts("(const int&&)"); }
+
+int main()
+{
+    const int v = 72;
+    Foo(std::move(v)); // (const int&&)
+}
+```
+
+Here, we accidentaly move const object, so cast to `const int&&` happens.
+
+Overloads with const T&& references are usually deleted, see [std::ref](https://en.cppreference.com/w/cpp/utility/functional/ref), [std::as_const](https://en.cppreference.com/w/cpp/utility/as_const):
+
+``` cpp {.numberLines}
+template< class T >
+void ref( const T&& ) = delete; // rvalue reference wrapper is deleted
+```
+
+See [SO discussion](https://stackoverflow.com/q/4938875) on usefullness.
 
 ### enum struct
 
@@ -2993,3 +3021,27 @@ final_suspend       : '/app/example.cpp'/'co_task co_test()'/'63'
 ```
 
 Originally comes from reading [boost.cobalt](https://github.com/boostorg/cobalt/blob/0c6cf566471803dd8a53a5e98511da4516583e88/include/boost/cobalt/detail/task.hpp#L196).
+
+### moved-from std::optional does not reset
+
+Moved-from std::optional `x` still holds value after a move:
+
+``` cpp {.numberLines}
+std::optional<int> x{42};
+std::optional<int> c = std::move(x);
+assert(x.has_value()); // holds true
+```
+
+Move-constructor of std::optional does not reset `x`, just moves the value out of it.
+This is by definition of std::optional and the general rule of
+"valid but unspecified state" does not apply in this case,
+see [optional.ctor](https://eel.is/c++draft/optional.ctor#10):
+
+``` {.numberLines}
+constexpr optional(optional&& rhs) noexcept(see below);
+// Postconditions: rhs.has_value() == this->has_value().
+```
+
+People expect moved-from optional to have no value, i.e.,
+as if `x = std::nullopt` after a move, see ["Beware when moving a std::optional!"](https://blog.tal.bi/posts/std-optional-move-pitfall/)
+article (which has wrong conclusions and solution) and this [reddit discussion](https://www.reddit.com/r/cpp/comments/75paqu/design_decision_for_stdoptional_moved_from_state).
