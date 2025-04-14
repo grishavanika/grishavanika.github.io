@@ -242,8 +242,7 @@
 <nav id="TOC" role="doc-toc">
 <ul>
 <li><a href="#1" id="toc-1"><span class="toc-section-number">1</span> #
-pitfall of
-<code>for (const pair&lt;K, V&gt;&amp; kv : my_map)</code></a></li>
+accidental pair copy</a></li>
 <li><a href="#2" id="toc-2"><span class="toc-section-number">2</span> #
 declare function with typedef/using</a></li>
 <li><a href="#3" id="toc-3"><span class="toc-section-number">3</span> #
@@ -521,9 +520,8 @@ service/wg21.link</a></li>
 </ul>
 <hr />
 <h3 data-number="1" id="1"><span class="header-section-number">1</span>
-<a href="#1"># </a>pitfall of
-<code>for (const pair&lt;K, V&gt;&amp; kv : my_map)</code></h3>
-<p>Here, <code>kv</code> is a copy instead of const reference since
+<a href="#1"># </a>accidental pair copy</h3>
+<p>Here, <code>kv</code> is a COPY instead of const reference since
 std::meow_map <code>value_type</code> is
 <code>std::pair&lt;const Key, T&gt;</code>, notice <strong>const
 Key</strong>.</p>

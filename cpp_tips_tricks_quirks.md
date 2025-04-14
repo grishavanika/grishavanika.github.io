@@ -27,9 +27,9 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 
 -----------------------------------------------------------
 
-### pitfall of `for (const pair<K, V>& kv : my_map)` {#1}
+### accidental pair copy {#1}
 
-Here, `kv` is a copy instead of const reference since std::meow_map `value_type`
+Here, `kv` is a COPY instead of const reference since std::meow_map `value_type`
 is `std::pair<const Key, T>`, notice **const Key**.
 
 ``` cpp {.numberLines}
