@@ -27,7 +27,7 @@ Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/
 
 -----------------------------------------------------------
 
-### pitfall of `for (const pair<K, V>& kv : my_map)`
+### pitfall of `for (const pair<K, V>& kv : my_map)` {#1}
 
 Here, `kv` is a copy instead of const reference since std::meow_map `value_type`
 is `std::pair<const Key, T>`, notice **const Key**.
@@ -68,7 +68,7 @@ for (const auto& [key, value] : my_map)
 See [/u/STL](https://www.reddit.com/user/STL/) [comments](https://www.reddit.com/r/cpp/comments/1fhncm2/comment/lndnk8m/).
 Note on /u/STL [meow](https://brevzin.github.io/c++/2023/03/14/prefer-views-meow/).
 
-### declare function with typedef/using
+### declare function with typedef/using {#2}
 
 Surprisingly, you can declare a function with using declaration:
 
@@ -120,7 +120,7 @@ MyFunction foo, bar, baz; // functions declarations
 int foo(char), bar();
 ```
 
-### protected/private virtual functions override
+### protected/private virtual functions override {#3}
 
 Access rights are resolved at compile-time, virtual function target - at
 run-time. It's perfectly fine to move virtual-override to private section:
@@ -157,7 +157,7 @@ it makes sense to make virtual-overrides protected instead of private so derived
 class could invoke Super:: version in the implementation.
 
 
-### function try block
+### function try block {#4}
 
 See [cppreference](https://en.cppreference.com/w/cpp/language/try#Function_try_block).
 Specifically, to handle exceptions for constructor initializer:
@@ -194,7 +194,7 @@ catch (...)
 }
 ```
 
-### omiting `public` when deriving
+### omiting `public` when deriving {#5}
 
 Minor, still, see [cppreference, access-specifier](https://en.cppreference.com/w/cpp/language/derived_class):
 
@@ -204,7 +204,7 @@ struct MyDerived1 : MyBase {}; // same as : public  MyBase
 class  MyDerived2 : MyBase {}; // same as : private MyBase
 ```
 
-### `(void)0` to force `;` (semicolon) for macros
+### `(void)0` to force `;` (semicolon) for macros {#6}
 
 To be consistent and force the user of the macro to put `;` (semicolon) at the line end:
 
@@ -219,7 +219,7 @@ MY_FOO(puts("X"));
 MY_FOO(puts("Y"));
 ```
 
-### call a method of a template base class
+### call a method of a template base class {#7}
 
 See also [Accessing template base class members in C++](https://yunmingzhang.wordpress.com/2019/01/26/accessing-template-base-class-members-in-c/).
 
@@ -248,7 +248,7 @@ struct MyDerived : MyBase<U>
 
 `this->Foo()` becomes [type-dependent expression](https://en.cppreference.com/w/cpp/language/dependent_name).
 
-### `= default` on implementation
+### `= default` on implementation {#8}
 
 You can default special member functions in the .cpp/out of line definition:
 
@@ -281,7 +281,7 @@ struct MyClass
 MyClass::~MyClass() = default; // generate a call to my_ptr.~unique_ptr()
 ```
 
-### `= delete` for free functions
+### `= delete` for free functions {#9}
 
 You can delete unneeded function overload anywhere:
 
@@ -293,7 +293,7 @@ void MyHandle(int);
 `MyHandle('x')` does not compile now, see [std::ref](https://en.cppreference.com/w/cpp/utility/functional/ref), [std::as_const](https://en.cppreference.com/w/cpp/utility/as_const)
 for the use in STL.
 
-### `#line` and file renaming
+### `#line` and file renaming {#10}
 
 See [cppreference](https://en.cppreference.com/w/c/preprocessor/line):
 
@@ -314,7 +314,7 @@ wich outputs:
 Note: this could break .pdb(s).  
 Bonus: what happens if you do `#line 4294967295`?
 
-### Meyers cons_cast
+### Meyers cons_cast {#11}
 
 To not repeat code inside const and non-const function, [see SO](https://stackoverflow.com/a/123995):
 
@@ -341,7 +341,7 @@ around (which would be UB).
 Kind-a outdated with [C++23's Deducing this](https://devblogs.microsoft.com/cppblog/cpp23-deducing-this/)
 or is it? (template, compile time, .h vs .cpp).
 
-### missing `std::` and why it still compiles (ADL)
+### missing `std::` and why it still compiles (ADL) {#12}
 
 Notice, that code below will compile (most of the time):
 
@@ -358,7 +358,7 @@ also known as Koenig lookup](https://en.cppreference.com/w/cpp/language/adl).
 defined (?) where or not iterator is inside std. Meaning the code above
 is not portable (across different implementations of STL).
 
-### why STL is using `::std::move` everywhere?
+### why STL is using `::std::move` everywhere? {#13}
 
 Take a look at [MSVC's implementation of the C++ Standard Library](https://github.com/microsoft/STL/blob/faccf0084ed9b8b58df103358174537233b178c7/stl/inc/algorithm#L452-L453):
 
@@ -373,11 +373,11 @@ So `::std::move` is used to **disable** ADL and make sure
 implementation of `move` from namespace `std` is choosen.
 Who knows what user-defined custom type could bring into the table?
 
-### the use of shared_ptr in public API is a code smell
+### the use of shared_ptr in public API is a code smell {#14}
 
 [TBD]{.mark}
 
-### enable_shared_from_this requires factory function
+### enable_shared_from_this requires factory function {#15}
 
 If class derives from `enable_shared_from_this`:
 
@@ -404,7 +404,7 @@ private:
 See [cppreference example](https://en.cppreference.com/w/cpp/memory/enable_shared_from_this#Example).
 Most-likely, you also want class copy/move ctor/assignments to be deleted.
 
-### `std::shared_ptr` aliasing constructor
+### `std::shared_ptr` aliasing constructor {#16}
 
 See [aliasing constructor](https://en.cppreference.com/w/cpp/memory/shared_ptr/shared_ptr):
 
@@ -421,7 +421,7 @@ std::shared_ptr<int> v2{v1, &v1->data};
 v2 and v1 now share the same control block.
 You can also put a pointer to unrelative data (is there real-life use-case?).
 
-### `dynamic_cast<void*>` to get most-derived object
+### `dynamic_cast<void*>` to get most-derived object {#17}
 
 From anywhere in the hierarhy of polimorphic type, you can restore a pointer
 to most-derived instance (i.e., the one created by `new` initially):
@@ -441,7 +441,7 @@ assert(void_ptr == original_ptr);
 See [cppreference](https://en.cppreference.com/w/cpp/language/dynamic_cast).
 Most-likely useful to interop with C library/external code.
 
-### `std::shared_ptr<base>` with no virtual destructor
+### `std::shared_ptr<base>` with no virtual destructor {#18}
 
 Usually, if you delete pointer-to-base, destructor needs to be declared virtual
 so proper destructor is invoked. Hovewer, for std::shared_ptr this is not required:
@@ -465,7 +465,7 @@ See also [GotW #5, Overriding Virtual Functions](http://www.gotw.ca/gotw/005.htm
 
 > Make base class destructors virtual
 
-### stateful metaprogramming / type loophole
+### stateful metaprogramming / type loophole {#19}
 
 This [works](https://b.atch.se/posts/constexpr-counter/) and a and b
 have different values:
@@ -488,7 +488,7 @@ See, for instance, [Revisiting Stateful Metaprogramming in C++20](https://mc-del
  * [hack C++ with templates and friends](https://www.worldcadaccess.com/blog/2020/05/how-to-hack-c-with-templates-and-friends.html)
  * [The C++ Type Loophole](https://alexpolt.github.io/type-loophole.html)
 
-### access private members (via friend injection)
+### access private members (via friend injection) {#20}
 
 Self-contained example from [How to Hack C++ with Templates and Friends](https://www.worldcadaccess.com/blog/2020/05/how-to-hack-c-with-templates-and-friends.html):
 
@@ -511,7 +511,7 @@ dataGetter(obj) = 31;   // Ok
 See [this](https://github.com/martong/access_private) for more details and explanations.
 
 
-### extern templates
+### extern templates {#21}
 
 See, [this](https://isocpp.org/wiki/faq/cpp11-language-templates#extern-templates) or [cppreference](https://en.cppreference.com/w/cpp/language/class_template).
 
@@ -542,7 +542,7 @@ template class MyVector<char>;
 C++ had also never implemeted C++98 [export keyword](https://en.cppreference.com/w/cpp/keyword/export)
 (C++98, nothing to do with [modules](https://en.cppreference.com/w/cpp/language/modules)).
 
-### templates in .cpp file
+### templates in .cpp file {#22}
 
 It's usually stated that templates could only be defined in header file.
 However, you just need to define them anywhere so definition is visible at the
@@ -585,7 +585,7 @@ int MyClass::Foo()
 
 See also [extern templates](#extern-templates).
 
-### double-template syntax
+### double-template syntax {#23}
 
 If you have template class that has template member function
 and you want to define such function out-of-class, you need:
@@ -603,7 +603,7 @@ template<typename U>                // for Foo
 void MyClass<T1, T2>::Foo(U v) {}
 ```
 
-### when type T is bitcopyable?
+### when type T is bitcopyable? {#24}
 
 When implementors do use memcopy/memmove to construct/assign range of values
 for some user-defined type T? Use `std::is_trivially_*` [type traits](https://en.cppreference.com/w/cpp/meta)
@@ -632,7 +632,7 @@ memory management and [std::copy algorithm](https://en.cppreference.com/w/cpp/al
 and/or analogs that are already optimized for trivial/pod types
 by your standard library implementation for you.
 
-### pseudo destructors (~int)
+### pseudo destructors (~int) {#25}
 
 In generic context, it's possible to invoke the destructor of int:
 
@@ -646,7 +646,7 @@ which is no-op. See [destructor](https://en.cppreference.com/w/cpp/language/dest
 and [built-in member access operators](https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_member_access_operators).
 Exists so you don't need to special-case destructor call in generic/template code.
 
-### manually invoke constructor
+### manually invoke constructor {#26}
 
 In the same way you can call destructor manually, you can call constructor:
 
@@ -662,7 +662,7 @@ Note on the use of `static_cast<void*>` - while not needed in this example, it's
 needed to be done in generic context to avoid invoking overloaded version of new,
 if any.
 
-### injected-class-name
+### injected-class-name {#27}
 
 See [cppreference](https://en.cppreference.com/w/cpp/language/injected-class-name).
 In short, every class has its own name inside the class itself. Which happens to
@@ -702,7 +702,7 @@ struct MyVector
 };
 ```
 
-### invoke base virtual function directly
+### invoke base virtual function directly {#28}
 
 Given an instance of derived class, one can skip invoking its own function
 override and call parent function directly (see [injected-class-name](#injected-class-name)):
@@ -731,7 +731,7 @@ int main()
 
 This will print `MyBase` 2 times since we explicitly call MyBase::Foo().
 
-### perfect construct with factory function
+### perfect construct with factory function {#29}
 
 See `class rvalue` trick discussed [there](https://akrzemi1.wordpress.com/2018/05/16/rvalues-redefined/);
 see same trick discussed in [guaranteed copy elision in C++17](https://groups.google.com/a/isocpp.org/g/std-proposals/c/hQ654zTNyiM).
@@ -788,7 +788,7 @@ int main()
 }
 ```
 
-### disable template argument deduction
+### disable template argument deduction {#30}
 
 See, for instance, [What's the deal with std::type_identity?](https://devblogs.microsoft.com/oldnewthing/20240607-00/?p=109865)
 or [dont_deduce\<T\>](https://artificial-mind.net/blog/2020/09/26/dont-deduce).
@@ -828,7 +828,7 @@ int main()
 T is deduced from 2nd argument, std::function is constructed from a given lamda
 as it is.
 
-### priority_tag for tag dispatch
+### priority_tag for tag dispatch {#31}
 
 From [priority_tag for ad-hoc tag dispatch](https://quuxplusone.github.io/blog/2021/07/09/priority-tag/)
 and [CppCon 2017: Arthur O'Dwyer "A Soupcon of SFINAE"](https://youtu.be/ybaE9qlhHvw?t=56m36s).
@@ -874,7 +874,7 @@ auto stringify(const T& x)
 }
 ```
 
-### new auto(10)
+### new auto(10) {#32}
 
 You can leave type dedcution to the compiler when using new:
 
@@ -892,7 +892,7 @@ auto q = new std::integral auto(1); // OK: q is an int*
 auto r = new std::pair(1, true);    // OK: r is a std::pair<int, bool>*
 ```
 
-### `std::forward` use in std::function-like case
+### `std::forward` use in std::function-like case {#33}
 
 Most of the times, we say that std::forward should be used in the context
 of forwarding references that, _usually_, look like this:
@@ -932,7 +932,7 @@ do with `operator()` call at (2) which is not even a function template now.
 If you run [reference collapsing](https://en.cppreference.com/w/cpp/language/reference)
 rules over possible `Types` and `Args`, `std::forward` is just right.
 
-### virtual functions default arguments
+### virtual functions default arguments {#34}
 
 See [GotW #5, Overriding Virtual Functions](http://www.gotw.ca/gotw/005.htm):
 
@@ -956,7 +956,7 @@ ptr->Foo(); // calls MyDerived::Foo, but with v = 34 from MyBase
 default arguments are resolved at compile time, override function target - at
 run-time; may lead to confusion.
 
-### virtual functions overloads
+### virtual functions overloads {#35}
 
 See [GotW #5, Overriding Virtual Functions](http://www.gotw.ca/gotw/005.htm):
 
@@ -998,7 +998,7 @@ struct MyDerived : MyBase
 Note: bringing base class method with using declation is, potentially,
 a breaking change (see above, `derived.Foo('x')` now returns 1 instead of 2).
 
-### change base class member access rights
+### change base class member access rights {#36}
 
 See [Using-declaration](https://en.cppreference.com/w/cpp/language/using_declaration).
 You can make protected member to be public in derived class:
@@ -1016,7 +1016,7 @@ public:
 };
 ```
 
-### use default constructor for state reset
+### use default constructor for state reset {#37}
 
 It's observed that, often, class API has .Reset() function (even more often
 when two phase initialization is used):
@@ -1041,7 +1041,7 @@ instance = MyClass{}; // same as .Reset()
 
 See also "default constructor is a must for modern C++"
 
-### default constructor is a must for modern C++
+### default constructor is a must for modern C++ {#38}
 
 What happens with the object after the move? The known answer for C++ library
 types is that it's in ["valid but unspecified state"](https://en.cppreference.com/w/cpp/utility/move).
@@ -1097,9 +1097,9 @@ Leaving validity check alone, any time you support move, just expose such state
 with default constructor. More often then not it makes life easier.
 See also "state reset".
 
-Relative: [Move Semantics and Default Constructors – Rule of Six?](https://www.foonathan.net/2016/08/move-default-ctor/).
+Relative: [Move Semantics and Default Constructors вЂ“ Rule of Six?](https://www.foonathan.net/2016/08/move-default-ctor/).
 
-### default constructor must do no work
+### default constructor must do no work {#39}
 
 Default constructor may be used as a fallback in a few places of STL/your code:
 
@@ -1130,7 +1130,7 @@ std::string s; // ?
 
 Hint: MSVC STL debug iterators machinery.
 
-### constructors should do no work
+### constructors should do no work {#40}
 
 Constructors (at least of objects for types that are part of your applicaiton domain)
 should just assign/default initialize data members, NO business/application
@@ -1172,7 +1172,7 @@ change anything there.
 Sometimes I even leave `MyFile(FileHandle handle)`-like constructors public.
 This makes API extremely hackable and testable.
 
-### `std::unique_ptr` with decltype lambda
+### `std::unique_ptr` with decltype lambda {#41}
 
 Since C++20, with [Lambdas in unevaluated contexts](https://andreasfertig.blog/2022/08/cpp-insights-lambdas-in-unevaluated-contexts/),
 you can have poor man's scope exit as a side effect:
@@ -1189,7 +1189,7 @@ void Foo()
 
 from [Creating a Sender/Receiver HTTP Server for Asynchronous Operations in C++](https://youtu.be/O2G3bwNP5p4?si=_2yfyq9BEoxF3etB).
 
-### `auto` vs `auto*` for pointers
+### `auto` vs `auto*` for pointers {#42}
 
 Since auto type deduction comes from [template argument deduction](https://en.cppreference.com/w/cpp/language/template_argument_deduction#Other_contexts),
 it's fine to have `auto*` in the same way it's fine to have `T*` as a template
@@ -1205,7 +1205,7 @@ const auto* p4 = new int;  // p4 = const int*
 Still, note the difference for p3 vs p4 - const pointer to int vs just pointer 
 to const int!
 
-### std::transform and LIFT (passing overload set)
+### std::transform and LIFT (passing overload set) {#43}
 
 See [Passing overload sets to functions](https://blog.tartanllama.xyz/passing-overload-sets/):
 
@@ -1224,7 +1224,7 @@ See [Passing overload sets to functions](https://blog.tartanllama.xyz/passing-ov
 std::transform(first, last, target, LIFT(foo));
 ```
 
-### `tolower` is not an addressible function
+### `tolower` is not an addressible function {#44}
 
 You can't take an adress of std:: function since function could be implemented
 differently with different STL(s) and/or in the feature the function
@@ -1242,7 +1242,7 @@ std::transform(name.begin(), name.end(), name.begin(),
     std::tolower);
 ```
 
-### replace operator new to track third-party code allocations
+### replace operator new to track third-party code allocations {#45}
 
 `operator new`/`operator delete` can have [global replacement](https://en.cppreference.com/w/cpp/memory/new/operator_new#Global_replacements).
 Usually used to actually inject custom memory allocator, but also is used for
@@ -1269,7 +1269,7 @@ all the useful context.
 
 Hint: same can be done with, let say, WinAPI - use [Detours](https://github.com/microsoft/Detours).
 
-### `std::shared_ptr<void>` as user-data pointer
+### `std::shared_ptr<void>` as user-data pointer {#46}
 
 `std::shared_ptr<void>` holds `void*` pointer, but also has [type-erased](https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Type_Erasure)
 destroy function that remembers the actual type it was created with, so this is
@@ -1283,7 +1283,7 @@ std::shared_ptr<MyData> ptr2 = std::static_pointer_cast<MyData>(ptr1); // ok
 See [Why do std::shared_ptr<void> work](https://stackoverflow.com/questions/5913396/why-do-stdshared-ptrvoid-work)
 and [The std::shared_ptr as arbitrary user-data pointer](https://www.nextptr.com/tutorial/ta1227747841/the-stdshared_ptrvoid-as-arbitrary-userdata-pointer).
 
-### sync_with_stdio for stdout vs std::cout
+### sync_with_stdio for stdout vs std::cout {#47}
 
 See [sync_with_stdio](https://en.cppreference.com/w/cpp/io/ios_base/sync_with_stdio).
 
@@ -1307,7 +1307,7 @@ Note: not the same as [syncstream/C++20](https://en.cppreference.com/w/cpp/io/ba
 
 See also `cin.tie(nullptr)`.
 
-### std::clog vs std::cerr
+### std::clog vs std::cerr {#48}
 
 [clog](https://en.cppreference.com/w/cpp/io/clog) cppreference and [cerr](https://en.cppreference.com/w/cpp/io/cerr).
 Associated with the standard C error output stream `stderr` (same as cerr), but:
@@ -1321,7 +1321,7 @@ std::clog << "bbbbb\n"; // may not flush "aaaaa"
 std::cerr << "ccccc\n"; // flush "aaaaa"
 ```
 
-### capture-less lambda can be converted to c-function
+### capture-less lambda can be converted to c-function {#49}
 
 ``` cpp {.numberLines}
 extern "C" void Handle(void (*MyCallback)(int));
@@ -1333,7 +1333,7 @@ void (*MyFunction)(int) = [](int) {};         // convert to C-function
 In case lambda has empty capture list (and no deducing this is used), it can be
 converted to c-style function pointer (has conversion operator). See [lambda](https://en.cppreference.com/w/cpp/language/lambda).
 
-### `+[](){}` to convert lambda to c-function
+### `+[](){}` to convert lambda to c-function {#50}
 
 See [A positive lambda: '+[]{}' - What sorcery is this?](https://stackoverflow.com/questions/18889028/a-positive-lambda-what-sorcery-is-this):
 
@@ -1355,7 +1355,7 @@ int main ()
 
 In addition: what `*[](){}` does? And `+*[](){}`?.
 
-### virtual operator int
+### virtual operator int {#51}
 
 [conversion function or cast operator](https://en.cppreference.com/w/cpp/language/cast_operator)
 is the same as regular function and could also be made virtual:
@@ -1384,7 +1384,7 @@ int main()
 }
 ```
 
-### placement new emplace_back pre-C++11
+### placement new emplace_back pre-C++11 {#52}
 
 Used to perfect-construct object in-place. Below is valid C++98:
 
@@ -1422,7 +1422,7 @@ TArray<int> Data;
 new(Data) int{67}; // push_back to Data
 ```
 
-### `operator->` recursion (returning non-pointer type)
+### `operator->` recursion (returning non-pointer type) {#53}
 
 If `operator->` returns non-pointer type, compiler will automatically
 invoke `operator->` on returned value until its return type is pointer:
@@ -1451,7 +1451,7 @@ int main()
 
 Used for [arrow_proxy](https://quuxplusone.github.io/blog/2019/02/06/arrow-proxy/).
 
-### move-only types and initializer_list
+### move-only types and initializer_list {#54}
 
 std::initializer_list with "uniform initialization" was introduced
 together with move semantics in C++11. However, surprisingly, initializer_list
@@ -1475,7 +1475,7 @@ std::vector<std::unique_ptr<int>> vs{
     };
 ```
 
-### uniform initialization is not uniform, use parentheses (`()` vs `{}`)
+### uniform initialization is not uniform, use parentheses (`()` vs `{}`) {#55}
 
 C++ initialization is famously complex. C++11 "uniform initialization"
 with braces `{}` (list-initialization) is famously non-uniform, see:
@@ -1501,9 +1501,9 @@ struct A
 A v(10, 20); // fine, C++20
 ```
 
-but also see [C++20’s parenthesized aggregate initialization has some downsides](https://quuxplusone.github.io/blog/2022/06/03/aggregate-parens-init-considered-kinda-bad/).
+but also see [C++20вЂ™s parenthesized aggregate initialization has some downsides](https://quuxplusone.github.io/blog/2022/06/03/aggregate-parens-init-considered-kinda-bad/).
 
-### move-only lambda and std::function
+### move-only lambda and std::function {#56}
 
 `std::function` was introduced together with move semantics in C++11.
 However, surprisingly, std::function does not support move-only lambda/function
@@ -1516,7 +1516,7 @@ std::function<void ()> f{[x = std::make_unique<int>(11)]() {}};
 That's one of the reasons C++23 [std::move_only_function](https://en.cppreference.com/w/cpp/utility/functional/move_only_function)
 was introduced.
 
-### std::function issues
+### std::function issues {#57}
 
 From [std::functionand Beyond](https://wg21.link/n4159):
 
@@ -1530,7 +1530,7 @@ See also:
  * [move_only_function](https://wg21.link/P0288) - C++23
  * [function_ref](https://wg21.link/P0792) - C++26
 
-### non-trivial types in union
+### non-trivial types in union {#58}
 
 Since C++11, you can manually control lifetime of user-defined types.
 See [Union declaration](https://en.cppreference.com/w/cpp/language/union) for
@@ -1556,7 +1556,7 @@ int main()
 }
 ```
 
-### lambda with access to const and global variables
+### lambda with access to const and global variables {#59}
 
 You can omit capture of const/global data in a simple cases:
 
@@ -1589,7 +1589,7 @@ int main()
 
 See "implicit"/"odr-usable" in [cppreference](https://en.cppreference.com/w/cpp/language/lambda).
 
-### std::variant overload pattern
+### std::variant overload pattern {#60}
 
 See [2 Lines Of Code and 3 C++17 Features - The overload Pattern](https://www.cppstories.com/2019/02/2lines3featuresoverload.html/).
 
@@ -1630,7 +1630,7 @@ struct overload : Ts...
 };
 ```
 
-### unique_ptr to incomplete type and class destructor
+### unique_ptr to incomplete type and class destructor {#61}
 
 See [When an empty destructor is required](https://andreasfertig.blog/2023/12/when-an-empty-destructor-is-required/)
 and [Smart pointers and the pointer to implementation idiom](https://andreasfertig.blog/2024/10/smart-pointers-and-the-pointer-to-implementation-idiom/).
@@ -1668,7 +1668,7 @@ Apple::Apple() = default;
 Apple a{};
 ```
 
-### the use of `shared_ptr<const T>`
+### the use of `shared_ptr<const T>` {#62}
 
  * [Sean Parent: Value Semantics and Concepts-based Polymorphism](https://youtu.be/_BpMYeUFXv8?si=t1XrdB4wjzdGksYd)
  * [Shared pointer to an immutable type has value semantics](https://stackoverflow.com/a/18803611)
@@ -1676,13 +1676,13 @@ Apple a{};
 
 [TBD]{.mark}: code sample
 
-### string_view issues
+### string_view issues {#63}
 
 See [Enough string_view to hang ourselves](https://ciura.ro/presentations/2018/Conferences/Enough%20string_view%20to%20hang%20ourselves%20-%20Victor%20Ciura%20-%20CppCon%202018.pdf).
 
 [TBD]{.mark}: code sample
 
-### user-provided constructor and garbage initialization
+### user-provided constructor and garbage initialization {#64}
 
 See [I Have No Constructor, and I Must Initialize](https://consteval.ca/2024/07/03/initialization/):
 
@@ -1698,9 +1698,9 @@ std::cout << t.x << std::endl;
 ```
 
 > You'd expect the printed result to be 0, right?
-> You poor thing. Alas—it will be garbage.
+> You poor thing. AlasвЂ”it will be garbage.
 
-### beaware of std::string_view-like key with std::meow_map
+### beaware of std::string_view-like key with std::meow_map {#65}
 
 See, for instance, [std::string_view and std::map](https://olafurw.com/2022-12-03-a-view-of-a-map/).
 std::meow_map has invariant and does not allow easily modify keys, making
@@ -1721,7 +1721,7 @@ int main()
 This is also the reason std::owner_less/owner_hash/owner_equal exist.
 See [Enabling the Use of weak_ptr as Keys in Unordered Associative Containers](https://wg21.link/P1901).
 
-### `std::piecewise_construct`
+### `std::piecewise_construct` {#66}
 
 See also [What's up with std::piecewise_construct and std::forward_as_tuple?](https://devblogs.microsoft.com/oldnewthing/20220428-00/?p=106540).
 
@@ -1763,7 +1763,7 @@ auto [_, inserted] = my_map.emplace(std::piecewise_construct
     , std::forward_as_tuple(4, 6));
 ```
 
-### `map[key]` creates default-constructed value first
+### `map[key]` creates default-constructed value first {#67}
 
 See [map::operator[]](https://en.cppreference.com/w/cpp/container/map/operator_at)
 which looks like this (simplifiyed) and returns `T&` ALWAYS:
@@ -1784,7 +1784,7 @@ my_map[2] = "xxx"; // key 2 = empty string inserted,
 
 See also "default constructor must do no work" and "const map[key] does not compile".
 
-### const `map[key]` does not compile, use `.find()`
+### const `map[key]` does not compile, use `.find()` {#68}
 
 See "map[key] creates default-constructed value first". Because `map::operator[]` is:
 
@@ -1802,7 +1802,7 @@ void MyProcess(const std::map<int, std::string>& kv)
 }
 ```
 
-### `if not map.find(x) then map[x]` is an antipattern
+### `if not map.find(x) then map[x]` is an antipattern {#69}
 
 In case you need to do extra work only if key does not exist, having code like this:
 
@@ -1833,7 +1833,7 @@ void MyProcess(std::map<int, std::string>& my_data)
 
 (You can use emplace to avoid default-constructing std::string).
 
-### Meyer's singleton
+### Meyer's singleton {#70}
 
 Relies on static local variables. Points to consider:
 
@@ -1853,7 +1853,7 @@ struct MyClass
 
 See also [C++ and the Perils of Double-Checked Locking](https://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf).
 
-### magic static
+### magic static {#71}
 
 From [Storage classes/static](https://learn.microsoft.com/en-us/cpp/cpp/storage-classes-cpp?view=msvc-170#static):
 
@@ -1892,7 +1892,7 @@ meaning that you may pay for each call to GetInstance:
     ret
 ```
 
-### (std::min)(x, y) thanks to Windows.h
+### (std::min)(x, y) thanks to Windows.h {#72}
 
 A trick to avoid macro invocation.
 
@@ -1926,7 +1926,7 @@ int my_min = std::min<int>(x, y);
 If you conrol build system, you may enforce [WIN32_LEAN_AND_MEAN](https://devblogs.microsoft.com/oldnewthing/20091130-00/?p=15863),
 NOMINMAX and heard about [VC_EXTRALEAN](http://web.archive.org/web/20121219084749/http://support.microsoft.com/kb/166474).
 
-### !!v double-negation
+### !!v double-negation {#73}
 
 It's a trick to convert to bool.
 
@@ -1951,7 +1951,7 @@ if (!!my_data.get("anything")) { /**/ }
 Why not `static_cast<bool>(x)`? MSVC may warn you about `(bool)a`, `bool(a)`
 and `static_cast<bool>(a)`. See also [contextually converted to bool](https://en.cppreference.com/w/cpp/language/implicit_conversion#Contextual_conversions).
 
-### `sizeof v` and `sizeof(v)`
+### `sizeof v` and `sizeof(v)` {#74}
 
 Turns out, for expression sizeof does not requre parentheses:
 
@@ -1964,7 +1964,7 @@ const unsigned size = sizeof v;  // same as above
 where `sizeof(Type)` requires parentheses for a type.
 See [sizeof operator](https://en.cppreference.com/w/cpp/language/sizeof).
 
-### six dots `Ts......`
+### six dots `Ts......` {#75}
 
 See [C++11's six dots](https://lbrandy.com/blog/2013/02/c11s-six-dots/):
 
@@ -1992,7 +1992,7 @@ template <typename... Args> void foo3(Args..., ...);
 > The syntax (int...) is incompatible with C, detrimental to C++,
 > and easily replaceable with (int, ...)
 
-### `assert(x && "message")`
+### `assert(x && "message")` {#76}
 
 Used to print "message" when assert fails. Compare the output of:
 
@@ -2019,7 +2019,7 @@ assert(false && "message"); // fail always, print "message"
 assert(!"message");         // same
 ```
 
-### `<assert.h>` and NDEBUG with no include guard
+### `<assert.h>` and NDEBUG with no include guard {#77}
 
 `<assert.h>` and `<cassert>` are special in the sense that there is
 no header include guard, **by design** - see, for instance, MSVC implementation:
@@ -2073,7 +2073,7 @@ int main(int argc, char* argv[])
 }
 ```
 
-### universal reference vs forwarding reference
+### universal reference vs forwarding reference {#78}
 
 The same thing:
 
@@ -2092,7 +2092,7 @@ From this [SO answer](https://stackoverflow.com/a/39552345):
 See [Universal References in C++11](https://isocpp.org/blog/2012/11/universal-references-in-c11-scott-meyers)
 and [n4164/Forwarding References](https://wg21.link/n4164).
 
-### force constexpr to evaluate at compile time
+### force constexpr to evaluate at compile time {#79}
 
 Even if arguments of constexpr function are known at compile time, it's not
 guarantee that its going to be evaluated at compile time. To force constexpr
@@ -2118,7 +2118,7 @@ int main()
 
 See also Epic's Unreal Engine version: UE_FORCE_CONSTEVAL, where variable template is used instead.
 
-### variadic template with default argument
+### variadic template with default argument {#80}
 
 See [Non-terminal variadic template parameters](https://cor3ntin.github.io/posts/variadic/).
 Specifically, arguments deduction does not work in cases like this:
@@ -2187,7 +2187,7 @@ int main()
 To see what `(args, ...)` does, check [Nifty Fold Expression Tricks](https://www.foonathan.net/2020/05/fold-tricks/).
 See also similar issues with `source_location::current()`.
 
-### variadic template with default std::source_location::current()
+### variadic template with default std::source_location::current() {#81}
 
 Something like this does not work (see [this SO](https://stackoverflow.com/q/57547273/2451677)):
 
@@ -2223,7 +2223,7 @@ int main() { debug("hello %s %s", "world", "around"); }
 
 See also [Non-terminal variadic template parameters](https://cor3ntin.github.io/posts/variadic/).
 
-### variadic template with default argument and deduction guide
+### variadic template with default argument and deduction guide {#82}
 
 See [this SO](https://stackoverflow.com/q/57547273/2451677):
 
@@ -2244,7 +2244,7 @@ debug(Ts&&...) -> debug<Ts...>;
 See also [Non-terminal variadic template parameters](https://cor3ntin.github.io/posts/variadic/)
 and "variadic template with default argument" section.
 
-### debug: print type at compile time with error
+### debug: print type at compile time with error {#83}
 
 Sometimes it's useful to know the type of a variable deep inside templates:
 
@@ -2272,7 +2272,7 @@ and you can see that `v` has type `int&&` there.
 
 See also [Template meta-programming: Some testing and debugging tricks](https://cukic.co/2019/02/19/tmp-testing-and-debugging-templates).
 
-### debug: useful custom assert
+### debug: useful custom assert {#84}
 
 When custom version of assert is needed, it's useful to inject `__debugbreak`
 right at assert definition so you can get breakpoint hit exactly at the location
@@ -2295,12 +2295,12 @@ of the assert fail. In short:
 
 Side question: why operator comma is used in `(KK_ABORT(...), false)`?
 
-### non-standard `, ##__VA_ARGS__` vs C++20 `__VA_OPT__`
+### non-standard `, ##__VA_ARGS__` vs C++20 `__VA_OPT__` {#85}
 
 [TBD]{.mark}. See [SO](https://stackoverflow.com/questions/52891546/what-does-va-args-mean),
 [cppreference](https://en.cppreference.com/w/cpp/preprocessor/replace).
 
-### std::move does not move
+### std::move does not move {#86}
 
 `std::move(object)` does not "move" on its own. So
 
@@ -2362,19 +2362,19 @@ present, etc.
 See [C++ Rvalue References Explained](https://web.archive.org/web/20240719173118/http://thbecker.net/articles/rvalue_references/section_01.html)
 web archive (July 2024).
 
-### no destructive move
+### no destructive move {#87}
 
 After std::move object still alive and invokes destructor.
 
 [TODO]{.mark}
 
-### std::move on return
+### std::move on return {#88}
 
 See [On harmful overuse of std::move](https://devblogs.microsoft.com/oldnewthing/20231124-00/?p=109059).
 
 [TODO]{.mark}
 
-### `const T&&` (const rvalue)
+### `const T&&` (const rvalue) {#89}
 
 rvalue is still a **REFERENCE**, const rvalue can be formed and as normal as const lvalue:
 
@@ -2402,7 +2402,7 @@ void ref( const T&& ) = delete; // rvalue reference wrapper is deleted
 
 See [SO discussion](https://stackoverflow.com/q/4938875) on usefullness.
 
-### enum struct
+### enum struct {#90}
 
 Does below compile?
 
@@ -2416,7 +2416,7 @@ enum struct MyEnum
 
 Yes. Exactly the same as `enum class MyEnum`.
 
-### using enum declaration
+### using enum declaration {#91}
 
 [This works (C++20)](https://en.cppreference.com/w/cpp/language/enum):
 
@@ -2443,7 +2443,7 @@ void MyProcess(MyEnum v)
 }
 ```
 
-### using declaration vs using directive
+### using declaration vs using directive {#92}
 
 See [using declaration](https://learn.microsoft.com/en-us/cpp/cpp/using-declaration?view=msvc-170)
 and [using directives](https://learn.microsoft.com/en-us/cpp/cpp/using-declaration?view=msvc-170).
@@ -2463,7 +2463,7 @@ Foo();
 
 One brings single name; another brings whole namespace.
 
-### `dynamic_cast<T*>` and `dynamic_cast<T&>` 
+### `dynamic_cast<T*>` and `dynamic_cast<T&>`  {#93}
 
 One returns nullptr on fail, the other one throws [std::bad_cast](https://en.cppreference.com/w/cpp/types/bad_cast):
 
@@ -2490,7 +2490,7 @@ void Handle(Base* base)
 }
 ```
 
-### `dynamic_cast<const T*>` adds const
+### `dynamic_cast<const T*>` adds const {#94}
 
 ``` cpp {.numberLines}
 struct V {};
@@ -2509,7 +2509,7 @@ note V in this case is not a polymorphic type (but still a class type). See also
 
 Notice, const_cast<const V*> can also be used to **add** const, not only remove it.
 
-### `CONOUT$`, `CONIN$` for `::AllocConsole()` 
+### `CONOUT$`, `CONIN$` for `::AllocConsole()`  {#95}
 
 See [Console Handles](https://learn.microsoft.com/en-us/windows/console/console-handles).
 In case you do ::AllocConsole(), you may want to reinitialize C and C++ stdio:
@@ -2533,7 +2533,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
 
 See [this SO](https://stackoverflow.com/a/57241985/2451677) for std::wcout and friends reinitilization.
 
-### rdbuf to read whole file
+### rdbuf to read whole file {#96}
 
 In case you just need a file content as std::string:
 
@@ -2552,7 +2552,7 @@ std::string ReadFileAsString(const char* file_path)
 
 Is it "fast" enough?
 
-### rdbuf to redirect
+### rdbuf to redirect {#97}
 
 See also [rdbuf](https://en.cppreference.com/w/cpp/io/basic_ios/rdbuf):
 
@@ -3115,3 +3115,4 @@ auto [_, was_inserted] = vs.insert(42);
 ```
 
 Note, `_` here is a usual variable, nothing special (up until C++26, see [A nice placeholder with no name](http://wg21.link/P2169R4)).
+
