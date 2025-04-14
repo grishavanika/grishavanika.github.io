@@ -593,63 +593,46 @@ id="toc-rdbuf-to-read-whole-file"><span
 class="toc-section-number">96</span> # rdbuf to read whole file</a></li>
 <li><a href="#rdbuf-to-redirect" id="toc-rdbuf-to-redirect"><span
 class="toc-section-number">97</span> # rdbuf to redirect</a></li>
-<li><a href="#compile-error-on-missing-switch-enum-case"
-id="toc-compile-error-on-missing-switch-enum-case"><span
-class="toc-section-number">98</span> # compile error on missing switch
-enum case</a></li>
-<li><a href="#use-compiler-to-write-down-pointer-to-member-syntax"
-id="toc-use-compiler-to-write-down-pointer-to-member-syntax"><span
-class="toc-section-number">99</span> # use compiler to write down
-pointer-to-member syntax</a></li>
-<li><a
-href="#all-enum-cases-are-handled-but-its-still-possible-to-fall-out-of-switch"
-id="toc-all-enum-cases-are-handled-but-its-still-possible-to-fall-out-of-switch"><span
+<li><a href="#98" id="toc-98"><span class="toc-section-number">98</span>
+# compile error on missing switch enum case</a></li>
+<li><a href="#99" id="toc-99"><span class="toc-section-number">99</span>
+# use compiler to write down pointer-to-member syntax</a></li>
+<li><a href="#100" id="toc-100"><span
 class="toc-section-number">100</span> # all enum cases are handled, but
 it’s still possible to fall out of switch</a></li>
-<li><a href="#on_scope_exit" id="toc-on_scope_exit"><span
+<li><a href="#101" id="toc-101"><span
 class="toc-section-number">101</span> # ON_SCOPE_EXIT</a></li>
-<li><a href="#float-to-double-and-integer-promotions-variadic-function"
-id="toc-float-to-double-and-integer-promotions-variadic-function"><span
+<li><a href="#102" id="toc-102"><span
 class="toc-section-number">102</span> # float to double and integer
 promotions (variadic function)</a></li>
-<li><a href="#surrogate-call-functions-conversion-operator"
-id="toc-surrogate-call-functions-conversion-operator"><span
+<li><a href="#103" id="toc-103"><span
 class="toc-section-number">103</span> # surrogate call functions (/
 conversion operator)</a></li>
-<li><a href="#array_size-function-returning-reference-to-an-array"
-id="toc-array_size-function-returning-reference-to-an-array"><span
+<li><a href="#104" id="toc-104"><span
 class="toc-section-number">104</span> # ARRAY_SIZE / function returning
 reference to an array</a></li>
-<li><a href="#infinite-function-pointer-dereference"
-id="toc-infinite-function-pointer-dereference"><span
+<li><a href="#105" id="toc-105"><span
 class="toc-section-number">105</span> # infinite function pointer
 dereference</a></li>
-<li><a
-href="#historical-schwarz-counter-nifty-counter-static-initialization"
-id="toc-historical-schwarz-counter-nifty-counter-static-initialization"><span
+<li><a href="#106" id="toc-106"><span
 class="toc-section-number">106</span> # (historical?) Schwarz Counter /
 Nifty Counter (static initialization)</a></li>
-<li><a href="#emulate-concept-passing-as-template-argument"
-id="toc-emulate-concept-passing-as-template-argument"><span
+<li><a href="#107" id="toc-107"><span
 class="toc-section-number">107</span> # emulate concept passing as
 template argument</a></li>
-<li><a href="#underscores-and-_ugly-reserved-names"
-id="toc-underscores-and-_ugly-reserved-names"><span
+<li><a href="#108" id="toc-108"><span
 class="toc-section-number">108</span> # underscores and _Ugly reserved
 names</a></li>
-<li><a href="#invoke-private-method-with-mangled-name"
-id="toc-invoke-private-method-with-mangled-name"><span
+<li><a href="#109" id="toc-109"><span
 class="toc-section-number">109</span> # invoke private method with
 mangled name</a></li>
-<li><a href="#coroutines-and-stdsource_locationcurrent"
-id="toc-coroutines-and-stdsource_locationcurrent"><span
+<li><a href="#110" id="toc-110"><span
 class="toc-section-number">110</span> # coroutines and
 std::source_location::current()</a></li>
-<li><a href="#moved-from-stdoptional-does-not-reset"
-id="toc-moved-from-stdoptional-does-not-reset"><span
+<li><a href="#111" id="toc-111"><span
 class="toc-section-number">111</span> # moved-from std::optional does
 not reset</a></li>
-<li><a href="#stdexchange-idiom" id="toc-stdexchange-idiom"><span
+<li><a href="#112" id="toc-112"><span
 class="toc-section-number">112</span> # std::exchange idiom</a></li>
 </ul>
 </nav>
@@ -3178,11 +3161,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb141-18"><a href="#cb141-18"></a>    <span class="bu">std::</span>cin<span class="op">.</span>rdbuf<span class="op">(</span>old_cin<span class="op">);</span> <span class="co">// rollback</span></span>
 <span id="cb141-19"><a href="#cb141-19"></a>    <span class="bu">std::</span>cout<span class="op">.</span>rdbuf<span class="op">(</span>old_cout<span class="op">);</span></span>
 <span id="cb141-20"><a href="#cb141-20"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="98"
-id="compile-error-on-missing-switch-enum-case"><span
-class="header-section-number">98</span> <a
-href="#compile-error-on-missing-switch-enum-case"># </a>compile error on
-missing switch enum case</h3>
+<h3 data-number="98" id="98"><span
+class="header-section-number">98</span> <a href="#98"># </a>compile
+error on missing switch enum case</h3>
 <p>When adding new enum value to existing enum what places need to be
 updated?</p>
 <div class="sourceCode" id="cb142"><pre
@@ -3233,11 +3214,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb145-12"><a href="#cb145-12"></a>    <span class="op">}</span></span>
 <span id="cb145-13"><a href="#cb145-13"></a>    <span class="bu">std::</span>unreachable<span class="op">();</span></span>
 <span id="cb145-14"><a href="#cb145-14"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="99"
-id="use-compiler-to-write-down-pointer-to-member-syntax"><span
-class="header-section-number">99</span> <a
-href="#use-compiler-to-write-down-pointer-to-member-syntax"># </a>use
-compiler to write down pointer-to-member syntax</h3>
+<h3 data-number="99" id="99"><span
+class="header-section-number">99</span> <a href="#99"># </a>use compiler
+to write down pointer-to-member syntax</h3>
 <p>Just use a wrong type first, see what compiler says, copy the correct
 type from the error:</p>
 <div class="sourceCode" id="cb146"><pre
@@ -3259,12 +3238,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb148-3"><a href="#cb148-3"></a><span class="kw">using</span> MyIntMember <span class="op">=</span> <span class="dt">int</span> MyClass<span class="op">::*;</span></span>
 <span id="cb148-4"><a href="#cb148-4"></a>MyIntMember ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span></code></pre></div>
 <p>Same works for member function pointers, etc.</p>
-<h3 data-number="100"
-id="all-enum-cases-are-handled-but-its-still-possible-to-fall-out-of-switch"><span
-class="header-section-number">100</span> <a
-href="#all-enum-cases-are-handled-but-its-still-possible-to-fall-out-of-switch">#
-</a>all enum cases are handled, but it’s still possible to fall out of
-switch</h3>
+<h3 data-number="100" id="100"><span
+class="header-section-number">100</span> <a href="#100"># </a>all enum
+cases are handled, but it’s still possible to fall out of switch</h3>
 <p><a href="https://en.cppreference.com/w/cpp/language/enum">With
 C++17</a>, for instance, it’s possible to initialize enum with integer
 that does not match any named enum value:</p>
@@ -3292,8 +3268,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb150-13"><a href="#cb150-13"></a><span class="op">}</span></span>
 <span id="cb150-14"><a href="#cb150-14"></a></span>
 <span id="cb150-15"><a href="#cb150-15"></a>MyProcess<span class="op">(</span>MyEnum<span class="op">{</span><span class="dv">78</span><span class="op">});</span> <span class="co">// perfectly fine</span></span></code></pre></div>
-<h3 data-number="101" id="on_scope_exit"><span
-class="header-section-number">101</span> <a href="#on_scope_exit">#
+<h3 data-number="101" id="101"><span
+class="header-section-number">101</span> <a href="#101">#
 </a>ON_SCOPE_EXIT</h3>
 <p>See <a
 href="https://gist.github.com/maddouri/e22288fe973e107abf5bb775df84779d"
@@ -3304,11 +3280,9 @@ class="uri">https://gist.github.com/maddouri/e22288fe973e107abf5bb775df84779d</a
     ON_SCOPE_EXIT { fclose(f); }
     // ...    
 }</code></pre>
-<h3 data-number="102"
-id="float-to-double-and-integer-promotions-variadic-function"><span
-class="header-section-number">102</span> <a
-href="#float-to-double-and-integer-promotions-variadic-function">#
-</a>float to double and integer promotions (variadic function)</h3>
+<h3 data-number="102" id="102"><span
+class="header-section-number">102</span> <a href="#102"># </a>float to
+double and integer promotions (variadic function)</h3>
 <p>For C-style variadic function, each argument of integer type
 undergoes integer promotion, and each argument of type float is
 implicitly converted to the type double. See <a
@@ -3339,10 +3313,8 @@ warning:</p>
 class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb153-1"><a href="#cb153-1"></a>&gt; warning: second argument to &#39;va_arg&#39; is of promotable type &#39;float&#39;;</span>
 <span id="cb153-2"><a href="#cb153-2"></a>&gt; this va_arg has undefined behavior because arguments will</span>
 <span id="cb153-3"><a href="#cb153-3"></a>&gt; be promoted to &#39;double&#39; [-Wvarargs]</span></code></pre></div>
-<h3 data-number="103"
-id="surrogate-call-functions-conversion-operator"><span
-class="header-section-number">103</span> <a
-href="#surrogate-call-functions-conversion-operator"># </a>surrogate
+<h3 data-number="103" id="103"><span
+class="header-section-number">103</span> <a href="#103"># </a>surrogate
 call functions (/ conversion operator)</h3>
 <p>From <a
 href="https://timsong-cpp.github.io/cppwp/over.call.object">std/over.call.object</a>:</p>
@@ -3361,11 +3333,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb154-12"><a href="#cb154-12"></a><span class="dt">int</span> i <span class="op">=</span> a<span class="op">(</span><span class="dv">1</span><span class="op">);</span>       <span class="co">// calls f1 via pointer</span></span>
 <span id="cb154-13"><a href="#cb154-13"></a>                    <span class="co">// returned from conversion function</span></span>
 <span id="cb154-14"><a href="#cb154-14"></a><span class="dt">char</span> c <span class="op">=</span> a<span class="op">(</span><span class="fl">0.5</span><span class="bu">f</span><span class="op">);</span>   <span class="co">// calls f2</span></span></code></pre></div>
-<h3 data-number="104"
-id="array_size-function-returning-reference-to-an-array"><span
-class="header-section-number">104</span> <a
-href="#array_size-function-returning-reference-to-an-array">#
-</a>ARRAY_SIZE / function returning reference to an array</h3>
+<h3 data-number="104" id="104"><span
+class="header-section-number">104</span> <a href="#104"># </a>ARRAY_SIZE
+/ function returning reference to an array</h3>
 <p>To get size/length/count of c-style static array pre-C++17 constexpr
 std::size(), next ARRAY_SIZE macro is used:</p>
 <div class="sourceCode" id="cb155"><pre
@@ -3388,10 +3358,9 @@ UE_ARRAY_COUNT macro.</p>
 <p>Note, also, how ArraySizeHelper is a function that accepts reference
 to array of size N (known at compile time) and returns reference to
 array of size N.</p>
-<h3 data-number="105" id="infinite-function-pointer-dereference"><span
-class="header-section-number">105</span> <a
-href="#infinite-function-pointer-dereference"># </a>infinite function
-pointer dereference</h3>
+<h3 data-number="105" id="105"><span
+class="header-section-number">105</span> <a href="#105"># </a>infinite
+function pointer dereference</h3>
 <div class="sourceCode" id="cb156"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb156-1"><a href="#cb156-1"></a><span class="dt">void</span> f<span class="op">()</span> <span class="op">{}</span></span>
 <span id="cb156-2"><a href="#cb156-2"></a><span class="dt">void</span> <span class="op">(*</span>fp1<span class="op">)()</span> <span class="op">=</span> f<span class="op">;</span></span>
@@ -3416,10 +3385,8 @@ href="https://en.cppreference.com/w/cpp/language/implicit_conversion">Function-t
 conversion</a> and <a
 href="https://en.cppreference.com/w/cpp/language/function">Function
 declaration</a>.</p>
-<h3 data-number="106"
-id="historical-schwarz-counter-nifty-counter-static-initialization"><span
-class="header-section-number">106</span> <a
-href="#historical-schwarz-counter-nifty-counter-static-initialization">#
+<h3 data-number="106" id="106"><span
+class="header-section-number">106</span> <a href="#106">#
 </a>(historical?) Schwarz Counter / Nifty Counter (static
 initialization)</h3>
 <p>In the context of <a
@@ -3492,10 +3459,8 @@ runtime linked first? <mark>TBD</mark>).</p>
 <p>Note: may not work in case of precompiled headers use, see <a
 href="https://developercommunity.visualstudio.com/t/Schwarz-counter-vs-precompiled-header/1256884">bug
 report</a>.</p>
-<h3 data-number="107"
-id="emulate-concept-passing-as-template-argument"><span
-class="header-section-number">107</span> <a
-href="#emulate-concept-passing-as-template-argument"># </a>emulate
+<h3 data-number="107" id="107"><span
+class="header-section-number">107</span> <a href="#107"># </a>emulate
 concept passing as template argument</h3>
 <p>From <a
 href="https://x.com/krisjusiak/status/1622679895514963970">Kris
@@ -3521,10 +3486,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb159-18"><a href="#cb159-18"></a>  f<span class="op">.</span>fn<span class="op">(</span>Foo<span class="op">{});</span></span>
 <span id="cb159-19"><a href="#cb159-19"></a>  f<span class="op">.</span>fn<span class="op">(</span>Bar<span class="op">{});</span> <span class="co">// static_assert, contrained not satisfied</span></span>
 <span id="cb159-20"><a href="#cb159-20"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="108" id="underscores-and-_ugly-reserved-names"><span
-class="header-section-number">108</span> <a
-href="#underscores-and-_ugly-reserved-names"># </a>underscores and _Ugly
-reserved names</h3>
+<h3 data-number="108" id="108"><span
+class="header-section-number">108</span> <a href="#108">#
+</a>underscores and _Ugly reserved names</h3>
 <p>See <a
 href="https://devblogs.microsoft.com/oldnewthing/20230109-00/?p=107685">On
 leading underscores and names reserved by the C and C++ languages</a>.
@@ -3579,10 +3543,9 @@ namespace separators/class separators was <strong>__</strong> (see this
 href="https://www.reddit.com/r/cpp/comments/1jajhe0/comment/mhm3z8x/">reddit
 post</a>)</p></li>
 </ul>
-<h3 data-number="109" id="invoke-private-method-with-mangled-name"><span
-class="header-section-number">109</span> <a
-href="#invoke-private-method-with-mangled-name"># </a>invoke private
-method with mangled name</h3>
+<h3 data-number="109" id="109"><span
+class="header-section-number">109</span> <a href="#109"># </a>invoke
+private method with mangled name</h3>
 <p>See this <a
 href="https://www.reddit.com/r/cpp/comments/jdlrg2/comment/g9a7pgp/">reddit
 comment</a>. <mark>NOT</mark> portable (<a
@@ -3599,11 +3562,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb161-9"><a href="#cb161-9"></a>    Class c<span class="op">;</span></span>
 <span id="cb161-10"><a href="#cb161-10"></a>    _ZN5Class8functionEv<span class="op">(&amp;</span>c<span class="op">);</span></span>
 <span id="cb161-11"><a href="#cb161-11"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="110"
-id="coroutines-and-stdsource_locationcurrent"><span
-class="header-section-number">110</span> <a
-href="#coroutines-and-stdsource_locationcurrent"># </a>coroutines and
-std::source_location::current()</h3>
+<h3 data-number="110" id="110"><span
+class="header-section-number">110</span> <a href="#110"># </a>coroutines
+and std::source_location::current()</h3>
 <p>You can inject <code>std::source_location</code> into all coroutines
 customization points to get information on where coroutine is
 created/suspended/awaited/etc, see <a
@@ -3656,9 +3617,8 @@ class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="c
 <span id="cb163-7"><a href="#cb163-7"></a>final_suspend       : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;63&#39;</span></code></pre></div>
 <p>Originally comes from reading <a
 href="https://github.com/boostorg/cobalt/blob/0c6cf566471803dd8a53a5e98511da4516583e88/include/boost/cobalt/detail/task.hpp#L196">boost.cobalt</a>.</p>
-<h3 data-number="111" id="moved-from-stdoptional-does-not-reset"><span
-class="header-section-number">111</span> <a
-href="#moved-from-stdoptional-does-not-reset"># </a>moved-from
+<h3 data-number="111" id="111"><span
+class="header-section-number">111</span> <a href="#111"># </a>moved-from
 std::optional does not reset</h3>
 <p>Moved-from std::optional <code>x</code> still holds value after a
 move:</p>
@@ -3681,8 +3641,8 @@ moving a std::optional!”</a> article (which has wrong conclusions and
 solution) and this <a
 href="https://www.reddit.com/r/cpp/comments/75paqu/design_decision_for_stdoptional_moved_from_state">reddit
 discussion</a>.</p>
-<h3 data-number="112" id="stdexchange-idiom"><span
-class="header-section-number">112</span> <a href="#stdexchange-idiom">#
+<h3 data-number="112" id="112"><span
+class="header-section-number">112</span> <a href="#112">#
 </a>std::exchange idiom</h3>
 <p>set-new-and-check-old value in one go:</p>
 <div class="sourceCode" id="cb166"><pre

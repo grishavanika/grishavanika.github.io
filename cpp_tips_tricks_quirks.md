@@ -2572,7 +2572,7 @@ int main()
 }
 ```
 
-### compile error on missing switch enum case
+### compile error on missing switch enum case {#98}
 
 When adding new enum value to existing enum what places need to be updated?
 
@@ -2633,7 +2633,7 @@ const char* MyProcess(MyEnum e)
 }
 ```
 
-### use compiler to write down pointer-to-member syntax
+### use compiler to write down pointer-to-member syntax {#99}
 
 Just use a wrong type first, see what compiler says, copy the correct type from 
 the error:
@@ -2666,7 +2666,7 @@ MyIntMember ptr = &MyClass::my_data;
 
 Same works for member function pointers, etc.
 
-### all enum cases are handled, but it's still possible to fall out of switch
+### all enum cases are handled, but it's still possible to fall out of switch {#100}
 
 [With C++17](https://en.cppreference.com/w/cpp/language/enum), for instance,
 it's possible to initialize enum with integer that does not match
@@ -2701,7 +2701,7 @@ const char* MyProcess(MyEnum e)
 MyProcess(MyEnum{78}); // perfectly fine
 ```
 
-### ON_SCOPE_EXIT
+### ON_SCOPE_EXIT {#101}
 
 See <https://gist.github.com/maddouri/e22288fe973e107abf5bb775df84779d>:
 
@@ -2715,7 +2715,7 @@ See <https://gist.github.com/maddouri/e22288fe973e107abf5bb775df84779d>:
 }
 ```
 
-### float to double and integer promotions (variadic function)
+### float to double and integer promotions (variadic function) {#102}
 
 For C-style variadic function, each argument of integer type undergoes
 integer promotion, and each argument of type float is implicitly converted
@@ -2749,7 +2749,7 @@ int so this is why `va_arg(args, double)` is used to query `v1`. Note, that
 > be promoted to 'double' [-Wvarargs]
 ```
 
-### surrogate call functions (/ conversion operator)
+### surrogate call functions (/ conversion operator) {#103}
 
 From [std/over.call.object](https://timsong-cpp.github.io/cppwp/over.call.object):
 
@@ -2770,7 +2770,7 @@ int i = a(1);       // calls f1 via pointer
 char c = a(0.5f);   // calls f2
 ```
 
-### ARRAY_SIZE / function returning reference to an array
+### ARRAY_SIZE / function returning reference to an array {#104}
 
 To get size/length/count of c-style static array pre-C++17 constexpr std::size(),
 next ARRAY_SIZE macro is used:
@@ -2796,7 +2796,7 @@ Note, with C++17, std::size() should be used instead.
 Note, also, how ArraySizeHelper is a function that accepts reference to array of size N
 (known at compile time) and returns reference to array of size N.
 
-### infinite function pointer dereference
+### infinite function pointer dereference {#105}
 
 ``` cpp {.numberLines}
 void f() {}
@@ -2816,7 +2816,7 @@ See [Pointers to functions](https://en.cppreference.com/w/cpp/language/pointer),
 [Function-to-pointer conversion](https://en.cppreference.com/w/cpp/language/implicit_conversion)
 and [Function declaration](https://en.cppreference.com/w/cpp/language/function).
 
-### (historical?) Schwarz Counter / Nifty Counter (static initialization)
+### (historical?) Schwarz Counter / Nifty Counter (static initialization) {#106}
 
 In the context of [Static Initialization Order Fiasco](https://en.cppreference.com/w/cpp/language/siof) where
 global objects constructors from different ~.cpp files (translation units) are invoked in unspecified order,
@@ -2888,7 +2888,7 @@ Note: MSVC STL (and others?) does not use the idiom (relies on runtime linked fi
 
 Note: may not work in case of precompiled headers use, see [bug report](https://developercommunity.visualstudio.com/t/Schwarz-counter-vs-precompiled-header/1256884).
 
-### emulate concept passing as template argument
+### emulate concept passing as template argument {#107}
 
 From [Kris Jusiak](https://x.com/krisjusiak/status/1622679895514963970), [godbolt](https://t.co/BKRhl1hD9e):
 
@@ -2915,7 +2915,7 @@ int main() {
 }
 ```
 
-### underscores and \_Ugly reserved names
+### underscores and \_Ugly reserved names {#108}
 
 See [On leading underscores and names reserved by the C and C++ languages](https://devblogs.microsoft.com/oldnewthing/20230109-00/?p=107685). From Raymond Chen:
 
@@ -2947,7 +2947,7 @@ Note that:
  * the double-underscore reservation is the only one that isn't well motivated anymore: It was originally because the CFront mangling of namespace separators/class separators was **\_\_** (see this [reddit post](https://www.reddit.com/r/cpp/comments/1jajhe0/comment/mhm3z8x/))
 
 
-### invoke private method with mangled name
+### invoke private method with mangled name {#109}
 
 See this [reddit comment](https://www.reddit.com/r/cpp/comments/jdlrg2/comment/g9a7pgp/).
 [NOT]{.mark} portable ([godbolt](https://godbolt.org/z/jsr8a8K7r)):
@@ -2966,7 +2966,7 @@ int main() {
 }
 ```
 
-### coroutines and std::source_location::current()
+### coroutines and std::source_location::current() {#110}
 
 You can inject `std::source_location` into all coroutines customization points to get information on where coroutine is created/suspended/awaited/etc, see <https://godbolt.org/z/5ooTcPPhx>:
 
@@ -3022,7 +3022,7 @@ final_suspend       : '/app/example.cpp'/'co_task co_test()'/'63'
 
 Originally comes from reading [boost.cobalt](https://github.com/boostorg/cobalt/blob/0c6cf566471803dd8a53a5e98511da4516583e88/include/boost/cobalt/detail/task.hpp#L196).
 
-### moved-from std::optional does not reset
+### moved-from std::optional does not reset {#111}
 
 Moved-from std::optional `x` still holds value after a move:
 
@@ -3046,7 +3046,7 @@ People expect moved-from optional to have no value, i.e.,
 as if `x = std::nullopt` after a move, see ["Beware when moving a std::optional!"](https://blog.tal.bi/posts/std-optional-move-pitfall/)
 article (which has wrong conclusions and solution) and this [reddit discussion](https://www.reddit.com/r/cpp/comments/75paqu/design_decision_for_stdoptional_moved_from_state).
 
-### std::exchange idiom
+### std::exchange idiom {#112}
 
 set-new-and-check-old value in one go:
 
