@@ -236,6 +236,9 @@
   </style>
 </head>
 <body>
+<p>Updated on 2025/04/15. Go to <a href="#meta">meta</a>.<br />
+Inspired by <a href="https://jorenar.com/blog/less-known-c">Lesser known
+tricks, quirks and features of C</a>.</p>
 <header id="title-block-header">
 <h1 class="title">C++ tips, tricks and quirks.</h1>
 </header>
@@ -495,8 +498,12 @@ class="toc-section-number">114</span> # std::tie idiom to
 decompose/unpack</a></li>
 </ul>
 </nav>
+<hr />
+<h3 class="unnumbered unlisted" id="meta"><a href="#meta">#
+</a>meta</h3>
 <p>To generate this .html out of <a
-href="https://raw.githubusercontent.com/grishavanika/grishavanika.github.io/refs/heads/master/cpp_tips_tricks_quirks.md">cpp_tips_tricks_quirks.md</a>:</p>
+href="https://raw.githubusercontent.com/grishavanika/grishavanika.github.io/refs/heads/master/cpp_tips_tricks_quirks.md">cpp_tips_tricks_quirks.md</a>,
+run <a href="https://pandoc.org/">Pandoc</a>:</p>
 <pre><code>pandoc -s --toc --toc-depth=4
   --standalone
   --number-sections
@@ -505,8 +512,9 @@ href="https://raw.githubusercontent.com/grishavanika/grishavanika.github.io/refs
   --lua-filter=anchor-links.lua
   cpp_tips_tricks_quirks.md
   -o cpp_tips_tricks_quirks.html</code></pre>
-<p>Inspired by <a href="https://jorenar.com/blog/less-known-c">Lesser
-known tricks, quirks and features of C</a>.</p>
+<p>where <a
+href="https://raw.githubusercontent.com/grishavanika/grishavanika.github.io/refs/heads/master/anchor-links.lua">anchor-links.lua</a>
+is the only customization for # links in sections.</p>
 <p><mark>C++ reference</mark>:</p>
 <ul>
 <li><a href="https://eel.is/c++draft">Working Draft/eel.is</a></li>
@@ -1045,7 +1053,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb31-28"><a href="#cb31-28"></a>    <span class="co">// use of function template</span></span>
 <span id="cb31-29"><a href="#cb31-29"></a>    <span class="cf">return</span> Bar<span class="op">&lt;</span><span class="dt">char</span><span class="op">&gt;();</span></span>
 <span id="cb31-30"><a href="#cb31-30"></a><span class="op">}</span></span></code></pre></div>
-<p>See also <a href="#extern-templates">extern templates</a>.</p>
+<p>See also <a href="#21">extern templates</a>.</p>
 <h3 data-number="23" id="23"><span
 class="header-section-number">23</span> <a href="#23">#
 </a>double-template syntax</h3>

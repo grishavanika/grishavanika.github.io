@@ -1,8 +1,15 @@
 ---
 title: C++ tips, tricks and quirks.
+include-before: |
+    Updated on 2025/04/15. Go to [meta](#meta).  
+    Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/blog/less-known-c).
 ---
 
-To generate this .html out of [cpp_tips_tricks_quirks.md](https://raw.githubusercontent.com/grishavanika/grishavanika.github.io/refs/heads/master/cpp_tips_tricks_quirks.md):
+-----------------------------------------------------------
+
+### meta {.unnumbered .unlisted #meta}
+
+To generate this .html out of [cpp_tips_tricks_quirks.md], run [Pandoc](https://pandoc.org/):
 
 ```
 pandoc -s --toc --toc-depth=4
@@ -15,7 +22,10 @@ pandoc -s --toc --toc-depth=4
   -o cpp_tips_tricks_quirks.html
 ```
 
-Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/blog/less-known-c).
+where [anchor-links.lua] is the only customization for # links in sections.
+
+[cpp_tips_tricks_quirks.md]: https://raw.githubusercontent.com/grishavanika/grishavanika.github.io/refs/heads/master/cpp_tips_tricks_quirks.md
+[anchor-links.lua]: https://raw.githubusercontent.com/grishavanika/grishavanika.github.io/refs/heads/master/anchor-links.lua
 
 [C++ reference]{.mark}:
 
@@ -588,7 +598,7 @@ int MyClass::Foo()
 }
 ```
 
-See also [extern templates](#extern-templates).
+See also [extern templates](#21).
 
 ### double-template syntax {#23}
 
