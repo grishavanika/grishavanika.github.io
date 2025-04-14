@@ -332,7 +332,7 @@ destructor</a></li>
 <li><a href="#43" id="toc-43"><span class="toc-section-number">43</span>
 # std::transform and LIFT (passing overload set)</a></li>
 <li><a href="#44" id="toc-44"><span class="toc-section-number">44</span>
-# <code>tolower</code> is not an addressible function</a></li>
+# you can’t take an address of <code>tolower</code> function</a></li>
 <li><a href="#45" id="toc-45"><span class="toc-section-number">45</span>
 # replace operator new to track third-party code allocations</a></li>
 <li><a href="#46" id="toc-46"><span class="toc-section-number">46</span>
@@ -452,8 +452,8 @@ std::source_location::current()</a></li>
 <li><a href="#99" id="toc-99"><span class="toc-section-number">99</span>
 # use compiler to write down pointer-to-member syntax</a></li>
 <li><a href="#100" id="toc-100"><span
-class="toc-section-number">100</span> # all enum cases are handled, but
-it’s still possible to fall out of switch</a></li>
+class="toc-section-number">100</span> # enum and falling out of switch
+case</a></li>
 <li><a href="#101" id="toc-101"><span
 class="toc-section-number">101</span> # ON_SCOPE_EXIT</a></li>
 <li><a href="#102" id="toc-102"><span
@@ -975,7 +975,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb29-12"><a href="#cb29-12"></a>Private obj<span class="op">;</span></span>
 <span id="cb29-13"><a href="#cb29-13"></a>dataGetter<span class="op">(</span>obj<span class="op">)</span> <span class="op">=</span> <span class="dv">31</span><span class="op">;</span>   <span class="co">// Ok</span></span></code></pre></div>
 <p>See <a href="https://github.com/martong/access_private">this</a> for
-more details and explanations.</p>
+more details.</p>
 <h3 data-number="21" id="21"><span
 class="header-section-number">21</span> <a href="#21"># </a>extern
 templates</h3>
@@ -1166,7 +1166,7 @@ class="header-section-number">28</span> <a href="#28"># </a>invoke base
 virtual function directly</h3>
 <p>Given an instance of derived class, one can skip invoking its own
 function override and call parent function directly (see <a
-href="#injected-class-name">injected-class-name</a>):</p>
+href="#27">injected-class-name</a>):</p>
 <div class="sourceCode" id="cb38"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb38-1"><a href="#cb38-1"></a><span class="kw">struct</span> MyBase</span>
 <span id="cb38-2"><a href="#cb38-2"></a><span class="op">{</span></span>
@@ -1337,10 +1337,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>From <a
 href="https://en.cppreference.com/w/cpp/language/new">cppreference</a>:</p>
 <div class="sourceCode" id="cb46"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb46-1"><a href="#cb46-1"></a><span class="dt">double</span><span class="op">*</span> p <span class="op">=</span> <span class="kw">new</span> <span class="dt">double</span><span class="op">[]{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">};</span>  <span class="co">// creates an array of type double[3]</span></span>
-<span id="cb46-2"><a href="#cb46-2"></a><span class="kw">auto</span> p <span class="op">=</span> <span class="kw">new</span> <span class="kw">auto</span><span class="op">(</span><span class="ch">&#39;c&#39;</span><span class="op">);</span>             <span class="co">// creates a single object of type char. p is a char*</span></span>
-<span id="cb46-3"><a href="#cb46-3"></a><span class="kw">auto</span> q <span class="op">=</span> <span class="kw">new</span> <span class="bu">std::</span>integral <span class="kw">auto</span><span class="op">(</span><span class="dv">1</span><span class="op">);</span> <span class="co">// OK: q is an int*</span></span>
-<span id="cb46-4"><a href="#cb46-4"></a><span class="kw">auto</span> r <span class="op">=</span> <span class="kw">new</span> <span class="bu">std::</span>pair<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="kw">true</span><span class="op">);</span>    <span class="co">// OK: r is a std::pair&lt;int, bool&gt;*</span></span></code></pre></div>
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb46-1"><a href="#cb46-1"></a><span class="dt">double</span><span class="op">*</span> x <span class="op">=</span> <span class="kw">new</span> <span class="dt">double</span><span class="op">[]{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">};</span>  <span class="co">// creates an array of type double[3]</span></span>
+<span id="cb46-2"><a href="#cb46-2"></a><span class="kw">auto</span> p <span class="op">=</span> <span class="kw">new</span> <span class="kw">auto</span><span class="op">(</span><span class="ch">&#39;c&#39;</span><span class="op">);</span>             <span class="co">// creates a single object of type char.</span></span>
+<span id="cb46-3"><a href="#cb46-3"></a>                                    <span class="co">//     p is a char*</span></span>
+<span id="cb46-4"><a href="#cb46-4"></a><span class="kw">auto</span> q <span class="op">=</span> <span class="kw">new</span> <span class="bu">std::</span>integral <span class="kw">auto</span><span class="op">(</span><span class="dv">1</span><span class="op">);</span> <span class="co">// OK: q is an int*</span></span>
+<span id="cb46-5"><a href="#cb46-5"></a><span class="kw">auto</span> r <span class="op">=</span> <span class="kw">new</span> <span class="bu">std::</span>pair<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="kw">true</span><span class="op">);</span>    <span class="co">// OK: r is a std::pair&lt;int, bool&gt;*</span></span></code></pre></div>
 <h3 data-number="33" id="33"><span
 class="header-section-number">33</span> <a href="#33">#
 </a><code>std::forward</code> use in std::function-like case</h3>
@@ -1492,7 +1493,7 @@ unspecified state”</a>. Note, that for most cases in practice, the
 object is in empty/null state (see <a
 href="https://gist.github.com/sean-parent/fed31bee69bc41d888f84f25743da9f1">Sean
 Parent comments</a>) or, to say it another way - you should put the
-object into empty state and be nice.</p>
+object into empty state to be nice.</p>
 <p>Why it’s in “empty” state? Simply because destructor still runs after
 the move and we need to know whether or not it’s needed to free
 resources <strong>most of the times</strong>:</p>
@@ -1535,7 +1536,7 @@ such state with default constructor. More often then not it makes life
 easier. See also “state reset”.</p>
 <p>Relative: <a
 href="https://www.foonathan.net/2016/08/move-default-ctor/">Move
-Semantics and Default Constructors вЂ“ Rule of Six?</a>.</p>
+Semantics and Default Constructors - Rule of Six?</a>.</p>
 <h3 data-number="39" id="39"><span
 class="header-section-number">39</span> <a href="#39"># </a>default
 constructor must do no work</h3>
@@ -1564,7 +1565,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 class="header-section-number">40</span> <a href="#40"># </a>constructors
 should do no work</h3>
 <p>Constructors (at least of objects for types that are part of your
-applicaiton domain) should just assign/default initialize data members,
+application domain) should just assign/default initialize data members,
 NO business/application logic inside. This applies to copy constructor,
 constructors with parameters, move constructor.</p>
 <p>Simply because you don’t control when and who and how can invoke
@@ -1651,11 +1652,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb64-11"><a href="#cb64-11"></a><span class="co">// ...</span></span>
 <span id="cb64-12"><a href="#cb64-12"></a><span class="bu">std::</span>transform<span class="op">(</span>first<span class="op">,</span> last<span class="op">,</span> target<span class="op">,</span> LIFT<span class="op">(</span>foo<span class="op">));</span></span></code></pre></div>
 <h3 data-number="44" id="44"><span
-class="header-section-number">44</span> <a href="#44">#
-</a><code>tolower</code> is not an addressible function</h3>
-<p>You can’t take an adress of std:: function since function could be
-implemented differently with different STL(s) and/or in the feature the
-function may change, hence such code is not portable. From <a
+class="header-section-number">44</span> <a href="#44"># </a>you can’t
+take an address of <code>tolower</code> function</h3>
+<p>You can’t take an adress of std:: function since the function could
+be implemented differently with different STL(s) and/or in the feature
+the function may change, hence such code is not portable. From <a
 href="https://devblogs.microsoft.com/oldnewthing/20241007-00/?p=110345">A
 popular but wrong way to convert a string to uppercase or
 lowercase</a>:</p>
@@ -1940,7 +1941,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb78-6"><a href="#cb78-6"></a></span>
 <span id="cb78-7"><a href="#cb78-7"></a>A v<span class="op">(</span><span class="dv">10</span><span class="op">,</span> <span class="dv">20</span><span class="op">);</span> <span class="co">// fine, C++20</span></span></code></pre></div>
 <p>but also see <a
-href="https://quuxplusone.github.io/blog/2022/06/03/aggregate-parens-init-considered-kinda-bad/">C++20вЂ™s
+href="https://quuxplusone.github.io/blog/2022/06/03/aggregate-parens-init-considered-kinda-bad/">C++20’s
 parenthesized aggregate initialization has some downsides</a>.</p>
 <h3 data-number="56" id="56"><span
 class="header-section-number">56</span> <a href="#56"># </a>move-only
@@ -2206,8 +2207,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb94-2"><a href="#cb94-2"></a>my_map<span class="op">[</span><span class="dv">1</span><span class="op">];</span> <span class="co">// key 1 = empty string, inserted anyway</span></span>
 <span id="cb94-3"><a href="#cb94-3"></a>my_map<span class="op">[</span><span class="dv">2</span><span class="op">]</span> <span class="op">=</span> <span class="st">&quot;xxx&quot;</span><span class="op">;</span> <span class="co">// key 2 = empty string inserted,</span></span>
 <span id="cb94-4"><a href="#cb94-4"></a>                   <span class="co">// empty string re-assigned next</span></span></code></pre></div>
-<p>See also “default constructor must do no work” and “const map[key]
-does not compile”.</p>
+<p>See also <a href="#39">“default constructor must do no work”</a> and
+<a href="#68">“const map[key] does not compile”</a>.</p>
 <h3 data-number="68" id="68"><span
 class="header-section-number">68</span> <a href="#68"># </a>const
 <code>map[key]</code> does not compile, use <code>.find()</code></h3>
@@ -2301,12 +2302,13 @@ Locking is Fixed In C++11</a>, meaning that you may pay for each call to
 GetInstance:</p>
 <div class="sourceCode" id="cb101"><pre
 class="sourceCode numberSource asm numberLines"><code class="sourceCode fasm"><span id="cb101-1"><a href="#cb101-1"></a>// MyClass<span class="op">&amp;</span> v1 <span class="op">=</span> MyClass<span class="op">::</span>GetInstance<span class="op">()</span><span class="co">;</span></span>
-<span id="cb101-2"><a href="#cb101-2"></a>// MyClass<span class="op">&amp;</span> v2 <span class="op">=</span> MyClass<span class="op">::</span>GetInstance<span class="op">()</span><span class="co">; // may need to check guard/initialization anyway</span></span>
-<span id="cb101-3"><a href="#cb101-3"></a>    <span class="bu">movzx</span>   <span class="kw">eax</span><span class="op">,</span> <span class="dt">BYTE</span> <span class="dt">PTR</span> guard variable for MyClass<span class="op">::</span>GetInstance<span class="op">()::</span>instance<span class="op">[</span>rip<span class="op">]</span></span>
-<span id="cb101-4"><a href="#cb101-4"></a>    <span class="bu">test</span>    <span class="kw">al</span><span class="op">,</span> <span class="kw">al</span></span>
-<span id="cb101-5"><a href="#cb101-5"></a>    <span class="cf">je</span>      <span class="op">.</span>L15</span>
-<span id="cb101-6"><a href="#cb101-6"></a>    <span class="bu">mov</span>     <span class="kw">eax</span><span class="op">,</span> OFFSET FLAT<span class="op">:</span>MyClass<span class="op">::</span>GetInstance<span class="op">()::</span>instance</span>
-<span id="cb101-7"><a href="#cb101-7"></a>    <span class="cf">ret</span></span></code></pre></div>
+<span id="cb101-2"><a href="#cb101-2"></a>// MyClass<span class="op">&amp;</span> v2 <span class="op">=</span> MyClass<span class="op">::</span>GetInstance<span class="op">()</span><span class="co">; // may need to check</span></span>
+<span id="cb101-3"><a href="#cb101-3"></a>                                         // guard<span class="op">/</span>initialization anyway</span>
+<span id="cb101-4"><a href="#cb101-4"></a>    <span class="bu">movzx</span>   <span class="kw">eax</span><span class="op">,</span> <span class="dt">BYTE</span> <span class="dt">PTR</span> guard variable for MyClass<span class="op">::</span>GetInstance<span class="op">()::</span>instance<span class="op">[</span>rip<span class="op">]</span></span>
+<span id="cb101-5"><a href="#cb101-5"></a>    <span class="bu">test</span>    <span class="kw">al</span><span class="op">,</span> <span class="kw">al</span></span>
+<span id="cb101-6"><a href="#cb101-6"></a>    <span class="cf">je</span>      <span class="op">.</span>L15</span>
+<span id="cb101-7"><a href="#cb101-7"></a>    <span class="bu">mov</span>     <span class="kw">eax</span><span class="op">,</span> OFFSET FLAT<span class="op">:</span>MyClass<span class="op">::</span>GetInstance<span class="op">()::</span>instance</span>
+<span id="cb101-8"><a href="#cb101-8"></a>    <span class="cf">ret</span></span></code></pre></div>
 <h3 data-number="72" id="72"><span
 class="header-section-number">72</span> <a href="#72">#
 </a>(std::min)(x, y) thanks to Windows.h</h3>
@@ -2507,8 +2509,10 @@ variable template is used instead.</p>
 class="header-section-number">80</span> <a href="#80"># </a>variadic
 template with default argument</h3>
 <p>See <a href="https://cor3ntin.github.io/posts/variadic/">Non-terminal
-variadic template parameters</a>. Specifically, arguments deduction does
-not work in cases like this:</p>
+variadic template parameters</a> where <code>apply_last</code> is
+showcased.</p>
+<p>Specifically, arguments deduction does not work in cases like
+this:</p>
 <div class="sourceCode" id="cb118"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb118-1"><a href="#cb118-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span></span>
 <span id="cb118-2"><a href="#cb118-2"></a><span class="dt">void</span> Foo<span class="op">(</span>Args<span class="op">...,</span> <span class="dt">int</span> default_v <span class="op">=</span> <span class="dv">10</span><span class="op">)</span> <span class="op">{</span> <span class="op">}</span></span>
@@ -2525,75 +2529,38 @@ kind of API:</p>
 <div class="sourceCode" id="cb120"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb120-1"><a href="#cb120-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span></span>
 <span id="cb120-2"><a href="#cb120-2"></a><span class="dt">void</span> WaitAll<span class="op">(</span>Args<span class="op">&amp;&amp;...</span> args<span class="op">,</span> milliseconds timeout <span class="op">=</span> milliseconds<span class="op">::</span>max<span class="op">());</span></span></code></pre></div>
-<p>where Args… could be handles/async requests we want to wait with
-optional timeout. To mimic it, we can do something like this:</p>
-<div class="sourceCode" id="cb121"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb121-1"><a href="#cb121-1"></a><span class="pp">#include </span><span class="im">&lt;chrono&gt;</span></span>
-<span id="cb121-2"><a href="#cb121-2"></a><span class="pp">#include </span><span class="im">&lt;type_traits&gt;</span></span>
-<span id="cb121-3"><a href="#cb121-3"></a></span>
-<span id="cb121-4"><a href="#cb121-4"></a><span class="kw">using</span> <span class="bu">std::</span>chrono::milliseconds<span class="op">;</span></span>
-<span id="cb121-5"><a href="#cb121-5"></a></span>
-<span id="cb121-6"><a href="#cb121-6"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span></span>
-<span id="cb121-7"><a href="#cb121-7"></a><span class="dt">void</span> WaitAll_Impl<span class="op">(</span>milliseconds timeout<span class="op">,</span> Args<span class="op">&amp;&amp;...</span> args<span class="op">)</span></span>
-<span id="cb121-8"><a href="#cb121-8"></a><span class="op">{</span></span>
-<span id="cb121-9"><a href="#cb121-9"></a>    <span class="bu">std::</span>puts<span class="op">(</span>timeout <span class="op">==</span> milliseconds<span class="op">::</span>max<span class="op">()</span> <span class="op">?</span> <span class="st">&quot;no timeout&quot;</span> <span class="op">:</span> <span class="st">&quot;with timeout&quot;</span><span class="op">);</span></span>
-<span id="cb121-10"><a href="#cb121-10"></a><span class="op">}</span></span>
-<span id="cb121-11"><a href="#cb121-11"></a></span>
-<span id="cb121-12"><a href="#cb121-12"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span></span>
-<span id="cb121-13"><a href="#cb121-13"></a><span class="dt">void</span> WaitAll<span class="op">(</span>Args<span class="op">&amp;&amp;...</span> args<span class="op">)</span></span>
-<span id="cb121-14"><a href="#cb121-14"></a><span class="op">{</span></span>
-<span id="cb121-15"><a href="#cb121-15"></a>    <span class="kw">using</span> LastT <span class="op">=</span> <span class="bu">std::</span>remove_cvref_t<span class="op">&lt;</span><span class="kw">decltype</span><span class="op">((</span>args<span class="op">,</span> <span class="op">...))&gt;;</span></span>
-<span id="cb121-16"><a href="#cb121-16"></a>    <span class="cf">if</span> <span class="kw">constexpr</span> <span class="op">(</span><span class="bu">std::</span>is_same_v<span class="op">&lt;</span>LastT<span class="op">,</span> milliseconds<span class="op">&gt;)</span></span>
-<span id="cb121-17"><a href="#cb121-17"></a>    <span class="op">{</span></span>
-<span id="cb121-18"><a href="#cb121-18"></a>        <span class="at">const</span> milliseconds timeout <span class="op">=</span> <span class="op">(</span>args<span class="op">,</span> <span class="op">...);</span> <span class="co">// get last argument</span></span>
-<span id="cb121-19"><a href="#cb121-19"></a>        <span class="cf">return</span> WaitAll_Impl<span class="op">(</span>timeout<span class="op">,</span> <span class="bu">std::</span>forward<span class="op">&lt;</span>Args<span class="op">&gt;(</span>args<span class="op">)...);</span></span>
-<span id="cb121-20"><a href="#cb121-20"></a>    <span class="op">}</span></span>
-<span id="cb121-21"><a href="#cb121-21"></a>    <span class="cf">else</span></span>
-<span id="cb121-22"><a href="#cb121-22"></a>    <span class="op">{</span></span>
-<span id="cb121-23"><a href="#cb121-23"></a>        <span class="at">const</span> milliseconds timeout <span class="op">=</span> milliseconds<span class="op">::</span>max<span class="op">();</span> <span class="co">// default timeout</span></span>
-<span id="cb121-24"><a href="#cb121-24"></a>        <span class="cf">return</span> WaitAll_Impl<span class="op">(</span>timeout<span class="op">,</span> <span class="bu">std::</span>forward<span class="op">&lt;</span>Args<span class="op">&gt;(</span>args<span class="op">)...);</span></span>
-<span id="cb121-25"><a href="#cb121-25"></a>    <span class="op">}</span></span>
-<span id="cb121-26"><a href="#cb121-26"></a><span class="op">}</span></span>
-<span id="cb121-27"><a href="#cb121-27"></a></span>
-<span id="cb121-28"><a href="#cb121-28"></a><span class="dt">int</span> main<span class="op">()</span></span>
-<span id="cb121-29"><a href="#cb121-29"></a><span class="op">{</span></span>
-<span id="cb121-30"><a href="#cb121-30"></a>    WaitAll<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">,</span> milliseconds<span class="op">{</span><span class="dv">25</span><span class="op">});</span> <span class="co">// with timeout</span></span>
-<span id="cb121-31"><a href="#cb121-31"></a>    WaitAll<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">);</span>                   <span class="co">// no timeout, use default</span></span>
-<span id="cb121-32"><a href="#cb121-32"></a><span class="op">}</span></span></code></pre></div>
-<p>To see what <code>(args, ...)</code> does, check <a
-href="https://www.foonathan.net/2020/05/fold-tricks/">Nifty Fold
-Expression Tricks</a>. See also similar issues with
-<code>source_location::current()</code>.</p>
+<p><mark>TODO</mark> - show simple code snippet.</p>
 <h3 data-number="81" id="81"><span
 class="header-section-number">81</span> <a href="#81"># </a>variadic
 template with default std::source_location::current()</h3>
 <p>Something like this does not work (see <a
 href="https://stackoverflow.com/q/57547273/2451677">this SO</a>):</p>
-<div class="sourceCode" id="cb122"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb122-1"><a href="#cb122-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span></span>
-<span id="cb122-2"><a href="#cb122-2"></a><span class="dt">void</span> debug<span class="op">(</span>Args<span class="op">&amp;&amp;...</span> args<span class="op">,</span></span>
-<span id="cb122-3"><a href="#cb122-3"></a>           <span class="at">const</span> <span class="bu">std::</span>source_location<span class="op">&amp;</span> loc <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">());</span></span></code></pre></div>
+<div class="sourceCode" id="cb121"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb121-1"><a href="#cb121-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span></span>
+<span id="cb121-2"><a href="#cb121-2"></a><span class="dt">void</span> debug<span class="op">(</span>Args<span class="op">&amp;&amp;...</span> args<span class="op">,</span></span>
+<span id="cb121-3"><a href="#cb121-3"></a>           <span class="at">const</span> <span class="bu">std::</span>source_location<span class="op">&amp;</span> loc <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">());</span></span></code></pre></div>
 <p>Introducing type with implicit constructor is the trick:</p>
-<div class="sourceCode" id="cb123"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb123-1"><a href="#cb123-1"></a><span class="pp">#include </span><span class="im">&lt;source_location&gt;</span></span>
-<span id="cb123-2"><a href="#cb123-2"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
-<span id="cb123-3"><a href="#cb123-3"></a></span>
-<span id="cb123-4"><a href="#cb123-4"></a><span class="kw">struct</span> FormatWithLocation <span class="op">{</span></span>
-<span id="cb123-5"><a href="#cb123-5"></a>  <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> fmt<span class="op">;</span></span>
-<span id="cb123-6"><a href="#cb123-6"></a>  <span class="bu">std::</span>source_location loc<span class="op">;</span></span>
-<span id="cb123-7"><a href="#cb123-7"></a></span>
-<span id="cb123-8"><a href="#cb123-8"></a>  FormatWithLocation<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> <span class="va">fmt_</span><span class="op">,</span></span>
-<span id="cb123-9"><a href="#cb123-9"></a>                     <span class="at">const</span> <span class="bu">std::</span>source_location<span class="op">&amp;</span> <span class="va">loc_</span> <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">())</span></span>
-<span id="cb123-10"><a href="#cb123-10"></a>      <span class="op">:</span> fmt<span class="op">(</span><span class="va">fmt_</span><span class="op">),</span> loc<span class="op">(</span><span class="va">loc_</span><span class="op">)</span> <span class="op">{}</span></span>
-<span id="cb123-11"><a href="#cb123-11"></a><span class="op">};</span></span>
-<span id="cb123-12"><a href="#cb123-12"></a></span>
-<span id="cb123-13"><a href="#cb123-13"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span></span>
-<span id="cb123-14"><a href="#cb123-14"></a><span class="dt">void</span> debug<span class="op">(</span>FormatWithLocation fmt<span class="op">,</span> Args<span class="op">&amp;&amp;...</span> args<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb123-15"><a href="#cb123-15"></a>  printf<span class="op">(</span><span class="st">&quot;[</span><span class="sc">%s</span><span class="st">:</span><span class="sc">%d</span><span class="st">] &quot;</span><span class="op">,</span> fmt<span class="op">.</span>loc<span class="op">.</span>file_name<span class="op">(),</span> fmt<span class="op">.</span>loc<span class="op">.</span>line<span class="op">());</span></span>
-<span id="cb123-16"><a href="#cb123-16"></a>  printf<span class="op">(</span>fmt<span class="op">.</span>fmt<span class="op">,</span> args<span class="op">...);</span></span>
-<span id="cb123-17"><a href="#cb123-17"></a><span class="op">}</span></span>
-<span id="cb123-18"><a href="#cb123-18"></a></span>
-<span id="cb123-19"><a href="#cb123-19"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span> debug<span class="op">(</span><span class="st">&quot;hello </span><span class="sc">%s</span><span class="st"> </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="st">&quot;world&quot;</span><span class="op">,</span> <span class="st">&quot;around&quot;</span><span class="op">);</span> <span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb122"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb122-1"><a href="#cb122-1"></a><span class="pp">#include </span><span class="im">&lt;source_location&gt;</span></span>
+<span id="cb122-2"><a href="#cb122-2"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb122-3"><a href="#cb122-3"></a></span>
+<span id="cb122-4"><a href="#cb122-4"></a><span class="kw">struct</span> FormatWithLocation <span class="op">{</span></span>
+<span id="cb122-5"><a href="#cb122-5"></a>  <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> fmt<span class="op">;</span></span>
+<span id="cb122-6"><a href="#cb122-6"></a>  <span class="bu">std::</span>source_location loc<span class="op">;</span></span>
+<span id="cb122-7"><a href="#cb122-7"></a></span>
+<span id="cb122-8"><a href="#cb122-8"></a>  FormatWithLocation<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> <span class="va">fmt_</span><span class="op">,</span></span>
+<span id="cb122-9"><a href="#cb122-9"></a>                     <span class="at">const</span> <span class="bu">std::</span>source_location<span class="op">&amp;</span> <span class="va">loc_</span></span>
+<span id="cb122-10"><a href="#cb122-10"></a>                         <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">())</span></span>
+<span id="cb122-11"><a href="#cb122-11"></a>      <span class="op">:</span> fmt<span class="op">(</span><span class="va">fmt_</span><span class="op">),</span> loc<span class="op">(</span><span class="va">loc_</span><span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb122-12"><a href="#cb122-12"></a><span class="op">};</span></span>
+<span id="cb122-13"><a href="#cb122-13"></a></span>
+<span id="cb122-14"><a href="#cb122-14"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span></span>
+<span id="cb122-15"><a href="#cb122-15"></a><span class="dt">void</span> debug<span class="op">(</span>FormatWithLocation fmt<span class="op">,</span> Args<span class="op">&amp;&amp;...</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb122-16"><a href="#cb122-16"></a>  printf<span class="op">(</span><span class="st">&quot;[</span><span class="sc">%s</span><span class="st">:</span><span class="sc">%d</span><span class="st">] &quot;</span><span class="op">,</span> fmt<span class="op">.</span>loc<span class="op">.</span>file_name<span class="op">(),</span> fmt<span class="op">.</span>loc<span class="op">.</span>line<span class="op">());</span></span>
+<span id="cb122-17"><a href="#cb122-17"></a>  printf<span class="op">(</span>fmt<span class="op">.</span>fmt<span class="op">,</span> args<span class="op">...);</span></span>
+<span id="cb122-18"><a href="#cb122-18"></a><span class="op">}</span></span>
+<span id="cb122-19"><a href="#cb122-19"></a></span>
+<span id="cb122-20"><a href="#cb122-20"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span> debug<span class="op">(</span><span class="st">&quot;hello </span><span class="sc">%s</span><span class="st"> </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="st">&quot;world&quot;</span><span class="op">,</span> <span class="st">&quot;around&quot;</span><span class="op">);</span> <span class="op">}</span></span></code></pre></div>
 <p>See also <a
 href="https://cor3ntin.github.io/posts/variadic/">Non-terminal variadic
 template parameters</a>.</p>
@@ -2602,18 +2569,18 @@ class="header-section-number">82</span> <a href="#82"># </a>variadic
 template with default argument and deduction guide</h3>
 <p>See <a href="https://stackoverflow.com/q/57547273/2451677">this
 SO</a>:</p>
-<div class="sourceCode" id="cb124"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb124-1"><a href="#cb124-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Ts<span class="op">&gt;</span></span>
-<span id="cb124-2"><a href="#cb124-2"></a><span class="kw">struct</span> debug</span>
-<span id="cb124-3"><a href="#cb124-3"></a><span class="op">{</span>    </span>
-<span id="cb124-4"><a href="#cb124-4"></a>    debug<span class="op">(</span>Ts<span class="op">&amp;&amp;...</span> ts</span>
-<span id="cb124-5"><a href="#cb124-5"></a>        <span class="op">,</span> <span class="at">const</span> <span class="bu">std::</span>source_location<span class="op">&amp;</span> loc <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">());</span></span>
-<span id="cb124-6"><a href="#cb124-6"></a><span class="op">};</span></span>
-<span id="cb124-7"><a href="#cb124-7"></a></span>
-<span id="cb124-8"><a href="#cb124-8"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Ts<span class="op">&gt;</span></span>
-<span id="cb124-9"><a href="#cb124-9"></a>debug<span class="op">(</span>Ts<span class="op">&amp;&amp;...)</span> <span class="op">-&gt;</span> debug<span class="op">&lt;</span>Ts<span class="op">...&gt;;</span></span>
-<span id="cb124-10"><a href="#cb124-10"></a></span>
-<span id="cb124-11"><a href="#cb124-11"></a><span class="co">// debug(5, &#39;A&#39;, 3.14f, &quot;foo&quot;); // works</span></span></code></pre></div>
+<div class="sourceCode" id="cb123"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb123-1"><a href="#cb123-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Ts<span class="op">&gt;</span></span>
+<span id="cb123-2"><a href="#cb123-2"></a><span class="kw">struct</span> debug</span>
+<span id="cb123-3"><a href="#cb123-3"></a><span class="op">{</span>    </span>
+<span id="cb123-4"><a href="#cb123-4"></a>    debug<span class="op">(</span>Ts<span class="op">&amp;&amp;...</span> ts</span>
+<span id="cb123-5"><a href="#cb123-5"></a>        <span class="op">,</span> <span class="at">const</span> <span class="bu">std::</span>source_location<span class="op">&amp;</span> loc <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">());</span></span>
+<span id="cb123-6"><a href="#cb123-6"></a><span class="op">};</span></span>
+<span id="cb123-7"><a href="#cb123-7"></a></span>
+<span id="cb123-8"><a href="#cb123-8"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Ts<span class="op">&gt;</span></span>
+<span id="cb123-9"><a href="#cb123-9"></a>debug<span class="op">(</span>Ts<span class="op">&amp;&amp;...)</span> <span class="op">-&gt;</span> debug<span class="op">&lt;</span>Ts<span class="op">...&gt;;</span></span>
+<span id="cb123-10"><a href="#cb123-10"></a></span>
+<span id="cb123-11"><a href="#cb123-11"></a><span class="co">// debug(5, &#39;A&#39;, 3.14f, &quot;foo&quot;); // works</span></span></code></pre></div>
 <p>See also <a
 href="https://cor3ntin.github.io/posts/variadic/">Non-terminal variadic
 template parameters</a> and “variadic template with default argument”
@@ -2623,16 +2590,16 @@ class="header-section-number">83</span> <a href="#83"># </a>debug: print
 type at compile time with error</h3>
 <p>Sometimes it’s useful to know the type of a variable deep inside
 templates:</p>
-<div class="sourceCode" id="cb125"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb125-1"><a href="#cb125-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span> <span class="kw">struct</span> Show<span class="op">;</span></span>
-<span id="cb125-2"><a href="#cb125-2"></a></span>
-<span id="cb125-3"><a href="#cb125-3"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
-<span id="cb125-4"><a href="#cb125-4"></a><span class="dt">void</span> Foo<span class="op">(</span>T<span class="op">&amp;&amp;</span> v<span class="op">)</span></span>
-<span id="cb125-5"><a href="#cb125-5"></a><span class="op">{</span></span>
-<span id="cb125-6"><a href="#cb125-6"></a>    Show<span class="op">&lt;</span><span class="kw">decltype</span><span class="op">(</span>v<span class="op">)&gt;{};</span></span>
-<span id="cb125-7"><a href="#cb125-7"></a><span class="op">}</span></span>
-<span id="cb125-8"><a href="#cb125-8"></a></span>
-<span id="cb125-9"><a href="#cb125-9"></a>Foo<span class="op">(</span><span class="dv">10</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb124"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb124-1"><a href="#cb124-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span> <span class="kw">struct</span> Show<span class="op">;</span></span>
+<span id="cb124-2"><a href="#cb124-2"></a></span>
+<span id="cb124-3"><a href="#cb124-3"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb124-4"><a href="#cb124-4"></a><span class="dt">void</span> Foo<span class="op">(</span>T<span class="op">&amp;&amp;</span> v<span class="op">)</span></span>
+<span id="cb124-5"><a href="#cb124-5"></a><span class="op">{</span></span>
+<span id="cb124-6"><a href="#cb124-6"></a>    Show<span class="op">&lt;</span><span class="kw">decltype</span><span class="op">(</span>v<span class="op">)&gt;{};</span></span>
+<span id="cb124-7"><a href="#cb124-7"></a><span class="op">}</span></span>
+<span id="cb124-8"><a href="#cb124-8"></a></span>
+<span id="cb124-9"><a href="#cb124-9"></a>Foo<span class="op">(</span><span class="dv">10</span><span class="op">);</span></span></code></pre></div>
 <p><code>Show</code> is intentionally incomplete. Compiler will print
 the error message like this:</p>
 <pre><code>error: invalid use of incomplete type &#39;struct Show&lt;int&amp;&amp;&gt;&#39;
@@ -2649,15 +2616,15 @@ useful custom assert</h3>
 <p>When custom version of assert is needed, it’s useful to inject
 <code>__debugbreak</code> right at assert definition so you can get
 breakpoint hit exactly at the location of the assert fail. In short:</p>
-<div class="sourceCode" id="cb127"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb127-1"><a href="#cb127-1"></a><span class="pp">#define KK_ABORT</span><span class="op">(</span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">...)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                                 </span><span class="op">\</span></span>
-<span id="cb127-2"><a href="#cb127-2"></a><span class="pp">    </span><span class="op">(::</span>log_abort<span class="op">(</span><span class="ot">__FILE__</span><span class="op">,</span><span class="pp"> </span><span class="ot">__LINE__</span><span class="op">,</span><span class="pp"> </span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">##</span><span class="ot">__VA_ARGS__</span><span class="op">),</span><span class="pp">         </span><span class="op">\</span></span>
-<span id="cb127-3"><a href="#cb127-3"></a><span class="pp">        </span>__debugbreak<span class="op">(),</span><span class="pp">       </span><span class="co">/*MSVC-specific*/</span><span class="pp">                      </span><span class="op">\</span></span>
-<span id="cb127-4"><a href="#cb127-4"></a><span class="pp">        </span><span class="bu">std::</span>quick_exit<span class="op">(-</span><span class="dv">1</span><span class="op">))</span><span class="pp">  </span><span class="co">/*in case of non-debugbreak platforms*/</span></span>
-<span id="cb127-5"><a href="#cb127-5"></a></span>
-<span id="cb127-6"><a href="#cb127-6"></a><span class="pp">#define KK_VERIFY</span><span class="op">(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                           </span><span class="op">\</span></span>
-<span id="cb127-7"><a href="#cb127-7"></a><span class="pp">    </span><span class="op">(!!(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">||</span><span class="pp">                                         </span><span class="op">\</span></span>
-<span id="cb127-8"><a href="#cb127-8"></a><span class="pp">        </span><span class="op">(</span>KK_ABORT<span class="op">(</span><span class="st">&quot;Verify failed: &#39;</span><span class="sc">%s</span><span class="st">&#39;&quot;</span><span class="op">,</span><span class="pp"> </span><span class="op">#</span>KK_EXPRESSION<span class="op">),</span><span class="pp"> </span><span class="kw">false</span><span class="op">))</span></span></code></pre></div>
+<div class="sourceCode" id="cb126"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb126-1"><a href="#cb126-1"></a><span class="pp">#define KK_ABORT</span><span class="op">(</span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">...)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                                 </span><span class="op">\</span></span>
+<span id="cb126-2"><a href="#cb126-2"></a><span class="pp">    </span><span class="op">(::</span>log_abort<span class="op">(</span><span class="ot">__FILE__</span><span class="op">,</span><span class="pp"> </span><span class="ot">__LINE__</span><span class="op">,</span><span class="pp"> </span>KK_FMT<span class="op">,</span><span class="pp"> </span><span class="op">##</span><span class="ot">__VA_ARGS__</span><span class="op">),</span><span class="pp">         </span><span class="op">\</span></span>
+<span id="cb126-3"><a href="#cb126-3"></a><span class="pp">        </span>__debugbreak<span class="op">(),</span><span class="pp">       </span><span class="co">/*MSVC-specific*/</span><span class="pp">                      </span><span class="op">\</span></span>
+<span id="cb126-4"><a href="#cb126-4"></a><span class="pp">        </span><span class="bu">std::</span>quick_exit<span class="op">(-</span><span class="dv">1</span><span class="op">))</span><span class="pp">  </span><span class="co">/*in case of non-debugbreak platforms*/</span></span>
+<span id="cb126-5"><a href="#cb126-5"></a></span>
+<span id="cb126-6"><a href="#cb126-6"></a><span class="pp">#define KK_VERIFY</span><span class="op">(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">(</span><span class="dt">void</span><span class="op">)</span><span class="pp">                           </span><span class="op">\</span></span>
+<span id="cb126-7"><a href="#cb126-7"></a><span class="pp">    </span><span class="op">(!!(</span>KK_EXPRESSION<span class="op">)</span><span class="pp"> </span><span class="op">||</span><span class="pp">                                         </span><span class="op">\</span></span>
+<span id="cb126-8"><a href="#cb126-8"></a><span class="pp">        </span><span class="op">(</span>KK_ABORT<span class="op">(</span><span class="st">&quot;Verify failed: &#39;</span><span class="sc">%s</span><span class="st">&#39;&quot;</span><span class="op">,</span><span class="pp"> </span><span class="op">#</span>KK_EXPRESSION<span class="op">),</span><span class="pp"> </span><span class="kw">false</span><span class="op">))</span></span></code></pre></div>
 <p><code>__debugbreak()</code> hits under debugger and points exactly at
 assert/verify location:</p>
 <p><img src="cpp_tips_tricks_quirks/cpp_tips_tricks_quirks0.png" /></p>
@@ -2674,46 +2641,46 @@ href="https://en.cppreference.com/w/cpp/preprocessor/replace">cppreference</a>.<
 class="header-section-number">86</span> <a href="#86"># </a>std::move
 does not move</h3>
 <p><code>std::move(object)</code> does not “move” on its own. So</p>
-<div class="sourceCode" id="cb128"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb128-1"><a href="#cb128-1"></a><span class="bu">std::</span>string s<span class="op">;</span></span>
-<span id="cb128-2"><a href="#cb128-2"></a><span class="bu">std::</span>move<span class="op">(</span>s<span class="op">);</span> <span class="co">// no-op</span></span></code></pre></div>
+<div class="sourceCode" id="cb127"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb127-1"><a href="#cb127-1"></a><span class="bu">std::</span>string s<span class="op">;</span></span>
+<span id="cb127-2"><a href="#cb127-2"></a><span class="bu">std::</span>move<span class="op">(</span>s<span class="op">);</span> <span class="co">// no-op</span></span></code></pre></div>
 <p>Similarly, you can move into function that accepts rvalue refence. If
 function implementation does not actually modify/move argument - initial
 move is a no-op:</p>
-<div class="sourceCode" id="cb129"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb129-1"><a href="#cb129-1"></a><span class="dt">void</span> Foo<span class="op">(</span><span class="bu">std::</span>string<span class="op">&amp;&amp;</span> str<span class="op">)</span> <span class="co">// rvalue reference</span></span>
-<span id="cb129-2"><a href="#cb129-2"></a><span class="op">{</span></span>
-<span id="cb129-3"><a href="#cb129-3"></a>    <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;not using str&quot;</span><span class="op">);</span></span>
-<span id="cb129-4"><a href="#cb129-4"></a><span class="op">}</span></span>
-<span id="cb129-5"><a href="#cb129-5"></a></span>
-<span id="cb129-6"><a href="#cb129-6"></a><span class="bu">std::</span>string str <span class="op">=</span> <span class="op">...</span></span>
-<span id="cb129-7"><a href="#cb129-7"></a>Foo<span class="op">(</span><span class="bu">std::</span>move<span class="op">(</span>str<span class="op">));</span> <span class="co">// no-op</span></span>
-<span id="cb129-8"><a href="#cb129-8"></a><span class="co">// str is unchanged, can be used freely,</span></span>
-<span id="cb129-9"><a href="#cb129-9"></a><span class="co">// but only because you **know** exact implementation of `Foo`</span></span></code></pre></div>
+<div class="sourceCode" id="cb128"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb128-1"><a href="#cb128-1"></a><span class="dt">void</span> Foo<span class="op">(</span><span class="bu">std::</span>string<span class="op">&amp;&amp;</span> str<span class="op">)</span> <span class="co">// rvalue reference</span></span>
+<span id="cb128-2"><a href="#cb128-2"></a><span class="op">{</span></span>
+<span id="cb128-3"><a href="#cb128-3"></a>    <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;not using str&quot;</span><span class="op">);</span></span>
+<span id="cb128-4"><a href="#cb128-4"></a><span class="op">}</span></span>
+<span id="cb128-5"><a href="#cb128-5"></a></span>
+<span id="cb128-6"><a href="#cb128-6"></a><span class="bu">std::</span>string str <span class="op">=</span> <span class="op">...</span></span>
+<span id="cb128-7"><a href="#cb128-7"></a>Foo<span class="op">(</span><span class="bu">std::</span>move<span class="op">(</span>str<span class="op">));</span> <span class="co">// no-op</span></span>
+<span id="cb128-8"><a href="#cb128-8"></a><span class="co">// str is unchanged, can be used freely,</span></span>
+<span id="cb128-9"><a href="#cb128-9"></a><span class="co">// but only because you **know** exact implementation of `Foo`</span></span></code></pre></div>
 <p>Same, if class has only copy constructor, copy assignment and no move
-constructor/ move assignment, the code is no-op:</p>
+constructor/move assignment, the code is no-op:</p>
+<div class="sourceCode" id="cb129"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb129-1"><a href="#cb129-1"></a><span class="kw">struct</span> MyClass</span>
+<span id="cb129-2"><a href="#cb129-2"></a><span class="op">{</span></span>
+<span id="cb129-3"><a href="#cb129-3"></a>    MyClass<span class="op">(</span><span class="at">const</span> MyClass<span class="op">&amp;</span> rhs<span class="op">)</span> <span class="op">{</span> <span class="co">/**/</span> <span class="op">}</span></span>
+<span id="cb129-4"><a href="#cb129-4"></a>    MyClass<span class="op">&amp;</span> <span class="kw">operator</span><span class="op">=(</span><span class="at">const</span> MyClass<span class="op">&amp;</span> rhs<span class="op">)</span> <span class="op">{</span> <span class="co">/**/</span> <span class="op">}</span></span>
+<span id="cb129-5"><a href="#cb129-5"></a><span class="op">};</span></span>
+<span id="cb129-6"><a href="#cb129-6"></a></span>
+<span id="cb129-7"><a href="#cb129-7"></a>MyClass object<span class="op">;</span></span>
+<span id="cb129-8"><a href="#cb129-8"></a>MyClass copy <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>object<span class="op">);</span> <span class="co">// no-op or rathe copy constructor is invoked</span></span>
+<span id="cb129-9"><a href="#cb129-9"></a><span class="co">// object is unchaged, can be used freely</span></span></code></pre></div>
+<p>Same, if class has move constructor/move assignmed that actually does
+not use/or modify argument, it is no-op again:</p>
 <div class="sourceCode" id="cb130"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb130-1"><a href="#cb130-1"></a><span class="kw">struct</span> MyClass</span>
 <span id="cb130-2"><a href="#cb130-2"></a><span class="op">{</span></span>
-<span id="cb130-3"><a href="#cb130-3"></a>    MyClass<span class="op">(</span><span class="at">const</span> MyClass<span class="op">&amp;</span> rhs<span class="op">)</span> <span class="op">{</span> <span class="co">/**/</span> <span class="op">}</span></span>
-<span id="cb130-4"><a href="#cb130-4"></a>    MyClass<span class="op">&amp;</span> <span class="kw">operator</span><span class="op">=(</span><span class="at">const</span> MyClass<span class="op">&amp;</span> rhs<span class="op">)</span> <span class="op">{</span> <span class="co">/**/</span> <span class="op">}</span></span>
+<span id="cb130-3"><a href="#cb130-3"></a>    MyClass<span class="op">(</span>MyClass<span class="op">&amp;&amp;</span> rhs<span class="op">)</span> <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;not using rhs actually&quot;</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb130-4"><a href="#cb130-4"></a>    MyClass<span class="op">&amp;</span> <span class="kw">operator</span><span class="op">=(</span><span class="at">const</span> MyClass<span class="op">&amp;</span> rhs<span class="op">)</span> <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;same&quot;</span><span class="op">);</span> <span class="op">}</span></span>
 <span id="cb130-5"><a href="#cb130-5"></a><span class="op">};</span></span>
 <span id="cb130-6"><a href="#cb130-6"></a></span>
 <span id="cb130-7"><a href="#cb130-7"></a>MyClass object<span class="op">;</span></span>
-<span id="cb130-8"><a href="#cb130-8"></a>MyClass copy <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>object<span class="op">);</span> <span class="co">// no-op or rathe copy constructor is invoked</span></span>
+<span id="cb130-8"><a href="#cb130-8"></a>MyClass o2 <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>object<span class="op">);</span> <span class="co">// no-op, even tho move constructor was invoked</span></span>
 <span id="cb130-9"><a href="#cb130-9"></a><span class="co">// object is unchaged, can be used freely</span></span></code></pre></div>
-<p>Same, if class has move constructor/move assignmed that actually does
-not use/or modify argument, it is no-op again:</p>
-<div class="sourceCode" id="cb131"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb131-1"><a href="#cb131-1"></a><span class="kw">struct</span> MyClass</span>
-<span id="cb131-2"><a href="#cb131-2"></a><span class="op">{</span></span>
-<span id="cb131-3"><a href="#cb131-3"></a>    MyClass<span class="op">(</span>MyClass<span class="op">&amp;&amp;</span> rhs<span class="op">)</span> <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;not using rhs actually&quot;</span><span class="op">);</span> <span class="op">}</span></span>
-<span id="cb131-4"><a href="#cb131-4"></a>    MyClass<span class="op">&amp;</span> <span class="kw">operator</span><span class="op">=(</span><span class="at">const</span> MyClass<span class="op">&amp;</span> rhs<span class="op">)</span> <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;same&quot;</span><span class="op">);</span> <span class="op">}</span></span>
-<span id="cb131-5"><a href="#cb131-5"></a><span class="op">};</span></span>
-<span id="cb131-6"><a href="#cb131-6"></a></span>
-<span id="cb131-7"><a href="#cb131-7"></a>MyClass object<span class="op">;</span></span>
-<span id="cb131-8"><a href="#cb131-8"></a>MyClass o2 <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>object<span class="op">);</span> <span class="co">// no-op, even tho move constructor was invoked</span></span>
-<span id="cb131-9"><a href="#cb131-9"></a><span class="co">// object is unchaged, can be used freely</span></span></code></pre></div>
 <p>So in short std::move is a cast to rvalue that is used
 <strong>only</strong> for overload resolution; only to select move
 constructor instead of copy constructor if both present, etc.</p>
@@ -2736,18 +2703,18 @@ harmful overuse of std::move</a>.</p>
 class="header-section-number">89</span> <a href="#89">#
 </a><code>const T&amp;&amp;</code> (const rvalue)</h3>
 <p>rvalue is still a <strong>REFERENCE</strong>, const rvalue can be
-formed and as normal as const lvalue:</p>
-<div class="sourceCode" id="cb132"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb132-1"><a href="#cb132-1"></a><span class="dt">void</span> Foo<span class="op">(</span><span class="at">const</span> <span class="dt">int</span><span class="op">&amp;)</span>  <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;(const int&amp;)&quot;</span><span class="op">);</span> <span class="op">}</span></span>
-<span id="cb132-2"><a href="#cb132-2"></a><span class="dt">void</span> Foo<span class="op">(</span><span class="dt">int</span><span class="op">&amp;)</span>        <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;(int&amp;)&quot;</span><span class="op">);</span> <span class="op">}</span></span>
-<span id="cb132-3"><a href="#cb132-3"></a><span class="dt">void</span> Foo<span class="op">(</span><span class="dt">int</span><span class="op">&amp;&amp;)</span>       <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;(int&amp;&amp;)&quot;</span><span class="op">);</span> <span class="op">}</span></span>
-<span id="cb132-4"><a href="#cb132-4"></a><span class="dt">void</span> Foo<span class="op">(</span><span class="at">const</span> <span class="dt">int</span><span class="op">&amp;&amp;)</span> <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;(const int&amp;&amp;)&quot;</span><span class="op">);</span> <span class="op">}</span></span>
-<span id="cb132-5"><a href="#cb132-5"></a></span>
-<span id="cb132-6"><a href="#cb132-6"></a><span class="dt">int</span> main<span class="op">()</span></span>
-<span id="cb132-7"><a href="#cb132-7"></a><span class="op">{</span></span>
-<span id="cb132-8"><a href="#cb132-8"></a>    <span class="at">const</span> <span class="dt">int</span> v <span class="op">=</span> <span class="dv">72</span><span class="op">;</span></span>
-<span id="cb132-9"><a href="#cb132-9"></a>    Foo<span class="op">(</span><span class="bu">std::</span>move<span class="op">(</span>v<span class="op">));</span> <span class="co">// (const int&amp;&amp;)</span></span>
-<span id="cb132-10"><a href="#cb132-10"></a><span class="op">}</span></span></code></pre></div>
+formed in the same way as normal const lvalue:</p>
+<div class="sourceCode" id="cb131"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb131-1"><a href="#cb131-1"></a><span class="dt">void</span> Foo<span class="op">(</span><span class="at">const</span> <span class="dt">int</span><span class="op">&amp;)</span>  <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;(const int&amp;)&quot;</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb131-2"><a href="#cb131-2"></a><span class="dt">void</span> Foo<span class="op">(</span><span class="dt">int</span><span class="op">&amp;)</span>        <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;(int&amp;)&quot;</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb131-3"><a href="#cb131-3"></a><span class="dt">void</span> Foo<span class="op">(</span><span class="dt">int</span><span class="op">&amp;&amp;)</span>       <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;(int&amp;&amp;)&quot;</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb131-4"><a href="#cb131-4"></a><span class="dt">void</span> Foo<span class="op">(</span><span class="at">const</span> <span class="dt">int</span><span class="op">&amp;&amp;)</span> <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;(const int&amp;&amp;)&quot;</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb131-5"><a href="#cb131-5"></a></span>
+<span id="cb131-6"><a href="#cb131-6"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb131-7"><a href="#cb131-7"></a><span class="op">{</span></span>
+<span id="cb131-8"><a href="#cb131-8"></a>    <span class="at">const</span> <span class="dt">int</span> v <span class="op">=</span> <span class="dv">72</span><span class="op">;</span></span>
+<span id="cb131-9"><a href="#cb131-9"></a>    Foo<span class="op">(</span><span class="bu">std::</span>move<span class="op">(</span>v<span class="op">));</span> <span class="co">// (const int&amp;&amp;)</span></span>
+<span id="cb131-10"><a href="#cb131-10"></a><span class="op">}</span></span></code></pre></div>
 <p>Here, we accidentaly move const object, so cast to
 <code>const int&amp;&amp;</code> happens.</p>
 <p>Overloads with const T&amp;&amp; references are usually deleted, see
@@ -2755,48 +2722,48 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 href="https://en.cppreference.com/w/cpp/utility/functional/ref">std::ref</a>,
 <a
 href="https://en.cppreference.com/w/cpp/utility/as_const">std::as_const</a>:</p>
-<div class="sourceCode" id="cb133"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb133-1"><a href="#cb133-1"></a><span class="kw">template</span><span class="op">&lt;</span> <span class="kw">class</span> T <span class="op">&gt;</span></span>
-<span id="cb133-2"><a href="#cb133-2"></a><span class="dt">void</span> ref<span class="op">(</span> <span class="at">const</span> T<span class="op">&amp;&amp;</span> <span class="op">)</span> <span class="op">=</span> <span class="kw">delete</span><span class="op">;</span> <span class="co">// rvalue reference wrapper is deleted</span></span></code></pre></div>
+<div class="sourceCode" id="cb132"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb132-1"><a href="#cb132-1"></a><span class="kw">template</span><span class="op">&lt;</span> <span class="kw">class</span> T <span class="op">&gt;</span></span>
+<span id="cb132-2"><a href="#cb132-2"></a><span class="dt">void</span> ref<span class="op">(</span> <span class="at">const</span> T<span class="op">&amp;&amp;</span> <span class="op">)</span> <span class="op">=</span> <span class="kw">delete</span><span class="op">;</span> <span class="co">// rvalue reference wrapper is deleted</span></span></code></pre></div>
 <p>See <a href="https://stackoverflow.com/q/4938875">SO discussion</a>
 on usefullness.</p>
 <h3 data-number="90" id="90"><span
 class="header-section-number">90</span> <a href="#90"># </a>enum
 struct</h3>
 <p>Does below compile?</p>
-<div class="sourceCode" id="cb134"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb134-1"><a href="#cb134-1"></a><span class="kw">enum</span> <span class="kw">struct</span> MyEnum</span>
-<span id="cb134-2"><a href="#cb134-2"></a><span class="op">{</span></span>
-<span id="cb134-3"><a href="#cb134-3"></a>    V0 <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
-<span id="cb134-4"><a href="#cb134-4"></a>    V1 <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
-<span id="cb134-5"><a href="#cb134-5"></a><span class="op">};</span></span></code></pre></div>
+<div class="sourceCode" id="cb133"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb133-1"><a href="#cb133-1"></a><span class="kw">enum</span> <span class="kw">struct</span> MyEnum</span>
+<span id="cb133-2"><a href="#cb133-2"></a><span class="op">{</span></span>
+<span id="cb133-3"><a href="#cb133-3"></a>    V0 <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb133-4"><a href="#cb133-4"></a>    V1 <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb133-5"><a href="#cb133-5"></a><span class="op">};</span></span></code></pre></div>
 <p>Yes. Exactly the same as <code>enum class MyEnum</code>.</p>
 <h3 data-number="91" id="91"><span
 class="header-section-number">91</span> <a href="#91"># </a>using enum
 declaration</h3>
 <p><a href="https://en.cppreference.com/w/cpp/language/enum">This works
 (C++20)</a>:</p>
-<div class="sourceCode" id="cb135"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb135-1"><a href="#cb135-1"></a><span class="pp">#include </span><span class="im">&lt;cstio&gt;</span></span>
-<span id="cb135-2"><a href="#cb135-2"></a></span>
-<span id="cb135-3"><a href="#cb135-3"></a><span class="kw">enum</span> <span class="kw">class</span> MyEnum</span>
-<span id="cb135-4"><a href="#cb135-4"></a><span class="op">{</span></span>
-<span id="cb135-5"><a href="#cb135-5"></a>    MyValue0 <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
-<span id="cb135-6"><a href="#cb135-6"></a>    MyValue1 <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
-<span id="cb135-7"><a href="#cb135-7"></a>    MyValue2 <span class="op">=</span> <span class="dv">2</span><span class="op">,</span></span>
-<span id="cb135-8"><a href="#cb135-8"></a><span class="op">};</span></span>
-<span id="cb135-9"><a href="#cb135-9"></a></span>
-<span id="cb135-10"><a href="#cb135-10"></a><span class="dt">void</span> MyProcess<span class="op">(</span>MyEnum v<span class="op">)</span></span>
-<span id="cb135-11"><a href="#cb135-11"></a><span class="op">{</span></span>
-<span id="cb135-12"><a href="#cb135-12"></a>    <span class="kw">using</span> <span class="kw">enum</span> MyEnum<span class="op">;</span></span>
-<span id="cb135-13"><a href="#cb135-13"></a>    <span class="cf">switch</span> <span class="op">(</span>v<span class="op">)</span></span>
-<span id="cb135-14"><a href="#cb135-14"></a>    <span class="op">{</span></span>
-<span id="cb135-15"><a href="#cb135-15"></a>        <span class="cf">case</span> MyValue0<span class="op">:</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;got MyValue0&quot;</span><span class="op">);</span> <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb135-16"><a href="#cb135-16"></a>        <span class="cf">case</span> MyValue1<span class="op">:</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;got MyValue1&quot;</span><span class="op">);</span> <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb135-17"><a href="#cb135-17"></a>        <span class="cf">case</span> MyValue2<span class="op">:</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;got MyValue2&quot;</span><span class="op">);</span> <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb135-18"><a href="#cb135-18"></a>    <span class="op">}</span></span>
-<span id="cb135-19"><a href="#cb135-19"></a>    <span class="co">// Note: no need to fully-qualify MyEnum::MyValue0.</span></span>
-<span id="cb135-20"><a href="#cb135-20"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb134"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb134-1"><a href="#cb134-1"></a><span class="pp">#include </span><span class="im">&lt;cstio&gt;</span></span>
+<span id="cb134-2"><a href="#cb134-2"></a></span>
+<span id="cb134-3"><a href="#cb134-3"></a><span class="kw">enum</span> <span class="kw">class</span> MyEnum</span>
+<span id="cb134-4"><a href="#cb134-4"></a><span class="op">{</span></span>
+<span id="cb134-5"><a href="#cb134-5"></a>    MyValue0 <span class="op">=</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb134-6"><a href="#cb134-6"></a>    MyValue1 <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb134-7"><a href="#cb134-7"></a>    MyValue2 <span class="op">=</span> <span class="dv">2</span><span class="op">,</span></span>
+<span id="cb134-8"><a href="#cb134-8"></a><span class="op">};</span></span>
+<span id="cb134-9"><a href="#cb134-9"></a></span>
+<span id="cb134-10"><a href="#cb134-10"></a><span class="dt">void</span> MyProcess<span class="op">(</span>MyEnum v<span class="op">)</span></span>
+<span id="cb134-11"><a href="#cb134-11"></a><span class="op">{</span></span>
+<span id="cb134-12"><a href="#cb134-12"></a>    <span class="kw">using</span> <span class="kw">enum</span> MyEnum<span class="op">;</span></span>
+<span id="cb134-13"><a href="#cb134-13"></a>    <span class="cf">switch</span> <span class="op">(</span>v<span class="op">)</span></span>
+<span id="cb134-14"><a href="#cb134-14"></a>    <span class="op">{</span></span>
+<span id="cb134-15"><a href="#cb134-15"></a>        <span class="cf">case</span> MyValue0<span class="op">:</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;got MyValue0&quot;</span><span class="op">);</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb134-16"><a href="#cb134-16"></a>        <span class="cf">case</span> MyValue1<span class="op">:</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;got MyValue1&quot;</span><span class="op">);</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb134-17"><a href="#cb134-17"></a>        <span class="cf">case</span> MyValue2<span class="op">:</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;got MyValue2&quot;</span><span class="op">);</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb134-18"><a href="#cb134-18"></a>    <span class="op">}</span></span>
+<span id="cb134-19"><a href="#cb134-19"></a>    <span class="co">// Note: no need to fully-qualify MyEnum::MyValue0.</span></span>
+<span id="cb134-20"><a href="#cb134-20"></a><span class="op">}</span></span></code></pre></div>
 <h3 data-number="92" id="92"><span
 class="header-section-number">92</span> <a href="#92"># </a>using
 declaration vs using directive</h3>
@@ -2805,17 +2772,17 @@ href="https://learn.microsoft.com/en-us/cpp/cpp/using-declaration?view=msvc-170"
 declaration</a> and <a
 href="https://learn.microsoft.com/en-us/cpp/cpp/using-declaration?view=msvc-170">using
 directives</a>.</p>
-<div class="sourceCode" id="cb136"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb136-1"><a href="#cb136-1"></a><span class="kw">namespace</span> MyNamespace</span>
-<span id="cb136-2"><a href="#cb136-2"></a><span class="op">{</span></span>
-<span id="cb136-3"><a href="#cb136-3"></a>    <span class="dt">void</span> Foo<span class="op">();</span></span>
-<span id="cb136-4"><a href="#cb136-4"></a>    <span class="dt">void</span> Bar<span class="op">();</span></span>
-<span id="cb136-5"><a href="#cb136-5"></a><span class="op">}</span></span>
-<span id="cb136-6"><a href="#cb136-6"></a></span>
-<span id="cb136-7"><a href="#cb136-7"></a><span class="kw">using</span> MyNamespace<span class="op">::</span>Bar<span class="op">;</span> <span class="co">// using declaration</span></span>
-<span id="cb136-8"><a href="#cb136-8"></a>Bar<span class="op">();</span></span>
-<span id="cb136-9"><a href="#cb136-9"></a><span class="kw">using</span> <span class="kw">namespace</span> MyNamespace<span class="op">;</span> <span class="co">// using directive</span></span>
-<span id="cb136-10"><a href="#cb136-10"></a>Foo<span class="op">();</span></span></code></pre></div>
+<div class="sourceCode" id="cb135"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb135-1"><a href="#cb135-1"></a><span class="kw">namespace</span> MyNamespace</span>
+<span id="cb135-2"><a href="#cb135-2"></a><span class="op">{</span></span>
+<span id="cb135-3"><a href="#cb135-3"></a>    <span class="dt">void</span> Foo<span class="op">();</span></span>
+<span id="cb135-4"><a href="#cb135-4"></a>    <span class="dt">void</span> Bar<span class="op">();</span></span>
+<span id="cb135-5"><a href="#cb135-5"></a><span class="op">}</span></span>
+<span id="cb135-6"><a href="#cb135-6"></a></span>
+<span id="cb135-7"><a href="#cb135-7"></a><span class="kw">using</span> MyNamespace<span class="op">::</span>Bar<span class="op">;</span> <span class="co">// using declaration</span></span>
+<span id="cb135-8"><a href="#cb135-8"></a>Bar<span class="op">();</span></span>
+<span id="cb135-9"><a href="#cb135-9"></a><span class="kw">using</span> <span class="kw">namespace</span> MyNamespace<span class="op">;</span> <span class="co">// using directive</span></span>
+<span id="cb135-10"><a href="#cb135-10"></a>Foo<span class="op">();</span></span></code></pre></div>
 <p>One brings single name; another brings whole namespace.</p>
 <h3 data-number="93" id="93"><span
 class="header-section-number">93</span> <a href="#93">#
@@ -2823,44 +2790,44 @@ class="header-section-number">93</span> <a href="#93">#
 <code>dynamic_cast&lt;T&amp;&gt;</code></h3>
 <p>One returns nullptr on fail, the other one throws <a
 href="https://en.cppreference.com/w/cpp/types/bad_cast">std::bad_cast</a>:</p>
-<div class="sourceCode" id="cb137"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb137-1"><a href="#cb137-1"></a><span class="kw">struct</span> Base</span>
-<span id="cb137-2"><a href="#cb137-2"></a><span class="op">{</span></span>
-<span id="cb137-3"><a href="#cb137-3"></a>    <span class="kw">virtual</span> <span class="op">~</span>Base<span class="op">()</span> <span class="op">=</span> <span class="cf">default</span><span class="op">;</span></span>
-<span id="cb137-4"><a href="#cb137-4"></a><span class="op">};</span></span>
-<span id="cb137-5"><a href="#cb137-5"></a><span class="kw">struct</span> Derived <span class="op">:</span> Base <span class="op">{};</span></span>
-<span id="cb137-6"><a href="#cb137-6"></a></span>
-<span id="cb137-7"><a href="#cb137-7"></a><span class="dt">void</span> Handle<span class="op">(</span>Base<span class="op">*</span> base<span class="op">)</span></span>
-<span id="cb137-8"><a href="#cb137-8"></a><span class="op">{</span></span>
-<span id="cb137-9"><a href="#cb137-9"></a>    Derived<span class="op">*</span> d_ptr <span class="op">=</span> <span class="kw">dynamic_cast</span><span class="op">&lt;</span>Derived<span class="op">*&gt;(</span>base<span class="op">);</span></span>
-<span id="cb137-10"><a href="#cb137-10"></a>    <span class="ot">assert</span><span class="op">(</span>d_ptr<span class="op">);</span> <span class="co">// null on fail</span></span>
-<span id="cb137-11"><a href="#cb137-11"></a></span>
-<span id="cb137-12"><a href="#cb137-12"></a>    <span class="cf">try</span></span>
-<span id="cb137-13"><a href="#cb137-13"></a>    <span class="op">{</span></span>
-<span id="cb137-14"><a href="#cb137-14"></a>        Derived<span class="op">&amp;</span> d_ref <span class="op">=</span> <span class="kw">dynamic_cast</span><span class="op">&lt;</span>Derived<span class="op">&amp;&gt;(*</span>base<span class="op">);</span></span>
-<span id="cb137-15"><a href="#cb137-15"></a>    <span class="op">}</span></span>
-<span id="cb137-16"><a href="#cb137-16"></a>    <span class="cf">catch</span> <span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>bad_cast<span class="op">&amp;)</span></span>
-<span id="cb137-17"><a href="#cb137-17"></a>    <span class="op">{</span></span>
-<span id="cb137-18"><a href="#cb137-18"></a>        <span class="ot">assert</span><span class="op">(</span><span class="kw">false</span><span class="op">);</span> <span class="co">// exception of fail</span></span>
-<span id="cb137-19"><a href="#cb137-19"></a>    <span class="op">}</span></span>
-<span id="cb137-20"><a href="#cb137-20"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb136"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb136-1"><a href="#cb136-1"></a><span class="kw">struct</span> Base</span>
+<span id="cb136-2"><a href="#cb136-2"></a><span class="op">{</span></span>
+<span id="cb136-3"><a href="#cb136-3"></a>    <span class="kw">virtual</span> <span class="op">~</span>Base<span class="op">()</span> <span class="op">=</span> <span class="cf">default</span><span class="op">;</span></span>
+<span id="cb136-4"><a href="#cb136-4"></a><span class="op">};</span></span>
+<span id="cb136-5"><a href="#cb136-5"></a><span class="kw">struct</span> Derived <span class="op">:</span> Base <span class="op">{};</span></span>
+<span id="cb136-6"><a href="#cb136-6"></a></span>
+<span id="cb136-7"><a href="#cb136-7"></a><span class="dt">void</span> Handle<span class="op">(</span>Base<span class="op">*</span> base<span class="op">)</span></span>
+<span id="cb136-8"><a href="#cb136-8"></a><span class="op">{</span></span>
+<span id="cb136-9"><a href="#cb136-9"></a>    Derived<span class="op">*</span> d_ptr <span class="op">=</span> <span class="kw">dynamic_cast</span><span class="op">&lt;</span>Derived<span class="op">*&gt;(</span>base<span class="op">);</span></span>
+<span id="cb136-10"><a href="#cb136-10"></a>    <span class="ot">assert</span><span class="op">(</span>d_ptr<span class="op">);</span> <span class="co">// null on fail</span></span>
+<span id="cb136-11"><a href="#cb136-11"></a></span>
+<span id="cb136-12"><a href="#cb136-12"></a>    <span class="cf">try</span></span>
+<span id="cb136-13"><a href="#cb136-13"></a>    <span class="op">{</span></span>
+<span id="cb136-14"><a href="#cb136-14"></a>        Derived<span class="op">&amp;</span> d_ref <span class="op">=</span> <span class="kw">dynamic_cast</span><span class="op">&lt;</span>Derived<span class="op">&amp;&gt;(*</span>base<span class="op">);</span></span>
+<span id="cb136-15"><a href="#cb136-15"></a>    <span class="op">}</span></span>
+<span id="cb136-16"><a href="#cb136-16"></a>    <span class="cf">catch</span> <span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>bad_cast<span class="op">&amp;)</span></span>
+<span id="cb136-17"><a href="#cb136-17"></a>    <span class="op">{</span></span>
+<span id="cb136-18"><a href="#cb136-18"></a>        <span class="ot">assert</span><span class="op">(</span><span class="kw">false</span><span class="op">);</span> <span class="co">// exception of fail</span></span>
+<span id="cb136-19"><a href="#cb136-19"></a>    <span class="op">}</span></span>
+<span id="cb136-20"><a href="#cb136-20"></a><span class="op">}</span></span></code></pre></div>
 <h3 data-number="94" id="94"><span
 class="header-section-number">94</span> <a href="#94">#
 </a><code>dynamic_cast&lt;const T*&gt;</code> adds const</h3>
-<div class="sourceCode" id="cb138"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb138-1"><a href="#cb138-1"></a><span class="kw">struct</span> V <span class="op">{};</span></span>
-<span id="cb138-2"><a href="#cb138-2"></a></span>
-<span id="cb138-3"><a href="#cb138-3"></a><span class="dt">void</span> Handle<span class="op">(</span>V<span class="op">*</span> v<span class="op">)</span></span>
-<span id="cb138-4"><a href="#cb138-4"></a><span class="op">{</span></span>
-<span id="cb138-5"><a href="#cb138-5"></a>    <span class="at">const</span> V<span class="op">*</span> v1 <span class="op">=</span> <span class="kw">dynamic_cast</span><span class="op">&lt;</span><span class="at">const</span> V<span class="op">*&gt;(</span>v<span class="op">);</span></span>
-<span id="cb138-6"><a href="#cb138-6"></a>    <span class="at">const</span> V<span class="op">*</span> v2 <span class="op">=</span> <span class="kw">static_cast</span><span class="op">&lt;</span><span class="at">const</span> V<span class="op">*&gt;(</span>v<span class="op">);</span></span>
-<span id="cb138-7"><a href="#cb138-7"></a>    <span class="at">const</span> V<span class="op">*</span> v3 <span class="op">=</span> <span class="kw">const_cast</span><span class="op">&lt;</span><span class="at">const</span> V<span class="op">*&gt;(</span>v<span class="op">);</span></span>
-<span id="cb138-8"><a href="#cb138-8"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb137"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb137-1"><a href="#cb137-1"></a><span class="kw">struct</span> V <span class="op">{};</span></span>
+<span id="cb137-2"><a href="#cb137-2"></a></span>
+<span id="cb137-3"><a href="#cb137-3"></a><span class="dt">void</span> Handle<span class="op">(</span>V<span class="op">*</span> v<span class="op">)</span></span>
+<span id="cb137-4"><a href="#cb137-4"></a><span class="op">{</span></span>
+<span id="cb137-5"><a href="#cb137-5"></a>    <span class="at">const</span> V<span class="op">*</span> v1 <span class="op">=</span> <span class="kw">dynamic_cast</span><span class="op">&lt;</span><span class="at">const</span> V<span class="op">*&gt;(</span>v<span class="op">);</span></span>
+<span id="cb137-6"><a href="#cb137-6"></a>    <span class="at">const</span> V<span class="op">*</span> v2 <span class="op">=</span> <span class="kw">static_cast</span><span class="op">&lt;</span><span class="at">const</span> V<span class="op">*&gt;(</span>v<span class="op">);</span></span>
+<span id="cb137-7"><a href="#cb137-7"></a>    <span class="at">const</span> V<span class="op">*</span> v3 <span class="op">=</span> <span class="kw">const_cast</span><span class="op">&lt;</span><span class="at">const</span> V<span class="op">*&gt;(</span>v<span class="op">);</span></span>
+<span id="cb137-8"><a href="#cb137-8"></a><span class="op">}</span></span></code></pre></div>
 <p>Usually, it’s said that dynamic_cast needs to be appliyed to
 polymorphic type, note V in this case is not a polymorphic type (but
 still a class type). See also
 <code>dynamic_cast&lt;void*&gt;</code>.</p>
-<p>Notice, const_cast&lt;const V*&gt; can also be used to
+<p>Notice, `const_cast&lt;const V*&gt;`` can also be used to
 <strong>add</strong> const, not only remove it.</p>
 <h3 data-number="95" id="95"><span
 class="header-section-number">95</span> <a href="#95">#
@@ -2870,86 +2837,88 @@ class="header-section-number">95</span> <a href="#95">#
 href="https://learn.microsoft.com/en-us/windows/console/console-handles">Console
 Handles</a>. In case you do ::AllocConsole(), you may want to
 reinitialize C and C++ stdio:</p>
-<div class="sourceCode" id="cb139"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb139-1"><a href="#cb139-1"></a><span class="co">// /SUBSYSTEM:WINDOWS or Not Set.</span></span>
-<span id="cb139-2"><a href="#cb139-2"></a><span class="dt">int</span> WINAPI wWinMain<span class="op">(</span>HINSTANCE<span class="op">,</span> HINSTANCE<span class="op">,</span> PWSTR<span class="op">,</span> <span class="dt">int</span><span class="op">)</span></span>
-<span id="cb139-3"><a href="#cb139-3"></a><span class="op">{</span></span>
-<span id="cb139-4"><a href="#cb139-4"></a>    KK_VERIFY<span class="op">(::</span>AllocConsole<span class="op">());</span></span>
-<span id="cb139-5"><a href="#cb139-5"></a>    <span class="dt">FILE</span><span class="op">*</span> unused <span class="op">=</span> <span class="kw">nullptr</span><span class="op">;</span></span>
-<span id="cb139-6"><a href="#cb139-6"></a>    KK_VERIFY<span class="op">(</span><span class="dv">0</span> <span class="op">==</span> freopen_s<span class="op">(&amp;</span>unused<span class="op">,</span> <span class="st">&quot;CONOUT$&quot;</span><span class="op">,</span> <span class="st">&quot;w&quot;</span><span class="op">,</span> stdout<span class="op">));</span></span>
-<span id="cb139-7"><a href="#cb139-7"></a>    KK_VERIFY<span class="op">(</span><span class="dv">0</span> <span class="op">==</span> freopen_s<span class="op">(&amp;</span>unused<span class="op">,</span> <span class="st">&quot;CONOUT$&quot;</span><span class="op">,</span> <span class="st">&quot;w&quot;</span><span class="op">,</span> stderr<span class="op">));</span></span>
-<span id="cb139-8"><a href="#cb139-8"></a>    KK_VERIFY<span class="op">(</span><span class="dv">0</span> <span class="op">==</span> freopen_s<span class="op">(&amp;</span>unused<span class="op">,</span> <span class="st">&quot;CONIN$&quot;</span><span class="op">,</span> <span class="st">&quot;r&quot;</span><span class="op">,</span> stdin<span class="op">));</span></span>
-<span id="cb139-9"><a href="#cb139-9"></a>    <span class="bu">std::</span>cout<span class="op">.</span>clear<span class="op">();</span> <span class="co">// to reset badbit/failbit</span></span>
-<span id="cb139-10"><a href="#cb139-10"></a>    <span class="bu">std::</span>clog<span class="op">.</span>clear<span class="op">();</span></span>
-<span id="cb139-11"><a href="#cb139-11"></a>    <span class="bu">std::</span>cerr<span class="op">.</span>clear<span class="op">();</span></span>
-<span id="cb139-12"><a href="#cb139-12"></a>    <span class="bu">std::</span>cin<span class="op">.</span>clear<span class="op">();</span></span>
-<span id="cb139-13"><a href="#cb139-13"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb139-14"><a href="#cb139-14"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb138"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb138-1"><a href="#cb138-1"></a><span class="co">// /SUBSYSTEM:WINDOWS or Not Set.</span></span>
+<span id="cb138-2"><a href="#cb138-2"></a><span class="dt">int</span> WINAPI wWinMain<span class="op">(</span>HINSTANCE<span class="op">,</span> HINSTANCE<span class="op">,</span> PWSTR<span class="op">,</span> <span class="dt">int</span><span class="op">)</span></span>
+<span id="cb138-3"><a href="#cb138-3"></a><span class="op">{</span></span>
+<span id="cb138-4"><a href="#cb138-4"></a>    KK_VERIFY<span class="op">(::</span>AllocConsole<span class="op">());</span></span>
+<span id="cb138-5"><a href="#cb138-5"></a>    <span class="dt">FILE</span><span class="op">*</span> unused <span class="op">=</span> <span class="kw">nullptr</span><span class="op">;</span></span>
+<span id="cb138-6"><a href="#cb138-6"></a>    KK_VERIFY<span class="op">(</span><span class="dv">0</span> <span class="op">==</span> freopen_s<span class="op">(&amp;</span>unused<span class="op">,</span> <span class="st">&quot;CONOUT$&quot;</span><span class="op">,</span> <span class="st">&quot;w&quot;</span><span class="op">,</span> stdout<span class="op">));</span></span>
+<span id="cb138-7"><a href="#cb138-7"></a>    KK_VERIFY<span class="op">(</span><span class="dv">0</span> <span class="op">==</span> freopen_s<span class="op">(&amp;</span>unused<span class="op">,</span> <span class="st">&quot;CONOUT$&quot;</span><span class="op">,</span> <span class="st">&quot;w&quot;</span><span class="op">,</span> stderr<span class="op">));</span></span>
+<span id="cb138-8"><a href="#cb138-8"></a>    KK_VERIFY<span class="op">(</span><span class="dv">0</span> <span class="op">==</span> freopen_s<span class="op">(&amp;</span>unused<span class="op">,</span> <span class="st">&quot;CONIN$&quot;</span><span class="op">,</span> <span class="st">&quot;r&quot;</span><span class="op">,</span> stdin<span class="op">));</span></span>
+<span id="cb138-9"><a href="#cb138-9"></a>    <span class="bu">std::</span>cout<span class="op">.</span>clear<span class="op">();</span> <span class="co">// to reset badbit/failbit</span></span>
+<span id="cb138-10"><a href="#cb138-10"></a>    <span class="bu">std::</span>clog<span class="op">.</span>clear<span class="op">();</span></span>
+<span id="cb138-11"><a href="#cb138-11"></a>    <span class="bu">std::</span>cerr<span class="op">.</span>clear<span class="op">();</span></span>
+<span id="cb138-12"><a href="#cb138-12"></a>    <span class="bu">std::</span>cin<span class="op">.</span>clear<span class="op">();</span></span>
+<span id="cb138-13"><a href="#cb138-13"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb138-14"><a href="#cb138-14"></a><span class="op">}</span></span></code></pre></div>
 <p>See <a href="https://stackoverflow.com/a/57241985/2451677">this
 SO</a> for std::wcout and friends reinitilization.</p>
 <h3 data-number="96" id="96"><span
 class="header-section-number">96</span> <a href="#96"># </a>rdbuf to
 read whole file</h3>
 <p>In case you just need a file content as std::string:</p>
-<div class="sourceCode" id="cb140"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb140-1"><a href="#cb140-1"></a><span class="bu">std::</span>string ReadFileAsString<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file_path<span class="op">)</span></span>
-<span id="cb140-2"><a href="#cb140-2"></a><span class="op">{</span></span>
-<span id="cb140-3"><a href="#cb140-3"></a>    <span class="bu">std::</span>ifstream file<span class="op">{</span>file_path<span class="op">};</span></span>
-<span id="cb140-4"><a href="#cb140-4"></a>    KK_VERIFY<span class="op">(</span>file<span class="op">);</span></span>
-<span id="cb140-5"><a href="#cb140-5"></a>    <span class="bu">std::</span>ostringstream ss<span class="op">;</span></span>
-<span id="cb140-6"><a href="#cb140-6"></a>    ss <span class="op">&lt;&lt;</span> file<span class="op">.</span>rdbuf<span class="op">();</span></span>
-<span id="cb140-7"><a href="#cb140-7"></a>    KK_VERIFY<span class="op">(</span>ss<span class="op">);</span></span>
-<span id="cb140-8"><a href="#cb140-8"></a>    <span class="bu">std::</span>string content <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>ss<span class="op">).</span>str<span class="op">();</span></span>
-<span id="cb140-9"><a href="#cb140-9"></a>    <span class="cf">return</span> content<span class="op">;</span></span>
-<span id="cb140-10"><a href="#cb140-10"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb139"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb139-1"><a href="#cb139-1"></a><span class="bu">std::</span>string ReadFileAsString<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file_path<span class="op">)</span></span>
+<span id="cb139-2"><a href="#cb139-2"></a><span class="op">{</span></span>
+<span id="cb139-3"><a href="#cb139-3"></a>    <span class="bu">std::</span>ifstream file<span class="op">{</span>file_path<span class="op">};</span></span>
+<span id="cb139-4"><a href="#cb139-4"></a>    KK_VERIFY<span class="op">(</span>file<span class="op">);</span></span>
+<span id="cb139-5"><a href="#cb139-5"></a>    <span class="bu">std::</span>ostringstream ss<span class="op">;</span></span>
+<span id="cb139-6"><a href="#cb139-6"></a>    ss <span class="op">&lt;&lt;</span> file<span class="op">.</span>rdbuf<span class="op">();</span></span>
+<span id="cb139-7"><a href="#cb139-7"></a>    KK_VERIFY<span class="op">(</span>ss<span class="op">);</span></span>
+<span id="cb139-8"><a href="#cb139-8"></a>    <span class="bu">std::</span>string content <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>ss<span class="op">).</span>str<span class="op">();</span></span>
+<span id="cb139-9"><a href="#cb139-9"></a>    <span class="cf">return</span> content<span class="op">;</span></span>
+<span id="cb139-10"><a href="#cb139-10"></a><span class="op">}</span></span></code></pre></div>
 <p>Is it “fast” enough?</p>
 <h3 data-number="97" id="97"><span
 class="header-section-number">97</span> <a href="#97"># </a>rdbuf to
 redirect</h3>
 <p>See also <a
 href="https://en.cppreference.com/w/cpp/io/basic_ios/rdbuf">rdbuf</a>:</p>
-<div class="sourceCode" id="cb141"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb141-1"><a href="#cb141-1"></a><span class="dt">int</span> main<span class="op">()</span></span>
-<span id="cb141-2"><a href="#cb141-2"></a><span class="op">{</span></span>
-<span id="cb141-3"><a href="#cb141-3"></a>    <span class="bu">std::</span>ifstream in<span class="op">(</span><span class="st">&quot;in.txt&quot;</span><span class="op">);</span></span>
-<span id="cb141-4"><a href="#cb141-4"></a>    KK_VERIFY<span class="op">(</span>in<span class="op">);</span></span>
-<span id="cb141-5"><a href="#cb141-5"></a>    <span class="bu">std::</span>streambuf<span class="op">*</span> old_cin <span class="op">=</span> <span class="bu">std::</span>cin<span class="op">.</span>rdbuf<span class="op">(</span>in<span class="op">.</span>rdbuf<span class="op">());</span> <span class="co">// redirect std::cin to in.txt</span></span>
-<span id="cb141-6"><a href="#cb141-6"></a>    KK_VERIFY<span class="op">(</span>old_cin<span class="op">);</span></span>
-<span id="cb141-7"><a href="#cb141-7"></a></span>
-<span id="cb141-8"><a href="#cb141-8"></a>    <span class="bu">std::</span>ofstream out<span class="op">(</span><span class="st">&quot;out.txt&quot;</span><span class="op">);</span></span>
-<span id="cb141-9"><a href="#cb141-9"></a>    KK_VERIFY<span class="op">(</span>out<span class="op">);</span></span>
-<span id="cb141-10"><a href="#cb141-10"></a>    <span class="bu">std::</span>streambuf<span class="op">*</span> old_cout <span class="op">=</span> <span class="bu">std::</span>cout<span class="op">.</span>rdbuf<span class="op">(</span>out<span class="op">.</span>rdbuf<span class="op">());</span> <span class="co">// redirect std::cout to out.txt</span></span>
-<span id="cb141-11"><a href="#cb141-11"></a>    KK_VERIFY<span class="op">(</span>old_cout<span class="op">);</span></span>
-<span id="cb141-12"><a href="#cb141-12"></a></span>
-<span id="cb141-13"><a href="#cb141-13"></a>    <span class="co">// read/write</span></span>
-<span id="cb141-14"><a href="#cb141-14"></a>    <span class="bu">std::</span>string word<span class="op">;</span></span>
-<span id="cb141-15"><a href="#cb141-15"></a>    <span class="bu">std::</span>cin <span class="op">&gt;&gt;</span> word<span class="op">;</span></span>
-<span id="cb141-16"><a href="#cb141-16"></a>    <span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> word<span class="op">;</span></span>
-<span id="cb141-17"><a href="#cb141-17"></a></span>
-<span id="cb141-18"><a href="#cb141-18"></a>    <span class="bu">std::</span>cin<span class="op">.</span>rdbuf<span class="op">(</span>old_cin<span class="op">);</span> <span class="co">// rollback</span></span>
-<span id="cb141-19"><a href="#cb141-19"></a>    <span class="bu">std::</span>cout<span class="op">.</span>rdbuf<span class="op">(</span>old_cout<span class="op">);</span></span>
-<span id="cb141-20"><a href="#cb141-20"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb140"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb140-1"><a href="#cb140-1"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb140-2"><a href="#cb140-2"></a><span class="op">{</span></span>
+<span id="cb140-3"><a href="#cb140-3"></a>    <span class="bu">std::</span>ifstream in<span class="op">(</span><span class="st">&quot;in.txt&quot;</span><span class="op">);</span></span>
+<span id="cb140-4"><a href="#cb140-4"></a>    KK_VERIFY<span class="op">(</span>in<span class="op">);</span></span>
+<span id="cb140-5"><a href="#cb140-5"></a>    <span class="co">// redirect std::cin to in.txt</span></span>
+<span id="cb140-6"><a href="#cb140-6"></a>    <span class="bu">std::</span>streambuf<span class="op">*</span> old_cin <span class="op">=</span> <span class="bu">std::</span>cin<span class="op">.</span>rdbuf<span class="op">(</span>in<span class="op">.</span>rdbuf<span class="op">());</span></span>
+<span id="cb140-7"><a href="#cb140-7"></a>    KK_VERIFY<span class="op">(</span>old_cin<span class="op">);</span></span>
+<span id="cb140-8"><a href="#cb140-8"></a></span>
+<span id="cb140-9"><a href="#cb140-9"></a>    <span class="bu">std::</span>ofstream out<span class="op">(</span><span class="st">&quot;out.txt&quot;</span><span class="op">);</span></span>
+<span id="cb140-10"><a href="#cb140-10"></a>    KK_VERIFY<span class="op">(</span>out<span class="op">);</span></span>
+<span id="cb140-11"><a href="#cb140-11"></a>    <span class="co">// redirect std::cout to out.txt</span></span>
+<span id="cb140-12"><a href="#cb140-12"></a>    <span class="bu">std::</span>streambuf<span class="op">*</span> old_cout <span class="op">=</span> <span class="bu">std::</span>cout<span class="op">.</span>rdbuf<span class="op">(</span>out<span class="op">.</span>rdbuf<span class="op">());</span></span>
+<span id="cb140-13"><a href="#cb140-13"></a>    KK_VERIFY<span class="op">(</span>old_cout<span class="op">);</span></span>
+<span id="cb140-14"><a href="#cb140-14"></a></span>
+<span id="cb140-15"><a href="#cb140-15"></a>    <span class="co">// read/write</span></span>
+<span id="cb140-16"><a href="#cb140-16"></a>    <span class="bu">std::</span>string word<span class="op">;</span></span>
+<span id="cb140-17"><a href="#cb140-17"></a>    <span class="bu">std::</span>cin <span class="op">&gt;&gt;</span> word<span class="op">;</span></span>
+<span id="cb140-18"><a href="#cb140-18"></a>    <span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> word<span class="op">;</span></span>
+<span id="cb140-19"><a href="#cb140-19"></a></span>
+<span id="cb140-20"><a href="#cb140-20"></a>    <span class="bu">std::</span>cin<span class="op">.</span>rdbuf<span class="op">(</span>old_cin<span class="op">);</span> <span class="co">// rollback</span></span>
+<span id="cb140-21"><a href="#cb140-21"></a>    <span class="bu">std::</span>cout<span class="op">.</span>rdbuf<span class="op">(</span>old_cout<span class="op">);</span></span>
+<span id="cb140-22"><a href="#cb140-22"></a><span class="op">}</span></span></code></pre></div>
 <h3 data-number="98" id="98"><span
 class="header-section-number">98</span> <a href="#98"># </a>compile
 error on missing switch enum case</h3>
 <p>When adding new enum value to existing enum what places need to be
 updated?</p>
-<div class="sourceCode" id="cb142"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb142-1"><a href="#cb142-1"></a><span class="co">//      MSVC: /we4062</span></span>
-<span id="cb142-2"><a href="#cb142-2"></a><span class="co">// Clang/GCC: -Werror=switch-enum</span></span>
-<span id="cb142-3"><a href="#cb142-3"></a></span>
-<span id="cb142-4"><a href="#cb142-4"></a><span class="kw">enum</span> <span class="kw">class</span> MyEnum <span class="op">{</span> E1<span class="op">,</span> E2<span class="op">,</span> E3<span class="op">,</span> <span class="op">};</span></span>
-<span id="cb142-5"><a href="#cb142-5"></a></span>
-<span id="cb142-6"><a href="#cb142-6"></a><span class="dt">int</span> MyProcess<span class="op">(</span>MyEnum v<span class="op">)</span></span>
-<span id="cb142-7"><a href="#cb142-7"></a><span class="op">{</span></span>
-<span id="cb142-8"><a href="#cb142-8"></a>    <span class="cf">switch</span> <span class="op">(</span>v<span class="op">)</span></span>
-<span id="cb142-9"><a href="#cb142-9"></a>    <span class="op">{</span></span>
-<span id="cb142-10"><a href="#cb142-10"></a>    <span class="cf">case</span> MyEnum<span class="op">::</span>E1<span class="op">:</span> <span class="cf">return</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb142-11"><a href="#cb142-11"></a>    <span class="cf">case</span> MyEnum<span class="op">::</span>E2<span class="op">:</span> <span class="cf">return</span> <span class="dv">2</span><span class="op">;</span></span>
-<span id="cb142-12"><a href="#cb142-12"></a>    <span class="co">// note: missing case MyEnum::E3    &lt;-----</span></span>
-<span id="cb142-13"><a href="#cb142-13"></a>    <span class="co">// note: default must not be present</span></span>
-<span id="cb142-14"><a href="#cb142-14"></a>    <span class="op">}</span></span>
-<span id="cb142-15"><a href="#cb142-15"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb141"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb141-1"><a href="#cb141-1"></a><span class="co">//      MSVC: /we4062</span></span>
+<span id="cb141-2"><a href="#cb141-2"></a><span class="co">// Clang/GCC: -Werror=switch-enum</span></span>
+<span id="cb141-3"><a href="#cb141-3"></a></span>
+<span id="cb141-4"><a href="#cb141-4"></a><span class="kw">enum</span> <span class="kw">class</span> MyEnum <span class="op">{</span> E1<span class="op">,</span> E2<span class="op">,</span> E3<span class="op">,</span> <span class="op">};</span></span>
+<span id="cb141-5"><a href="#cb141-5"></a></span>
+<span id="cb141-6"><a href="#cb141-6"></a><span class="dt">int</span> MyProcess<span class="op">(</span>MyEnum v<span class="op">)</span></span>
+<span id="cb141-7"><a href="#cb141-7"></a><span class="op">{</span></span>
+<span id="cb141-8"><a href="#cb141-8"></a>    <span class="cf">switch</span> <span class="op">(</span>v<span class="op">)</span></span>
+<span id="cb141-9"><a href="#cb141-9"></a>    <span class="op">{</span></span>
+<span id="cb141-10"><a href="#cb141-10"></a>    <span class="cf">case</span> MyEnum<span class="op">::</span>E1<span class="op">:</span> <span class="cf">return</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb141-11"><a href="#cb141-11"></a>    <span class="cf">case</span> MyEnum<span class="op">::</span>E2<span class="op">:</span> <span class="cf">return</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb141-12"><a href="#cb141-12"></a>    <span class="co">// note: missing case MyEnum::E3    &lt;-----</span></span>
+<span id="cb141-13"><a href="#cb141-13"></a>    <span class="co">// note: default must not be present</span></span>
+<span id="cb141-14"><a href="#cb141-14"></a>    <span class="op">}</span></span>
+<span id="cb141-15"><a href="#cb141-15"></a><span class="op">}</span></span></code></pre></div>
 <p>MSVC has <a
 href="https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4062?view=msvc-170">Compiler
 Warning C4062</a> to detect the issue. To make this warning as error,
@@ -2967,75 +2936,77 @@ href="https://stackoverflow.com/a/63161421/2451677">SO</a>.</p>
 <p>Note, usual practice of having <code>COUNT</code> or <code>MAX</code>
 enum value - complicates the matter and forces you to handle undesired
 case. With C++17, the usual code for handling all cases looks next:</p>
-<div class="sourceCode" id="cb145"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb145-1"><a href="#cb145-1"></a><span class="pp">#include </span><span class="im">&lt;utility&gt;</span></span>
-<span id="cb145-2"><a href="#cb145-2"></a></span>
-<span id="cb145-3"><a href="#cb145-3"></a><span class="kw">enum</span> <span class="kw">class</span> MyEnum <span class="op">{</span> E1<span class="op">,</span> E2<span class="op">,</span> MAX <span class="op">};</span></span>
-<span id="cb145-4"><a href="#cb145-4"></a></span>
-<span id="cb145-5"><a href="#cb145-5"></a><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> MyProcess<span class="op">(</span>MyEnum e<span class="op">)</span></span>
-<span id="cb145-6"><a href="#cb145-6"></a><span class="op">{</span></span>
-<span id="cb145-7"><a href="#cb145-7"></a>    <span class="cf">switch</span> <span class="op">(</span>e<span class="op">)</span></span>
-<span id="cb145-8"><a href="#cb145-8"></a>    <span class="op">{</span></span>
-<span id="cb145-9"><a href="#cb145-9"></a>        <span class="cf">case</span> MyEnum<span class="op">::</span>E1<span class="op">:</span> <span class="cf">return</span> <span class="st">&quot;E1&quot;</span><span class="op">;</span></span>
-<span id="cb145-10"><a href="#cb145-10"></a>        <span class="cf">case</span> MyEnum<span class="op">::</span>E2<span class="op">:</span> <span class="cf">return</span> <span class="st">&quot;E2&quot;</span><span class="op">;</span></span>
-<span id="cb145-11"><a href="#cb145-11"></a>        <span class="cf">case</span> MyEnum<span class="op">::</span>MAX<span class="op">:</span> <span class="bu">std::</span>unreachable<span class="op">();</span></span>
-<span id="cb145-12"><a href="#cb145-12"></a>    <span class="op">}</span></span>
-<span id="cb145-13"><a href="#cb145-13"></a>    <span class="bu">std::</span>unreachable<span class="op">();</span></span>
-<span id="cb145-14"><a href="#cb145-14"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb144"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb144-1"><a href="#cb144-1"></a><span class="pp">#include </span><span class="im">&lt;utility&gt;</span></span>
+<span id="cb144-2"><a href="#cb144-2"></a></span>
+<span id="cb144-3"><a href="#cb144-3"></a><span class="kw">enum</span> <span class="kw">class</span> MyEnum <span class="op">{</span> E1<span class="op">,</span> E2<span class="op">,</span> MAX <span class="op">};</span></span>
+<span id="cb144-4"><a href="#cb144-4"></a></span>
+<span id="cb144-5"><a href="#cb144-5"></a><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> MyProcess<span class="op">(</span>MyEnum e<span class="op">)</span></span>
+<span id="cb144-6"><a href="#cb144-6"></a><span class="op">{</span></span>
+<span id="cb144-7"><a href="#cb144-7"></a>    <span class="cf">switch</span> <span class="op">(</span>e<span class="op">)</span></span>
+<span id="cb144-8"><a href="#cb144-8"></a>    <span class="op">{</span></span>
+<span id="cb144-9"><a href="#cb144-9"></a>        <span class="cf">case</span> MyEnum<span class="op">::</span>E1<span class="op">:</span> <span class="cf">return</span> <span class="st">&quot;E1&quot;</span><span class="op">;</span></span>
+<span id="cb144-10"><a href="#cb144-10"></a>        <span class="cf">case</span> MyEnum<span class="op">::</span>E2<span class="op">:</span> <span class="cf">return</span> <span class="st">&quot;E2&quot;</span><span class="op">;</span></span>
+<span id="cb144-11"><a href="#cb144-11"></a>        <span class="cf">case</span> MyEnum<span class="op">::</span>MAX<span class="op">:</span> <span class="bu">std::</span>unreachable<span class="op">();</span></span>
+<span id="cb144-12"><a href="#cb144-12"></a>    <span class="op">}</span></span>
+<span id="cb144-13"><a href="#cb144-13"></a>    <span class="bu">std::</span>unreachable<span class="op">();</span></span>
+<span id="cb144-14"><a href="#cb144-14"></a><span class="op">}</span></span></code></pre></div>
 <h3 data-number="99" id="99"><span
 class="header-section-number">99</span> <a href="#99"># </a>use compiler
 to write down pointer-to-member syntax</h3>
 <p>Just use a wrong type first, see what compiler says, copy the correct
 type from the error:</p>
-<div class="sourceCode" id="cb146"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb146-1"><a href="#cb146-1"></a><span class="kw">struct</span> MyClass</span>
-<span id="cb146-2"><a href="#cb146-2"></a><span class="op">{</span></span>
-<span id="cb146-3"><a href="#cb146-3"></a>    <span class="dt">int</span> my_data <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
-<span id="cb146-4"><a href="#cb146-4"></a><span class="op">};</span></span>
-<span id="cb146-5"><a href="#cb146-5"></a></span>
-<span id="cb146-6"><a href="#cb146-6"></a><span class="dt">int</span> ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb145"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb145-1"><a href="#cb145-1"></a><span class="kw">struct</span> MyClass</span>
+<span id="cb145-2"><a href="#cb145-2"></a><span class="op">{</span></span>
+<span id="cb145-3"><a href="#cb145-3"></a>    <span class="dt">int</span> my_data <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb145-4"><a href="#cb145-4"></a><span class="op">};</span></span>
+<span id="cb145-5"><a href="#cb145-5"></a></span>
+<span id="cb145-6"><a href="#cb145-6"></a><span class="dt">int</span> ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span></code></pre></div>
 <p>All 3 compilers say:</p>
-<div class="sourceCode" id="cb147"><pre
-class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb147-1"><a href="#cb147-1"></a>Clang: error: cannot initialize a variable of type &#39;int&#39; with an rvalue of type &#39;int MyClass::*&#39;</span>
-<span id="cb147-2"><a href="#cb147-2"></a>GCC  : error: cannot convert &#39;int MyClass::*&#39; to &#39;int&#39; in initialization</span>
-<span id="cb147-3"><a href="#cb147-3"></a>MSVC : error C2440: &#39;initializing&#39;: cannot convert from &#39;int MyClass::* &#39; to &#39;int&#39;</span></code></pre></div>
+<div class="sourceCode" id="cb146"><pre
+class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb146-1"><a href="#cb146-1"></a>Clang: error: cannot initialize a variable of type &#39;int&#39;</span>
+<span id="cb146-2"><a href="#cb146-2"></a>        with an rvalue of type &#39;int MyClass::*&#39;</span>
+<span id="cb146-3"><a href="#cb146-3"></a>GCC  : error: cannot convert &#39;int MyClass::*&#39; to &#39;int&#39; in initialization</span>
+<span id="cb146-4"><a href="#cb146-4"></a>MSVC : error C2440: &#39;initializing&#39;: cannot convert from</span>
+<span id="cb146-5"><a href="#cb146-5"></a>        &#39;int MyClass::*&#39; to &#39;int&#39;</span></code></pre></div>
 <p>So ptr should be:</p>
-<div class="sourceCode" id="cb148"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb148-1"><a href="#cb148-1"></a><span class="dt">int</span> MyClass<span class="op">::*</span>ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span>
-<span id="cb148-2"><a href="#cb148-2"></a><span class="co">// OR</span></span>
-<span id="cb148-3"><a href="#cb148-3"></a><span class="kw">using</span> MyIntMember <span class="op">=</span> <span class="dt">int</span> MyClass<span class="op">::*;</span></span>
-<span id="cb148-4"><a href="#cb148-4"></a>MyIntMember ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb147"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb147-1"><a href="#cb147-1"></a><span class="dt">int</span> MyClass<span class="op">::*</span>ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span>
+<span id="cb147-2"><a href="#cb147-2"></a><span class="co">// OR</span></span>
+<span id="cb147-3"><a href="#cb147-3"></a><span class="kw">using</span> MyIntMember <span class="op">=</span> <span class="dt">int</span> MyClass<span class="op">::*;</span></span>
+<span id="cb147-4"><a href="#cb147-4"></a>MyIntMember ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span></code></pre></div>
 <p>Same works for member function pointers, etc.</p>
 <h3 data-number="100" id="100"><span
-class="header-section-number">100</span> <a href="#100"># </a>all enum
-cases are handled, but it’s still possible to fall out of switch</h3>
+class="header-section-number">100</span> <a href="#100"># </a>enum and
+falling out of switch case</h3>
 <p><a href="https://en.cppreference.com/w/cpp/language/enum">With
 C++17</a>, for instance, it’s possible to initialize enum with integer
 that does not match any named enum value:</p>
-<div class="sourceCode" id="cb149"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb149-1"><a href="#cb149-1"></a><span class="kw">enum</span> byte <span class="op">:</span> <span class="dt">unsigned</span> <span class="dt">char</span> <span class="op">{};</span></span>
-<span id="cb149-2"><a href="#cb149-2"></a>byte b<span class="op">{</span><span class="dv">42</span><span class="op">};</span> <span class="co">// OK as of C++17</span></span>
-<span id="cb149-3"><a href="#cb149-3"></a></span>
-<span id="cb149-4"><a href="#cb149-4"></a><span class="kw">enum</span> <span class="kw">class</span> MyEnum <span class="op">{</span> E1<span class="op">,</span> E2<span class="op">,</span> <span class="op">};</span></span>
-<span id="cb149-5"><a href="#cb149-5"></a>MyEnum e<span class="op">{</span><span class="dv">76</span><span class="op">};</span> <span class="co">// OK</span></span></code></pre></div>
+<div class="sourceCode" id="cb148"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb148-1"><a href="#cb148-1"></a><span class="kw">enum</span> byte <span class="op">:</span> <span class="dt">unsigned</span> <span class="dt">char</span> <span class="op">{};</span></span>
+<span id="cb148-2"><a href="#cb148-2"></a>byte b<span class="op">{</span><span class="dv">42</span><span class="op">};</span> <span class="co">// OK as of C++17</span></span>
+<span id="cb148-3"><a href="#cb148-3"></a></span>
+<span id="cb148-4"><a href="#cb148-4"></a><span class="kw">enum</span> <span class="kw">class</span> MyEnum <span class="op">{</span> E1<span class="op">,</span> E2<span class="op">,</span> <span class="op">};</span></span>
+<span id="cb148-5"><a href="#cb148-5"></a>MyEnum e<span class="op">{</span><span class="dv">76</span><span class="op">};</span> <span class="co">// OK</span></span></code></pre></div>
 <p>meaning that even with all handled cases, it’s possible to fall out
 of switch case:</p>
-<div class="sourceCode" id="cb150"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb150-1"><a href="#cb150-1"></a><span class="kw">enum</span> <span class="kw">class</span> MyEnum <span class="op">{</span> E1<span class="op">,</span> E2<span class="op">,</span> <span class="op">};</span></span>
-<span id="cb150-2"><a href="#cb150-2"></a></span>
-<span id="cb150-3"><a href="#cb150-3"></a><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> MyProcess<span class="op">(</span>MyEnum e<span class="op">)</span></span>
-<span id="cb150-4"><a href="#cb150-4"></a><span class="op">{</span></span>
-<span id="cb150-5"><a href="#cb150-5"></a>    <span class="cf">switch</span> <span class="op">(</span>e<span class="op">)</span></span>
-<span id="cb150-6"><a href="#cb150-6"></a>    <span class="op">{</span></span>
-<span id="cb150-7"><a href="#cb150-7"></a>        <span class="cf">case</span> MyEnum<span class="op">::</span>E1<span class="op">:</span> <span class="cf">return</span> <span class="st">&quot;E1&quot;</span><span class="op">;</span></span>
-<span id="cb150-8"><a href="#cb150-8"></a>        <span class="cf">case</span> MyEnum<span class="op">::</span>E2<span class="op">:</span> <span class="cf">return</span> <span class="st">&quot;E2&quot;</span><span class="op">;</span></span>
-<span id="cb150-9"><a href="#cb150-9"></a>    <span class="op">}</span></span>
-<span id="cb150-10"><a href="#cb150-10"></a>    <span class="co">// perfectly fine to land there,</span></span>
-<span id="cb150-11"><a href="#cb150-11"></a>    <span class="co">// even when compiled with -Werror=switch-enum</span></span>
-<span id="cb150-12"><a href="#cb150-12"></a>    <span class="cf">return</span> <span class="st">&quot;&lt;unknown&gt;&quot;</span><span class="op">;</span> <span class="co">// OR std::unreachable()</span></span>
-<span id="cb150-13"><a href="#cb150-13"></a><span class="op">}</span></span>
-<span id="cb150-14"><a href="#cb150-14"></a></span>
-<span id="cb150-15"><a href="#cb150-15"></a>MyProcess<span class="op">(</span>MyEnum<span class="op">{</span><span class="dv">78</span><span class="op">});</span> <span class="co">// perfectly fine</span></span></code></pre></div>
+<div class="sourceCode" id="cb149"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb149-1"><a href="#cb149-1"></a><span class="kw">enum</span> <span class="kw">class</span> MyEnum <span class="op">{</span> E1<span class="op">,</span> E2<span class="op">,</span> <span class="op">};</span></span>
+<span id="cb149-2"><a href="#cb149-2"></a></span>
+<span id="cb149-3"><a href="#cb149-3"></a><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> MyProcess<span class="op">(</span>MyEnum e<span class="op">)</span></span>
+<span id="cb149-4"><a href="#cb149-4"></a><span class="op">{</span></span>
+<span id="cb149-5"><a href="#cb149-5"></a>    <span class="cf">switch</span> <span class="op">(</span>e<span class="op">)</span></span>
+<span id="cb149-6"><a href="#cb149-6"></a>    <span class="op">{</span></span>
+<span id="cb149-7"><a href="#cb149-7"></a>        <span class="cf">case</span> MyEnum<span class="op">::</span>E1<span class="op">:</span> <span class="cf">return</span> <span class="st">&quot;E1&quot;</span><span class="op">;</span></span>
+<span id="cb149-8"><a href="#cb149-8"></a>        <span class="cf">case</span> MyEnum<span class="op">::</span>E2<span class="op">:</span> <span class="cf">return</span> <span class="st">&quot;E2&quot;</span><span class="op">;</span></span>
+<span id="cb149-9"><a href="#cb149-9"></a>    <span class="op">}</span></span>
+<span id="cb149-10"><a href="#cb149-10"></a>    <span class="co">// perfectly fine to land there,</span></span>
+<span id="cb149-11"><a href="#cb149-11"></a>    <span class="co">// even when compiled with -Werror=switch-enum</span></span>
+<span id="cb149-12"><a href="#cb149-12"></a>    <span class="cf">return</span> <span class="st">&quot;&lt;unknown&gt;&quot;</span><span class="op">;</span> <span class="co">// OR std::unreachable()</span></span>
+<span id="cb149-13"><a href="#cb149-13"></a><span class="op">}</span></span>
+<span id="cb149-14"><a href="#cb149-14"></a></span>
+<span id="cb149-15"><a href="#cb149-15"></a>MyProcess<span class="op">(</span>MyEnum<span class="op">{</span><span class="dv">78</span><span class="op">});</span> <span class="co">// perfectly fine</span></span></code></pre></div>
 <h3 data-number="101" id="101"><span
 class="header-section-number">101</span> <a href="#101">#
 </a>ON_SCOPE_EXIT</h3>
@@ -3056,66 +3027,66 @@ undergoes integer promotion, and each argument of type float is
 implicitly converted to the type double. See <a
 href="https://en.cppreference.com/w/c/language/conversion">Implicit
 conversions</a>:</p>
-<div class="sourceCode" id="cb152"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb152-1"><a href="#cb152-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span><span class="pp">          </span></span>
-<span id="cb152-2"><a href="#cb152-2"></a><span class="pp">#include </span><span class="im">&lt;stdarg.h&gt;</span></span>
-<span id="cb152-3"><a href="#cb152-3"></a></span>
-<span id="cb152-4"><a href="#cb152-4"></a><span class="dt">void</span> MyFoo<span class="op">(</span><span class="dt">int</span> start<span class="op">,</span> <span class="op">...)</span></span>
-<span id="cb152-5"><a href="#cb152-5"></a><span class="op">{</span>   </span>
-<span id="cb152-6"><a href="#cb152-6"></a>    <span class="dt">va_list</span> args<span class="op">;</span></span>
-<span id="cb152-7"><a href="#cb152-7"></a>    va_start<span class="op">(</span>args<span class="op">,</span> start<span class="op">);</span></span>
-<span id="cb152-8"><a href="#cb152-8"></a>    <span class="at">const</span> <span class="dt">double</span> v1 <span class="op">=</span> va_arg<span class="op">(</span>args<span class="op">,</span> <span class="dt">double</span><span class="op">);</span></span>
-<span id="cb152-9"><a href="#cb152-9"></a>    <span class="at">const</span> <span class="dt">int</span> v2 <span class="op">=</span> va_arg<span class="op">(</span>args<span class="op">,</span> <span class="dt">int</span><span class="op">);</span></span>
-<span id="cb152-10"><a href="#cb152-10"></a>    printf<span class="op">(</span><span class="st">&quot;va_args: </span><span class="sc">%f</span><span class="st">, </span><span class="sc">%i\n</span><span class="st">&quot;</span><span class="op">,</span> v1<span class="op">,</span> v2<span class="op">);</span>    </span>
-<span id="cb152-11"><a href="#cb152-11"></a>    va_end<span class="op">(</span>args<span class="op">);</span></span>
-<span id="cb152-12"><a href="#cb152-12"></a><span class="op">}</span></span>
-<span id="cb152-13"><a href="#cb152-13"></a></span>
-<span id="cb152-14"><a href="#cb152-14"></a>MyFoo<span class="op">(</span><span class="dv">0</span><span class="op">,</span> <span class="fl">3.3</span><span class="bu">f</span><span class="op">,</span> <span class="ch">&#39;c&#39;</span><span class="op">);</span></span>
-<span id="cb152-15"><a href="#cb152-15"></a><span class="co">// va_args: 3.300000, 99</span></span></code></pre></div>
+<div class="sourceCode" id="cb151"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb151-1"><a href="#cb151-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span><span class="pp">          </span></span>
+<span id="cb151-2"><a href="#cb151-2"></a><span class="pp">#include </span><span class="im">&lt;stdarg.h&gt;</span></span>
+<span id="cb151-3"><a href="#cb151-3"></a></span>
+<span id="cb151-4"><a href="#cb151-4"></a><span class="dt">void</span> MyFoo<span class="op">(</span><span class="dt">int</span> start<span class="op">,</span> <span class="op">...)</span></span>
+<span id="cb151-5"><a href="#cb151-5"></a><span class="op">{</span>   </span>
+<span id="cb151-6"><a href="#cb151-6"></a>    <span class="dt">va_list</span> args<span class="op">;</span></span>
+<span id="cb151-7"><a href="#cb151-7"></a>    va_start<span class="op">(</span>args<span class="op">,</span> start<span class="op">);</span></span>
+<span id="cb151-8"><a href="#cb151-8"></a>    <span class="at">const</span> <span class="dt">double</span> v1 <span class="op">=</span> va_arg<span class="op">(</span>args<span class="op">,</span> <span class="dt">double</span><span class="op">);</span></span>
+<span id="cb151-9"><a href="#cb151-9"></a>    <span class="at">const</span> <span class="dt">int</span> v2 <span class="op">=</span> va_arg<span class="op">(</span>args<span class="op">,</span> <span class="dt">int</span><span class="op">);</span></span>
+<span id="cb151-10"><a href="#cb151-10"></a>    printf<span class="op">(</span><span class="st">&quot;va_args: </span><span class="sc">%f</span><span class="st">, </span><span class="sc">%i\n</span><span class="st">&quot;</span><span class="op">,</span> v1<span class="op">,</span> v2<span class="op">);</span>    </span>
+<span id="cb151-11"><a href="#cb151-11"></a>    va_end<span class="op">(</span>args<span class="op">);</span></span>
+<span id="cb151-12"><a href="#cb151-12"></a><span class="op">}</span></span>
+<span id="cb151-13"><a href="#cb151-13"></a></span>
+<span id="cb151-14"><a href="#cb151-14"></a>MyFoo<span class="op">(</span><span class="dv">0</span><span class="op">,</span> <span class="fl">3.3</span><span class="bu">f</span><span class="op">,</span> <span class="ch">&#39;c&#39;</span><span class="op">);</span></span>
+<span id="cb151-15"><a href="#cb151-15"></a><span class="co">// va_args: 3.300000, 99</span></span></code></pre></div>
 <p><code>3.3f</code> of type float is conveted to double;
 <code>'c'</code>, which is char is converted to int so this is why
 <code>va_arg(args, double)</code> is used to query <code>v1</code>.
 Note, that <code>va_arg(args, float)</code> will at least trigger a
 warning:</p>
-<div class="sourceCode" id="cb153"><pre
-class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb153-1"><a href="#cb153-1"></a>&gt; warning: second argument to &#39;va_arg&#39; is of promotable type &#39;float&#39;;</span>
-<span id="cb153-2"><a href="#cb153-2"></a>&gt; this va_arg has undefined behavior because arguments will</span>
-<span id="cb153-3"><a href="#cb153-3"></a>&gt; be promoted to &#39;double&#39; [-Wvarargs]</span></code></pre></div>
+<div class="sourceCode" id="cb152"><pre
+class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb152-1"><a href="#cb152-1"></a>&gt; warning: second argument to &#39;va_arg&#39; is of promotable type &#39;float&#39;;</span>
+<span id="cb152-2"><a href="#cb152-2"></a>&gt; this va_arg has undefined behavior because arguments will</span>
+<span id="cb152-3"><a href="#cb152-3"></a>&gt; be promoted to &#39;double&#39; [-Wvarargs]</span></code></pre></div>
 <h3 data-number="103" id="103"><span
 class="header-section-number">103</span> <a href="#103"># </a>surrogate
 call functions (/ conversion operator)</h3>
 <p>From <a
 href="https://timsong-cpp.github.io/cppwp/over.call.object">std/over.call.object</a>:</p>
-<div class="sourceCode" id="cb154"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb154-1"><a href="#cb154-1"></a><span class="dt">int</span> f1<span class="op">(</span><span class="dt">int</span><span class="op">);</span></span>
-<span id="cb154-2"><a href="#cb154-2"></a><span class="dt">char</span> f2<span class="op">(</span><span class="dt">float</span><span class="op">);</span></span>
-<span id="cb154-3"><a href="#cb154-3"></a></span>
-<span id="cb154-4"><a href="#cb154-4"></a><span class="kw">typedef</span> <span class="dt">int</span> <span class="op">(*</span>fp1<span class="op">)(</span><span class="dt">int</span><span class="op">);</span></span>
-<span id="cb154-5"><a href="#cb154-5"></a><span class="kw">typedef</span> <span class="dt">char</span> <span class="op">(*</span>fp2<span class="op">)(</span><span class="dt">float</span><span class="op">);</span></span>
-<span id="cb154-6"><a href="#cb154-6"></a></span>
-<span id="cb154-7"><a href="#cb154-7"></a><span class="kw">struct</span> A <span class="op">{</span></span>
-<span id="cb154-8"><a href="#cb154-8"></a>  <span class="kw">operator</span> fp1<span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> f1<span class="op">;</span> <span class="op">}</span></span>
-<span id="cb154-9"><a href="#cb154-9"></a>  <span class="kw">operator</span> fp2<span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> f2<span class="op">;</span> <span class="op">}</span></span>
-<span id="cb154-10"><a href="#cb154-10"></a><span class="op">}</span> a<span class="op">;</span></span>
-<span id="cb154-11"><a href="#cb154-11"></a></span>
-<span id="cb154-12"><a href="#cb154-12"></a><span class="dt">int</span> i <span class="op">=</span> a<span class="op">(</span><span class="dv">1</span><span class="op">);</span>       <span class="co">// calls f1 via pointer</span></span>
-<span id="cb154-13"><a href="#cb154-13"></a>                    <span class="co">// returned from conversion function</span></span>
-<span id="cb154-14"><a href="#cb154-14"></a><span class="dt">char</span> c <span class="op">=</span> a<span class="op">(</span><span class="fl">0.5</span><span class="bu">f</span><span class="op">);</span>   <span class="co">// calls f2</span></span></code></pre></div>
+<div class="sourceCode" id="cb153"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb153-1"><a href="#cb153-1"></a><span class="dt">int</span> f1<span class="op">(</span><span class="dt">int</span><span class="op">);</span></span>
+<span id="cb153-2"><a href="#cb153-2"></a><span class="dt">char</span> f2<span class="op">(</span><span class="dt">float</span><span class="op">);</span></span>
+<span id="cb153-3"><a href="#cb153-3"></a></span>
+<span id="cb153-4"><a href="#cb153-4"></a><span class="kw">typedef</span> <span class="dt">int</span> <span class="op">(*</span>fp1<span class="op">)(</span><span class="dt">int</span><span class="op">);</span></span>
+<span id="cb153-5"><a href="#cb153-5"></a><span class="kw">typedef</span> <span class="dt">char</span> <span class="op">(*</span>fp2<span class="op">)(</span><span class="dt">float</span><span class="op">);</span></span>
+<span id="cb153-6"><a href="#cb153-6"></a></span>
+<span id="cb153-7"><a href="#cb153-7"></a><span class="kw">struct</span> A <span class="op">{</span></span>
+<span id="cb153-8"><a href="#cb153-8"></a>  <span class="kw">operator</span> fp1<span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> f1<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb153-9"><a href="#cb153-9"></a>  <span class="kw">operator</span> fp2<span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> f2<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb153-10"><a href="#cb153-10"></a><span class="op">}</span> a<span class="op">;</span></span>
+<span id="cb153-11"><a href="#cb153-11"></a></span>
+<span id="cb153-12"><a href="#cb153-12"></a><span class="dt">int</span> i <span class="op">=</span> a<span class="op">(</span><span class="dv">1</span><span class="op">);</span>       <span class="co">// calls f1 via pointer</span></span>
+<span id="cb153-13"><a href="#cb153-13"></a>                    <span class="co">// returned from conversion function</span></span>
+<span id="cb153-14"><a href="#cb153-14"></a><span class="dt">char</span> c <span class="op">=</span> a<span class="op">(</span><span class="fl">0.5</span><span class="bu">f</span><span class="op">);</span>   <span class="co">// calls f2</span></span></code></pre></div>
 <h3 data-number="104" id="104"><span
 class="header-section-number">104</span> <a href="#104"># </a>ARRAY_SIZE
 / function returning reference to an array</h3>
 <p>To get size/length/count of c-style static array pre-C++17 constexpr
 std::size(), next ARRAY_SIZE macro is used:</p>
-<div class="sourceCode" id="cb155"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb155-1"><a href="#cb155-1"></a><span class="co">// no definition needed</span></span>
-<span id="cb155-2"><a href="#cb155-2"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">,</span> <span class="dt">unsigned</span> N<span class="op">&gt;</span></span>
-<span id="cb155-3"><a href="#cb155-3"></a><span class="dt">char</span> <span class="op">(&amp;</span>ArraySizeHelper<span class="op">(</span>T <span class="op">(&amp;</span>array<span class="op">)[</span>N<span class="op">]))[</span>N<span class="op">];</span></span>
-<span id="cb155-4"><a href="#cb155-4"></a></span>
-<span id="cb155-5"><a href="#cb155-5"></a><span class="pp">#define ARRAY_SIZE</span><span class="op">(</span>array<span class="op">)</span><span class="pp"> </span><span class="op">\</span></span>
-<span id="cb155-6"><a href="#cb155-6"></a><span class="pp">    </span><span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>ArraySizeHelper<span class="op">(</span>array<span class="op">)))</span></span>
-<span id="cb155-7"><a href="#cb155-7"></a></span>
-<span id="cb155-8"><a href="#cb155-8"></a><span class="dt">int</span> data<span class="op">[</span><span class="dv">4</span><span class="op">]{};</span></span>
-<span id="cb155-9"><a href="#cb155-9"></a><span class="dt">int</span> copy<span class="op">[</span>ARRAY_SIZE<span class="op">(</span>data<span class="op">)];</span> <span class="co">// ARRAY_SIZE(data) = 4, known at compile time</span></span></code></pre></div>
+<div class="sourceCode" id="cb154"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb154-1"><a href="#cb154-1"></a><span class="co">// no definition needed</span></span>
+<span id="cb154-2"><a href="#cb154-2"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">,</span> <span class="dt">unsigned</span> N<span class="op">&gt;</span></span>
+<span id="cb154-3"><a href="#cb154-3"></a><span class="dt">char</span> <span class="op">(&amp;</span>ArraySizeHelper<span class="op">(</span>T <span class="op">(&amp;</span>array<span class="op">)[</span>N<span class="op">]))[</span>N<span class="op">];</span></span>
+<span id="cb154-4"><a href="#cb154-4"></a></span>
+<span id="cb154-5"><a href="#cb154-5"></a><span class="pp">#define ARRAY_SIZE</span><span class="op">(</span>array<span class="op">)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb154-6"><a href="#cb154-6"></a><span class="pp">    </span><span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>ArraySizeHelper<span class="op">(</span>array<span class="op">)))</span></span>
+<span id="cb154-7"><a href="#cb154-7"></a></span>
+<span id="cb154-8"><a href="#cb154-8"></a><span class="dt">int</span> data<span class="op">[</span><span class="dv">4</span><span class="op">]{};</span></span>
+<span id="cb154-9"><a href="#cb154-9"></a><span class="dt">int</span> copy<span class="op">[</span>ARRAY_SIZE<span class="op">(</span>data<span class="op">)];</span> <span class="co">// ARRAY_SIZE(data) = 4, known at compile time</span></span></code></pre></div>
 <p>Compared to “usual” <code>((sizeof(a) / sizeof(*(a)))</code>
 definition, ARRAY_SIZE does not allow some missuses (like passing
 pointers). See <a
@@ -3129,10 +3100,10 @@ array of size N.</p>
 <h3 data-number="105" id="105"><span
 class="header-section-number">105</span> <a href="#105"># </a>infinite
 function pointer dereference</h3>
-<div class="sourceCode" id="cb156"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb156-1"><a href="#cb156-1"></a><span class="dt">void</span> f<span class="op">()</span> <span class="op">{}</span></span>
-<span id="cb156-2"><a href="#cb156-2"></a><span class="dt">void</span> <span class="op">(*</span>fp1<span class="op">)()</span> <span class="op">=</span> f<span class="op">;</span></span>
-<span id="cb156-3"><a href="#cb156-3"></a><span class="dt">void</span> <span class="op">(*</span>fp2<span class="op">)()</span> <span class="op">=</span> <span class="op">************</span>f<span class="op">;</span> <span class="co">// same as above</span></span></code></pre></div>
+<div class="sourceCode" id="cb155"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb155-1"><a href="#cb155-1"></a><span class="dt">void</span> f<span class="op">()</span> <span class="op">{}</span></span>
+<span id="cb155-2"><a href="#cb155-2"></a><span class="dt">void</span> <span class="op">(*</span>fp1<span class="op">)()</span> <span class="op">=</span> f<span class="op">;</span></span>
+<span id="cb155-3"><a href="#cb155-3"></a><span class="dt">void</span> <span class="op">(*</span>fp2<span class="op">)()</span> <span class="op">=</span> <span class="op">************</span>f<span class="op">;</span> <span class="co">// same as above</span></span></code></pre></div>
 <ul>
 <li><code>*f</code> has type of reference-to-function:
 <code>void (&amp;)()</code></li>
@@ -3163,59 +3134,60 @@ Initialization Order Fiasco</a> where global objects constructors from
 different ~.cpp files (translation units) are invoked in unspecified
 order, Schwarz Counter helps to be sure global object is initialized
 before the first use:</p>
-<div class="sourceCode" id="cb157"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb157-1"><a href="#cb157-1"></a><span class="co">// my_object.h</span></span>
-<span id="cb157-2"><a href="#cb157-2"></a><span class="kw">struct</span> MyObject <span class="op">{</span></span>
-<span id="cb157-3"><a href="#cb157-3"></a>  <span class="dt">int</span> x<span class="op">;</span></span>
-<span id="cb157-4"><a href="#cb157-4"></a>  MyObject<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> src<span class="op">,</span> <span class="dt">int</span> v<span class="op">);</span></span>
-<span id="cb157-5"><a href="#cb157-5"></a><span class="op">};</span></span>
-<span id="cb157-6"><a href="#cb157-6"></a></span>
-<span id="cb157-7"><a href="#cb157-7"></a><span class="at">extern</span> MyObject<span class="op">&amp;</span> o1<span class="op">;</span></span>
-<span id="cb157-8"><a href="#cb157-8"></a></span>
-<span id="cb157-9"><a href="#cb157-9"></a><span class="kw">struct</span> MyInit <span class="op">{</span></span>
-<span id="cb157-10"><a href="#cb157-10"></a>  MyInit<span class="op">();</span></span>
-<span id="cb157-11"><a href="#cb157-11"></a>  <span class="op">~</span>MyInit<span class="op">();</span></span>
-<span id="cb157-12"><a href="#cb157-12"></a><span class="op">};</span></span>
-<span id="cb157-13"><a href="#cb157-13"></a></span>
-<span id="cb157-14"><a href="#cb157-14"></a><span class="co">// </span><span class="al">NOTE</span><span class="co">: static in the header - each transtlation unit will get its own copy of my_init.</span></span>
-<span id="cb157-15"><a href="#cb157-15"></a><span class="at">static</span> MyInit my_init<span class="op">;</span></span>
-<span id="cb157-16"><a href="#cb157-16"></a></span>
-<span id="cb157-17"><a href="#cb157-17"></a><span class="co">// o1.cpp</span></span>
-<span id="cb157-18"><a href="#cb157-18"></a><span class="pp">#include </span><span class="im">&quot;my_object.h&quot;</span></span>
-<span id="cb157-19"><a href="#cb157-19"></a><span class="pp">#include </span><span class="im">&lt;new&gt;</span></span>
-<span id="cb157-20"><a href="#cb157-20"></a></span>
-<span id="cb157-21"><a href="#cb157-21"></a><span class="at">static</span> <span class="dt">int</span> counter <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb157-22"><a href="#cb157-22"></a><span class="at">static</span> <span class="kw">alignas</span><span class="op">(</span>MyObject<span class="op">)</span> <span class="dt">char</span> data<span class="op">[</span><span class="kw">sizeof</span><span class="op">(</span>MyObject<span class="op">)];</span></span>
-<span id="cb157-23"><a href="#cb157-23"></a><span class="co">// reference to not-yet-initialized memory</span></span>
-<span id="cb157-24"><a href="#cb157-24"></a>MyObject<span class="op">&amp;</span> o1 <span class="op">=</span> <span class="kw">reinterpret_cast</span><span class="op">&lt;</span>MyObject<span class="op">&amp;&gt;(</span>data<span class="op">);</span></span>
-<span id="cb157-25"><a href="#cb157-25"></a></span>
-<span id="cb157-26"><a href="#cb157-26"></a>MyInit<span class="op">::</span>MyInit<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb157-27"><a href="#cb157-27"></a>  <span class="cf">if</span> <span class="op">(</span>counter<span class="op">++</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb157-28"><a href="#cb157-28"></a>    <span class="co">// first initialization</span></span>
-<span id="cb157-29"><a href="#cb157-29"></a>    <span class="kw">new</span> <span class="op">(</span>data<span class="op">)</span> MyObject<span class="op">{</span><span class="st">&quot;o1&quot;</span><span class="op">,</span> <span class="dv">865</span><span class="op">};</span></span>
-<span id="cb157-30"><a href="#cb157-30"></a>  <span class="op">}</span></span>
-<span id="cb157-31"><a href="#cb157-31"></a><span class="op">}</span></span>
-<span id="cb157-32"><a href="#cb157-32"></a></span>
-<span id="cb157-33"><a href="#cb157-33"></a>MyInit2<span class="op">::~</span>MyInit2<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb157-34"><a href="#cb157-34"></a>  <span class="cf">if</span> <span class="op">(--</span>counter <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb157-35"><a href="#cb157-35"></a>    o1<span class="op">.~</span>MyObject<span class="op">();</span></span>
-<span id="cb157-36"><a href="#cb157-36"></a>  <span class="op">}</span></span>
-<span id="cb157-37"><a href="#cb157-37"></a><span class="op">}</span></span>
-<span id="cb157-38"><a href="#cb157-38"></a></span>
-<span id="cb157-39"><a href="#cb157-39"></a><span class="co">// main.cpp</span></span>
-<span id="cb157-40"><a href="#cb157-40"></a><span class="pp">#include </span><span class="im">&quot;my_object.h&quot;</span><span class="pp"> </span><span class="co">// </span><span class="al">NOTE</span><span class="co">: must be included before the use</span></span>
-<span id="cb157-41"><a href="#cb157-41"></a><span class="co">// use o1 anywhere in any global. OK</span></span></code></pre></div>
+<div class="sourceCode" id="cb156"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb156-1"><a href="#cb156-1"></a><span class="co">// my_object.h</span></span>
+<span id="cb156-2"><a href="#cb156-2"></a><span class="kw">struct</span> MyObject <span class="op">{</span></span>
+<span id="cb156-3"><a href="#cb156-3"></a>  <span class="dt">int</span> x<span class="op">;</span></span>
+<span id="cb156-4"><a href="#cb156-4"></a>  MyObject<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> src<span class="op">,</span> <span class="dt">int</span> v<span class="op">);</span></span>
+<span id="cb156-5"><a href="#cb156-5"></a><span class="op">};</span></span>
+<span id="cb156-6"><a href="#cb156-6"></a></span>
+<span id="cb156-7"><a href="#cb156-7"></a><span class="at">extern</span> MyObject<span class="op">&amp;</span> o1<span class="op">;</span></span>
+<span id="cb156-8"><a href="#cb156-8"></a></span>
+<span id="cb156-9"><a href="#cb156-9"></a><span class="kw">struct</span> MyInit <span class="op">{</span></span>
+<span id="cb156-10"><a href="#cb156-10"></a>  MyInit<span class="op">();</span></span>
+<span id="cb156-11"><a href="#cb156-11"></a>  <span class="op">~</span>MyInit<span class="op">();</span></span>
+<span id="cb156-12"><a href="#cb156-12"></a><span class="op">};</span></span>
+<span id="cb156-13"><a href="#cb156-13"></a></span>
+<span id="cb156-14"><a href="#cb156-14"></a><span class="co">// </span><span class="al">NOTE</span><span class="co">: static in the header -</span></span>
+<span id="cb156-15"><a href="#cb156-15"></a><span class="co">//  each transtlation unit will get its own copy of my_init.</span></span>
+<span id="cb156-16"><a href="#cb156-16"></a><span class="at">static</span> MyInit my_init<span class="op">;</span></span>
+<span id="cb156-17"><a href="#cb156-17"></a></span>
+<span id="cb156-18"><a href="#cb156-18"></a><span class="co">// o1.cpp</span></span>
+<span id="cb156-19"><a href="#cb156-19"></a><span class="pp">#include </span><span class="im">&quot;my_object.h&quot;</span></span>
+<span id="cb156-20"><a href="#cb156-20"></a><span class="pp">#include </span><span class="im">&lt;new&gt;</span></span>
+<span id="cb156-21"><a href="#cb156-21"></a></span>
+<span id="cb156-22"><a href="#cb156-22"></a><span class="at">static</span> <span class="dt">int</span> counter <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb156-23"><a href="#cb156-23"></a><span class="at">static</span> <span class="kw">alignas</span><span class="op">(</span>MyObject<span class="op">)</span> <span class="dt">char</span> data<span class="op">[</span><span class="kw">sizeof</span><span class="op">(</span>MyObject<span class="op">)];</span></span>
+<span id="cb156-24"><a href="#cb156-24"></a><span class="co">// reference to not-yet-initialized memory</span></span>
+<span id="cb156-25"><a href="#cb156-25"></a>MyObject<span class="op">&amp;</span> o1 <span class="op">=</span> <span class="kw">reinterpret_cast</span><span class="op">&lt;</span>MyObject<span class="op">&amp;&gt;(</span>data<span class="op">);</span></span>
+<span id="cb156-26"><a href="#cb156-26"></a></span>
+<span id="cb156-27"><a href="#cb156-27"></a>MyInit<span class="op">::</span>MyInit<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb156-28"><a href="#cb156-28"></a>  <span class="cf">if</span> <span class="op">(</span>counter<span class="op">++</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb156-29"><a href="#cb156-29"></a>    <span class="co">// first initialization</span></span>
+<span id="cb156-30"><a href="#cb156-30"></a>    <span class="kw">new</span> <span class="op">(</span>data<span class="op">)</span> MyObject<span class="op">{</span><span class="st">&quot;o1&quot;</span><span class="op">,</span> <span class="dv">865</span><span class="op">};</span></span>
+<span id="cb156-31"><a href="#cb156-31"></a>  <span class="op">}</span></span>
+<span id="cb156-32"><a href="#cb156-32"></a><span class="op">}</span></span>
+<span id="cb156-33"><a href="#cb156-33"></a></span>
+<span id="cb156-34"><a href="#cb156-34"></a>MyInit2<span class="op">::~</span>MyInit2<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb156-35"><a href="#cb156-35"></a>  <span class="cf">if</span> <span class="op">(--</span>counter <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb156-36"><a href="#cb156-36"></a>    o1<span class="op">.~</span>MyObject<span class="op">();</span></span>
+<span id="cb156-37"><a href="#cb156-37"></a>  <span class="op">}</span></span>
+<span id="cb156-38"><a href="#cb156-38"></a><span class="op">}</span></span>
+<span id="cb156-39"><a href="#cb156-39"></a></span>
+<span id="cb156-40"><a href="#cb156-40"></a><span class="co">// main.cpp</span></span>
+<span id="cb156-41"><a href="#cb156-41"></a><span class="pp">#include </span><span class="im">&quot;my_object.h&quot;</span><span class="pp"> </span><span class="co">// </span><span class="al">NOTE</span><span class="co">: must be included before the use</span></span>
+<span id="cb156-42"><a href="#cb156-42"></a><span class="co">// use o1 anywhere in any global. OK</span></span></code></pre></div>
 <p>Note on unspecified order: it’s usually .obj files link order.
 Consider MyObject class, where 2 objects are defined in o1.cpp and
 o2.cpp files:</p>
-<div class="sourceCode" id="cb158"><pre
-class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb158-1"><a href="#cb158-1"></a>// cl o1.cpp o2.cpp main.cpp &amp;&amp; o1.exe</span>
-<span id="cb158-2"><a href="#cb158-2"></a>[o1 %0xa0ae40]</span>
-<span id="cb158-3"><a href="#cb158-3"></a>[o2 %0xa0ae54]</span>
-<span id="cb158-4"><a href="#cb158-4"></a></span>
-<span id="cb158-5"><a href="#cb158-5"></a>// cl o2.cpp o1.cpp main.cpp &amp;&amp; o2.exe</span>
-<span id="cb158-6"><a href="#cb158-6"></a>[o2 %0xa0ae40]</span>
-<span id="cb158-7"><a href="#cb158-7"></a>[o1 %0xa0ae54]</span></code></pre></div>
+<div class="sourceCode" id="cb157"><pre
+class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb157-1"><a href="#cb157-1"></a>// cl o1.cpp o2.cpp main.cpp &amp;&amp; o1.exe</span>
+<span id="cb157-2"><a href="#cb157-2"></a>[o1 %0xa0ae40]</span>
+<span id="cb157-3"><a href="#cb157-3"></a>[o2 %0xa0ae54]</span>
+<span id="cb157-4"><a href="#cb157-4"></a></span>
+<span id="cb157-5"><a href="#cb157-5"></a>// cl o2.cpp o1.cpp main.cpp &amp;&amp; o2.exe</span>
+<span id="cb157-6"><a href="#cb157-6"></a>[o2 %0xa0ae40]</span>
+<span id="cb157-7"><a href="#cb157-7"></a>[o1 %0xa0ae54]</span></code></pre></div>
 <p>o1 is initialized first, then comes o2, when linking o1.cpp, o2.cpp.
 Swapping link options to o2.cpp, o1.cpp changes the order
 (interestingly, memory locations stay the same).</p>
@@ -3233,27 +3205,27 @@ concept passing as template argument</h3>
 <p>From <a
 href="https://x.com/krisjusiak/status/1622679895514963970">Kris
 Jusiak</a>, <a href="https://t.co/BKRhl1hD9e">godbolt</a>:</p>
-<div class="sourceCode" id="cb159"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb159-1"><a href="#cb159-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">class</span> T<span class="op">&gt;</span></span>
-<span id="cb159-2"><a href="#cb159-2"></a><span class="kw">concept</span> Fooable <span class="op">=</span> <span class="kw">requires</span><span class="op">(</span>T t<span class="op">)</span> <span class="op">{</span> t<span class="op">.</span>foo<span class="op">;</span> <span class="op">};</span></span>
-<span id="cb159-3"><a href="#cb159-3"></a></span>
-<span id="cb159-4"><a href="#cb159-4"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">auto</span> Concept<span class="op">&gt;</span></span>
-<span id="cb159-5"><a href="#cb159-5"></a><span class="kw">struct</span> foo <span class="op">{</span></span>
-<span id="cb159-6"><a href="#cb159-6"></a>  <span class="kw">auto</span> fn<span class="op">(</span><span class="kw">auto</span> t<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb159-7"><a href="#cb159-7"></a>    <span class="kw">static_assert</span><span class="op">(</span><span class="kw">requires</span> <span class="op">{</span> Concept<span class="op">(</span>t<span class="op">);</span> <span class="op">});</span></span>
-<span id="cb159-8"><a href="#cb159-8"></a>  <span class="op">}</span></span>
-<span id="cb159-9"><a href="#cb159-9"></a><span class="op">};</span></span>
-<span id="cb159-10"><a href="#cb159-10"></a></span>
-<span id="cb159-11"><a href="#cb159-11"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb159-12"><a href="#cb159-12"></a>  <span class="kw">struct</span> Foo <span class="op">{</span></span>
-<span id="cb159-13"><a href="#cb159-13"></a>    <span class="dt">int</span> foo<span class="op">{};</span></span>
-<span id="cb159-14"><a href="#cb159-14"></a>  <span class="op">};</span></span>
-<span id="cb159-15"><a href="#cb159-15"></a>  <span class="kw">struct</span> Bar <span class="op">{};</span></span>
-<span id="cb159-16"><a href="#cb159-16"></a>  </span>
-<span id="cb159-17"><a href="#cb159-17"></a>  foo<span class="op">&lt;[](</span>Fooable <span class="kw">auto</span><span class="op">){}&gt;</span> f<span class="op">{};</span> <span class="co">// </span><span class="al">NOTE</span><span class="co">: here</span></span>
-<span id="cb159-18"><a href="#cb159-18"></a>  f<span class="op">.</span>fn<span class="op">(</span>Foo<span class="op">{});</span></span>
-<span id="cb159-19"><a href="#cb159-19"></a>  f<span class="op">.</span>fn<span class="op">(</span>Bar<span class="op">{});</span> <span class="co">// static_assert, contrained not satisfied</span></span>
-<span id="cb159-20"><a href="#cb159-20"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb158"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb158-1"><a href="#cb158-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">class</span> T<span class="op">&gt;</span></span>
+<span id="cb158-2"><a href="#cb158-2"></a><span class="kw">concept</span> Fooable <span class="op">=</span> <span class="kw">requires</span><span class="op">(</span>T t<span class="op">)</span> <span class="op">{</span> t<span class="op">.</span>foo<span class="op">;</span> <span class="op">};</span></span>
+<span id="cb158-3"><a href="#cb158-3"></a></span>
+<span id="cb158-4"><a href="#cb158-4"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">auto</span> Concept<span class="op">&gt;</span></span>
+<span id="cb158-5"><a href="#cb158-5"></a><span class="kw">struct</span> foo <span class="op">{</span></span>
+<span id="cb158-6"><a href="#cb158-6"></a>  <span class="kw">auto</span> fn<span class="op">(</span><span class="kw">auto</span> t<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb158-7"><a href="#cb158-7"></a>    <span class="kw">static_assert</span><span class="op">(</span><span class="kw">requires</span> <span class="op">{</span> Concept<span class="op">(</span>t<span class="op">);</span> <span class="op">});</span></span>
+<span id="cb158-8"><a href="#cb158-8"></a>  <span class="op">}</span></span>
+<span id="cb158-9"><a href="#cb158-9"></a><span class="op">};</span></span>
+<span id="cb158-10"><a href="#cb158-10"></a></span>
+<span id="cb158-11"><a href="#cb158-11"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb158-12"><a href="#cb158-12"></a>  <span class="kw">struct</span> Foo <span class="op">{</span></span>
+<span id="cb158-13"><a href="#cb158-13"></a>    <span class="dt">int</span> foo<span class="op">{};</span></span>
+<span id="cb158-14"><a href="#cb158-14"></a>  <span class="op">};</span></span>
+<span id="cb158-15"><a href="#cb158-15"></a>  <span class="kw">struct</span> Bar <span class="op">{};</span></span>
+<span id="cb158-16"><a href="#cb158-16"></a>  </span>
+<span id="cb158-17"><a href="#cb158-17"></a>  foo<span class="op">&lt;[](</span>Fooable <span class="kw">auto</span><span class="op">){}&gt;</span> f<span class="op">{};</span> <span class="co">// </span><span class="al">NOTE</span><span class="co">: here</span></span>
+<span id="cb158-18"><a href="#cb158-18"></a>  f<span class="op">.</span>fn<span class="op">(</span>Foo<span class="op">{});</span></span>
+<span id="cb158-19"><a href="#cb158-19"></a>  f<span class="op">.</span>fn<span class="op">(</span>Bar<span class="op">{});</span> <span class="co">// static_assert, contrained not satisfied</span></span>
+<span id="cb158-20"><a href="#cb158-20"></a><span class="op">}</span></span></code></pre></div>
 <h3 data-number="108" id="108"><span
 class="header-section-number">108</span> <a href="#108">#
 </a>underscores and _Ugly reserved names</h3>
@@ -3261,28 +3233,34 @@ class="header-section-number">108</span> <a href="#108">#
 href="https://devblogs.microsoft.com/oldnewthing/20230109-00/?p=107685">On
 leading underscores and names reserved by the C and C++ languages</a>.
 From Raymond Chen:</p>
-<table>
+<table style="width:98%;">
+<colgroup>
+<col style="width: 56%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Pattern</th>
+<th style="text-align: left;">Conditions</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Pattern</td>
-<td style="text-align: left;">Conditions</td>
-</tr>
-<tr class="even">
 <td style="text-align: left;">Begins with two underscores</td>
 <td style="text-align: left;">Reserved</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Begins with underscore and uppercase
 letter</td>
 <td style="text-align: left;">Reserved</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Begins with underscore and something
 else</td>
 <td style="text-align: left;">Reserved in global scope (includes
 macros)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Contains two consecutive underscores</td>
 <td style="text-align: left;">Reserved in C++ (but okay in C)</td>
 </tr>
@@ -3292,16 +3270,16 @@ macros)</td>
 <ul>
 <li><p>popular convention of prefixing private members with an
 underscore is fine:</p>
-<div class="sourceCode" id="cb160"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb160-1"><a href="#cb160-1"></a><span class="kw">class</span> Widget</span>
-<span id="cb160-2"><a href="#cb160-2"></a><span class="op">{</span></span>
-<span id="cb160-3"><a href="#cb160-3"></a><span class="kw">public</span><span class="op">:</span></span>
-<span id="cb160-4"><a href="#cb160-4"></a>    Widget<span class="op">();</span></span>
-<span id="cb160-5"><a href="#cb160-5"></a></span>
-<span id="cb160-6"><a href="#cb160-6"></a><span class="kw">private</span><span class="op">:</span></span>
-<span id="cb160-7"><a href="#cb160-7"></a>    <span class="dt">int</span> _size<span class="op">;</span> <span class="co">// okay</span></span>
-<span id="cb160-8"><a href="#cb160-8"></a>    <span class="dt">void</span> _Toggle<span class="op">();</span> <span class="co">// not okay</span></span>
-<span id="cb160-9"><a href="#cb160-9"></a><span class="op">};</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb159"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb159-1"><a href="#cb159-1"></a><span class="kw">class</span> Widget</span>
+<span id="cb159-2"><a href="#cb159-2"></a><span class="op">{</span></span>
+<span id="cb159-3"><a href="#cb159-3"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb159-4"><a href="#cb159-4"></a>    Widget<span class="op">();</span></span>
+<span id="cb159-5"><a href="#cb159-5"></a></span>
+<span id="cb159-6"><a href="#cb159-6"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb159-7"><a href="#cb159-7"></a>    <span class="dt">int</span> _size<span class="op">;</span> <span class="co">// okay</span></span>
+<span id="cb159-8"><a href="#cb159-8"></a>    <span class="dt">void</span> _Toggle<span class="op">();</span> <span class="co">// not okay</span></span>
+<span id="cb159-9"><a href="#cb159-9"></a><span class="op">};</span></span></code></pre></div></li>
 <li><p>probably because of ambiguity, there is convention to postfix
 <strong><code>size_</code></strong> for members</p></li>
 <li><p>the double-underscore reservation is the only one that isn’t well
@@ -3318,71 +3296,72 @@ private method with mangled name</h3>
 href="https://www.reddit.com/r/cpp/comments/jdlrg2/comment/g9a7pgp/">reddit
 comment</a>. <mark>NOT</mark> portable (<a
 href="https://godbolt.org/z/jsr8a8K7r">godbolt</a>):</p>
-<div class="sourceCode" id="cb161"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb161-1"><a href="#cb161-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
-<span id="cb161-2"><a href="#cb161-2"></a><span class="kw">class</span> Class <span class="kw">final</span> <span class="op">{</span> <span class="kw">private</span><span class="op">:</span> <span class="dt">void</span> function<span class="op">();</span> <span class="op">};</span></span>
-<span id="cb161-3"><a href="#cb161-3"></a><span class="dt">void</span> Class<span class="op">::</span>function<span class="op">()</span> <span class="op">{</span> puts<span class="op">(</span><span class="st">&quot;Called&quot;</span><span class="op">);</span> <span class="op">}</span></span>
-<span id="cb161-4"><a href="#cb161-4"></a><span class="co">// Expose mangled name; fine for Clang and GCC.</span></span>
-<span id="cb161-5"><a href="#cb161-5"></a><span class="co">// MSVC encodes with leading ? (?function@Class@@AEAAXXZ)</span></span>
-<span id="cb161-6"><a href="#cb161-6"></a><span class="co">// which is disallowed identifier name</span></span>
-<span id="cb161-7"><a href="#cb161-7"></a><span class="at">extern</span> <span class="st">&quot;C&quot;</span> <span class="dt">void</span> _ZN5Class8functionEv<span class="op">(</span>Class<span class="op">*);</span></span>
-<span id="cb161-8"><a href="#cb161-8"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb161-9"><a href="#cb161-9"></a>    Class c<span class="op">;</span></span>
-<span id="cb161-10"><a href="#cb161-10"></a>    _ZN5Class8functionEv<span class="op">(&amp;</span>c<span class="op">);</span></span>
-<span id="cb161-11"><a href="#cb161-11"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb160"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb160-1"><a href="#cb160-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb160-2"><a href="#cb160-2"></a><span class="kw">class</span> Class <span class="kw">final</span> <span class="op">{</span> <span class="kw">private</span><span class="op">:</span> <span class="dt">void</span> function<span class="op">();</span> <span class="op">};</span></span>
+<span id="cb160-3"><a href="#cb160-3"></a><span class="dt">void</span> Class<span class="op">::</span>function<span class="op">()</span> <span class="op">{</span> puts<span class="op">(</span><span class="st">&quot;Called&quot;</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb160-4"><a href="#cb160-4"></a><span class="co">// Expose mangled name; fine for Clang and GCC.</span></span>
+<span id="cb160-5"><a href="#cb160-5"></a><span class="co">// MSVC encodes with leading ? (?function@Class@@AEAAXXZ)</span></span>
+<span id="cb160-6"><a href="#cb160-6"></a><span class="co">// which is disallowed identifier name</span></span>
+<span id="cb160-7"><a href="#cb160-7"></a><span class="at">extern</span> <span class="st">&quot;C&quot;</span> <span class="dt">void</span> _ZN5Class8functionEv<span class="op">(</span>Class<span class="op">*);</span></span>
+<span id="cb160-8"><a href="#cb160-8"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb160-9"><a href="#cb160-9"></a>    Class c<span class="op">;</span></span>
+<span id="cb160-10"><a href="#cb160-10"></a>    _ZN5Class8functionEv<span class="op">(&amp;</span>c<span class="op">);</span></span>
+<span id="cb160-11"><a href="#cb160-11"></a><span class="op">}</span></span></code></pre></div>
 <h3 data-number="110" id="110"><span
 class="header-section-number">110</span> <a href="#110"># </a>coroutines
 and std::source_location::current()</h3>
 <p>You can inject <code>std::source_location</code> into all coroutines
 customization points to get information on where coroutine is
 created/suspended/awaited/etc, see <a
-href="https://godbolt.org/z/5ooTcPPhx"
-class="uri">https://godbolt.org/z/5ooTcPPhx</a>:</p>
-<div class="sourceCode" id="cb162"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb162-1"><a href="#cb162-1"></a><span class="kw">struct</span> co_task</span>
-<span id="cb162-2"><a href="#cb162-2"></a><span class="op">{</span></span>
-<span id="cb162-3"><a href="#cb162-3"></a></span>
-<span id="cb162-4"><a href="#cb162-4"></a><span class="kw">struct</span> <span class="dt">promise_type</span></span>
-<span id="cb162-5"><a href="#cb162-5"></a><span class="op">{</span></span>
-<span id="cb162-6"><a href="#cb162-6"></a>    co_task get_return_object<span class="op">(</span><span class="bu">std::</span>source_location loc <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">())</span> <span class="kw">noexcept</span></span>
-<span id="cb162-7"><a href="#cb162-7"></a>    <span class="op">{</span></span>
-<span id="cb162-8"><a href="#cb162-8"></a>        print<span class="op">(</span><span class="st">&quot;get_return_object&quot;</span><span class="op">,</span> loc<span class="op">);</span></span>
-<span id="cb162-9"><a href="#cb162-9"></a>        <span class="cf">return</span> <span class="op">{};</span></span>
-<span id="cb162-10"><a href="#cb162-10"></a>    <span class="op">}</span></span>
-<span id="cb162-11"><a href="#cb162-11"></a>    <span class="co">// ...</span></span>
-<span id="cb162-12"><a href="#cb162-12"></a></span>
-<span id="cb162-13"><a href="#cb162-13"></a>    <span class="kw">struct</span> awaitable</span>
-<span id="cb162-14"><a href="#cb162-14"></a>    <span class="op">{</span></span>
-<span id="cb162-15"><a href="#cb162-15"></a>        <span class="dt">bool</span> await_ready<span class="op">(</span><span class="bu">std::</span>source_location loc <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">())</span></span>
-<span id="cb162-16"><a href="#cb162-16"></a>        <span class="op">{</span></span>
-<span id="cb162-17"><a href="#cb162-17"></a>            print<span class="op">(</span><span class="st">&quot;await_ready&quot;</span><span class="op">,</span> loc<span class="op">);</span></span>
-<span id="cb162-18"><a href="#cb162-18"></a>            <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb162-19"><a href="#cb162-19"></a>        <span class="op">}</span></span>
-<span id="cb162-20"><a href="#cb162-20"></a>        <span class="co">// ...</span></span>
-<span id="cb162-21"><a href="#cb162-21"></a>    <span class="op">};</span></span>
-<span id="cb162-22"><a href="#cb162-22"></a></span>
-<span id="cb162-23"><a href="#cb162-23"></a>    <span class="kw">auto</span> await_transform<span class="op">(</span><span class="dt">int</span><span class="op">)</span></span>
-<span id="cb162-24"><a href="#cb162-24"></a>    <span class="op">{</span></span>
-<span id="cb162-25"><a href="#cb162-25"></a>        <span class="cf">return</span> awaitable<span class="op">{};</span></span>
-<span id="cb162-26"><a href="#cb162-26"></a>    <span class="op">}</span></span>
-<span id="cb162-27"><a href="#cb162-27"></a><span class="op">};</span></span>
-<span id="cb162-28"><a href="#cb162-28"></a></span>
-<span id="cb162-29"><a href="#cb162-29"></a><span class="op">};</span></span>
-<span id="cb162-30"><a href="#cb162-30"></a></span>
-<span id="cb162-31"><a href="#cb162-31"></a>co_task co_test<span class="op">()</span></span>
-<span id="cb162-32"><a href="#cb162-32"></a><span class="op">{</span></span>
-<span id="cb162-33"><a href="#cb162-33"></a>    <span class="cf">co_await</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb162-34"><a href="#cb162-34"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
-<span id="cb162-35"><a href="#cb162-35"></a><span class="op">}</span></span></code></pre></div>
+href="https://godbolt.org/z/5ooTcPPhx">godbolt</a>:</p>
+<div class="sourceCode" id="cb161"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb161-1"><a href="#cb161-1"></a><span class="kw">struct</span> co_task</span>
+<span id="cb161-2"><a href="#cb161-2"></a><span class="op">{</span></span>
+<span id="cb161-3"><a href="#cb161-3"></a></span>
+<span id="cb161-4"><a href="#cb161-4"></a><span class="kw">struct</span> <span class="dt">promise_type</span></span>
+<span id="cb161-5"><a href="#cb161-5"></a><span class="op">{</span></span>
+<span id="cb161-6"><a href="#cb161-6"></a>    co_task get_return_object<span class="op">(</span><span class="bu">std::</span>source_location loc</span>
+<span id="cb161-7"><a href="#cb161-7"></a>                            <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">())</span> <span class="kw">noexcept</span></span>
+<span id="cb161-8"><a href="#cb161-8"></a>    <span class="op">{</span></span>
+<span id="cb161-9"><a href="#cb161-9"></a>        print<span class="op">(</span><span class="st">&quot;get_return_object&quot;</span><span class="op">,</span> loc<span class="op">);</span></span>
+<span id="cb161-10"><a href="#cb161-10"></a>        <span class="cf">return</span> <span class="op">{};</span></span>
+<span id="cb161-11"><a href="#cb161-11"></a>    <span class="op">}</span></span>
+<span id="cb161-12"><a href="#cb161-12"></a>    <span class="co">// ...</span></span>
+<span id="cb161-13"><a href="#cb161-13"></a></span>
+<span id="cb161-14"><a href="#cb161-14"></a>    <span class="kw">struct</span> awaitable</span>
+<span id="cb161-15"><a href="#cb161-15"></a>    <span class="op">{</span></span>
+<span id="cb161-16"><a href="#cb161-16"></a>        <span class="dt">bool</span> await_ready<span class="op">(</span><span class="bu">std::</span>source_location loc</span>
+<span id="cb161-17"><a href="#cb161-17"></a>                       <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">())</span></span>
+<span id="cb161-18"><a href="#cb161-18"></a>        <span class="op">{</span></span>
+<span id="cb161-19"><a href="#cb161-19"></a>            print<span class="op">(</span><span class="st">&quot;await_ready&quot;</span><span class="op">,</span> loc<span class="op">);</span></span>
+<span id="cb161-20"><a href="#cb161-20"></a>            <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb161-21"><a href="#cb161-21"></a>        <span class="op">}</span></span>
+<span id="cb161-22"><a href="#cb161-22"></a>        <span class="co">// ...</span></span>
+<span id="cb161-23"><a href="#cb161-23"></a>    <span class="op">};</span></span>
+<span id="cb161-24"><a href="#cb161-24"></a></span>
+<span id="cb161-25"><a href="#cb161-25"></a>    <span class="kw">auto</span> await_transform<span class="op">(</span><span class="dt">int</span><span class="op">)</span></span>
+<span id="cb161-26"><a href="#cb161-26"></a>    <span class="op">{</span></span>
+<span id="cb161-27"><a href="#cb161-27"></a>        <span class="cf">return</span> awaitable<span class="op">{};</span></span>
+<span id="cb161-28"><a href="#cb161-28"></a>    <span class="op">}</span></span>
+<span id="cb161-29"><a href="#cb161-29"></a><span class="op">};</span></span>
+<span id="cb161-30"><a href="#cb161-30"></a></span>
+<span id="cb161-31"><a href="#cb161-31"></a><span class="op">};</span></span>
+<span id="cb161-32"><a href="#cb161-32"></a></span>
+<span id="cb161-33"><a href="#cb161-33"></a>co_task co_test<span class="op">()</span></span>
+<span id="cb161-34"><a href="#cb161-34"></a><span class="op">{</span></span>
+<span id="cb161-35"><a href="#cb161-35"></a>    <span class="cf">co_await</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb161-36"><a href="#cb161-36"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
+<span id="cb161-37"><a href="#cb161-37"></a><span class="op">}</span></span></code></pre></div>
 <p>which outputs:</p>
-<div class="sourceCode" id="cb163"><pre
-class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb163-1"><a href="#cb163-1"></a>get_return_object   : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;63&#39;</span>
-<span id="cb163-2"><a href="#cb163-2"></a>initial_suspend     : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;63&#39;</span>
-<span id="cb163-3"><a href="#cb163-3"></a>await_ready         : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;65&#39;</span>
-<span id="cb163-4"><a href="#cb163-4"></a>await_suspend       : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;65&#39;</span>
-<span id="cb163-5"><a href="#cb163-5"></a>await_resume        : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;65&#39;</span>
-<span id="cb163-6"><a href="#cb163-6"></a>return_void         : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;66&#39;</span>
-<span id="cb163-7"><a href="#cb163-7"></a>final_suspend       : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;63&#39;</span></code></pre></div>
+<div class="sourceCode" id="cb162"><pre
+class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb162-1"><a href="#cb162-1"></a>get_return_object   : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;63&#39;</span>
+<span id="cb162-2"><a href="#cb162-2"></a>initial_suspend     : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;63&#39;</span>
+<span id="cb162-3"><a href="#cb162-3"></a>await_ready         : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;65&#39;</span>
+<span id="cb162-4"><a href="#cb162-4"></a>await_suspend       : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;65&#39;</span>
+<span id="cb162-5"><a href="#cb162-5"></a>await_resume        : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;65&#39;</span>
+<span id="cb162-6"><a href="#cb162-6"></a>return_void         : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;66&#39;</span>
+<span id="cb162-7"><a href="#cb162-7"></a>final_suspend       : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;63&#39;</span></code></pre></div>
 <p>Originally comes from reading <a
 href="https://github.com/boostorg/cobalt/blob/0c6cf566471803dd8a53a5e98511da4516583e88/include/boost/cobalt/detail/task.hpp#L196">boost.cobalt</a>.</p>
 <h3 data-number="111" id="111"><span
@@ -3390,18 +3369,18 @@ class="header-section-number">111</span> <a href="#111"># </a>moved-from
 std::optional does not reset</h3>
 <p>Moved-from std::optional <code>x</code> still holds value after a
 move:</p>
-<div class="sourceCode" id="cb164"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb164-1"><a href="#cb164-1"></a><span class="bu">std::</span>optional<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> x<span class="op">{</span><span class="dv">42</span><span class="op">};</span></span>
-<span id="cb164-2"><a href="#cb164-2"></a><span class="bu">std::</span>optional<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> c <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>x<span class="op">);</span></span>
-<span id="cb164-3"><a href="#cb164-3"></a><span class="ot">assert</span><span class="op">(</span>x<span class="op">.</span>has_value<span class="op">());</span> <span class="co">// holds true</span></span></code></pre></div>
+<div class="sourceCode" id="cb163"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb163-1"><a href="#cb163-1"></a><span class="bu">std::</span>optional<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> x<span class="op">{</span><span class="dv">42</span><span class="op">};</span></span>
+<span id="cb163-2"><a href="#cb163-2"></a><span class="bu">std::</span>optional<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> c <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>x<span class="op">);</span></span>
+<span id="cb163-3"><a href="#cb163-3"></a><span class="ot">assert</span><span class="op">(</span>x<span class="op">.</span>has_value<span class="op">());</span> <span class="co">// holds true</span></span></code></pre></div>
 <p>Move-constructor of std::optional does not reset <code>x</code>, just
 moves the value out of it. This is by definition of std::optional and
 the general rule of “valid but unspecified state” does not apply in this
 case, see <a
 href="https://eel.is/c++draft/optional.ctor#10">optional.ctor</a>:</p>
-<div class="sourceCode" id="cb165"><pre
-class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb165-1"><a href="#cb165-1"></a>constexpr optional(optional&amp;&amp; rhs) noexcept(see below);</span>
-<span id="cb165-2"><a href="#cb165-2"></a>// Postconditions: rhs.has_value() == this-&gt;has_value().</span></code></pre></div>
+<div class="sourceCode" id="cb164"><pre
+class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb164-1"><a href="#cb164-1"></a>constexpr optional(optional&amp;&amp; rhs) noexcept(see below);</span>
+<span id="cb164-2"><a href="#cb164-2"></a>// Postconditions: rhs.has_value() == this-&gt;has_value().</span></code></pre></div>
 <p>People expect moved-from optional to have no value, i.e., as if
 <code>x = std::nullopt</code> after a move, see <a
 href="https://blog.tal.bi/posts/std-optional-move-pitfall/">“Beware when
@@ -3413,13 +3392,13 @@ discussion</a>.</p>
 class="header-section-number">112</span> <a href="#112">#
 </a>std::exchange idiom</h3>
 <p>set-new-and-check-old value in one go:</p>
-<div class="sourceCode" id="cb166"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb166-1"><a href="#cb166-1"></a><span class="dt">bool</span> <span class="va">dirty_</span> <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb166-2"><a href="#cb166-2"></a><span class="co">// ...</span></span>
-<span id="cb166-3"><a href="#cb166-3"></a><span class="cf">if</span> <span class="op">(</span><span class="bu">std::</span>exchange<span class="op">(</span><span class="va">dirty_</span><span class="op">,</span> <span class="kw">false</span><span class="op">))</span></span>
-<span id="cb166-4"><a href="#cb166-4"></a><span class="op">{</span></span>
-<span id="cb166-5"><a href="#cb166-5"></a>    RebuildState<span class="op">();</span></span>
-<span id="cb166-6"><a href="#cb166-6"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb165"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb165-1"><a href="#cb165-1"></a><span class="dt">bool</span> <span class="va">dirty_</span> <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb165-2"><a href="#cb165-2"></a><span class="co">// ...</span></span>
+<span id="cb165-3"><a href="#cb165-3"></a><span class="cf">if</span> <span class="op">(</span><span class="bu">std::</span>exchange<span class="op">(</span><span class="va">dirty_</span><span class="op">,</span> <span class="kw">false</span><span class="op">))</span></span>
+<span id="cb165-4"><a href="#cb165-4"></a><span class="op">{</span></span>
+<span id="cb165-5"><a href="#cb165-5"></a>    RebuildState<span class="op">();</span></span>
+<span id="cb165-6"><a href="#cb165-6"></a><span class="op">}</span></span></code></pre></div>
 <p>See Ben Deane <a
 href="https://youtu.be/OqJUBIJOojI?si=2CNQJ9zHTlujqL1u">“std:: exchange
 Idioms” talk</a> and <a
@@ -3431,18 +3410,18 @@ class="header-section-number">113</span> <a href="#113"># </a>std::tie
 idiom for comparisons operators</h3>
 <p>For quick-and-dirty (but 100% correct) code to generate comparison
 operator with multiple members:</p>
-<div class="sourceCode" id="cb167"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb167-1"><a href="#cb167-1"></a><span class="kw">struct</span> Person</span>
-<span id="cb167-2"><a href="#cb167-2"></a><span class="op">{</span></span>
-<span id="cb167-3"><a href="#cb167-3"></a>    <span class="bu">std::</span>string name<span class="op">;</span></span>
-<span id="cb167-4"><a href="#cb167-4"></a>    <span class="dt">int</span> age <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb167-5"><a href="#cb167-5"></a><span class="op">};</span></span>
-<span id="cb167-6"><a href="#cb167-6"></a></span>
-<span id="cb167-7"><a href="#cb167-7"></a><span class="kw">inline</span> <span class="dt">bool</span> <span class="kw">operator</span><span class="op">&lt;(</span><span class="at">const</span> Person<span class="op">&amp;</span> lhs<span class="op">,</span> <span class="at">const</span> Person<span class="op">&amp;</span> rhs<span class="op">)</span> <span class="kw">noexcept</span></span>
-<span id="cb167-8"><a href="#cb167-8"></a><span class="op">{</span></span>
-<span id="cb167-9"><a href="#cb167-9"></a>    <span class="cf">return</span> <span class="bu">std::</span>tie<span class="op">(</span>lhs<span class="op">.</span>name<span class="op">,</span> lhs<span class="op">.</span>age<span class="op">)</span> <span class="op">&lt;</span></span>
-<span id="cb167-10"><a href="#cb167-10"></a>           <span class="bu">std::</span>tie<span class="op">(</span>rhs<span class="op">.</span>name<span class="op">,</span> rhs<span class="op">.</span>age<span class="op">);</span></span>
-<span id="cb167-11"><a href="#cb167-11"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb166"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb166-1"><a href="#cb166-1"></a><span class="kw">struct</span> Person</span>
+<span id="cb166-2"><a href="#cb166-2"></a><span class="op">{</span></span>
+<span id="cb166-3"><a href="#cb166-3"></a>    <span class="bu">std::</span>string name<span class="op">;</span></span>
+<span id="cb166-4"><a href="#cb166-4"></a>    <span class="dt">int</span> age <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb166-5"><a href="#cb166-5"></a><span class="op">};</span></span>
+<span id="cb166-6"><a href="#cb166-6"></a></span>
+<span id="cb166-7"><a href="#cb166-7"></a><span class="kw">inline</span> <span class="dt">bool</span> <span class="kw">operator</span><span class="op">&lt;(</span><span class="at">const</span> Person<span class="op">&amp;</span> lhs<span class="op">,</span> <span class="at">const</span> Person<span class="op">&amp;</span> rhs<span class="op">)</span> <span class="kw">noexcept</span></span>
+<span id="cb166-8"><a href="#cb166-8"></a><span class="op">{</span></span>
+<span id="cb166-9"><a href="#cb166-9"></a>    <span class="cf">return</span> <span class="bu">std::</span>tie<span class="op">(</span>lhs<span class="op">.</span>name<span class="op">,</span> lhs<span class="op">.</span>age<span class="op">)</span> <span class="op">&lt;</span></span>
+<span id="cb166-10"><a href="#cb166-10"></a>           <span class="bu">std::</span>tie<span class="op">(</span>rhs<span class="op">.</span>name<span class="op">,</span> rhs<span class="op">.</span>age<span class="op">);</span></span>
+<span id="cb166-11"><a href="#cb166-11"></a><span class="op">}</span></span></code></pre></div>
 <p>std::tie forms
 <code>std::tuple&lt;const std::string&amp;, const int&amp;&gt;</code>;
 std::tuple has generic implementation for operator&lt;.</p>
@@ -3456,10 +3435,10 @@ article</a>.</p>
 class="header-section-number">114</span> <a href="#114"># </a>std::tie
 idiom to decompose/unpack</h3>
 <p>Consider</p>
-<div class="sourceCode" id="cb168"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb168-1"><a href="#cb168-1"></a><span class="at">extern</span> <span class="bu">std::</span>set<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> vs<span class="op">;</span></span>
-<span id="cb168-2"><a href="#cb168-2"></a><span class="dt">bool</span> was_inserted <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb168-3"><a href="#cb168-3"></a><span class="bu">std::</span>tie<span class="op">(</span><span class="bu">std::</span>ignore<span class="op">,</span> was_inserted<span class="op">)</span> <span class="op">=</span> vs<span class="op">.</span>insert<span class="op">(</span><span class="dv">42</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb167"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb167-1"><a href="#cb167-1"></a><span class="at">extern</span> <span class="bu">std::</span>set<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> vs<span class="op">;</span></span>
+<span id="cb167-2"><a href="#cb167-2"></a><span class="dt">bool</span> was_inserted <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb167-3"><a href="#cb167-3"></a><span class="bu">std::</span>tie<span class="op">(</span><span class="bu">std::</span>ignore<span class="op">,</span> was_inserted<span class="op">)</span> <span class="op">=</span> vs<span class="op">.</span>insert<span class="op">(</span><span class="dv">42</span><span class="op">);</span></span></code></pre></div>
 <p><code>vs.insert()</code> returns pair, std::tie here forms a tuple
 with a reference to <code>was_inserted</code>, effectively having
 assigning of
@@ -3467,9 +3446,9 @@ assigning of
 <code>std::ignore</code> is used as poor man’s <code>_</code>
 placeholder.</p>
 <p>With C++17 structure bindings, same could be done:</p>
-<div class="sourceCode" id="cb169"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb169-1"><a href="#cb169-1"></a><span class="at">extern</span> <span class="bu">std::</span>set<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> vs<span class="op">;</span></span>
-<span id="cb169-2"><a href="#cb169-2"></a><span class="kw">auto</span> <span class="op">[</span>_<span class="op">,</span> was_inserted<span class="op">]</span> <span class="op">=</span> vs<span class="op">.</span>insert<span class="op">(</span><span class="dv">42</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb168"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb168-1"><a href="#cb168-1"></a><span class="at">extern</span> <span class="bu">std::</span>set<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> vs<span class="op">;</span></span>
+<span id="cb168-2"><a href="#cb168-2"></a><span class="kw">auto</span> <span class="op">[</span>_<span class="op">,</span> was_inserted<span class="op">]</span> <span class="op">=</span> vs<span class="op">.</span>insert<span class="op">(</span><span class="dv">42</span><span class="op">);</span></span></code></pre></div>
 <p>Note, <code>_</code> here is a usual variable, nothing special (up
 until C++26, see <a href="http://wg21.link/P2169R4">A nice placeholder
 with no name</a>).</p>

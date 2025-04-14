@@ -206,7 +206,8 @@ class  MyDerived2 : MyBase {}; // same as : private MyBase
 
 ### `(void)0` to force `;` (semicolon) for macros {#6}
 
-To be consistent and force the user of the macro to put `;` (semicolon) at the line end:
+To be consistent and force the user of the macro to put `;` (semicolon)
+at the line end:
 
 ``` cpp {.numberLines}
 #define MY_FOO(MY_INPUT) \
@@ -233,8 +234,9 @@ struct MyDerived : MyBase
 };
 ```
 
-we can call `Base::Foo()` with no issues. However, in case when we use templates,
-Foo() can't be found. The trick is to use `this->Foo()`. Or `MyBase<U>::Foo()`:
+we can call `Base::Foo()` with no issues. However, in case when we use
+templates, Foo() can't be found. The trick is to use `this->Foo()`.
+Or `MyBase<U>::Foo()`:
 
 ``` cpp {.numberLines}
 template<typename T>
@@ -264,7 +266,8 @@ MyClass::MyClass() = default;
 Note, this is almost the same as = default in-place, but makes constructor
 user-defined. Sometimes it's not a desired side effect. However, it's nice
 in case you want to change the body of constructor later or put breakpoint
-(since you don't need to change header and recompile dependencies, only .cpp file).
+(since you don't need to change header and recompile dependencies,
+only .cpp file).
 
 Another use-case is to move destructor to .cpp file so you don't delete
 incomplete types:
@@ -335,8 +338,8 @@ struct MyArray
 };
 ```
 
-Note: mutable `get()` is implemented in terms of const version, not the other way
-around (which would be UB).
+Note: mutable `get()` is implemented in terms of const version, not the other
+way around (which would be UB).
 
 Kind-a outdated with [C++23's Deducing this](https://devblogs.microsoft.com/cppblog/cpp23-deducing-this/)
 or is it? (template, compile time, .h vs .cpp).
@@ -350,8 +353,8 @@ std::vector<int> vs{6, 5, 4, 3, 2, 1};
 sort(vs.begin(), vs.end()); // note: missing std:: when calling sort()
 ```
 
-Since std::vector iterator lives in namespace `std::` (\*), ADL will be performed
-to find std::sort and use it. ADL = [Argument-dependent lookup (ADL),
+Since std::vector iterator lives in namespace `std::` (\*), ADL will be
+performed to find std::sort and use it. ADL = [Argument-dependent lookup (ADL),
 also known as Koenig lookup](https://en.cppreference.com/w/cpp/language/adl).
 
 (\*) Note, iterator could be just raw pointer (`int*`) and it's implementation
@@ -444,7 +447,8 @@ Most-likely useful to interop with C library/external code.
 ### `std::shared_ptr<base>` with no virtual destructor {#18}
 
 Usually, if you delete pointer-to-base, destructor needs to be declared virtual
-so proper destructor is invoked. Hovewer, for std::shared_ptr this is not required:
+so proper destructor is invoked. Hovewer, for std::shared_ptr this is not
+required:
 
 ``` cpp {.numberLines}
 struct MyBase { ~MyBase(); }; // no virtual!
@@ -508,16 +512,17 @@ Private obj;
 dataGetter(obj) = 31;   // Ok
 ```
 
-See [this](https://github.com/martong/access_private) for more details and explanations.
+See [this](https://github.com/martong/access_private) for more details.
 
 
 ### extern templates {#21}
 
-See, [this](https://isocpp.org/wiki/faq/cpp11-language-templates#extern-templates) or [cppreference](https://en.cppreference.com/w/cpp/language/class_template).
+See, [this](https://isocpp.org/wiki/faq/cpp11-language-templates#extern-templates)
+or [cppreference](https://en.cppreference.com/w/cpp/language/class_template).
 
 Allows to declare some set of template instantiations and actually intantiate
-them in another place. Usually, you extern template in the header and instantiate
-in **your own**/library .cpp file:
+them in another place. Usually, you extern template in the header and
+instantiate in **your own**/library .cpp file:
 
 ``` cpp {.numberLines}
 // myvector.h
@@ -644,7 +649,8 @@ v.~MyInt();
 
 which is no-op. See [destructor](https://en.cppreference.com/w/cpp/language/destructor#Notes)
 and [built-in member access operators](https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_member_access_operators).
-Exists so you don't need to special-case destructor call in generic/template code.
+Exists so you don't need to special-case destructor call in
+generic/template code.
 
 ### manually invoke constructor {#26}
 
@@ -659,8 +665,8 @@ ptr->~T();                                  // call destructor
 which is [placement new](https://en.cppreference.com/w/cpp/lanzguage/new#Placement_new).
 
 Note on the use of `static_cast<void*>` - while not needed in this example, it's
-needed to be done in generic context to avoid invoking overloaded version of new,
-if any.
+needed to be done in generic context to avoid invoking overloaded version of
+new, if any.
 
 ### injected-class-name {#27}
 
@@ -705,7 +711,7 @@ struct MyVector
 ### invoke base virtual function directly {#28}
 
 Given an instance of derived class, one can skip invoking its own function
-override and call parent function directly (see [injected-class-name](#injected-class-name)):
+override and call parent function directly (see [injected-class-name](#27)):
 
 ``` cpp {.numberLines}
 struct MyBase
@@ -834,8 +840,8 @@ From [priority_tag for ad-hoc tag dispatch](https://quuxplusone.github.io/blog/2
 and [CppCon 2017: Arthur O'Dwyer "A Soupcon of SFINAE"](https://youtu.be/ybaE9qlhHvw?t=56m36s).
 
 Here, we convert x to string trying first `x.stringify()` if that exists,
-otherwise `std::to_string(x)` if that works and finally fallback to ostringstream
-as a final resort:
+otherwise `std::to_string(x)` if that works and finally fallback to
+ostringstream as a final resort:
 
 ``` cpp {.numberLines}
 #include <string>
@@ -886,8 +892,9 @@ int* ptr2 = new auto(10); // works
 From [cppreference](https://en.cppreference.com/w/cpp/language/new):
 
 ``` cpp {.numberLines}
-double* p = new double[]{1, 2, 3};  // creates an array of type double[3]
-auto p = new auto('c');             // creates a single object of type char. p is a char*
+double* x = new double[]{1, 2, 3};  // creates an array of type double[3]
+auto p = new auto('c');             // creates a single object of type char.
+                                    //     p is a char*
 auto q = new std::integral auto(1); // OK: q is an int*
 auto r = new std::pair(1, true);    // OK: r is a std::pair<int, bool>*
 ```
@@ -1047,10 +1054,12 @@ What happens with the object after the move? The known answer for C++ library
 types is that it's in ["valid but unspecified state"](https://en.cppreference.com/w/cpp/utility/move).
 Note, that for most cases in practice, the object is in empty/null state
 (see [Sean Parent comments](https://gist.github.com/sean-parent/fed31bee69bc41d888f84f25743da9f1))
-or, to say it another way - you should put the object into empty state and be nice.
+or, to say it another way - you should put the object into empty state
+to be nice.
 
-Why it's in "empty" state? Simply because destructor still runs after the move and
-we need to know whether or not it's needed to free resources **most of the times**:
+Why it's in "empty" state? Simply because destructor still runs after the move
+and we need to know whether or not it's needed to free resources
+**most of the times**:
 
 ``` cpp {.numberLines}
 struct MyFile
@@ -1097,7 +1106,7 @@ Leaving validity check alone, any time you support move, just expose such state
 with default constructor. More often then not it makes life easier.
 See also "state reset".
 
-Relative: [Move Semantics and Default Constructors вЂ“ Rule of Six?](https://www.foonathan.net/2016/08/move-default-ctor/).
+Relative: [Move Semantics and Default Constructors - Rule of Six?](https://www.foonathan.net/2016/08/move-default-ctor/).
 
 ### default constructor must do no work {#39}
 
@@ -1120,7 +1129,8 @@ ptr = {}; // reset, set to nullptr
 ```
 
 Default constructor should contain nothing except default/trivial
-data member initialization. Specifically, no memory allocations, no side effects. 
+data member initialization. Specifically, no memory allocations,
+no side effects. 
 
 Bonus question: why does this code allocates under MSVC debug?
 
@@ -1132,13 +1142,14 @@ Hint: MSVC STL debug iterators machinery.
 
 ### constructors should do no work {#40}
 
-Constructors (at least of objects for types that are part of your applicaiton domain)
-should just assign/default initialize data members, NO business/application
-logic inside. This applies to copy constructor, constructors
-with parameters, move constructor.
+Constructors (at least of objects for types that are part of your application
+domain) should just assign/default initialize data members,
+NO business/application logic inside. This applies to copy constructor,
+constructors with parameters, move constructor.
 
-Simply because you don't control when and who and how can invoke and/or ignore/skip
-your constructor invocation. See, for instance, (but not only) [Copy elision/RVO/NRVO/URVO](https://en.cppreference.com/w/cpp/language/copy_elision).
+Simply because you don't control when and who and how can invoke and/or
+ignore/skip your constructor invocation. See, for instance, (but not only)
+[Copy elision/RVO/NRVO/URVO](https://en.cppreference.com/w/cpp/language/copy_elision).
 
 But what about RAII? How to make RAII classes then?
 
@@ -1224,17 +1235,19 @@ See [Passing overload sets to functions](https://blog.tartanllama.xyz/passing-ov
 std::transform(first, last, target, LIFT(foo));
 ```
 
-### `tolower` is not an addressible function {#44}
+### you can't take an address of `tolower` function {#44}
 
-You can't take an adress of std:: function since function could be implemented
-differently with different STL(s) and/or in the feature the function
-may change, hence such code is not portable. From [A popular but wrong way to convert a string to uppercase or lowercase](https://devblogs.microsoft.com/oldnewthing/20241007-00/?p=110345):
+You can't take an adress of std:: function since the function could be
+implemented differently with different STL(s) and/or in the feature the function
+may change, hence such code is not portable. From
+[A popular but wrong way to convert a string to uppercase or lowercase](https://devblogs.microsoft.com/oldnewthing/20241007-00/?p=110345):
 
 > The standard imposes this limitation because the implementation
 > may need to add default function parameters, template default parameters,
 > or overloads in order to accomplish the various requirements of the standard.
 
-So, strictly speaking, ignoring facts from the article, this is not portable C++:
+So, strictly speaking, ignoring facts from the article,
+this is not portable C++:
 
 ``` cpp {.numberLines}
 std::wstring name;
@@ -1489,7 +1502,8 @@ with braces `{}` (list-initialization) is famously non-uniform, see:
 Sometimes also called as [unicorn initialization](https://www.reddit.com/r/cpp/comments/as8pu1/comment/egslsok/);
 see also [Forrest Gump C++ initialization](https://x.com/timur_audio/status/1004017362381795329).
 
-The best is to fall back to `()` with C++ 20 [Allow initializing aggregates from a parenthesized list of values](https://wg21.link/p0960):
+The best is to fall back to `()` with C++ 20
+[Allow initializing aggregates from a parenthesized list of values](https://wg21.link/p0960):
 
 ``` cpp {.numberLines}
 struct A
@@ -1501,7 +1515,7 @@ struct A
 A v(10, 20); // fine, C++20
 ```
 
-but also see [C++20вЂ™s parenthesized aggregate initialization has some downsides](https://quuxplusone.github.io/blog/2022/06/03/aggregate-parens-init-considered-kinda-bad/).
+but also see [C++20's parenthesized aggregate initialization has some downsides](https://quuxplusone.github.io/blog/2022/06/03/aggregate-parens-init-considered-kinda-bad/).
 
 ### move-only lambda and std::function {#56}
 
@@ -1572,8 +1586,8 @@ int main()
 }
 ```
 
-However, if const is odr-used (e.g., pointer is taken or reference-to is formed),
-it needs to be captured:
+However, if const is odr-used (e.g., pointer is taken or reference-to is
+formed), it needs to be captured:
 
 ``` cpp {.numberLines}
 void Foo(const int*);
@@ -1782,11 +1796,13 @@ my_map[2] = "xxx"; // key 2 = empty string inserted,
                    // empty string re-assigned next
 ```
 
-See also "default constructor must do no work" and "const map[key] does not compile".
+See also ["default constructor must do no work"](#39) and
+["const map[key] does not compile"](#68).
 
 ### const `map[key]` does not compile, use `.find()` {#68}
 
-See "map[key] creates default-constructed value first". Because `map::operator[]` is:
+See "map[key] creates default-constructed value first".
+Because `map::operator[]` is:
 
 ``` cpp {.numberLines}
 T& map::operator[](Key key);
@@ -1804,7 +1820,8 @@ void MyProcess(const std::map<int, std::string>& kv)
 
 ### `if not map.find(x) then map[x]` is an antipattern {#69}
 
-In case you need to do extra work only if key does not exist, having code like this:
+In case you need to do extra work only if key does not exist,
+having code like this:
 
 ``` cpp {.numberLines}
 void MyProcess(std::map<int, std::string>& my_data)
@@ -1884,7 +1901,8 @@ meaning that you may pay for each call to GetInstance:
 
 ``` asm {.numberLines}
 // MyClass& v1 = MyClass::GetInstance();
-// MyClass& v2 = MyClass::GetInstance(); // may need to check guard/initialization anyway
+// MyClass& v2 = MyClass::GetInstance(); // may need to check
+                                         // guard/initialization anyway
     movzx   eax, BYTE PTR guard variable for MyClass::GetInstance()::instance[rip]
     test    al, al
     je      .L15
@@ -1939,8 +1957,9 @@ Lets have a look at MSVC `assert` implementation:
 ```
 
 `expression` comes from client/user code and may be of ANY type, `int`,
-`const char*`, anything. !! is used to silence any warning since || expects bool.
-First ! actually converts to bool, second ! reverts value to original one.
+`const char*`, anything. !! is used to silence any warning since
+|| expects bool. First ! actually converts to bool, second ! reverts value
+to original one.
 
 Same happens in code like this:
 
@@ -2116,11 +2135,14 @@ int main()
 }
 ```
 
-See also Epic's Unreal Engine version: UE_FORCE_CONSTEVAL, where variable template is used instead.
+See also Epic's Unreal Engine version: UE_FORCE_CONSTEVAL,
+where variable template is used instead.
 
 ### variadic template with default argument {#80}
 
-See [Non-terminal variadic template parameters](https://cor3ntin.github.io/posts/variadic/).
+See [Non-terminal variadic template parameters](https://cor3ntin.github.io/posts/variadic/)
+where `apply_last` is showcased.
+
 Specifically, arguments deduction does not work in cases like this:
 
 ``` cpp {.numberLines}
@@ -2146,46 +2168,7 @@ template<typename... Args>
 void WaitAll(Args&&... args, milliseconds timeout = milliseconds::max());
 ```
 
-where Args... could be handles/async requests we want to wait with optional
-timeout. To mimic it, we can do something like this:
-
-``` cpp {.numberLines}
-#include <chrono>
-#include <type_traits>
-
-using std::chrono::milliseconds;
-
-template<typename... Args>
-void WaitAll_Impl(milliseconds timeout, Args&&... args)
-{
-    std::puts(timeout == milliseconds::max() ? "no timeout" : "with timeout");
-}
-
-template<typename... Args>
-void WaitAll(Args&&... args)
-{
-    using LastT = std::remove_cvref_t<decltype((args, ...))>;
-    if constexpr (std::is_same_v<LastT, milliseconds>)
-    {
-        const milliseconds timeout = (args, ...); // get last argument
-        return WaitAll_Impl(timeout, std::forward<Args>(args)...);
-    }
-    else
-    {
-        const milliseconds timeout = milliseconds::max(); // default timeout
-        return WaitAll_Impl(timeout, std::forward<Args>(args)...);
-    }
-}
-
-int main()
-{
-    WaitAll(1, 2, 3, milliseconds{25}); // with timeout
-    WaitAll(1, 2, 3);                   // no timeout, use default
-}
-```
-
-To see what `(args, ...)` does, check [Nifty Fold Expression Tricks](https://www.foonathan.net/2020/05/fold-tricks/).
-See also similar issues with `source_location::current()`.
+[TODO]{.mark} - show simple code snippet.
 
 ### variadic template with default std::source_location::current() {#81}
 
@@ -2208,7 +2191,8 @@ struct FormatWithLocation {
   std::source_location loc;
 
   FormatWithLocation(const char* fmt_,
-                     const std::source_location& loc_ = std::source_location::current())
+                     const std::source_location& loc_
+                         = std::source_location::current())
       : fmt(fmt_), loc(loc_) {}
 };
 
@@ -2260,7 +2244,8 @@ void Foo(T&& v)
 Foo(10);
 ```
 
-`Show` is intentionally incomplete. Compiler will print the error message like this:
+`Show` is intentionally incomplete. Compiler will print the error message
+like this:
 
 ```
 error: invalid use of incomplete type 'struct Show<int&&>'
@@ -2289,7 +2274,8 @@ of the assert fail. In short:
         (KK_ABORT("Verify failed: '%s'", #KK_EXPRESSION), false))
 ```
 
-`__debugbreak()` hits under debugger and points exactly at assert/verify location:
+`__debugbreak()` hits under debugger and points exactly
+at assert/verify location:
 
 ![](cpp_tips_tricks_quirks/cpp_tips_tricks_quirks0.png) 
 
@@ -2324,8 +2310,8 @@ Foo(std::move(str)); // no-op
 // but only because you **know** exact implementation of `Foo`
 ```
 
-Same, if class has only copy constructor, copy assignment and no move constructor/
-move assignment, the code is no-op:
+Same, if class has only copy constructor, copy assignment and
+no move constructor/move assignment, the code is no-op:
 
 ``` cpp {.numberLines}
 struct MyClass
@@ -2376,7 +2362,8 @@ See [On harmful overuse of std::move](https://devblogs.microsoft.com/oldnewthing
 
 ### `const T&&` (const rvalue) {#89}
 
-rvalue is still a **REFERENCE**, const rvalue can be formed and as normal as const lvalue:
+rvalue is still a **REFERENCE**, const rvalue can be formed in the same way
+as normal const lvalue:
 
 ``` cpp {.numberLines}
 void Foo(const int&)  { std::puts("(const int&)"); }
@@ -2507,7 +2494,8 @@ Usually, it's said that dynamic_cast needs to be appliyed to polymorphic type,
 note V in this case is not a polymorphic type (but still a class type). See also
 `dynamic_cast<void*>`.
 
-Notice, const_cast<const V*> can also be used to **add** const, not only remove it.
+Notice, `const_cast<const V*>`` can also be used to **add** const,
+not only remove it.
 
 ### `CONOUT$`, `CONIN$` for `::AllocConsole()`  {#95}
 
@@ -2531,7 +2519,8 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
 }
 ```
 
-See [this SO](https://stackoverflow.com/a/57241985/2451677) for std::wcout and friends reinitilization.
+See [this SO](https://stackoverflow.com/a/57241985/2451677) for std::wcout and
+friends reinitilization.
 
 ### rdbuf to read whole file {#96}
 
@@ -2561,12 +2550,14 @@ int main()
 {
     std::ifstream in("in.txt");
     KK_VERIFY(in);
-    std::streambuf* old_cin = std::cin.rdbuf(in.rdbuf()); // redirect std::cin to in.txt
+    // redirect std::cin to in.txt
+    std::streambuf* old_cin = std::cin.rdbuf(in.rdbuf());
     KK_VERIFY(old_cin);
 
     std::ofstream out("out.txt");
     KK_VERIFY(out);
-    std::streambuf* old_cout = std::cout.rdbuf(out.rdbuf()); // redirect std::cout to out.txt
+    // redirect std::cout to out.txt
+    std::streambuf* old_cout = std::cout.rdbuf(out.rdbuf());
     KK_VERIFY(old_cout);
 
     // read/write
@@ -2610,8 +2601,9 @@ note: see declaration of 'MyEnum'
 ```
 
 For Clang/GCC, it's [`-Wswitch-enum`](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html)
-(note, `-Wswitch` exists) in a combination with `-Werror` OR `-Werror=switch-enum`
-to error out only switch case, similar to what MSVC's /we4062 does:
+(note, `-Wswitch` exists) in a combination with `-Werror` OR
+`-Werror=switch-enum` to error out only switch case, similar
+to what MSVC's /we4062 does:
 
 ```
 error: enumeration value 'E3' not handled in switch [-Werror=switch-enum]
@@ -2657,9 +2649,11 @@ int ptr = &MyClass::my_data;
 All 3 compilers say:
 
 ``` {.numberLines}
-Clang: error: cannot initialize a variable of type 'int' with an rvalue of type 'int MyClass::*'
+Clang: error: cannot initialize a variable of type 'int'
+        with an rvalue of type 'int MyClass::*'
 GCC  : error: cannot convert 'int MyClass::*' to 'int' in initialization
-MSVC : error C2440: 'initializing': cannot convert from 'int MyClass::* ' to 'int'
+MSVC : error C2440: 'initializing': cannot convert from
+        'int MyClass::*' to 'int'
 ```
 
 So ptr should be:
@@ -2673,7 +2667,7 @@ MyIntMember ptr = &MyClass::my_data;
 
 Same works for member function pointers, etc.
 
-### all enum cases are handled, but it's still possible to fall out of switch {#100}
+### enum and falling out of switch case {#100}
 
 [With C++17](https://en.cppreference.com/w/cpp/language/enum), for instance,
 it's possible to initialize enum with integer that does not match
@@ -2779,8 +2773,8 @@ char c = a(0.5f);   // calls f2
 
 ### ARRAY_SIZE / function returning reference to an array {#104}
 
-To get size/length/count of c-style static array pre-C++17 constexpr std::size(),
-next ARRAY_SIZE macro is used:
+To get size/length/count of c-style static array pre-C++17
+constexpr std::size(), next ARRAY_SIZE macro is used:
 
 ``` cpp {.numberLines}
 // no definition needed
@@ -2794,14 +2788,16 @@ int data[4]{};
 int copy[ARRAY_SIZE(data)]; // ARRAY_SIZE(data) = 4, known at compile time
 ```
 
-Compared to "usual" `((sizeof(a) / sizeof(*(a)))` definition, ARRAY_SIZE does not allow
-some missuses (like passing pointers). See [old chromium changelist](https://codereview.chromium.org/501323002/patch/1/10009).
+Compared to "usual" `((sizeof(a) / sizeof(*(a)))` definition,
+ARRAY_SIZE does not allow some missuses (like passing pointers).
+See [old chromium changelist](https://codereview.chromium.org/501323002/patch/1/10009).
 Epic's Unreal Engine has exactly the same UE_ARRAY_COUNT macro.
 
 Note, with C++17, std::size() should be used instead.
 
-Note, also, how ArraySizeHelper is a function that accepts reference to array of size N
-(known at compile time) and returns reference to array of size N.
+Note, also, how ArraySizeHelper is a function that accepts
+reference to array of size N (known at compile time) and
+returns reference to array of size N.
 
 ### infinite function pointer dereference {#105}
 
@@ -2815,9 +2811,10 @@ void (*fp2)() = ************f; // same as above
  * `f` has type of just function-type: `void()`
  * `&f` has type of pointer-to-function: `void (*)()`
 
-Function (name), reference-to-function decay to function pointer implicitly as soon as possible.
-`*f` forms a reference-to-function, but then immediately decayed to pointer-to-function which then
-gets converted back to reference `**f` and so on.
+Function (name), reference-to-function decay to function pointer implicitly
+as soon as possible. `*f` forms a reference-to-function, but then immediately
+decayed to pointer-to-function which then gets converted back to reference
+`**f` and so on.
 
 See [Pointers to functions](https://en.cppreference.com/w/cpp/language/pointer),
 [Function-to-pointer conversion](https://en.cppreference.com/w/cpp/language/implicit_conversion)
@@ -2825,9 +2822,10 @@ and [Function declaration](https://en.cppreference.com/w/cpp/language/function).
 
 ### (historical?) Schwarz Counter / Nifty Counter (static initialization) {#106}
 
-In the context of [Static Initialization Order Fiasco](https://en.cppreference.com/w/cpp/language/siof) where
-global objects constructors from different ~.cpp files (translation units) are invoked in unspecified order,
-Schwarz Counter helps to be sure global object is initialized before the first use:
+In the context of [Static Initialization Order Fiasco](https://en.cppreference.com/w/cpp/language/siof)
+where global objects constructors from different ~.cpp files (translation units)
+are invoked in unspecified order, Schwarz Counter helps to be sure global object
+is initialized before the first use:
 
 ``` cpp {.numberLines}
 // my_object.h
@@ -2843,7 +2841,8 @@ struct MyInit {
   ~MyInit();
 };
 
-// NOTE: static in the header - each transtlation unit will get its own copy of my_init.
+// NOTE: static in the header -
+//  each transtlation unit will get its own copy of my_init.
 static MyInit my_init;
 
 // o1.cpp
@@ -2873,8 +2872,8 @@ MyInit2::~MyInit2() {
 // use o1 anywhere in any global. OK
 ```
 
-Note on unspecified order: it's usually .obj files link order. Consider MyObject class, where 2 objects are
-defined in o1.cpp and o2.cpp files:
+Note on unspecified order: it's usually .obj files link order.
+Consider MyObject class, where 2 objects are defined in o1.cpp and o2.cpp files:
 
 ``` {.numberLines}
 // cl o1.cpp o2.cpp main.cpp && o1.exe
@@ -2886,18 +2885,21 @@ defined in o1.cpp and o2.cpp files:
 [o1 %0xa0ae54]
 ```
 
-o1 is initialized first, then comes o2, when linking o1.cpp, o2.cpp. Swapping link options to
-o2.cpp, o1.cpp changes the order (interestingly, memory locations stay the same).
+o1 is initialized first, then comes o2, when linking o1.cpp, o2.cpp.
+Swapping link options to o2.cpp, o1.cpp changes the order
+(interestingly, memory locations stay the same).
 
 See [More C++ Idioms/Nifty Counter](https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Nifty_Counter).
 
-Note: MSVC STL (and others?) does not use the idiom (relies on runtime linked first? [TBD]{.mark}).
+Note: MSVC STL (and others?) does not use the idiom
+(relies on runtime linked first? [TBD]{.mark}).
 
 Note: may not work in case of precompiled headers use, see [bug report](https://developercommunity.visualstudio.com/t/Schwarz-counter-vs-precompiled-header/1256884).
 
 ### emulate concept passing as template argument {#107}
 
-From [Kris Jusiak](https://x.com/krisjusiak/status/1622679895514963970), [godbolt](https://t.co/BKRhl1hD9e):
+From [Kris Jusiak](https://x.com/krisjusiak/status/1622679895514963970),
+[godbolt](https://t.co/BKRhl1hD9e):
 
 ``` cpp {.numberLines}
 template<class T>
@@ -2924,15 +2926,24 @@ int main() {
 
 ### underscores and \_Ugly reserved names {#108}
 
-See [On leading underscores and names reserved by the C and C++ languages](https://devblogs.microsoft.com/oldnewthing/20230109-00/?p=107685). From Raymond Chen:
+See [On leading underscores and names reserved by the C and C++ languages](https://devblogs.microsoft.com/oldnewthing/20230109-00/?p=107685).
+From Raymond Chen:
 
-  --------------------------------------------- --------------------------------------------
+  ------------------------------------------------------------------------------
   Pattern                                       Conditions
+  --------------------------------------------- --------------------------------
   Begins with two underscores                   Reserved
-  Begins with underscore and uppercase letter   Reserved
-  Begins with underscore and something else     Reserved in global scope (includes macros)
-  Contains two consecutive underscores          Reserved in C++ (but okay in C)
-  --------------------------------------------- --------------------------------------------
+
+  Begins with underscore and                    Reserved
+  uppercase letter
+
+  Begins with underscore and                    Reserved in global scope
+  something else                                (includes macros)
+
+  Contains two consecutive                      Reserved in C++ (but okay in C)
+  underscores
+
+  ------------------------------------------------------------------------------
 
 Note that:
 
@@ -2950,8 +2961,12 @@ Note that:
     };
     ```
 
- * probably because of ambiguity, there is convention to postfix **`size_`** for members
- * the double-underscore reservation is the only one that isn't well motivated anymore: It was originally because the CFront mangling of namespace separators/class separators was **\_\_** (see this [reddit post](https://www.reddit.com/r/cpp/comments/1jajhe0/comment/mhm3z8x/))
+ * probably because of ambiguity, there is convention to postfix
+   **`size_`** for members
+ * the double-underscore reservation is the only one that isn't well
+   motivated anymore: It was originally because the CFront mangling of
+   namespace separators/class separators was **\_\_**
+   (see this [reddit post](https://www.reddit.com/r/cpp/comments/1jajhe0/comment/mhm3z8x/))
 
 
 ### invoke private method with mangled name {#109}
@@ -2975,7 +2990,9 @@ int main() {
 
 ### coroutines and std::source_location::current() {#110}
 
-You can inject `std::source_location` into all coroutines customization points to get information on where coroutine is created/suspended/awaited/etc, see <https://godbolt.org/z/5ooTcPPhx>:
+You can inject `std::source_location` into all coroutines customization
+points to get information on where coroutine is created/suspended/awaited/etc,
+see [godbolt](https://godbolt.org/z/5ooTcPPhx):
 
 ``` cpp {.numberLines}
 struct co_task
@@ -2983,7 +3000,8 @@ struct co_task
 
 struct promise_type
 {
-    co_task get_return_object(std::source_location loc = std::source_location::current()) noexcept
+    co_task get_return_object(std::source_location loc
+                            = std::source_location::current()) noexcept
     {
         print("get_return_object", loc);
         return {};
@@ -2992,7 +3010,8 @@ struct promise_type
 
     struct awaitable
     {
-        bool await_ready(std::source_location loc = std::source_location::current())
+        bool await_ready(std::source_location loc
+                       = std::source_location::current())
         {
             print("await_ready", loc);
             return false;
@@ -3039,10 +3058,10 @@ std::optional<int> c = std::move(x);
 assert(x.has_value()); // holds true
 ```
 
-Move-constructor of std::optional does not reset `x`, just moves the value out of it.
-This is by definition of std::optional and the general rule of
-"valid but unspecified state" does not apply in this case,
-see [optional.ctor](https://eel.is/c++draft/optional.ctor#10):
+Move-constructor of std::optional does not reset `x`,
+just moves the value out of it. This is by definition of std::optional
+and the general rule of "valid but unspecified state" does not apply
+in this case, see [optional.ctor](https://eel.is/c++draft/optional.ctor#10):
 
 ``` {.numberLines}
 constexpr optional(optional&& rhs) noexcept(see below);
@@ -3050,7 +3069,8 @@ constexpr optional(optional&& rhs) noexcept(see below);
 ```
 
 People expect moved-from optional to have no value, i.e.,
-as if `x = std::nullopt` after a move, see ["Beware when moving a std::optional!"](https://blog.tal.bi/posts/std-optional-move-pitfall/)
+as if `x = std::nullopt` after a move, see
+["Beware when moving a std::optional!"](https://blog.tal.bi/posts/std-optional-move-pitfall/)
 article (which has wrong conclusions and solution) and this [reddit discussion](https://www.reddit.com/r/cpp/comments/75paqu/design_decision_for_stdoptional_moved_from_state).
 
 ### std::exchange idiom {#112}
@@ -3072,7 +3092,8 @@ Has nothing to do with `atomic::exchange()`.
 
 ### std::tie idiom for comparisons operators {#113}
 
-For quick-and-dirty (but 100% correct) code to generate comparison operator with multiple members:
+For quick-and-dirty (but 100% correct) code to generate comparison operator
+with multiple members:
 
 ``` cpp {.numberLines}
 struct Person
@@ -3088,10 +3109,12 @@ inline bool operator<(const Person& lhs, const Person& rhs) noexcept
 }
 ```
 
-std::tie forms `std::tuple<const std::string&, const int&>`; std::tuple has generic implementation for operator<.
+std::tie forms `std::tuple<const std::string&, const int&>`; std::tuple
+has generic implementation for operator<.
 
-Same could be done for operator==. Is it an outdated idiom with spaceship operator ([default comparisons](https://en.cppreference.com/w/cpp/language/default_comparisons)) since C++20? Probably.
-See also [this article](https://bajamircea.github.io/coding/cpp/2017/03/10/std-tie.html).
+Same could be done for operator==. Is it an outdated idiom with spaceship
+operator ([default comparisons](https://en.cppreference.com/w/cpp/language/default_comparisons))
+since C++20? Probably. See also [this article](https://bajamircea.github.io/coding/cpp/2017/03/10/std-tie.html).
 
 ### std::tie idiom to decompose/unpack {#114}
 
@@ -3103,8 +3126,9 @@ bool was_inserted = false;
 std::tie(std::ignore, was_inserted) = vs.insert(42);
 ```
 
-`vs.insert()` returns pair, std::tie here forms a tuple with a reference to `was_inserted`,
-effectively having assigning of `tuple<X, bool&> = pair<X, bool>`. Note, how `std::ignore` is
+`vs.insert()` returns pair, std::tie here forms a tuple with a reference to
+`was_inserted`, effectively having assigning of
+`tuple<X, bool&> = pair<X, bool>`. Note, how `std::ignore` is
 used as poor man's `_` placeholder.
 
 With C++17 structure bindings, same could be done:
@@ -3114,5 +3138,5 @@ extern std::set<int> vs;
 auto [_, was_inserted] = vs.insert(42);
 ```
 
-Note, `_` here is a usual variable, nothing special (up until C++26, see [A nice placeholder with no name](http://wg21.link/P2169R4)).
-
+Note, `_` here is a usual variable, nothing special (up until C++26,
+see [A nice placeholder with no name](http://wg21.link/P2169R4)).
