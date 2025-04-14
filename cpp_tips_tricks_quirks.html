@@ -649,6 +649,8 @@ std::source_location::current()</a></li>
 id="toc-moved-from-stdoptional-does-not-reset"><span
 class="toc-section-number">111</span> # moved-from std::optional does
 not reset</a></li>
+<li><a href="#stdexchange-idiom" id="toc-stdexchange-idiom"><span
+class="toc-section-number">112</span> # std::exchange idiom</a></li>
 </ul>
 </nav>
 <p>To generate this .html out of <a
@@ -3679,5 +3681,22 @@ moving a std::optional!”</a> article (which has wrong conclusions and
 solution) and this <a
 href="https://www.reddit.com/r/cpp/comments/75paqu/design_decision_for_stdoptional_moved_from_state">reddit
 discussion</a>.</p>
+<h3 data-number="112" id="stdexchange-idiom"><span
+class="header-section-number">112</span> <a href="#stdexchange-idiom">#
+</a>std::exchange idiom</h3>
+<p>set-new-and-check-old value in one go:</p>
+<div class="sourceCode" id="cb166"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb166-1"><a href="#cb166-1"></a><span class="dt">bool</span> <span class="va">dirty_</span> <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb166-2"><a href="#cb166-2"></a><span class="co">// ...</span></span>
+<span id="cb166-3"><a href="#cb166-3"></a><span class="cf">if</span> <span class="op">(</span><span class="bu">std::</span>exchange<span class="op">(</span><span class="va">dirty_</span><span class="op">,</span> <span class="kw">false</span><span class="op">))</span></span>
+<span id="cb166-4"><a href="#cb166-4"></a><span class="op">{</span></span>
+<span id="cb166-5"><a href="#cb166-5"></a>    RebuildState<span class="op">();</span></span>
+<span id="cb166-6"><a href="#cb166-6"></a><span class="op">}</span></span></code></pre></div>
+<p>See Ben Deane <a
+href="https://youtu.be/OqJUBIJOojI?si=2CNQJ9zHTlujqL1u">“std:: exchange
+Idioms” talk</a> and <a
+href="https://www.fluentcpp.com/2020/09/25/stdexchange-patterns-fast-safe-expressive-and-probably-underused/">“std::exchange
+Patterns” article</a>.</p>
+<p>Has nothing to do with <code>atomic::exchange()</code>.</p>
 </body>
 </html>

@@ -3045,3 +3045,20 @@ constexpr optional(optional&& rhs) noexcept(see below);
 People expect moved-from optional to have no value, i.e.,
 as if `x = std::nullopt` after a move, see ["Beware when moving a std::optional!"](https://blog.tal.bi/posts/std-optional-move-pitfall/)
 article (which has wrong conclusions and solution) and this [reddit discussion](https://www.reddit.com/r/cpp/comments/75paqu/design_decision_for_stdoptional_moved_from_state).
+
+### std::exchange idiom
+
+set-new-and-check-old value in one go:
+
+``` cpp {.numberLines}
+bool dirty_ = true;
+// ...
+if (std::exchange(dirty_, false))
+{
+    RebuildState();
+}
+```
+
+See Ben Deane ["std:: exchange Idioms" talk](https://youtu.be/OqJUBIJOojI?si=2CNQJ9zHTlujqL1u) and ["std::exchange Patterns" article](https://www.fluentcpp.com/2020/09/25/stdexchange-patterns-fast-safe-expressive-and-probably-underused/).
+
+Has nothing to do with `atomic::exchange()`.
