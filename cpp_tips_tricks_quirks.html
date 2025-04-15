@@ -512,6 +512,8 @@ class="toc-section-number">119</span> # run time type id</a></li>
 <li><a href="#120" id="toc-120"><span
 class="toc-section-number">120</span> # specialize a template class
 member without specializing whole class</a></li>
+<li><a href="#121" id="toc-121"><span
+class="toc-section-number">121</span> # hidden friend idiom</a></li>
 </ul>
 </nav>
 <hr />
@@ -3694,5 +3696,74 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 MyType still has <code>MyEnum v</code> data member for both cases, but
 with completely different enum values.</p>
 <p>See also <a href="#91">using enum declaration</a>.</p>
+<h3 data-number="121" id="121"><span
+class="header-section-number">121</span> <a href="#121"># </a>hidden
+friend idiom</h3>
+<p>See <a
+href="https://www.justsoftwaresolutions.co.uk/cplusplus/hidden-friends.html">The
+Power of Hidden Friends in C++</a>. Friend function for a class X:</p>
+<ul>
+<li>available to be found via Argument-Dependent Lookup (ADL)</li>
+<li>but only if one of the arguments is an X object</li>
+<li>and thus is “hidden” from normal name lookup</li>
+</ul>
+<p>In short:</p>
+<div class="sourceCode" id="cb177"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb177-1"><a href="#cb177-1"></a><span class="kw">struct</span> X<span class="op">{</span></span>
+<span id="cb177-2"><a href="#cb177-2"></a>  X<span class="op">(</span><span class="dt">int</span><span class="op">){}</span></span>
+<span id="cb177-3"><a href="#cb177-3"></a>  <span class="kw">friend</span> <span class="dt">void</span> foo<span class="op">(</span>X<span class="op">){};</span></span>
+<span id="cb177-4"><a href="#cb177-4"></a><span class="op">};</span></span>
+<span id="cb177-5"><a href="#cb177-5"></a><span class="dt">int</span> main<span class="op">(){</span></span>
+<span id="cb177-6"><a href="#cb177-6"></a>    X x<span class="op">(</span><span class="dv">42</span><span class="op">);</span></span>
+<span id="cb177-7"><a href="#cb177-7"></a>    foo<span class="op">(</span>x<span class="op">);</span>   <span class="co">// OK, calls foo defined in friend declaration</span></span>
+<span id="cb177-8"><a href="#cb177-8"></a>    foo<span class="op">(</span><span class="dv">99</span><span class="op">);</span>  <span class="co">// Error: foo not found, as int is not X</span></span>
+<span id="cb177-9"><a href="#cb177-9"></a>    <span class="op">::</span>foo<span class="op">(</span>x<span class="op">);</span> <span class="co">// Error: foo not found as ADL not triggered</span></span>
+<span id="cb177-10"><a href="#cb177-10"></a><span class="op">}</span></span></code></pre></div>
+<p>Hence, <code>foo()</code> is a hidden friend. If, <code>foo(X)</code>
+is declared in the enclosing namespace of X, normal lookup will find
+it:</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="sourceCode" id="cb178"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb178-1"><a href="#cb178-1"></a></span>
+<span id="cb178-2"><a href="#cb178-2"></a><span class="kw">struct</span> X<span class="op">;</span></span>
+<span id="cb178-3"><a href="#cb178-3"></a><span class="dt">void</span> foo<span class="op">(</span>X<span class="op">);</span> <span class="co">// namespace scope</span></span>
+<span id="cb178-4"><a href="#cb178-4"></a><span class="kw">struct</span> X<span class="op">{</span></span>
+<span id="cb178-5"><a href="#cb178-5"></a>  X<span class="op">(</span><span class="dt">int</span><span class="op">){}</span></span>
+<span id="cb178-6"><a href="#cb178-6"></a>  <span class="kw">friend</span> <span class="dt">void</span> foo<span class="op">(</span>X<span class="op">){};</span></span>
+<span id="cb178-7"><a href="#cb178-7"></a><span class="op">};</span></span>
+<span id="cb178-8"><a href="#cb178-8"></a><span class="dt">int</span> main<span class="op">(){</span></span>
+<span id="cb178-9"><a href="#cb178-9"></a>    X x<span class="op">(</span><span class="dv">42</span><span class="op">);</span></span>
+<span id="cb178-10"><a href="#cb178-10"></a>    foo<span class="op">(</span>x<span class="op">);</span>   <span class="co">// OK, calls foo defined in friend declaration</span></span>
+<span id="cb178-11"><a href="#cb178-11"></a>    foo<span class="op">(</span><span class="dv">99</span><span class="op">);</span>  <span class="co">// ok now</span></span>
+<span id="cb178-12"><a href="#cb178-12"></a>    <span class="op">::</span>foo<span class="op">(</span>x<span class="op">);</span> <span class="co">// ok now</span></span>
+<span id="cb178-13"><a href="#cb178-13"></a><span class="op">}</span></span></code></pre></div>
+</div><div class="column" style="width:50%;">
+<div class="sourceCode" id="cb179"><pre
+class="sourceCode diff"><code class="sourceCode diff"><span id="cb179-1"><a href="#cb179-1" aria-hidden="true" tabindex="-1"></a><span class="kw">diff -r aaa\x.txt bbb\x.txt</span></span>
+<span id="cb179-2"><a href="#cb179-2" aria-hidden="true" tabindex="-1"></a><span class="va">&gt; struct X;</span></span>
+<span id="cb179-3"><a href="#cb179-3" aria-hidden="true" tabindex="-1"></a><span class="va">&gt; void foo(X); // namespace scope</span></span>
+<span id="cb179-4"><a href="#cb179-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb179-5"><a href="#cb179-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb179-6"><a href="#cb179-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb179-7"><a href="#cb179-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb179-8"><a href="#cb179-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb179-9"><a href="#cb179-9" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;     foo(99);  // Error: foo not found, as int is not X</span></span>
+<span id="cb179-10"><a href="#cb179-10" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;     ::foo(x); // Error: foo not found as ADL not triggered</span></span>
+<span id="cb179-11"><a href="#cb179-11" aria-hidden="true" tabindex="-1"></a><span class="va">&gt;     foo(99);  // ok now</span></span>
+<span id="cb179-12"><a href="#cb179-12" aria-hidden="true" tabindex="-1"></a><span class="va">&gt;     ::foo(x); // ok now</span></span></code></pre></div>
+</div>
+</div>
+<p>The benefits are:</p>
+<ol type="1">
+<li>hidden friend avoids accidental implicit conversions</li>
+<li>easier for the compiler: the hidden friends are only checked when
+there is a relevant argument provided, see <a
+href="https://jacquesheunis.com/post/hidden-friend-compilation/">this
+article</a> for compile time differences</li>
+</ol>
+<p>See also “Hidden Friends and Enumerations” section <a
+href="https://www.justsoftwaresolutions.co.uk/cplusplus/hidden-friends.html">from
+article above</a>.</p>
 </body>
 </html>

@@ -3382,3 +3382,76 @@ MyType still has `MyEnum v` data member for both cases, but with completely
 different enum values.
 
 See also [using enum declaration](#91).
+
+### hidden friend idiom {#121}
+
+See [The Power of Hidden Friends in C++](https://www.justsoftwaresolutions.co.uk/cplusplus/hidden-friends.html).
+Friend function for a class X:
+
+ * available to be found via Argument-Dependent Lookup (ADL)
+ * but only if one of the arguments is an X object
+ * and thus is "hidden" from normal name lookup
+
+In short:
+
+``` cpp {.numberLines}
+struct X{
+  X(int){}
+  friend void foo(X){};
+};
+int main(){
+    X x(42);
+    foo(x);   // OK, calls foo defined in friend declaration
+    foo(99);  // Error: foo not found, as int is not X
+    ::foo(x); // Error: foo not found as ADL not triggered
+}
+```
+
+Hence, `foo()` is a hidden friend. If, `foo(X)` is declared in the
+enclosing namespace of X, normal lookup will find it:
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+``` cpp {.numberLines}
+
+struct X;
+void foo(X); // namespace scope
+struct X{
+  X(int){}
+  friend void foo(X){};
+};
+int main(){
+    X x(42);
+    foo(x);   // OK, calls foo defined in friend declaration
+    foo(99);  // ok now
+    ::foo(x); // ok now
+}
+```
+:::
+::: {.column width="50%"}
+``` diff
+diff -r aaa\x.txt bbb\x.txt
+> struct X;
+> void foo(X); // namespace scope
+
+
+
+
+
+<     foo(99);  // Error: foo not found, as int is not X
+<     ::foo(x); // Error: foo not found as ADL not triggered
+>     foo(99);  // ok now
+>     ::foo(x); // ok now
+```
+:::
+::::::::::::::
+
+The benefits are:
+
+ 1. hidden friend avoids accidental implicit conversions
+ 2. easier for the compiler: the hidden friends are only
+    checked when there is a relevant argument provided, see
+    [this article](https://jacquesheunis.com/post/hidden-friend-compilation/)
+    for compile time differences
+
+See also "Hidden Friends and Enumerations" section [from article above](https://www.justsoftwaresolutions.co.uk/cplusplus/hidden-friends.html).
