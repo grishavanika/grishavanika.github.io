@@ -3566,14 +3566,15 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb172-15"><a href="#cb172-15"></a>    <span class="bu">std::</span>puts<span class="op">(</span>Name<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;());</span></span>
 <span id="cb172-16"><a href="#cb172-16"></a><span class="op">}</span></span></code></pre></div>
 <p>prints:</p>
-<blockquote>
-<p>constexpr const char* Name() [with T = int]</p>
-</blockquote>
+<pre><code>constexpr const char* Name() [with T = int]
+                                  ^^^^^^^^^</code></pre>
 <p>This is abused to parse a string, at compile time, to get type name
 out of it. Examples: <a
 href="https://github.com/TheLartians/StaticTypeInfo/blob/425fa62e49c2052be3e255b1056c633aeb970bfa/include/static_type_info/type_name.h">StaticTypeInfo</a>,
 <a
-href="https://github.com/Neargye/magic_enum/blob/a413fcc9c46a020a746907136a384c227f3cd095/include/magic_enum/magic_enum.hpp#L438-L447">magic_enum</a>.</p>
+href="https://github.com/Neargye/magic_enum/blob/a413fcc9c46a020a746907136a384c227f3cd095/include/magic_enum/magic_enum.hpp#L438-L447">magic_enum</a>,
+<a
+href="https://github.com/foonathan/lexy/blob/8c1ebec673b498bbb1728444d202586ea81c4142/include/lexy/_detail/type_name.hpp#L21">lexy</a>.</p>
 <h3 data-number="118" id="118"><span
 class="header-section-number">118</span> <a href="#118"># </a>compile
 time type id</h3>
@@ -3582,28 +3583,28 @@ name</a>, <code>__PRETTY_FUNCTION__</code>/<code>__FUNCSIG__</code>
 could be used to generate a hash for a type at compile time, see, for
 instance, <a href="https://stackoverflow.com/a/56326294">this
 SO</a>:</p>
-<div class="sourceCode" id="cb173"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb173-1"><a href="#cb173-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
-<span id="cb173-2"><a href="#cb173-2"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t Hash<span class="op">()</span></span>
-<span id="cb173-3"><a href="#cb173-3"></a><span class="op">{</span></span>
-<span id="cb173-4"><a href="#cb173-4"></a><span class="pp">#ifdef _MSC_VER</span></span>
-<span id="cb173-5"><a href="#cb173-5"></a><span class="pp">#define F </span>__FUNCSIG__</span>
-<span id="cb173-6"><a href="#cb173-6"></a><span class="pp">#else</span></span>
-<span id="cb173-7"><a href="#cb173-7"></a><span class="pp">#define F </span><span class="ot">__PRETTY_FUNCTION__</span></span>
-<span id="cb173-8"><a href="#cb173-8"></a><span class="pp">#endif</span></span>
-<span id="cb173-9"><a href="#cb173-9"></a>    <span class="bu">std::</span>size_t result <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb173-10"><a href="#cb173-10"></a>    <span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">&amp;</span> c <span class="op">:</span> F<span class="op">)</span></span>
-<span id="cb173-11"><a href="#cb173-11"></a>        <span class="op">(</span>result <span class="op">^=</span> c<span class="op">)</span> <span class="op">&lt;&lt;=</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb173-12"><a href="#cb173-12"></a>    <span class="cf">return</span> result<span class="op">;</span></span>
-<span id="cb173-13"><a href="#cb173-13"></a><span class="pp">#undef F</span></span>
-<span id="cb173-14"><a href="#cb173-14"></a><span class="op">}</span></span>
-<span id="cb173-15"><a href="#cb173-15"></a></span>
-<span id="cb173-16"><a href="#cb173-16"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
-<span id="cb173-17"><a href="#cb173-17"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t constexpr_hash <span class="op">=</span> Hash<span class="op">&lt;</span>T<span class="op">&gt;();</span></span>
-<span id="cb173-18"><a href="#cb173-18"></a></span>
-<span id="cb173-19"><a href="#cb173-19"></a><span class="co">// usage</span></span>
-<span id="cb173-20"><a href="#cb173-20"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t f <span class="op">=</span> constexpr_hash<span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;;</span></span>
-<span id="cb173-21"><a href="#cb173-21"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t i <span class="op">=</span> constexpr_hash<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;;</span></span></code></pre></div>
+<div class="sourceCode" id="cb174"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb174-1"><a href="#cb174-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb174-2"><a href="#cb174-2"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t Hash<span class="op">()</span></span>
+<span id="cb174-3"><a href="#cb174-3"></a><span class="op">{</span></span>
+<span id="cb174-4"><a href="#cb174-4"></a><span class="pp">#ifdef _MSC_VER</span></span>
+<span id="cb174-5"><a href="#cb174-5"></a><span class="pp">#define F </span>__FUNCSIG__</span>
+<span id="cb174-6"><a href="#cb174-6"></a><span class="pp">#else</span></span>
+<span id="cb174-7"><a href="#cb174-7"></a><span class="pp">#define F </span><span class="ot">__PRETTY_FUNCTION__</span></span>
+<span id="cb174-8"><a href="#cb174-8"></a><span class="pp">#endif</span></span>
+<span id="cb174-9"><a href="#cb174-9"></a>    <span class="bu">std::</span>size_t result <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb174-10"><a href="#cb174-10"></a>    <span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">&amp;</span> c <span class="op">:</span> F<span class="op">)</span></span>
+<span id="cb174-11"><a href="#cb174-11"></a>        <span class="op">(</span>result <span class="op">^=</span> c<span class="op">)</span> <span class="op">&lt;&lt;=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb174-12"><a href="#cb174-12"></a>    <span class="cf">return</span> result<span class="op">;</span></span>
+<span id="cb174-13"><a href="#cb174-13"></a><span class="pp">#undef F</span></span>
+<span id="cb174-14"><a href="#cb174-14"></a><span class="op">}</span></span>
+<span id="cb174-15"><a href="#cb174-15"></a></span>
+<span id="cb174-16"><a href="#cb174-16"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb174-17"><a href="#cb174-17"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t constexpr_hash <span class="op">=</span> Hash<span class="op">&lt;</span>T<span class="op">&gt;();</span></span>
+<span id="cb174-18"><a href="#cb174-18"></a></span>
+<span id="cb174-19"><a href="#cb174-19"></a><span class="co">// usage</span></span>
+<span id="cb174-20"><a href="#cb174-20"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t f <span class="op">=</span> constexpr_hash<span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;;</span></span>
+<span id="cb174-21"><a href="#cb174-21"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t i <span class="op">=</span> constexpr_hash<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;;</span></span></code></pre></div>
 <p>Notes:</p>
 <ul>
 <li>may not work for unnamed structs</li>
@@ -3616,25 +3617,25 @@ class="header-section-number">119</span> <a href="#119"># </a>run time
 type id</h3>
 <p>A trick to use global static counter and static local for a template
 to generate type id once:</p>
-<div class="sourceCode" id="cb174"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb174-1"><a href="#cb174-1"></a><span class="kw">inline</span> <span class="dt">unsigned</span><span class="op">&amp;</span> Global_Seq<span class="op">()</span></span>
-<span id="cb174-2"><a href="#cb174-2"></a><span class="op">{</span></span>
-<span id="cb174-3"><a href="#cb174-3"></a>    <span class="at">static</span> <span class="dt">unsigned</span> counter <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb174-4"><a href="#cb174-4"></a>    <span class="cf">return</span> counter<span class="op">;</span></span>
-<span id="cb174-5"><a href="#cb174-5"></a><span class="op">}</span></span>
-<span id="cb174-6"><a href="#cb174-6"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
-<span id="cb174-7"><a href="#cb174-7"></a><span class="kw">struct</span> Id</span>
-<span id="cb174-8"><a href="#cb174-8"></a><span class="op">{</span></span>
-<span id="cb174-9"><a href="#cb174-9"></a>    <span class="at">static</span> <span class="at">const</span> <span class="dt">unsigned</span> id<span class="op">;</span></span>
-<span id="cb174-10"><a href="#cb174-10"></a>    <span class="at">static</span> <span class="dt">unsigned</span> Get<span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> id<span class="op">;</span> <span class="op">}</span></span>
-<span id="cb174-11"><a href="#cb174-11"></a><span class="op">};</span></span>
-<span id="cb174-12"><a href="#cb174-12"></a></span>
-<span id="cb174-13"><a href="#cb174-13"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
-<span id="cb174-14"><a href="#cb174-14"></a><span class="co">/*static*/</span> <span class="at">const</span> <span class="dt">unsigned</span> Id<span class="op">&lt;</span>T<span class="op">&gt;::</span>id <span class="op">=</span> <span class="op">++</span>Global_Seq<span class="op">();</span></span>
-<span id="cb174-15"><a href="#cb174-15"></a></span>
-<span id="cb174-16"><a href="#cb174-16"></a><span class="co">// usage</span></span>
-<span id="cb174-17"><a href="#cb174-17"></a><span class="bu">std::</span>printf<span class="op">(</span><span class="st">&quot;int  = </span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> Id<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;::</span>Get<span class="op">());</span></span>
-<span id="cb174-18"><a href="#cb174-18"></a><span class="bu">std::</span>printf<span class="op">(</span><span class="st">&quot;char = </span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> Id<span class="op">&lt;</span><span class="dt">char</span><span class="op">&gt;::</span>Get<span class="op">());</span></span></code></pre></div>
+<div class="sourceCode" id="cb175"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb175-1"><a href="#cb175-1"></a><span class="kw">inline</span> <span class="dt">unsigned</span><span class="op">&amp;</span> Global_Seq<span class="op">()</span></span>
+<span id="cb175-2"><a href="#cb175-2"></a><span class="op">{</span></span>
+<span id="cb175-3"><a href="#cb175-3"></a>    <span class="at">static</span> <span class="dt">unsigned</span> counter <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb175-4"><a href="#cb175-4"></a>    <span class="cf">return</span> counter<span class="op">;</span></span>
+<span id="cb175-5"><a href="#cb175-5"></a><span class="op">}</span></span>
+<span id="cb175-6"><a href="#cb175-6"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb175-7"><a href="#cb175-7"></a><span class="kw">struct</span> Id</span>
+<span id="cb175-8"><a href="#cb175-8"></a><span class="op">{</span></span>
+<span id="cb175-9"><a href="#cb175-9"></a>    <span class="at">static</span> <span class="at">const</span> <span class="dt">unsigned</span> id<span class="op">;</span></span>
+<span id="cb175-10"><a href="#cb175-10"></a>    <span class="at">static</span> <span class="dt">unsigned</span> Get<span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> id<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb175-11"><a href="#cb175-11"></a><span class="op">};</span></span>
+<span id="cb175-12"><a href="#cb175-12"></a></span>
+<span id="cb175-13"><a href="#cb175-13"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb175-14"><a href="#cb175-14"></a><span class="co">/*static*/</span> <span class="at">const</span> <span class="dt">unsigned</span> Id<span class="op">&lt;</span>T<span class="op">&gt;::</span>id <span class="op">=</span> <span class="op">++</span>Global_Seq<span class="op">();</span></span>
+<span id="cb175-15"><a href="#cb175-15"></a></span>
+<span id="cb175-16"><a href="#cb175-16"></a><span class="co">// usage</span></span>
+<span id="cb175-17"><a href="#cb175-17"></a><span class="bu">std::</span>printf<span class="op">(</span><span class="st">&quot;int  = </span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> Id<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;::</span>Get<span class="op">());</span></span>
+<span id="cb175-18"><a href="#cb175-18"></a><span class="bu">std::</span>printf<span class="op">(</span><span class="st">&quot;char = </span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> Id<span class="op">&lt;</span><span class="dt">char</span><span class="op">&gt;::</span>Get<span class="op">());</span></span></code></pre></div>
 <p>Could be made simpler with inline variable and variable template,
 see, for instance, <a
 href="https://mikejsavage.co.uk/cpp-tricks-type-id/">C++ tricks: type
@@ -3657,38 +3658,38 @@ a template class member without specializing whole class</h3>
 <p>From this <a
 href="https://www.reddit.com/r/cpp/comments/1iw4o9f/comment/meboxy0/">reddit
 comment</a>:</p>
-<div class="sourceCode" id="cb175"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb175-1"><a href="#cb175-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
-<span id="cb175-2"><a href="#cb175-2"></a><span class="kw">struct</span> MyType</span>
-<span id="cb175-3"><a href="#cb175-3"></a><span class="op">{</span></span>
-<span id="cb175-4"><a href="#cb175-4"></a>    <span class="kw">enum</span> <span class="kw">class</span> MyEnum</span>
-<span id="cb175-5"><a href="#cb175-5"></a>    <span class="op">{</span></span>
-<span id="cb175-6"><a href="#cb175-6"></a>        Option1<span class="op">,</span></span>
-<span id="cb175-7"><a href="#cb175-7"></a>        Option2<span class="op">,</span></span>
-<span id="cb175-8"><a href="#cb175-8"></a>    <span class="op">};</span></span>
-<span id="cb175-9"><a href="#cb175-9"></a></span>
-<span id="cb175-10"><a href="#cb175-10"></a>    MyEnum v<span class="op">{};</span></span>
-<span id="cb175-11"><a href="#cb175-11"></a><span class="op">};</span></span>
-<span id="cb175-12"><a href="#cb175-12"></a></span>
-<span id="cb175-13"><a href="#cb175-13"></a><span class="co">// !!</span></span>
-<span id="cb175-14"><a href="#cb175-14"></a><span class="kw">template</span><span class="op">&lt;&gt;</span></span>
-<span id="cb175-15"><a href="#cb175-15"></a><span class="kw">enum</span> <span class="kw">class</span> MyType<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;::</span>MyEnum</span>
-<span id="cb175-16"><a href="#cb175-16"></a><span class="op">{</span></span>
-<span id="cb175-17"><a href="#cb175-17"></a>    Surprise<span class="op">,</span></span>
-<span id="cb175-18"><a href="#cb175-18"></a>    Anything<span class="op">,</span></span>
-<span id="cb175-19"><a href="#cb175-19"></a><span class="op">};</span></span>
-<span id="cb175-20"><a href="#cb175-20"></a></span>
-<span id="cb175-21"><a href="#cb175-21"></a><span class="dt">void</span> Foo<span class="op">(</span>MyType<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> o1<span class="op">,</span> MyType<span class="op">&lt;</span><span class="dt">char</span><span class="op">&gt;</span> o2<span class="op">)</span></span>
-<span id="cb175-22"><a href="#cb175-22"></a><span class="op">{</span></span>
-<span id="cb175-23"><a href="#cb175-23"></a>    <span class="cf">switch</span> <span class="op">(</span>o1<span class="op">.</span>v<span class="op">)</span></span>
-<span id="cb175-24"><a href="#cb175-24"></a>    <span class="op">{</span></span>
-<span id="cb175-25"><a href="#cb175-25"></a>    <span class="cf">case</span> MyType<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;::</span>MyEnum<span class="op">::</span>Surprise<span class="op">:</span> <span class="op">;</span></span>
-<span id="cb175-26"><a href="#cb175-26"></a>    <span class="op">}</span></span>
-<span id="cb175-27"><a href="#cb175-27"></a>    <span class="cf">switch</span> <span class="op">(</span>o2<span class="op">.</span>v<span class="op">)</span></span>
-<span id="cb175-28"><a href="#cb175-28"></a>    <span class="op">{</span></span>
-<span id="cb175-29"><a href="#cb175-29"></a>    <span class="cf">case</span> MyType<span class="op">&lt;</span><span class="dt">char</span><span class="op">&gt;::</span>MyEnum<span class="op">::</span>Option1<span class="op">:</span> <span class="op">;</span></span>
-<span id="cb175-30"><a href="#cb175-30"></a>    <span class="op">}</span></span>
-<span id="cb175-31"><a href="#cb175-31"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb176"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb176-1"><a href="#cb176-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb176-2"><a href="#cb176-2"></a><span class="kw">struct</span> MyType</span>
+<span id="cb176-3"><a href="#cb176-3"></a><span class="op">{</span></span>
+<span id="cb176-4"><a href="#cb176-4"></a>    <span class="kw">enum</span> <span class="kw">class</span> MyEnum</span>
+<span id="cb176-5"><a href="#cb176-5"></a>    <span class="op">{</span></span>
+<span id="cb176-6"><a href="#cb176-6"></a>        Option1<span class="op">,</span></span>
+<span id="cb176-7"><a href="#cb176-7"></a>        Option2<span class="op">,</span></span>
+<span id="cb176-8"><a href="#cb176-8"></a>    <span class="op">};</span></span>
+<span id="cb176-9"><a href="#cb176-9"></a></span>
+<span id="cb176-10"><a href="#cb176-10"></a>    MyEnum v<span class="op">{};</span></span>
+<span id="cb176-11"><a href="#cb176-11"></a><span class="op">};</span></span>
+<span id="cb176-12"><a href="#cb176-12"></a></span>
+<span id="cb176-13"><a href="#cb176-13"></a><span class="co">// note: specialize **only** MyEnum</span></span>
+<span id="cb176-14"><a href="#cb176-14"></a><span class="kw">template</span><span class="op">&lt;&gt;</span></span>
+<span id="cb176-15"><a href="#cb176-15"></a><span class="kw">enum</span> <span class="kw">class</span> MyType<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;::</span>MyEnum</span>
+<span id="cb176-16"><a href="#cb176-16"></a><span class="op">{</span></span>
+<span id="cb176-17"><a href="#cb176-17"></a>    Surprise<span class="op">,</span></span>
+<span id="cb176-18"><a href="#cb176-18"></a>    Anything<span class="op">,</span></span>
+<span id="cb176-19"><a href="#cb176-19"></a><span class="op">};</span></span>
+<span id="cb176-20"><a href="#cb176-20"></a></span>
+<span id="cb176-21"><a href="#cb176-21"></a><span class="dt">void</span> Foo<span class="op">(</span>MyType<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> o1<span class="op">,</span> MyType<span class="op">&lt;</span><span class="dt">char</span><span class="op">&gt;</span> o2<span class="op">)</span></span>
+<span id="cb176-22"><a href="#cb176-22"></a><span class="op">{</span></span>
+<span id="cb176-23"><a href="#cb176-23"></a>    <span class="cf">switch</span> <span class="op">(</span>o1<span class="op">.</span>v<span class="op">)</span></span>
+<span id="cb176-24"><a href="#cb176-24"></a>    <span class="op">{</span></span>
+<span id="cb176-25"><a href="#cb176-25"></a>    <span class="cf">case</span> MyType<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;::</span>MyEnum<span class="op">::</span>Surprise<span class="op">:</span> <span class="op">;</span></span>
+<span id="cb176-26"><a href="#cb176-26"></a>    <span class="op">}</span></span>
+<span id="cb176-27"><a href="#cb176-27"></a>    <span class="cf">switch</span> <span class="op">(</span>o2<span class="op">.</span>v<span class="op">)</span></span>
+<span id="cb176-28"><a href="#cb176-28"></a>    <span class="op">{</span></span>
+<span id="cb176-29"><a href="#cb176-29"></a>    <span class="cf">case</span> MyType<span class="op">&lt;</span><span class="dt">char</span><span class="op">&gt;::</span>MyEnum<span class="op">::</span>Option1<span class="op">:</span> <span class="op">;</span></span>
+<span id="cb176-30"><a href="#cb176-30"></a>    <span class="op">}</span></span>
+<span id="cb176-31"><a href="#cb176-31"></a><span class="op">}</span></span></code></pre></div>
 <p>without completely specializing whole class, we specialize only enum.
 MyType still has <code>MyEnum v</code> data member for both cases, but
 with completely different enum values.</p>

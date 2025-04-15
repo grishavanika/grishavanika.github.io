@@ -3251,11 +3251,15 @@ int main()
 
 prints:
 
-> constexpr const char* Name() [with T = int]
+```
+constexpr const char* Name() [with T = int]
+                                  ^^^^^^^^^
+```
 
 This is abused to parse a string, at compile time, to get type name out of it.
 Examples: [StaticTypeInfo](https://github.com/TheLartians/StaticTypeInfo/blob/425fa62e49c2052be3e255b1056c633aeb970bfa/include/static_type_info/type_name.h),
-[magic_enum](https://github.com/Neargye/magic_enum/blob/a413fcc9c46a020a746907136a384c227f3cd095/include/magic_enum/magic_enum.hpp#L438-L447).
+[magic_enum](https://github.com/Neargye/magic_enum/blob/a413fcc9c46a020a746907136a384c227f3cd095/include/magic_enum/magic_enum.hpp#L438-L447),
+[lexy](https://github.com/foonathan/lexy/blob/8c1ebec673b498bbb1728444d202586ea81c4142/include/lexy/_detail/type_name.hpp#L21).
 
 ### compile time type id {#118}
 
@@ -3352,7 +3356,7 @@ struct MyType
     MyEnum v{};
 };
 
-// !!
+// note: specialize **only** MyEnum
 template<>
 enum class MyType<int>::MyEnum
 {
