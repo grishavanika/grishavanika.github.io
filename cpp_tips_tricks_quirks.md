@@ -3286,12 +3286,12 @@ inline unsigned& Global_Seq()
 template<typename T>
 struct Id
 {
-    static unsigned id;
+    static const unsigned id;
     static unsigned Get() { return id; }
 };
 
 template<typename T>
-/*static*/ unsigned Id<T>::id = ++Global_Seq();
+/*static*/ const unsigned Id<T>::id = ++Global_Seq();
 
 // usage
 std::printf("int  = %u\n", Id<int>::Get());
@@ -3304,10 +3304,11 @@ for instance, [C++ tricks: type IDs](https://mikejsavage.co.uk/cpp-tricks-type-i
 Notes:
 
  * be carefull when mixig DLLs: Global_Seq() must be in a single DLL/exe
- * ids are NOT persistent: could be different from run-to-run or
-   build-to-build for the same types
+ * ids are NOT persistent: could be different from run-to-run
+   for the same types
  * similarly, not crossplatform
  * and not thread-safe
+ * `Global_Seq()` must be static local to avoid initialization order fiasco
 
 but could be made good enough for specific use-case.
 

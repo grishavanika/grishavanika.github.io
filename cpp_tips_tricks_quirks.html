@@ -3601,12 +3601,12 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb173-6"><a href="#cb173-6"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
 <span id="cb173-7"><a href="#cb173-7"></a><span class="kw">struct</span> Id</span>
 <span id="cb173-8"><a href="#cb173-8"></a><span class="op">{</span></span>
-<span id="cb173-9"><a href="#cb173-9"></a>    <span class="at">static</span> <span class="dt">unsigned</span> id<span class="op">;</span></span>
+<span id="cb173-9"><a href="#cb173-9"></a>    <span class="at">static</span> <span class="at">const</span> <span class="dt">unsigned</span> id<span class="op">;</span></span>
 <span id="cb173-10"><a href="#cb173-10"></a>    <span class="at">static</span> <span class="dt">unsigned</span> Get<span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> id<span class="op">;</span> <span class="op">}</span></span>
 <span id="cb173-11"><a href="#cb173-11"></a><span class="op">};</span></span>
 <span id="cb173-12"><a href="#cb173-12"></a></span>
 <span id="cb173-13"><a href="#cb173-13"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
-<span id="cb173-14"><a href="#cb173-14"></a><span class="co">/*static*/</span> <span class="dt">unsigned</span> Id<span class="op">&lt;</span>T<span class="op">&gt;::</span>id <span class="op">=</span> <span class="op">++</span>Global_Seq<span class="op">();</span></span>
+<span id="cb173-14"><a href="#cb173-14"></a><span class="co">/*static*/</span> <span class="at">const</span> <span class="dt">unsigned</span> Id<span class="op">&lt;</span>T<span class="op">&gt;::</span>id <span class="op">=</span> <span class="op">++</span>Global_Seq<span class="op">();</span></span>
 <span id="cb173-15"><a href="#cb173-15"></a></span>
 <span id="cb173-16"><a href="#cb173-16"></a><span class="co">// usage</span></span>
 <span id="cb173-17"><a href="#cb173-17"></a><span class="bu">std::</span>printf<span class="op">(</span><span class="st">&quot;int  = </span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> Id<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;::</span>Get<span class="op">());</span></span>
@@ -3619,10 +3619,12 @@ IDs</a>.</p>
 <ul>
 <li>be carefull when mixig DLLs: Global_Seq() must be in a single
 DLL/exe</li>
-<li>ids are NOT persistent: could be different from run-to-run or
-build-to-build for the same types</li>
+<li>ids are NOT persistent: could be different from run-to-run for the
+same types</li>
 <li>similarly, not crossplatform</li>
 <li>and not thread-safe</li>
+<li><code>Global_Seq()</code> must be static local to avoid
+initialization order fiasco</li>
 </ul>
 <p>but could be made good enough for specific use-case.</p>
 </body>
