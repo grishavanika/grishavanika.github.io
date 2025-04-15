@@ -495,12 +495,14 @@ int main () {
 
 See, for instance, [Revisiting Stateful Metaprogramming in C++20](https://mc-deltat.github.io/articles/stateful-metaprogramming-cpp20):
 
+ * [The C++ Type Loophole](https://alexpolt.github.io/type-loophole.html)
  * [constant-expression counter](https://b.atch.se/posts/constexpr-counter/)
  * [compile-time list](https://b.atch.se/posts/constexpr-meta-container/)
  * [nonconstant constant expressions](https://b.atch.se/posts/non-constant-constant-expressions/)
  * [stateful metaprogramming via friend injection](https://www.open-std.org/jtc1/sc22/wg21/docs/cwg%5Factive.html#2118)
  * [hack C++ with templates and friends](https://www.worldcadaccess.com/blog/2020/05/how-to-hack-c-with-templates-and-friends.html)
- * [The C++ Type Loophole](https://alexpolt.github.io/type-loophole.html)
+ * [count the number of times the template was instantiated](https://godbolt.org/z/nv7W67q17)
+ * [get all the types that the template was instantiated with](https://godbolt.org/z/4z7WY3j1q)
 
 ### access private members (via friend injection) {#20}
 
