@@ -2440,6 +2440,27 @@ void MyProcess(MyEnum v)
 }
 ```
 
+Note, however, this is not going to work for template class member function:
+
+```
+template<typename T>
+struct MyType
+{
+    enum class MyEnum { X };
+    void Foo()
+    {
+        using enum MyEnum;
+    }
+};
+```
+
+errors out with:
+
+> error: 'using enum' of dependent type 'MyType<T>::MyEnum'
+
+see [specialize a template class member without specializing whole class](#120)
+for an explanation.
+
 ### using declaration vs using directive {#92}
 
 See [using declaration](https://learn.microsoft.com/en-us/cpp/cpp/using-declaration?view=msvc-170)
@@ -3312,3 +3333,46 @@ Notes:
 
 but could be made good enough for specific use-case.
 
+### specialize a template class member without specializing whole class {#120}
+
+From this [reddit comment](https://www.reddit.com/r/cpp/comments/1iw4o9f/comment/meboxy0/):
+
+``` cpp {.numberLines}
+template<typename T>
+struct MyType
+{
+    enum class MyEnum
+    {
+        Option1,
+        Option2,
+    };
+
+    MyEnum v{};
+};
+
+// !!
+template<>
+enum class MyType<int>::MyEnum
+{
+    Surprise,
+    Anything,
+};
+
+void Foo(MyType<int> o1, MyType<char> o2)
+{
+    switch (o1.v)
+    {
+    case MyType<int>::MyEnum::Surprise: ;
+    }
+    switch (o2.v)
+    {
+    case MyType<char>::MyEnum::Option1: ;
+    }
+}
+```
+
+without completely specializing whole class, we specialize only enum.
+MyType still has `MyEnum v` data member for both cases, but with completely
+different enum values.
+
+See also [using enum declaration](#91).
