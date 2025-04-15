@@ -514,6 +514,8 @@ class="toc-section-number">120</span> # specialize a template class
 member without specializing whole class</a></li>
 <li><a href="#121" id="toc-121"><span
 class="toc-section-number">121</span> # hidden friend idiom</a></li>
+<li><a href="#122" id="toc-122"><span
+class="toc-section-number">122</span> # ADL isolation</a></li>
 </ul>
 </nav>
 <hr />
@@ -3765,5 +3767,48 @@ article</a> for compile time differences</li>
 <p>See also “Hidden Friends and Enumerations” section <a
 href="https://www.justsoftwaresolutions.co.uk/cplusplus/hidden-friends.html">from
 article above</a>.</p>
+<h3 data-number="122" id="122"><span
+class="header-section-number">122</span> <a href="#122"># </a>ADL
+isolation</h3>
+<p>See also <a href="#121">hidden friend idiom</a>. From <a
+href="https://github.com/NVIDIA/stdexec/blob/954159ad82386b3564ea4125d9f4b7a68ccb912c/MAINTAINERS.md#class-template-parameters">stdexec/MAINTAINERS.md</a>:</p>
+<blockquote>
+<p>For a class template instantiation such as N::S&lt;A,B,C&gt;, the
+associated entities include the associated entities of A, B, and C</p>
+</blockquote>
+<p>Basically, ADL makes it so that functions associated with a type A
+could be found even when A is a template argument. This is made,
+probably, so something like <code>std::reference_wrapper&lt;A&gt;</code>
+works (see “associated entities of class types” from <a
+href="http://wg21.link/p2822r1">p2822r1</a>):</p>
+<div class="sourceCode" id="cb180"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb180-1"><a href="#cb180-1"></a><span class="kw">namespace</span> ABC</span>
+<span id="cb180-2"><a href="#cb180-2"></a><span class="op">{</span></span>
+<span id="cb180-3"><a href="#cb180-3"></a>    <span class="kw">struct</span> A</span>
+<span id="cb180-4"><a href="#cb180-4"></a>    <span class="op">{</span></span>
+<span id="cb180-5"><a href="#cb180-5"></a>        <span class="kw">friend</span> <span class="dt">void</span> Foo<span class="op">(</span>A<span class="op">)</span></span>
+<span id="cb180-6"><a href="#cb180-6"></a>        <span class="op">{</span> <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;Foo(A)!&quot;</span><span class="op">);</span> <span class="op">}</span> <span class="co">// Here</span></span>
+<span id="cb180-7"><a href="#cb180-7"></a>    <span class="op">};</span></span>
+<span id="cb180-8"><a href="#cb180-8"></a><span class="op">}</span></span>
+<span id="cb180-9"><a href="#cb180-9"></a></span>
+<span id="cb180-10"><a href="#cb180-10"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb180-11"><a href="#cb180-11"></a><span class="op">{</span></span>
+<span id="cb180-12"><a href="#cb180-12"></a>    ABC<span class="op">::</span>A o<span class="op">;</span></span>
+<span id="cb180-13"><a href="#cb180-13"></a>    <span class="bu">std::</span>reference_wrapper<span class="op">&lt;</span>ABC<span class="op">::</span>A<span class="op">&gt;</span> r<span class="op">{</span>o<span class="op">};</span></span>
+<span id="cb180-14"><a href="#cb180-14"></a>    Foo<span class="op">(</span>r<span class="op">);</span> <span class="co">// prints &#39;Foo(A)!&#39;</span></span>
+<span id="cb180-15"><a href="#cb180-15"></a><span class="op">}</span></span></code></pre></div>
+<p>observe how hidden <code>Foo()</code> was found for the argument of
+<code>std::reference_wrapper&lt;ABC::A&gt;</code> since
+<code>std::reference_wrapper</code> got associated entities of its
+argument type <code>ABC::A</code>.</p>
+<p>From stdexec document above:</p>
+<blockquote>
+<p>To avoid that problem, we take advantage of a curious property of
+nested classes: they don’t inherit the associated entities of the
+template parameters of the enclosing template</p>
+</blockquote>
+<p>this is what <code>struct __t</code> for in the <a
+href="https://github.com/NVIDIA/stdexec/blob/954159ad82386b3564ea4125d9f4b7a68ccb912c/include/stdexec/__detail/__as_awaitable.hpp#L157-L158">source
+code of stdexec</a>.</p>
 </body>
 </html>

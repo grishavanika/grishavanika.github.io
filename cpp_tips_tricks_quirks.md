@@ -3455,3 +3455,45 @@ The benefits are:
     for compile time differences
 
 See also "Hidden Friends and Enumerations" section [from article above](https://www.justsoftwaresolutions.co.uk/cplusplus/hidden-friends.html).
+
+### ADL isolation {#122}
+
+See also [hidden friend idiom](#121). From [stdexec/MAINTAINERS.md](https://github.com/NVIDIA/stdexec/blob/954159ad82386b3564ea4125d9f4b7a68ccb912c/MAINTAINERS.md#class-template-parameters):
+
+> For a class template instantiation such as N::S<A,B,C>,
+> the associated entities include the associated entities of A, B, and C
+
+Basically, ADL makes it so that functions associated with a type A could be
+found even when A is a template argument. This is made, probably, so 
+something like `std::reference_wrapper<A>` works (see "associated entities
+of class types" from [p2822r1](http://wg21.link/p2822r1)):
+
+``` cpp {.numberLines}
+namespace ABC
+{
+    struct A
+    {
+        friend void Foo(A)
+        { std::puts("Foo(A)!"); } // Here
+    };
+}
+
+int main()
+{
+    ABC::A o;
+    std::reference_wrapper<ABC::A> r{o};
+    Foo(r); // prints 'Foo(A)!'
+}
+```
+
+observe how hidden `Foo()` was found for the argument of
+`std::reference_wrapper<ABC::A>` since `std::reference_wrapper` got associated
+entities of its argument type `ABC::A`.
+
+From stdexec document above:
+
+> To avoid that problem, we take advantage of a curious property of
+> nested classes: they don't inherit the associated entities of
+> the template parameters of the enclosing template
+
+this is what `struct __t` for in the [source code of stdexec](https://github.com/NVIDIA/stdexec/blob/954159ad82386b3564ea4125d9f4b7a68ccb912c/include/stdexec/__detail/__as_awaitable.hpp#L157-L158).
