@@ -496,6 +496,19 @@ operators</a></li>
 <li><a href="#114" id="toc-114"><span
 class="toc-section-number">114</span> # std::tie idiom to
 decompose/unpack</a></li>
+<li><a href="#115" id="toc-115"><span
+class="toc-section-number">115</span> # move is the same as copy…
+sometimes</a></li>
+<li><a href="#116" id="toc-116"><span
+class="toc-section-number">116</span> # declaring a (tag) type while
+passing template argument</a></li>
+<li><a href="#117" id="toc-117"><span
+class="toc-section-number">117</span> # __PRETTY_FUNCTION__ as compile
+time type name</a></li>
+<li><a href="#118" id="toc-118"><span
+class="toc-section-number">118</span> # compile time type id</a></li>
+<li><a href="#119" id="toc-119"><span
+class="toc-section-number">119</span> # run time type id</a></li>
 </ul>
 </nav>
 <hr />
@@ -3458,5 +3471,159 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>Note, <code>_</code> here is a usual variable, nothing special (up
 until C++26, see <a href="http://wg21.link/P2169R4">A nice placeholder
 with no name</a>).</p>
+<h3 data-number="115" id="115"><span
+class="header-section-number">115</span> <a href="#115"># </a>move is
+the same as copy… sometimes</h3>
+<p>For a class with inline data, most of the time, data needs to be
+copied during the move. Consider:</p>
+<div class="sourceCode" id="cb169"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb169-1"><a href="#cb169-1"></a><span class="kw">struct</span> MyBuffer</span>
+<span id="cb169-2"><a href="#cb169-2"></a><span class="op">{</span></span>
+<span id="cb169-3"><a href="#cb169-3"></a>    <span class="dt">char</span> data<span class="op">[</span><span class="dv">1024</span><span class="op">]{};</span></span>
+<span id="cb169-4"><a href="#cb169-4"></a>    </span>
+<span id="cb169-5"><a href="#cb169-5"></a>    MyBuffer<span class="op">(</span><span class="at">const</span> MyBuffer<span class="op">&amp;</span> rhs<span class="op">)</span> <span class="co">// copy</span></span>
+<span id="cb169-6"><a href="#cb169-6"></a>    <span class="op">{</span></span>
+<span id="cb169-7"><a href="#cb169-7"></a>        <span class="bu">std::</span>copy<span class="op">(</span><span class="bu">std::</span>begin<span class="op">(</span>rhs<span class="op">.</span>data<span class="op">),</span> <span class="bu">std::</span>end<span class="op">(</span>rhs<span class="op">.</span>data<span class="op">)</span></span>
+<span id="cb169-8"><a href="#cb169-8"></a>            <span class="op">,</span> <span class="bu">std::</span>begin<span class="op">(</span>data<span class="op">));</span></span>
+<span id="cb169-9"><a href="#cb169-9"></a>    <span class="op">}</span></span>
+<span id="cb169-10"><a href="#cb169-10"></a>    MyBuffer<span class="op">(</span>MyBuffer<span class="op">&amp;&amp;</span> rhs<span class="op">)</span>     <span class="co">// move. SAME as copy</span></span>
+<span id="cb169-11"><a href="#cb169-11"></a>    <span class="op">{</span></span>
+<span id="cb169-12"><a href="#cb169-12"></a>        <span class="bu">std::</span>copy<span class="op">(</span><span class="bu">std::</span>begin<span class="op">(</span>rhs<span class="op">.</span>data<span class="op">),</span> <span class="bu">std::</span>end<span class="op">(</span>rhs<span class="op">.</span>data<span class="op">)</span></span>
+<span id="cb169-13"><a href="#cb169-13"></a>            <span class="op">,</span> <span class="bu">std::</span>begin<span class="op">(</span>data<span class="op">));</span></span>
+<span id="cb169-14"><a href="#cb169-14"></a>    <span class="op">}</span></span>
+<span id="cb169-15"><a href="#cb169-15"></a><span class="op">};</span></span></code></pre></div>
+<p>Our move constructor is exactly the same as copy constructor. There
+is no way to “steal” the data in a cheap way. See also <a
+href="https://voithos.io/articles/std-move-is-not-free/">std::move() Is
+(Not) Free</a>.</p>
+<p>This also hints that moving small std::string(s) (usually &lt;= 15
+chars) is the same as copying them since inline buffer because of SSO
+needs to be copied anyway.</p>
+<h3 data-number="116" id="116"><span
+class="header-section-number">116</span> <a href="#116"># </a>declaring
+a (tag) type while passing template argument</h3>
+<p>It’s valid to forward-declare a type as an argument to a
+template:</p>
+<div class="sourceCode" id="cb170"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb170-1"><a href="#cb170-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> Tag<span class="op">&gt;</span></span>
+<span id="cb170-2"><a href="#cb170-2"></a><span class="kw">struct</span> Tagged <span class="op">{};</span></span>
+<span id="cb170-3"><a href="#cb170-3"></a></span>
+<span id="cb170-4"><a href="#cb170-4"></a><span class="kw">using</span> T1 <span class="op">=</span> Tagged<span class="op">&lt;</span><span class="kw">struct</span> Tag1<span class="op">&gt;;</span>     <span class="co">// *</span></span>
+<span id="cb170-5"><a href="#cb170-5"></a><span class="kw">using</span> T2 <span class="op">=</span> Tagged<span class="op">&lt;</span><span class="kw">class</span> Tag2_Any<span class="op">&gt;;</span></span>
+<span id="cb170-6"><a href="#cb170-6"></a></span>
+<span id="cb170-7"><a href="#cb170-7"></a><span class="co">// Note: Tag1, Tag2_Any are available to use, as if forward-declared:</span></span>
+<span id="cb170-8"><a href="#cb170-8"></a><span class="at">extern</span> Tag1<span class="op">*</span> Foo<span class="op">(</span>Tag2_Any<span class="op">*);</span></span></code></pre></div>
+<p>see <a href="https://stackoverflow.com/q/62593093/2451677">SO
+explanation</a>.</p>
+<p>Usually used in a template-heavy generic libraries to quickly
+introduce unique type, hence, “tagging” (<mark>TODO</mark>: find an
+example).</p>
+<h3 data-number="117" id="117"><span
+class="header-section-number">117</span> <a href="#117">#
+</a>__PRETTY_FUNCTION__ as compile time type name</h3>
+<p><code>__PRETTY_FUNCTION__</code> (Clang, GCC) and
+<code>__FUNCSIG__</code> (MSVC) give a string with type names included
+if used for a template:</p>
+<div class="sourceCode" id="cb171"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb171-1"><a href="#cb171-1"></a><span class="pp">#include </span><span class="im">&lt;cstdio&gt;</span></span>
+<span id="cb171-2"><a href="#cb171-2"></a></span>
+<span id="cb171-3"><a href="#cb171-3"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">class</span> T<span class="op">&gt;</span></span>
+<span id="cb171-4"><a href="#cb171-4"></a><span class="kw">constexpr</span> <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> Name<span class="op">()</span></span>
+<span id="cb171-5"><a href="#cb171-5"></a><span class="op">{</span></span>
+<span id="cb171-6"><a href="#cb171-6"></a><span class="pp">#if defined(_MSC_VER)</span></span>
+<span id="cb171-7"><a href="#cb171-7"></a>    <span class="cf">return</span> __FUNCSIG__<span class="op">;</span></span>
+<span id="cb171-8"><a href="#cb171-8"></a><span class="pp">#else</span></span>
+<span id="cb171-9"><a href="#cb171-9"></a>    <span class="cf">return</span> <span class="ot">__PRETTY_FUNCTION__</span><span class="op">;</span></span>
+<span id="cb171-10"><a href="#cb171-10"></a><span class="pp">#endif</span></span>
+<span id="cb171-11"><a href="#cb171-11"></a><span class="op">}</span></span>
+<span id="cb171-12"><a href="#cb171-12"></a></span>
+<span id="cb171-13"><a href="#cb171-13"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb171-14"><a href="#cb171-14"></a><span class="op">{</span></span>
+<span id="cb171-15"><a href="#cb171-15"></a>    <span class="bu">std::</span>puts<span class="op">(</span>Name<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;());</span></span>
+<span id="cb171-16"><a href="#cb171-16"></a><span class="op">}</span></span></code></pre></div>
+<p>prints:</p>
+<blockquote>
+<p>constexpr const char* Name() [with T = int]</p>
+</blockquote>
+<p>This is abused to parse a string, at compile time, to get type name
+out of it. Examples: <a
+href="https://github.com/TheLartians/StaticTypeInfo/blob/425fa62e49c2052be3e255b1056c633aeb970bfa/include/static_type_info/type_name.h">StaticTypeInfo</a>,
+<a
+href="https://github.com/Neargye/magic_enum/blob/a413fcc9c46a020a746907136a384c227f3cd095/include/magic_enum/magic_enum.hpp#L438-L447">magic_enum</a>.</p>
+<h3 data-number="118" id="118"><span
+class="header-section-number">118</span> <a href="#118"># </a>compile
+time type id</h3>
+<p>Similarly to <a href="#117">__PRETTY_FUNCTION__ as compile time type
+name</a>, <code>__PRETTY_FUNCTION__</code>/<code>__FUNCSIG__</code>
+could be used to generate a hash for a type at compile time, see, for
+instance, <a href="https://stackoverflow.com/a/56326294">this
+SO</a>:</p>
+<div class="sourceCode" id="cb172"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb172-1"><a href="#cb172-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb172-2"><a href="#cb172-2"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t Hash<span class="op">()</span></span>
+<span id="cb172-3"><a href="#cb172-3"></a><span class="op">{</span></span>
+<span id="cb172-4"><a href="#cb172-4"></a><span class="pp">#ifdef _MSC_VER</span></span>
+<span id="cb172-5"><a href="#cb172-5"></a><span class="pp">#define F </span>__FUNCSIG__</span>
+<span id="cb172-6"><a href="#cb172-6"></a><span class="pp">#else</span></span>
+<span id="cb172-7"><a href="#cb172-7"></a><span class="pp">#define F </span><span class="ot">__PRETTY_FUNCTION__</span></span>
+<span id="cb172-8"><a href="#cb172-8"></a><span class="pp">#endif</span></span>
+<span id="cb172-9"><a href="#cb172-9"></a>    <span class="bu">std::</span>size_t result <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb172-10"><a href="#cb172-10"></a>    <span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">&amp;</span> c <span class="op">:</span> F<span class="op">)</span></span>
+<span id="cb172-11"><a href="#cb172-11"></a>        <span class="op">(</span>result <span class="op">^=</span> c<span class="op">)</span> <span class="op">&lt;&lt;=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb172-12"><a href="#cb172-12"></a>    <span class="cf">return</span> result<span class="op">;</span></span>
+<span id="cb172-13"><a href="#cb172-13"></a><span class="pp">#undef F</span></span>
+<span id="cb172-14"><a href="#cb172-14"></a><span class="op">}</span></span>
+<span id="cb172-15"><a href="#cb172-15"></a></span>
+<span id="cb172-16"><a href="#cb172-16"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb172-17"><a href="#cb172-17"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t constexpr_hash <span class="op">=</span> Hash<span class="op">&lt;</span>T<span class="op">&gt;();</span></span>
+<span id="cb172-18"><a href="#cb172-18"></a></span>
+<span id="cb172-19"><a href="#cb172-19"></a><span class="co">// usage</span></span>
+<span id="cb172-20"><a href="#cb172-20"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t f <span class="op">=</span> constexpr_hash<span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;;</span></span>
+<span id="cb172-21"><a href="#cb172-21"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t i <span class="op">=</span> constexpr_hash<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;;</span></span></code></pre></div>
+<p>Notes:</p>
+<ul>
+<li>may not work for unnamed structs</li>
+<li>not crossplatform - different ids for same type across different
+platforms AND compilers</li>
+</ul>
+<p>but could be good enoug for known environments.</p>
+<h3 data-number="119" id="119"><span
+class="header-section-number">119</span> <a href="#119"># </a>run time
+type id</h3>
+<p>A trick to use global static counter and static local for a template
+to generate type id once:</p>
+<div class="sourceCode" id="cb173"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb173-1"><a href="#cb173-1"></a><span class="kw">inline</span> <span class="dt">unsigned</span><span class="op">&amp;</span> Global_Seq<span class="op">()</span></span>
+<span id="cb173-2"><a href="#cb173-2"></a><span class="op">{</span></span>
+<span id="cb173-3"><a href="#cb173-3"></a>    <span class="at">static</span> <span class="dt">unsigned</span> counter <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb173-4"><a href="#cb173-4"></a>    <span class="cf">return</span> counter<span class="op">;</span></span>
+<span id="cb173-5"><a href="#cb173-5"></a><span class="op">}</span></span>
+<span id="cb173-6"><a href="#cb173-6"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb173-7"><a href="#cb173-7"></a><span class="kw">struct</span> Id</span>
+<span id="cb173-8"><a href="#cb173-8"></a><span class="op">{</span></span>
+<span id="cb173-9"><a href="#cb173-9"></a>    <span class="at">static</span> <span class="dt">unsigned</span> id<span class="op">;</span></span>
+<span id="cb173-10"><a href="#cb173-10"></a>    <span class="at">static</span> <span class="dt">unsigned</span> Get<span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> id<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb173-11"><a href="#cb173-11"></a><span class="op">};</span></span>
+<span id="cb173-12"><a href="#cb173-12"></a></span>
+<span id="cb173-13"><a href="#cb173-13"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb173-14"><a href="#cb173-14"></a><span class="co">/*static*/</span> <span class="dt">unsigned</span> Id<span class="op">&lt;</span>T<span class="op">&gt;::</span>id <span class="op">=</span> <span class="op">++</span>Global_Seq<span class="op">();</span></span>
+<span id="cb173-15"><a href="#cb173-15"></a></span>
+<span id="cb173-16"><a href="#cb173-16"></a><span class="co">// usage</span></span>
+<span id="cb173-17"><a href="#cb173-17"></a><span class="bu">std::</span>printf<span class="op">(</span><span class="st">&quot;int  = </span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> Id<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;::</span>Get<span class="op">());</span></span>
+<span id="cb173-18"><a href="#cb173-18"></a><span class="bu">std::</span>printf<span class="op">(</span><span class="st">&quot;char = </span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> Id<span class="op">&lt;</span><span class="dt">char</span><span class="op">&gt;::</span>Get<span class="op">());</span></span></code></pre></div>
+<p>Could be made simpler with inline variable and variable template,
+see, for instance, <a
+href="https://mikejsavage.co.uk/cpp-tricks-type-id/">C++ tricks: type
+IDs</a>.</p>
+<p>Notes:</p>
+<ul>
+<li>be carefull when mixig DLLs: Global_Seq() must be in a single
+DLL/exe</li>
+<li>ids are NOT persistent: could be different from run-to-run or
+build-to-build for the same types</li>
+<li>similarly, not crossplatform</li>
+<li>and not thread-safe</li>
+</ul>
+<p>but could be made good enough for specific use-case.</p>
 </body>
 </html>

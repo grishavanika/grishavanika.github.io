@@ -3150,3 +3150,164 @@ auto [_, was_inserted] = vs.insert(42);
 
 Note, `_` here is a usual variable, nothing special (up until C++26,
 see [A nice placeholder with no name](http://wg21.link/P2169R4)).
+
+### move is the same as copy... sometimes {#115}
+
+For a class with inline data, most of the time, data needs to be copied during
+the move. Consider:
+
+``` cpp {.numberLines}
+struct MyBuffer
+{
+    char data[1024]{};
+    
+    MyBuffer(const MyBuffer& rhs) // copy
+    {
+        std::copy(std::begin(rhs.data), std::end(rhs.data)
+            , std::begin(data));
+    }
+    MyBuffer(MyBuffer&& rhs)     // move. SAME as copy
+    {
+        std::copy(std::begin(rhs.data), std::end(rhs.data)
+            , std::begin(data));
+    }
+};
+```
+
+Our move constructor is exactly the same as copy constructor. There is no way
+to "steal" the data in a cheap way. See also
+[std::move() Is (Not) Free](https://voithos.io/articles/std-move-is-not-free/).
+
+This also hints that moving small std::string(s) (usually <= 15 chars) is
+the same as copying them since inline buffer because of SSO
+needs to be copied anyway.
+
+### declaring a (tag) type while passing template argument {#116}
+
+It's valid to forward-declare a type as an argument to a template:
+
+``` cpp {.numberLines}
+template<typename Tag>
+struct Tagged {};
+
+using T1 = Tagged<struct Tag1>;     // *
+using T2 = Tagged<class Tag2_Any>;
+
+// Note: Tag1, Tag2_Any are available to use, as if forward-declared:
+extern Tag1* Foo(Tag2_Any*);
+```
+
+see [SO explanation](https://stackoverflow.com/q/62593093/2451677).
+
+Usually used in a template-heavy generic libraries to quickly introduce unique
+type, hence, "tagging" ([TODO]{.mark}: find an example).
+
+### \_\_PRETTY_FUNCTION\_\_ as compile time type name {#117}
+
+`__PRETTY_FUNCTION__` (Clang, GCC) and `__FUNCSIG__` (MSVC) give a string
+with type names included if used for a template:
+
+``` cpp {.numberLines}
+#include <cstdio>
+
+template<class T>
+constexpr const char* Name()
+{
+#if defined(_MSC_VER)
+    return __FUNCSIG__;
+#else
+    return __PRETTY_FUNCTION__;
+#endif
+}
+
+int main()
+{
+    std::puts(Name<int>());
+}
+```
+
+prints:
+
+> constexpr const char* Name() [with T = int]
+
+This is abused to parse a string, at compile time, to get type name out of it.
+Examples: [StaticTypeInfo](https://github.com/TheLartians/StaticTypeInfo/blob/425fa62e49c2052be3e255b1056c633aeb970bfa/include/static_type_info/type_name.h),
+[magic_enum](https://github.com/Neargye/magic_enum/blob/a413fcc9c46a020a746907136a384c227f3cd095/include/magic_enum/magic_enum.hpp#L438-L447).
+
+### compile time type id {#118}
+
+Similarly to [\_\_PRETTY_FUNCTION\_\_ as compile time type name](#117),
+`__PRETTY_FUNCTION__`/`__FUNCSIG__` could be used to generate a hash for a type
+at compile time, see, for instance, [this SO](https://stackoverflow.com/a/56326294):
+
+``` cpp {.numberLines}
+template<typename T>
+constexpr std::size_t Hash()
+{
+#ifdef _MSC_VER
+#define F __FUNCSIG__
+#else
+#define F __PRETTY_FUNCTION__
+#endif
+    std::size_t result = 0;
+    for (const char& c : F)
+        (result ^= c) <<= 1;
+    return result;
+#undef F
+}
+
+template <typename T>
+constexpr std::size_t constexpr_hash = Hash<T>();
+
+// usage
+constexpr std::size_t f = constexpr_hash<float>;
+constexpr std::size_t i = constexpr_hash<int>;
+```
+
+Notes:
+
+ * may not work for unnamed structs
+ * not crossplatform - different ids for same type across different platforms
+   AND compilers
+
+but could be good enoug for known environments.
+
+### run time type id {#119}
+
+A trick to use global static counter and static local for a template to
+generate type id once:
+
+``` cpp {.numberLines}
+inline unsigned& Global_Seq()
+{
+    static unsigned counter = 1;
+    return counter;
+}
+template<typename T>
+struct Id
+{
+    static unsigned id;
+    static unsigned Get() { return id; }
+};
+
+template<typename T>
+/*static*/ unsigned Id<T>::id = ++Global_Seq();
+
+// usage
+std::printf("int  = %u\n", Id<int>::Get());
+std::printf("char = %u\n", Id<char>::Get());
+```
+
+Could be made simpler with inline variable and variable template, see,
+for instance, [C++ tricks: type IDs](https://mikejsavage.co.uk/cpp-tricks-type-id/).
+
+Notes:
+
+ * be carefull when mixig DLLs: Global_Seq() must be in a single DLL/exe
+ * ids are NOT persistent: could be different from run-to-run or
+   build-to-build for the same types
+ * similarly, not crossplatform
+ * and not thread-safe
+
+but could be made good enough for specific use-case.
+
