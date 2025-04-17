@@ -246,7 +246,7 @@ tricks, quirks and features of C</a>.</p>
 <nav id="TOC" role="doc-toc">
 <ul>
 <li><a href="#1" id="toc-1"><span class="toc-section-number">1</span> #
-accidental pair copy</a></li>
+accidental pair copy for map loop</a></li>
 <li><a href="#2" id="toc-2"><span class="toc-section-number">2</span> #
 declare function with typedef/using</a></li>
 <li><a href="#3" id="toc-3"><span class="toc-section-number">3</span> #
@@ -358,8 +358,7 @@ type)</a></li>
 <li><a href="#54" id="toc-54"><span class="toc-section-number">54</span>
 # move-only types and initializer_list</a></li>
 <li><a href="#55" id="toc-55"><span class="toc-section-number">55</span>
-# uniform initialization is not uniform, use parentheses
-(<code>()</code> vs <code>{}</code>)</a></li>
+# unicorn initialization</a></li>
 <li><a href="#56" id="toc-56"><span class="toc-section-number">56</span>
 # move-only lambda and std::function</a></li>
 <li><a href="#57" id="toc-57"><span class="toc-section-number">57</span>
@@ -520,6 +519,9 @@ class="toc-section-number">122</span> # ADL isolation</a></li>
 <li><a href="#123" id="toc-123"><span
 class="toc-section-number">123</span> # initialize base class with a
 call to copy constructor</a></li>
+<li><a href="#124" id="toc-124"><span
+class="toc-section-number">124</span> # acronyms glossary / ICE, CPO,
+etc.</a></li>
 </ul>
 </nav>
 <hr />
@@ -552,7 +554,7 @@ service/wg21.link</a></li>
 </ul>
 <hr />
 <h3 data-number="1" id="1"><span class="header-section-number">1</span>
-<a href="#1"># </a>accidental pair copy</h3>
+<a href="#1"># </a>accidental pair copy for map loop</h3>
 <p>Here, <code>kv</code> is a COPY instead of const reference since
 std::meow_map <code>value_type</code> is
 <code>std::pair&lt;const Key, T&gt;</code>, notice <strong>const
@@ -1935,9 +1937,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb77-6"><a href="#cb77-6"></a>    <span class="bu">std::</span>make_move_iterator<span class="op">(</span><span class="bu">std::</span>end<span class="op">(</span>temp<span class="op">))</span></span>
 <span id="cb77-7"><a href="#cb77-7"></a>    <span class="op">};</span></span></code></pre></div>
 <h3 data-number="55" id="55"><span
-class="header-section-number">55</span> <a href="#55"># </a>uniform
-initialization is not uniform, use parentheses (<code>()</code> vs
-<code>{}</code>)</h3>
+class="header-section-number">55</span> <a href="#55"># </a>unicorn
+initialization</h3>
 <p>C++ initialization is famously complex. C++11 “uniform
 initialization” with braces <code>{}</code> (list-initialization) is
 famously non-uniform, see:</p>
@@ -1953,19 +1954,21 @@ href="https://quuxplusone.github.io/blog/2019/02/18/knightmare-of-initialization
 Knightmare of Initialization in C++</a>;</li>
 <li>~300 pages book, <a
 href="https://www.amazon.com/Initialization-Story-Through-Options-Related/dp/B0BW38DDBK">C++
-Initialization Story</a>.</li>
+Initialization Story</a>;</li>
 <li><a
 href="https://accu.org/journals/overload/25/139/brand_2379/">Initialization
-in C++ is Bonkers</a></li>
+in C++ is Bonkers</a>;</li>
+<li><a href="https://consteval.ca/2024/07/03/initialization/">I Have No
+Constructor, and I Must Initialize</a>.</li>
 </ul>
 <p>Sometimes also called as <a
 href="https://www.reddit.com/r/cpp/comments/as8pu1/comment/egslsok/">unicorn
 initialization</a>; see also <a
 href="https://x.com/timur_audio/status/1004017362381795329">Forrest Gump
 C++ initialization</a>.</p>
-<p>The best is to fall back to <code>()</code> with C++ 20 <a
-href="https://wg21.link/p0960">Allow initializing aggregates from a
-parenthesized list of values</a>:</p>
+<p>Personal opinion - The best way is to fall back to <code>()</code>
+with C++ 20 <a href="https://wg21.link/p0960">Allow initializing
+aggregates from a parenthesized list of values</a>:</p>
 <div class="sourceCode" id="cb78"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb78-1"><a href="#cb78-1"></a><span class="kw">struct</span> A</span>
 <span id="cb78-2"><a href="#cb78-2"></a><span class="op">{</span></span>
@@ -1977,6 +1980,14 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>but also see <a
 href="https://quuxplusone.github.io/blog/2022/06/03/aggregate-parens-init-considered-kinda-bad/">C++20’s
 parenthesized aggregate initialization has some downsides</a>.</p>
+<p>Cheat sheet:</p>
+<ul>
+<li><a href="https://josuttis.com/cpp/c++initialization.pdf">C++: Rules
+for Different Ways of Initialization, Josuttis</a></li>
+<li><a
+href="https://x.com/timur_audio/status/1119160309573242880">Initialisation
+in Modern C++, Timur Doumler</a></li>
+</ul>
 <h3 data-number="56" id="56"><span
 class="header-section-number">56</span> <a href="#56"># </a>move-only
 lambda and std::function</h3>
@@ -3865,5 +3876,17 @@ from Richard Smith</a>:</p>
 is that guaranteed copy elision doesn’t apply for a base class
 initializer</p>
 </blockquote>
+<h3 data-number="124" id="124"><span
+class="header-section-number">124</span> <a href="#124"># </a>acronyms
+glossary / ICE, CPO, etc.</h3>
+<p>See:</p>
+<ul>
+<li><a
+href="https://quuxplusone.github.io/blog/2019/08/02/the-tough-guide-to-cpp-acronyms/">A
+C++ acronym glossary, Arthur O’Dwyer</a></li>
+<li><a
+href="https://en.cppreference.com/w/cpp/language/acronyms">Acronyms,
+cppreference</a></li>
+</ul>
 </body>
 </html>

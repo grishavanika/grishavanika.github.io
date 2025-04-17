@@ -37,7 +37,7 @@ where [anchor-links.lua] is the only customization for # links in sections.
 
 -----------------------------------------------------------
 
-### accidental pair copy {#1}
+### accidental pair copy for map loop {#1}
 
 Here, `kv` is a COPY instead of const reference since std::meow_map `value_type`
 is `std::pair<const Key, T>`, notice **const Key**.
@@ -1500,7 +1500,7 @@ std::vector<std::unique_ptr<int>> vs{
     };
 ```
 
-### uniform initialization is not uniform, use parentheses (`()` vs `{}`) {#55}
+### unicorn initialization {#55}
 
 C++ initialization is famously complex. C++11 "uniform initialization"
 with braces `{}` (list-initialization) is famously non-uniform, see:
@@ -1508,13 +1508,14 @@ with braces `{}` (list-initialization) is famously non-uniform, see:
  * [Uniform initialization isn't](https://medium.com/@barryrevzin/uniform-initialization-isnt-82533d3b9c11);
  * [C++ Uniform Initialization - Benefits & Pitfalls](https://ianyepan.github.io/posts/cpp-uniform-initialization/);
  * [The Knightmare of Initialization in C++](https://quuxplusone.github.io/blog/2019/02/18/knightmare-of-initialization/);
- * ~300 pages book, [C++ Initialization Story](https://www.amazon.com/Initialization-Story-Through-Options-Related/dp/B0BW38DDBK).
- * [Initialization in C++ is Bonkers](https://accu.org/journals/overload/25/139/brand_2379/)
+ * ~300 pages book, [C++ Initialization Story](https://www.amazon.com/Initialization-Story-Through-Options-Related/dp/B0BW38DDBK);
+ * [Initialization in C++ is Bonkers](https://accu.org/journals/overload/25/139/brand_2379/);
+ * [I Have No Constructor, and I Must Initialize](https://consteval.ca/2024/07/03/initialization/).
 
 Sometimes also called as [unicorn initialization](https://www.reddit.com/r/cpp/comments/as8pu1/comment/egslsok/);
 see also [Forrest Gump C++ initialization](https://x.com/timur_audio/status/1004017362381795329).
 
-The best is to fall back to `()` with C++ 20
+Personal opinion - The best way is to fall back to `()` with C++ 20
 [Allow initializing aggregates from a parenthesized list of values](https://wg21.link/p0960):
 
 ``` cpp {.numberLines}
@@ -1528,6 +1529,11 @@ A v(10, 20); // fine, C++20
 ```
 
 but also see [C++20's parenthesized aggregate initialization has some downsides](https://quuxplusone.github.io/blog/2022/06/03/aggregate-parens-init-considered-kinda-bad/).
+
+Cheat sheet:
+
+ * [C++: Rules for Different Ways of Initialization, Josuttis](https://josuttis.com/cpp/c++initialization.pdf)
+ * [Initialisation in Modern C++, Timur Doumler](https://x.com/timur_audio/status/1119160309573242880)
 
 ### move-only lambda and std::function {#56}
 
@@ -3545,3 +3551,9 @@ this [comment from Richard Smith](https://github.com/itanium-cxx-abi/cxx-abi/iss
 > this is a known bug in the language rules, and the tentative solution
 > is that guaranteed copy elision doesn't apply for a base class initializer
 
+### acronyms glossary / ICE, CPO, etc. {#124}
+
+See:
+
+ * [A C++ acronym glossary, Arthur O’Dwyer](https://quuxplusone.github.io/blog/2019/08/02/the-tough-guide-to-cpp-acronyms/)
+ * [Acronyms, cppreference](https://en.cppreference.com/w/cpp/language/acronyms)
