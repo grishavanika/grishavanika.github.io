@@ -107,8 +107,8 @@
      overflow: visible;
     }
     hr {
-      background-color: #1a1a1a;
       border: none;
+      border-top: 1px solid #1a1a1a;
       height: 1px;
       margin: 1em 0;
     }
@@ -167,8 +167,9 @@
     }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
     /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -179,7 +180,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -516,6 +517,9 @@ member without specializing whole class</a></li>
 class="toc-section-number">121</span> # hidden friend idiom</a></li>
 <li><a href="#122" id="toc-122"><span
 class="toc-section-number">122</span> # ADL isolation</a></li>
+<li><a href="#123" id="toc-123"><span
+class="toc-section-number">123</span> # initialize base class with a
+call to copy constructor</a></li>
 </ul>
 </nav>
 <hr />
@@ -3286,28 +3290,28 @@ From Raymond Chen:</p>
 <col style="width: 40%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: left;">Pattern</th>
 <th style="text-align: left;">Conditions</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: left;">Begins with two underscores</td>
 <td style="text-align: left;">Reserved</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;">Begins with underscore and uppercase
 letter</td>
 <td style="text-align: left;">Reserved</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: left;">Begins with underscore and something
 else</td>
 <td style="text-align: left;">Reserved in global scope (includes
 macros)</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;">Contains two consecutive underscores</td>
 <td style="text-align: left;">Reserved in C++ (but okay in C)</td>
 </tr>
@@ -3810,5 +3814,56 @@ template parameters of the enclosing template</p>
 <p>this is what <code>struct __t</code> for in the <a
 href="https://github.com/NVIDIA/stdexec/blob/954159ad82386b3564ea4125d9f4b7a68ccb912c/include/stdexec/__detail/__as_awaitable.hpp#L157-L158">source
 code of stdexec</a>.</p>
+<h3 data-number="123" id="123"><span
+class="header-section-number">123</span> <a href="#123"># </a>initialize
+base class with a call to copy constructor</h3>
+<p>From <a
+href="https://www.reddit.com/r/cpp/comments/1j5hsev/comment/mgh94sl">the
+discussion</a> of <a
+href="https://devblogs.microsoft.com/oldnewthing/20250306-00/?p=110942">How
+can I choose a different C++ constructor at runtime?</a> from Raymond
+Chen:</p>
+<div class="sourceCode" id="cb181"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb181-1"><a href="#cb181-1"></a><span class="kw">struct</span> MyBase</span>
+<span id="cb181-2"><a href="#cb181-2"></a><span class="op">{</span></span>
+<span id="cb181-3"><a href="#cb181-3"></a>    MyBase<span class="op">();</span>                    <span class="co">// 1</span></span>
+<span id="cb181-4"><a href="#cb181-4"></a>    MyBase<span class="op">(</span><span class="dt">int</span> v<span class="op">);</span>               <span class="co">// 2</span></span>
+<span id="cb181-5"><a href="#cb181-5"></a>    MyBase<span class="op">(</span><span class="at">const</span> MyBase<span class="op">&amp;</span> rhs<span class="op">);</span>   <span class="co">// 3</span></span>
+<span id="cb181-6"><a href="#cb181-6"></a><span class="op">};</span></span>
+<span id="cb181-7"><a href="#cb181-7"></a></span>
+<span id="cb181-8"><a href="#cb181-8"></a><span class="kw">struct</span> MyDerived <span class="op">:</span> MyBase</span>
+<span id="cb181-9"><a href="#cb181-9"></a><span class="op">{</span></span>
+<span id="cb181-10"><a href="#cb181-10"></a>    MyDerived<span class="op">()</span></span>
+<span id="cb181-11"><a href="#cb181-11"></a>        <span class="op">:</span> MyBase<span class="op">(</span>Make<span class="op">(</span><span class="dv">42</span><span class="op">))</span> <span class="op">{}</span>    <span class="co">// **</span></span>
+<span id="cb181-12"><a href="#cb181-12"></a></span>
+<span id="cb181-13"><a href="#cb181-13"></a>    <span class="at">static</span> MyBase Make<span class="op">(</span><span class="dt">int</span> v<span class="op">)</span></span>
+<span id="cb181-14"><a href="#cb181-14"></a>    <span class="op">{</span></span>
+<span id="cb181-15"><a href="#cb181-15"></a>        <span class="cf">return</span> MyBase<span class="op">(</span>v<span class="op">);</span></span>
+<span id="cb181-16"><a href="#cb181-16"></a>    <span class="op">}</span></span>
+<span id="cb181-17"><a href="#cb181-17"></a><span class="op">};</span></span></code></pre></div>
+<p>Note how <code>MyDerived</code> default constructor can invoke ANY
+available <code>MyBase</code> constructor, not only default one, but
+also any other parent class constructor.</p>
+<p>This is similar to the case when move or copy constructor can invoke
+parent’s default constructor, not only “desired” move or copy base
+constructor:</p>
+<div class="sourceCode" id="cb182"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb182-1"><a href="#cb182-1"></a>MyDerived<span class="op">(</span><span class="at">const</span> MyDerived<span class="op">&amp;</span> rhs<span class="op">)</span></span>
+<span id="cb182-2"><a href="#cb182-2"></a>    <span class="op">:</span> MyBase<span class="op">()</span>   <span class="co">// default constructor</span></span>
+<span id="cb182-3"><a href="#cb182-3"></a><span class="op">{</span></span>
+<span id="cb182-4"><a href="#cb182-4"></a>    <span class="co">// any other required initialization</span></span>
+<span id="cb182-5"><a href="#cb182-5"></a>    <span class="kw">this</span><span class="op">-&gt;</span><span class="va">v_</span> <span class="op">=</span> rhs<span class="op">.</span><span class="va">v_</span><span class="op">;</span></span>
+<span id="cb182-6"><a href="#cb182-6"></a><span class="op">}</span></span></code></pre></div>
+<p>Note, that <code>MyBase(Make(42))</code> does not perform (otherwise
+mandatory) copy elision, see <a
+href="https://stackoverflow.com/a/73672885">this SO</a>, that have this
+<a
+href="https://github.com/itanium-cxx-abi/cxx-abi/issues/107#issuecomment-677992692">comment
+from Richard Smith</a>:</p>
+<blockquote>
+<p>this is a known bug in the language rules, and the tentative solution
+is that guaranteed copy elision doesn’t apply for a base class
+initializer</p>
+</blockquote>
 </body>
 </html>

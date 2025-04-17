@@ -3497,3 +3497,51 @@ From stdexec document above:
 > the template parameters of the enclosing template
 
 this is what `struct __t` for in the [source code of stdexec](https://github.com/NVIDIA/stdexec/blob/954159ad82386b3564ea4125d9f4b7a68ccb912c/include/stdexec/__detail/__as_awaitable.hpp#L157-L158).
+
+### initialize base class with a call to copy constructor {#123}
+
+From [the discussion](https://www.reddit.com/r/cpp/comments/1j5hsev/comment/mgh94sl)
+of [How can I choose a different C++ constructor at runtime?](https://devblogs.microsoft.com/oldnewthing/20250306-00/?p=110942) from Raymond Chen:
+
+``` cpp {.numberLines}
+struct MyBase
+{
+    MyBase();                    // 1
+    MyBase(int v);               // 2
+    MyBase(const MyBase& rhs);   // 3
+};
+
+struct MyDerived : MyBase
+{
+    MyDerived()
+        : MyBase(Make(42)) {}    // **
+
+    static MyBase Make(int v)
+    {
+        return MyBase(v);
+    }
+};
+```
+
+Note how `MyDerived` default constructor can invoke ANY available `MyBase`
+constructor, not only default one, but also any other parent class constructor.
+
+This is similar to the case when move or copy constructor can invoke parent's
+default constructor, not only "desired" move or copy base constructor:
+
+``` cpp {.numberLines}
+MyDerived(const MyDerived& rhs)
+    : MyBase()   // default constructor
+{
+    // any other required initialization
+    this->v_ = rhs.v_;
+}
+```
+
+Note, that `MyBase(Make(42))` does not perform (otherwise mandatory)
+copy elision, see [this SO](https://stackoverflow.com/a/73672885), that have
+this [comment from Richard Smith](https://github.com/itanium-cxx-abi/cxx-abi/issues/107#issuecomment-677992692):
+
+> this is a known bug in the language rules, and the tentative solution
+> is that guaranteed copy elision doesn't apply for a base class initializer
+
