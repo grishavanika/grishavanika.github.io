@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>C++ tips, tricks and quirks.</title>
+  <title>C++ tips, tricks and quirks</title>
   <style>
     html {
       color: #1a1a1a;
@@ -60,10 +60,6 @@
     img {
       max-width: 100%;
     }
-    svg {
-      height: auto;
-      max-width: 100%;
-    }
     h1, h2, h3, h4, h5, h6 {
       margin-top: 1.4em;
     }
@@ -107,8 +103,8 @@
      overflow: visible;
     }
     hr {
+      background-color: #1a1a1a;
       border: none;
-      border-top: 1px solid #1a1a1a;
       height: 1px;
       margin: 1em 0;
     }
@@ -156,18 +152,14 @@
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
+    ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
     /* CSS for syntax highlighting */
-    html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -235,293 +227,374 @@
     code span.vs { color: #bf0303; } /* VerbatimString */
     code span.wa { color: #bf0303; } /* Warning */
   </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
 <p>Updated on 2025/04/15. Go to <a href="#meta">meta</a>.<br />
 Inspired by <a href="https://jorenar.com/blog/less-known-c">Lesser known
 tricks, quirks and features of C</a>.</p>
 <header id="title-block-header">
-<h1 class="title">C++ tips, tricks and quirks.</h1>
+<h1 class="title">C++ tips, tricks and quirks</h1>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#1" id="toc-1"><span class="toc-section-number">1</span> #
-accidental pair copy for map loop</a></li>
-<li><a href="#2" id="toc-2"><span class="toc-section-number">2</span> #
-declare function with typedef/using</a></li>
-<li><a href="#3" id="toc-3"><span class="toc-section-number">3</span> #
-protected/private virtual functions override</a></li>
-<li><a href="#4" id="toc-4"><span class="toc-section-number">4</span> #
-function try block</a></li>
-<li><a href="#5" id="toc-5"><span class="toc-section-number">5</span> #
-omiting <code>public</code> when deriving</a></li>
-<li><a href="#6" id="toc-6"><span class="toc-section-number">6</span> #
-<code>(void)0</code> to force <code>;</code> (semicolon) for
-macros</a></li>
-<li><a href="#7" id="toc-7"><span class="toc-section-number">7</span> #
-call a method of a template base class</a></li>
-<li><a href="#8" id="toc-8"><span class="toc-section-number">8</span> #
-<code>= default</code> on implementation</a></li>
-<li><a href="#9" id="toc-9"><span class="toc-section-number">9</span> #
-<code>= delete</code> for free functions</a></li>
-<li><a href="#10" id="toc-10"><span class="toc-section-number">10</span>
-# <code>#line</code> and file renaming</a></li>
-<li><a href="#11" id="toc-11"><span class="toc-section-number">11</span>
-# Meyers cons_cast</a></li>
-<li><a href="#12" id="toc-12"><span class="toc-section-number">12</span>
-# missing <code>std::</code> and why it still compiles (ADL)</a></li>
-<li><a href="#13" id="toc-13"><span class="toc-section-number">13</span>
-# why STL is using <code>::std::move</code> everywhere?</a></li>
-<li><a href="#14" id="toc-14"><span class="toc-section-number">14</span>
-# the use of shared_ptr in public API is a code smell</a></li>
-<li><a href="#15" id="toc-15"><span class="toc-section-number">15</span>
-# enable_shared_from_this requires factory function</a></li>
-<li><a href="#16" id="toc-16"><span class="toc-section-number">16</span>
-# <code>std::shared_ptr</code> aliasing constructor</a></li>
-<li><a href="#17" id="toc-17"><span class="toc-section-number">17</span>
-# <code>dynamic_cast&lt;void*&gt;</code> to get most-derived
+<li><a href="#1" id="toc-1"><span
+class="toc-section-number">0.0.1</span> # accidental pair copy for map
+loop</a></li>
+<li><a href="#2" id="toc-2"><span
+class="toc-section-number">0.0.2</span> # declare function with
+typedef/using</a></li>
+<li><a href="#3" id="toc-3"><span
+class="toc-section-number">0.0.3</span> # protected/private virtual
+functions override</a></li>
+<li><a href="#4" id="toc-4"><span
+class="toc-section-number">0.0.4</span> # function try block</a></li>
+<li><a href="#5" id="toc-5"><span
+class="toc-section-number">0.0.5</span> # omiting <code>public</code>
+when deriving</a></li>
+<li><a href="#6" id="toc-6"><span
+class="toc-section-number">0.0.6</span> # <code>(void)0</code> to force
+<code>;</code> (semicolon) for macros</a></li>
+<li><a href="#7" id="toc-7"><span
+class="toc-section-number">0.0.7</span> # call a method of a template
+base class</a></li>
+<li><a href="#8" id="toc-8"><span
+class="toc-section-number">0.0.8</span> # <code>= default</code> on
+implementation</a></li>
+<li><a href="#9" id="toc-9"><span
+class="toc-section-number">0.0.9</span> # <code>= delete</code> for free
+functions</a></li>
+<li><a href="#10" id="toc-10"><span
+class="toc-section-number">0.0.10</span> # <code>#line</code> and file
+renaming</a></li>
+<li><a href="#11" id="toc-11"><span
+class="toc-section-number">0.0.11</span> # Meyers cons_cast</a></li>
+<li><a href="#12" id="toc-12"><span
+class="toc-section-number">0.0.12</span> # missing <code>std::</code>
+and why it still compiles (ADL)</a></li>
+<li><a href="#13" id="toc-13"><span
+class="toc-section-number">0.0.13</span> # why STL is using
+<code>::std::move</code> everywhere?</a></li>
+<li><a href="#14" id="toc-14"><span
+class="toc-section-number">0.0.14</span> # the use of shared_ptr in
+public API is a code smell</a></li>
+<li><a href="#15" id="toc-15"><span
+class="toc-section-number">0.0.15</span> # enable_shared_from_this
+requires factory function</a></li>
+<li><a href="#16" id="toc-16"><span
+class="toc-section-number">0.0.16</span> # <code>std::shared_ptr</code>
+aliasing constructor</a></li>
+<li><a href="#17" id="toc-17"><span
+class="toc-section-number">0.0.17</span> #
+<code>dynamic_cast&lt;void*&gt;</code> to get most-derived
 object</a></li>
-<li><a href="#18" id="toc-18"><span class="toc-section-number">18</span>
-# <code>std::shared_ptr&lt;base&gt;</code> with no virtual
+<li><a href="#18" id="toc-18"><span
+class="toc-section-number">0.0.18</span> #
+<code>std::shared_ptr&lt;base&gt;</code> with no virtual
 destructor</a></li>
-<li><a href="#19" id="toc-19"><span class="toc-section-number">19</span>
-# stateful metaprogramming / type loophole</a></li>
-<li><a href="#20" id="toc-20"><span class="toc-section-number">20</span>
-# access private members (via friend injection)</a></li>
-<li><a href="#21" id="toc-21"><span class="toc-section-number">21</span>
-# extern templates</a></li>
-<li><a href="#22" id="toc-22"><span class="toc-section-number">22</span>
-# templates in .cpp file</a></li>
-<li><a href="#23" id="toc-23"><span class="toc-section-number">23</span>
-# double-template syntax</a></li>
-<li><a href="#24" id="toc-24"><span class="toc-section-number">24</span>
-# when type T is bitcopyable?</a></li>
-<li><a href="#25" id="toc-25"><span class="toc-section-number">25</span>
-# pseudo destructors (~int)</a></li>
-<li><a href="#26" id="toc-26"><span class="toc-section-number">26</span>
-# manually invoke constructor</a></li>
-<li><a href="#27" id="toc-27"><span class="toc-section-number">27</span>
-# injected-class-name</a></li>
-<li><a href="#28" id="toc-28"><span class="toc-section-number">28</span>
-# invoke base virtual function directly</a></li>
-<li><a href="#29" id="toc-29"><span class="toc-section-number">29</span>
-# perfect construct with factory function</a></li>
-<li><a href="#30" id="toc-30"><span class="toc-section-number">30</span>
-# disable template argument deduction</a></li>
-<li><a href="#31" id="toc-31"><span class="toc-section-number">31</span>
-# priority_tag for tag dispatch</a></li>
-<li><a href="#32" id="toc-32"><span class="toc-section-number">32</span>
-# new auto(10)</a></li>
-<li><a href="#33" id="toc-33"><span class="toc-section-number">33</span>
-# <code>std::forward</code> use in std::function-like case</a></li>
-<li><a href="#34" id="toc-34"><span class="toc-section-number">34</span>
-# virtual functions default arguments</a></li>
-<li><a href="#35" id="toc-35"><span class="toc-section-number">35</span>
-# virtual functions overloads</a></li>
-<li><a href="#36" id="toc-36"><span class="toc-section-number">36</span>
-# change base class member access rights</a></li>
-<li><a href="#37" id="toc-37"><span class="toc-section-number">37</span>
-# use default constructor for state reset</a></li>
-<li><a href="#38" id="toc-38"><span class="toc-section-number">38</span>
-# default constructor is a must for modern C++</a></li>
-<li><a href="#39" id="toc-39"><span class="toc-section-number">39</span>
-# default constructor must do no work</a></li>
-<li><a href="#40" id="toc-40"><span class="toc-section-number">40</span>
-# constructors should do no work</a></li>
-<li><a href="#41" id="toc-41"><span class="toc-section-number">41</span>
-# <code>std::unique_ptr</code> with decltype lambda</a></li>
-<li><a href="#42" id="toc-42"><span class="toc-section-number">42</span>
-# <code>auto</code> vs <code>auto*</code> for pointers</a></li>
-<li><a href="#43" id="toc-43"><span class="toc-section-number">43</span>
-# std::transform and LIFT (passing overload set)</a></li>
-<li><a href="#44" id="toc-44"><span class="toc-section-number">44</span>
-# you can’t take an address of <code>tolower</code> function</a></li>
-<li><a href="#45" id="toc-45"><span class="toc-section-number">45</span>
-# replace operator new to track third-party code allocations</a></li>
-<li><a href="#46" id="toc-46"><span class="toc-section-number">46</span>
-# <code>std::shared_ptr&lt;void&gt;</code> as user-data pointer</a></li>
-<li><a href="#47" id="toc-47"><span class="toc-section-number">47</span>
-# sync_with_stdio for stdout vs std::cout</a></li>
-<li><a href="#48" id="toc-48"><span class="toc-section-number">48</span>
-# std::clog vs std::cerr</a></li>
-<li><a href="#49" id="toc-49"><span class="toc-section-number">49</span>
-# capture-less lambda can be converted to c-function</a></li>
-<li><a href="#50" id="toc-50"><span class="toc-section-number">50</span>
-# <code>+[](){}</code> to convert lambda to c-function</a></li>
-<li><a href="#51" id="toc-51"><span class="toc-section-number">51</span>
-# virtual operator int</a></li>
-<li><a href="#52" id="toc-52"><span class="toc-section-number">52</span>
-# placement new emplace_back pre-C++11</a></li>
-<li><a href="#53" id="toc-53"><span class="toc-section-number">53</span>
-# <code>operator-&gt;</code> recursion (returning non-pointer
-type)</a></li>
-<li><a href="#54" id="toc-54"><span class="toc-section-number">54</span>
-# move-only types and initializer_list</a></li>
-<li><a href="#55" id="toc-55"><span class="toc-section-number">55</span>
-# unicorn initialization</a></li>
-<li><a href="#56" id="toc-56"><span class="toc-section-number">56</span>
-# move-only lambda and std::function</a></li>
-<li><a href="#57" id="toc-57"><span class="toc-section-number">57</span>
-# std::function issues</a></li>
-<li><a href="#58" id="toc-58"><span class="toc-section-number">58</span>
-# non-trivial types in union</a></li>
-<li><a href="#59" id="toc-59"><span class="toc-section-number">59</span>
-# lambda with access to const and global variables</a></li>
-<li><a href="#60" id="toc-60"><span class="toc-section-number">60</span>
-# std::variant overload pattern</a></li>
-<li><a href="#61" id="toc-61"><span class="toc-section-number">61</span>
-# unique_ptr to incomplete type and class destructor</a></li>
-<li><a href="#62" id="toc-62"><span class="toc-section-number">62</span>
-# the use of <code>shared_ptr&lt;const T&gt;</code></a></li>
-<li><a href="#63" id="toc-63"><span class="toc-section-number">63</span>
-# string_view issues</a></li>
-<li><a href="#64" id="toc-64"><span class="toc-section-number">64</span>
-# user-provided constructor and garbage initialization</a></li>
-<li><a href="#65" id="toc-65"><span class="toc-section-number">65</span>
-# beaware of std::string_view-like key with std::meow_map</a></li>
-<li><a href="#66" id="toc-66"><span class="toc-section-number">66</span>
-# <code>std::piecewise_construct</code></a></li>
-<li><a href="#67" id="toc-67"><span class="toc-section-number">67</span>
-# <code>map[key]</code> creates default-constructed value first</a></li>
-<li><a href="#68" id="toc-68"><span class="toc-section-number">68</span>
-# const <code>map[key]</code> does not compile, use
-<code>.find()</code></a></li>
-<li><a href="#69" id="toc-69"><span class="toc-section-number">69</span>
-# <code>if not map.find(x) then map[x]</code> is an antipattern</a></li>
-<li><a href="#70" id="toc-70"><span class="toc-section-number">70</span>
-# Meyer’s singleton</a></li>
-<li><a href="#71" id="toc-71"><span class="toc-section-number">71</span>
-# magic static</a></li>
-<li><a href="#72" id="toc-72"><span class="toc-section-number">72</span>
-# (std::min)(x, y) thanks to Windows.h</a></li>
-<li><a href="#73" id="toc-73"><span class="toc-section-number">73</span>
-# !!v double-negation</a></li>
-<li><a href="#74" id="toc-74"><span class="toc-section-number">74</span>
-# <code>sizeof v</code> and <code>sizeof(v)</code></a></li>
-<li><a href="#75" id="toc-75"><span class="toc-section-number">75</span>
-# six dots <code>Ts......</code></a></li>
-<li><a href="#76" id="toc-76"><span class="toc-section-number">76</span>
-# <code>assert(x &amp;&amp; "message")</code></a></li>
-<li><a href="#77" id="toc-77"><span class="toc-section-number">77</span>
-# <code>&lt;assert.h&gt;</code> and NDEBUG with no include
-guard</a></li>
-<li><a href="#78" id="toc-78"><span class="toc-section-number">78</span>
-# universal reference vs forwarding reference</a></li>
-<li><a href="#79" id="toc-79"><span class="toc-section-number">79</span>
-# force constexpr to evaluate at compile time</a></li>
-<li><a href="#80" id="toc-80"><span class="toc-section-number">80</span>
-# variadic template with default argument</a></li>
-<li><a href="#81" id="toc-81"><span class="toc-section-number">81</span>
-# variadic template with default
-std::source_location::current()</a></li>
-<li><a href="#82" id="toc-82"><span class="toc-section-number">82</span>
-# variadic template with default argument and deduction guide</a></li>
-<li><a href="#83" id="toc-83"><span class="toc-section-number">83</span>
-# debug: print type at compile time with error</a></li>
-<li><a href="#84" id="toc-84"><span class="toc-section-number">84</span>
-# debug: useful custom assert</a></li>
-<li><a href="#85" id="toc-85"><span class="toc-section-number">85</span>
-# non-standard <code>, ##__VA_ARGS__</code> vs C++20
-<code>__VA_OPT__</code></a></li>
-<li><a href="#86" id="toc-86"><span class="toc-section-number">86</span>
-# std::move does not move</a></li>
-<li><a href="#87" id="toc-87"><span class="toc-section-number">87</span>
-# no destructive move</a></li>
-<li><a href="#88" id="toc-88"><span class="toc-section-number">88</span>
-# std::move on return</a></li>
-<li><a href="#89" id="toc-89"><span class="toc-section-number">89</span>
-# <code>const T&amp;&amp;</code> (const rvalue)</a></li>
-<li><a href="#90" id="toc-90"><span class="toc-section-number">90</span>
-# enum struct</a></li>
-<li><a href="#91" id="toc-91"><span class="toc-section-number">91</span>
-# using enum declaration</a></li>
-<li><a href="#92" id="toc-92"><span class="toc-section-number">92</span>
-# using declaration vs using directive</a></li>
-<li><a href="#93" id="toc-93"><span class="toc-section-number">93</span>
-# <code>dynamic_cast&lt;T*&gt;</code> and
+<li><a href="#19" id="toc-19"><span
+class="toc-section-number">0.0.19</span> # stateful metaprogramming /
+type loophole</a></li>
+<li><a href="#20" id="toc-20"><span
+class="toc-section-number">0.0.20</span> # access private members (via
+friend injection)</a></li>
+<li><a href="#21" id="toc-21"><span
+class="toc-section-number">0.0.21</span> # extern templates</a></li>
+<li><a href="#22" id="toc-22"><span
+class="toc-section-number">0.0.22</span> # templates in .cpp
+file</a></li>
+<li><a href="#23" id="toc-23"><span
+class="toc-section-number">0.0.23</span> # double-template
+syntax</a></li>
+<li><a href="#24" id="toc-24"><span
+class="toc-section-number">0.0.24</span> # when type T is
+bitcopyable?</a></li>
+<li><a href="#25" id="toc-25"><span
+class="toc-section-number">0.0.25</span> # pseudo destructors
+(~int)</a></li>
+<li><a href="#26" id="toc-26"><span
+class="toc-section-number">0.0.26</span> # manually invoke
+constructor</a></li>
+<li><a href="#27" id="toc-27"><span
+class="toc-section-number">0.0.27</span> # injected-class-name</a></li>
+<li><a href="#28" id="toc-28"><span
+class="toc-section-number">0.0.28</span> # invoke base virtual function
+directly</a></li>
+<li><a href="#29" id="toc-29"><span
+class="toc-section-number">0.0.29</span> # perfect construct with
+factory function</a></li>
+<li><a href="#30" id="toc-30"><span
+class="toc-section-number">0.0.30</span> # disable template argument
+deduction</a></li>
+<li><a href="#31" id="toc-31"><span
+class="toc-section-number">0.0.31</span> # priority_tag for tag
+dispatch</a></li>
+<li><a href="#32" id="toc-32"><span
+class="toc-section-number">0.0.32</span> # new auto(10)</a></li>
+<li><a href="#33" id="toc-33"><span
+class="toc-section-number">0.0.33</span> # <code>std::forward</code> use
+in std::function-like case</a></li>
+<li><a href="#34" id="toc-34"><span
+class="toc-section-number">0.0.34</span> # virtual functions default
+arguments</a></li>
+<li><a href="#35" id="toc-35"><span
+class="toc-section-number">0.0.35</span> # virtual functions
+overloads</a></li>
+<li><a href="#36" id="toc-36"><span
+class="toc-section-number">0.0.36</span> # change base class member
+access rights</a></li>
+<li><a href="#37" id="toc-37"><span
+class="toc-section-number">0.0.37</span> # use default constructor for
+state reset</a></li>
+<li><a href="#38" id="toc-38"><span
+class="toc-section-number">0.0.38</span> # default constructor is a must
+for modern C++</a></li>
+<li><a href="#39" id="toc-39"><span
+class="toc-section-number">0.0.39</span> # default constructor must do
+no work</a></li>
+<li><a href="#40" id="toc-40"><span
+class="toc-section-number">0.0.40</span> # constructors should do no
+work</a></li>
+<li><a href="#41" id="toc-41"><span
+class="toc-section-number">0.0.41</span> # <code>std::unique_ptr</code>
+with decltype lambda</a></li>
+<li><a href="#42" id="toc-42"><span
+class="toc-section-number">0.0.42</span> # <code>auto</code> vs
+<code>auto*</code> for pointers</a></li>
+<li><a href="#43" id="toc-43"><span
+class="toc-section-number">0.0.43</span> # std::transform and LIFT
+(passing overload set)</a></li>
+<li><a href="#44" id="toc-44"><span
+class="toc-section-number">0.0.44</span> # you can’t take an address of
+<code>tolower</code> function</a></li>
+<li><a href="#45" id="toc-45"><span
+class="toc-section-number">0.0.45</span> # replace operator new to track
+third-party code allocations</a></li>
+<li><a href="#46" id="toc-46"><span
+class="toc-section-number">0.0.46</span> #
+<code>std::shared_ptr&lt;void&gt;</code> as user-data pointer</a></li>
+<li><a href="#47" id="toc-47"><span
+class="toc-section-number">0.0.47</span> # sync_with_stdio for stdout vs
+std::cout</a></li>
+<li><a href="#48" id="toc-48"><span
+class="toc-section-number">0.0.48</span> # std::clog vs
+std::cerr</a></li>
+<li><a href="#49" id="toc-49"><span
+class="toc-section-number">0.0.49</span> # capture-less lambda can be
+converted to c-function</a></li>
+<li><a href="#50" id="toc-50"><span
+class="toc-section-number">0.0.50</span> # <code>+[](){}</code> to
+convert lambda to c-function</a></li>
+<li><a href="#51" id="toc-51"><span
+class="toc-section-number">0.0.51</span> # virtual operator int</a></li>
+<li><a href="#52" id="toc-52"><span
+class="toc-section-number">0.0.52</span> # placement new emplace_back
+pre-C++11</a></li>
+<li><a href="#53" id="toc-53"><span
+class="toc-section-number">0.0.53</span> # <code>operator-&gt;</code>
+recursion (returning non-pointer type)</a></li>
+<li><a href="#54" id="toc-54"><span
+class="toc-section-number">0.0.54</span> # move-only types and
+initializer_list</a></li>
+<li><a href="#55" id="toc-55"><span
+class="toc-section-number">0.0.55</span> # unicorn
+initialization</a></li>
+<li><a href="#56" id="toc-56"><span
+class="toc-section-number">0.0.56</span> # move-only lambda and
+std::function</a></li>
+<li><a href="#57" id="toc-57"><span
+class="toc-section-number">0.0.57</span> # std::function issues</a></li>
+<li><a href="#58" id="toc-58"><span
+class="toc-section-number">0.0.58</span> # non-trivial types in
+union</a></li>
+<li><a href="#59" id="toc-59"><span
+class="toc-section-number">0.0.59</span> # lambda with access to const
+and global variables</a></li>
+<li><a href="#60" id="toc-60"><span
+class="toc-section-number">0.0.60</span> # std::variant overload
+pattern</a></li>
+<li><a href="#61" id="toc-61"><span
+class="toc-section-number">0.0.61</span> # unique_ptr to incomplete type
+and class destructor</a></li>
+<li><a href="#62" id="toc-62"><span
+class="toc-section-number">0.0.62</span> # the use of
+<code>shared_ptr&lt;const T&gt;</code></a></li>
+<li><a href="#63" id="toc-63"><span
+class="toc-section-number">0.0.63</span> # string_view issues</a></li>
+<li><a href="#64" id="toc-64"><span
+class="toc-section-number">0.0.64</span> # user-provided constructor and
+garbage initialization</a></li>
+<li><a href="#65" id="toc-65"><span
+class="toc-section-number">0.0.65</span> # beaware of
+std::string_view-like key with std::meow_map</a></li>
+<li><a href="#66" id="toc-66"><span
+class="toc-section-number">0.0.66</span> #
+<code>std::piecewise_construct</code></a></li>
+<li><a href="#67" id="toc-67"><span
+class="toc-section-number">0.0.67</span> # <code>map[key]</code> creates
+default-constructed value first</a></li>
+<li><a href="#68" id="toc-68"><span
+class="toc-section-number">0.0.68</span> # const <code>map[key]</code>
+does not compile, use <code>.find()</code></a></li>
+<li><a href="#69" id="toc-69"><span
+class="toc-section-number">0.0.69</span> #
+<code>if not map.find(x) then map[x]</code> is an antipattern</a></li>
+<li><a href="#70" id="toc-70"><span
+class="toc-section-number">0.0.70</span> # Meyer’s singleton</a></li>
+<li><a href="#71" id="toc-71"><span
+class="toc-section-number">0.0.71</span> # magic static</a></li>
+<li><a href="#72" id="toc-72"><span
+class="toc-section-number">0.0.72</span> # (std::min)(x, y) thanks to
+Windows.h</a></li>
+<li><a href="#73" id="toc-73"><span
+class="toc-section-number">0.0.73</span> # !!v double-negation</a></li>
+<li><a href="#74" id="toc-74"><span
+class="toc-section-number">0.0.74</span> # <code>sizeof v</code> and
+<code>sizeof(v)</code></a></li>
+<li><a href="#75" id="toc-75"><span
+class="toc-section-number">0.0.75</span> # six dots
+<code>Ts......</code></a></li>
+<li><a href="#76" id="toc-76"><span
+class="toc-section-number">0.0.76</span> #
+<code>assert(x &amp;&amp; "message")</code></a></li>
+<li><a href="#77" id="toc-77"><span
+class="toc-section-number">0.0.77</span> # <code>&lt;assert.h&gt;</code>
+and NDEBUG with no include guard</a></li>
+<li><a href="#78" id="toc-78"><span
+class="toc-section-number">0.0.78</span> # universal reference vs
+forwarding reference</a></li>
+<li><a href="#79" id="toc-79"><span
+class="toc-section-number">0.0.79</span> # force constexpr to evaluate
+at compile time</a></li>
+<li><a href="#80" id="toc-80"><span
+class="toc-section-number">0.0.80</span> # variadic template with
+default argument</a></li>
+<li><a href="#81" id="toc-81"><span
+class="toc-section-number">0.0.81</span> # variadic template with
+default std::source_location::current()</a></li>
+<li><a href="#82" id="toc-82"><span
+class="toc-section-number">0.0.82</span> # variadic template with
+default argument and deduction guide</a></li>
+<li><a href="#83" id="toc-83"><span
+class="toc-section-number">0.0.83</span> # debug: print type at compile
+time with error</a></li>
+<li><a href="#84" id="toc-84"><span
+class="toc-section-number">0.0.84</span> # debug: useful custom
+assert</a></li>
+<li><a href="#85" id="toc-85"><span
+class="toc-section-number">0.0.85</span> # non-standard
+<code>, ##__VA_ARGS__</code> vs C++20 <code>__VA_OPT__</code></a></li>
+<li><a href="#86" id="toc-86"><span
+class="toc-section-number">0.0.86</span> # std::move does not
+move</a></li>
+<li><a href="#87" id="toc-87"><span
+class="toc-section-number">0.0.87</span> # no destructive move</a></li>
+<li><a href="#88" id="toc-88"><span
+class="toc-section-number">0.0.88</span> # std::move on return</a></li>
+<li><a href="#89" id="toc-89"><span
+class="toc-section-number">0.0.89</span> #
+<code>const T&amp;&amp;</code> (const rvalue)</a></li>
+<li><a href="#90" id="toc-90"><span
+class="toc-section-number">0.0.90</span> # enum struct</a></li>
+<li><a href="#91" id="toc-91"><span
+class="toc-section-number">0.0.91</span> # using enum
+declaration</a></li>
+<li><a href="#92" id="toc-92"><span
+class="toc-section-number">0.0.92</span> # using declaration vs using
+directive</a></li>
+<li><a href="#93" id="toc-93"><span
+class="toc-section-number">0.0.93</span> #
+<code>dynamic_cast&lt;T*&gt;</code> and
 <code>dynamic_cast&lt;T&amp;&gt;</code></a></li>
-<li><a href="#94" id="toc-94"><span class="toc-section-number">94</span>
-# <code>dynamic_cast&lt;const T*&gt;</code> adds const</a></li>
-<li><a href="#95" id="toc-95"><span class="toc-section-number">95</span>
-# <code>CONOUT$</code>, <code>CONIN$</code> for
-<code>::AllocConsole()</code></a></li>
-<li><a href="#96" id="toc-96"><span class="toc-section-number">96</span>
-# rdbuf to read whole file</a></li>
-<li><a href="#97" id="toc-97"><span class="toc-section-number">97</span>
-# rdbuf to redirect</a></li>
-<li><a href="#98" id="toc-98"><span class="toc-section-number">98</span>
-# compile error on missing switch enum case</a></li>
-<li><a href="#99" id="toc-99"><span class="toc-section-number">99</span>
-# use compiler to write down pointer-to-member syntax</a></li>
+<li><a href="#94" id="toc-94"><span
+class="toc-section-number">0.0.94</span> #
+<code>dynamic_cast&lt;const T*&gt;</code> adds const</a></li>
+<li><a href="#95" id="toc-95"><span
+class="toc-section-number">0.0.95</span> # <code>CONOUT$</code>,
+<code>CONIN$</code> for <code>::AllocConsole()</code></a></li>
+<li><a href="#96" id="toc-96"><span
+class="toc-section-number">0.0.96</span> # rdbuf to read whole
+file</a></li>
+<li><a href="#97" id="toc-97"><span
+class="toc-section-number">0.0.97</span> # rdbuf to redirect</a></li>
+<li><a href="#98" id="toc-98"><span
+class="toc-section-number">0.0.98</span> # compile error on missing
+switch enum case</a></li>
+<li><a href="#99" id="toc-99"><span
+class="toc-section-number">0.0.99</span> # use compiler to write down
+pointer-to-member syntax</a></li>
 <li><a href="#100" id="toc-100"><span
-class="toc-section-number">100</span> # enum and falling out of switch
-case</a></li>
+class="toc-section-number">0.0.100</span> # enum and falling out of
+switch case</a></li>
 <li><a href="#101" id="toc-101"><span
-class="toc-section-number">101</span> # ON_SCOPE_EXIT</a></li>
+class="toc-section-number">0.0.101</span> # ON_SCOPE_EXIT</a></li>
 <li><a href="#102" id="toc-102"><span
-class="toc-section-number">102</span> # float to double and integer
+class="toc-section-number">0.0.102</span> # float to double and integer
 promotions (variadic function)</a></li>
 <li><a href="#103" id="toc-103"><span
-class="toc-section-number">103</span> # surrogate call functions (/
+class="toc-section-number">0.0.103</span> # surrogate call functions (/
 conversion operator)</a></li>
 <li><a href="#104" id="toc-104"><span
-class="toc-section-number">104</span> # ARRAY_SIZE / function returning
-reference to an array</a></li>
+class="toc-section-number">0.0.104</span> # ARRAY_SIZE / function
+returning reference to an array</a></li>
 <li><a href="#105" id="toc-105"><span
-class="toc-section-number">105</span> # infinite function pointer
+class="toc-section-number">0.0.105</span> # infinite function pointer
 dereference</a></li>
 <li><a href="#106" id="toc-106"><span
-class="toc-section-number">106</span> # (historical?) Schwarz Counter /
-Nifty Counter (static initialization)</a></li>
+class="toc-section-number">0.0.106</span> # (historical?) Schwarz
+Counter / Nifty Counter (static initialization)</a></li>
 <li><a href="#107" id="toc-107"><span
-class="toc-section-number">107</span> # emulate concept passing as
+class="toc-section-number">0.0.107</span> # emulate concept passing as
 template argument</a></li>
 <li><a href="#108" id="toc-108"><span
-class="toc-section-number">108</span> # underscores and _Ugly reserved
-names</a></li>
+class="toc-section-number">0.0.108</span> # underscores and _Ugly
+reserved names</a></li>
 <li><a href="#109" id="toc-109"><span
-class="toc-section-number">109</span> # invoke private method with
+class="toc-section-number">0.0.109</span> # invoke private method with
 mangled name</a></li>
 <li><a href="#110" id="toc-110"><span
-class="toc-section-number">110</span> # coroutines and
+class="toc-section-number">0.0.110</span> # coroutines and
 std::source_location::current()</a></li>
 <li><a href="#111" id="toc-111"><span
-class="toc-section-number">111</span> # moved-from std::optional does
-not reset</a></li>
+class="toc-section-number">0.0.111</span> # moved-from std::optional
+does not reset</a></li>
 <li><a href="#112" id="toc-112"><span
-class="toc-section-number">112</span> # std::exchange idiom</a></li>
+class="toc-section-number">0.0.112</span> # std::exchange idiom</a></li>
 <li><a href="#113" id="toc-113"><span
-class="toc-section-number">113</span> # std::tie idiom for comparisons
-operators</a></li>
+class="toc-section-number">0.0.113</span> # std::tie idiom for
+comparisons operators</a></li>
 <li><a href="#114" id="toc-114"><span
-class="toc-section-number">114</span> # std::tie idiom to
+class="toc-section-number">0.0.114</span> # std::tie idiom to
 decompose/unpack</a></li>
 <li><a href="#115" id="toc-115"><span
-class="toc-section-number">115</span> # move is the same as copy…
+class="toc-section-number">0.0.115</span> # move is the same as copy…
 sometimes</a></li>
 <li><a href="#116" id="toc-116"><span
-class="toc-section-number">116</span> # declaring a (tag) type while
+class="toc-section-number">0.0.116</span> # declaring a (tag) type while
 passing template argument</a></li>
 <li><a href="#117" id="toc-117"><span
-class="toc-section-number">117</span> # __PRETTY_FUNCTION__ as compile
-time type name</a></li>
+class="toc-section-number">0.0.117</span> # __PRETTY_FUNCTION__ as
+compile time type name</a></li>
 <li><a href="#118" id="toc-118"><span
-class="toc-section-number">118</span> # compile time type id</a></li>
+class="toc-section-number">0.0.118</span> # compile time type
+id</a></li>
 <li><a href="#119" id="toc-119"><span
-class="toc-section-number">119</span> # run time type id</a></li>
+class="toc-section-number">0.0.119</span> # run time type id</a></li>
 <li><a href="#120" id="toc-120"><span
-class="toc-section-number">120</span> # specialize a template class
+class="toc-section-number">0.0.120</span> # specialize a template class
 member without specializing whole class</a></li>
 <li><a href="#121" id="toc-121"><span
-class="toc-section-number">121</span> # hidden friend idiom</a></li>
+class="toc-section-number">0.0.121</span> # hidden friend idiom</a></li>
 <li><a href="#122" id="toc-122"><span
-class="toc-section-number">122</span> # ADL isolation</a></li>
+class="toc-section-number">0.0.122</span> # ADL isolation</a></li>
 <li><a href="#123" id="toc-123"><span
-class="toc-section-number">123</span> # initialize base class with a
+class="toc-section-number">0.0.123</span> # initialize base class with a
 call to copy constructor</a></li>
 <li><a href="#124" id="toc-124"><span
-class="toc-section-number">124</span> # acronyms glossary / ICE, CPO,
-etc.</a></li>
+class="toc-section-number">0.0.124</span> # acronyms glossary / ICE,
+CPO, etc.</a></li>
 </ul>
 </nav>
 <hr />
@@ -553,8 +626,9 @@ service/wg21.link</a></li>
 <li><a href="https://cppinsights.io/">Cpp Insights</a></li>
 </ul>
 <hr />
-<h3 data-number="1" id="1"><span class="header-section-number">1</span>
-<a href="#1"># </a>accidental pair copy for map loop</h3>
+<h3 data-number="0.0.1" id="1"><span
+class="header-section-number">0.0.1</span> <a href="#1"># </a>accidental
+pair copy for map loop</h3>
 <p>Here, <code>kv</code> is a COPY instead of const reference since
 std::meow_map <code>value_type</code> is
 <code>std::pair&lt;const Key, T&gt;</code>, notice <strong>const
@@ -587,8 +661,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 href="https://www.reddit.com/r/cpp/comments/1fhncm2/comment/lndnk8m/">comments</a>.
 Note on /u/STL <a
 href="https://brevzin.github.io/c++/2023/03/14/prefer-views-meow/">meow</a>.</p>
-<h3 data-number="2" id="2"><span class="header-section-number">2</span>
-<a href="#2"># </a>declare function with typedef/using</h3>
+<h3 data-number="0.0.2" id="2"><span
+class="header-section-number">0.0.2</span> <a href="#2"># </a>declare
+function with typedef/using</h3>
 <p>Surprisingly, you can declare a function with using declaration:</p>
 <div class="sourceCode" id="cb6"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">using</span> MyFunction <span class="op">=</span> <span class="dt">void</span> <span class="op">(</span><span class="dt">int</span><span class="op">);</span></span>
@@ -629,8 +704,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb9-2"><a href="#cb9-2"></a>MyFunction foo<span class="op">,</span> bar<span class="op">,</span> baz<span class="op">;</span> <span class="co">// functions declarations</span></span>
 <span id="cb9-3"><a href="#cb9-3"></a><span class="co">// OR</span></span>
 <span id="cb9-4"><a href="#cb9-4"></a><span class="dt">int</span> foo<span class="op">(</span><span class="dt">char</span><span class="op">),</span> bar<span class="op">();</span></span></code></pre></div>
-<h3 data-number="3" id="3"><span class="header-section-number">3</span>
-<a href="#3"># </a>protected/private virtual functions override</h3>
+<h3 data-number="0.0.3" id="3"><span
+class="header-section-number">0.0.3</span> <a href="#3">#
+</a>protected/private virtual functions override</h3>
 <p>Access rights are resolved at compile-time, virtual function target -
 at run-time. It’s perfectly fine to move virtual-override to private
 section:</p>
@@ -663,8 +739,9 @@ principle.</p>
 an example), it makes sense to make virtual-overrides protected instead
 of private so derived class could invoke Super:: version in the
 implementation.</p>
-<h3 data-number="4" id="4"><span class="header-section-number">4</span>
-<a href="#4"># </a>function try block</h3>
+<h3 data-number="0.0.4" id="4"><span
+class="header-section-number">0.0.4</span> <a href="#4"># </a>function
+try block</h3>
 <p>See <a
 href="https://en.cppreference.com/w/cpp/language/try#Function_try_block">cppreference</a>.
 Specifically, to handle exceptions for constructor initializer:</p>
@@ -695,8 +772,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb12-6"><a href="#cb12-6"></a><span class="op">{</span></span>
 <span id="cb12-7"><a href="#cb12-7"></a>    <span class="co">// exception handling for arguments</span></span>
 <span id="cb12-8"><a href="#cb12-8"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="5" id="5"><span class="header-section-number">5</span>
-<a href="#5"># </a>omiting <code>public</code> when deriving</h3>
+<h3 data-number="0.0.5" id="5"><span
+class="header-section-number">0.0.5</span> <a href="#5"># </a>omiting
+<code>public</code> when deriving</h3>
 <p>Minor, still, see <a
 href="https://en.cppreference.com/w/cpp/language/derived_class">cppreference,
 access-specifier</a>:</p>
@@ -704,9 +782,10 @@ access-specifier</a>:</p>
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">struct</span> MyBase <span class="op">{};</span></span>
 <span id="cb13-2"><a href="#cb13-2"></a><span class="kw">struct</span> MyDerived1 <span class="op">:</span> MyBase <span class="op">{};</span> <span class="co">// same as : public  MyBase</span></span>
 <span id="cb13-3"><a href="#cb13-3"></a><span class="kw">class</span>  MyDerived2 <span class="op">:</span> MyBase <span class="op">{};</span> <span class="co">// same as : private MyBase</span></span></code></pre></div>
-<h3 data-number="6" id="6"><span class="header-section-number">6</span>
-<a href="#6"># </a><code>(void)0</code> to force <code>;</code>
-(semicolon) for macros</h3>
+<h3 data-number="0.0.6" id="6"><span
+class="header-section-number">0.0.6</span> <a href="#6">#
+</a><code>(void)0</code> to force <code>;</code> (semicolon) for
+macros</h3>
 <p>To be consistent and force the user of the macro to put
 <code>;</code> (semicolon) at the line end:</p>
 <div class="sourceCode" id="cb14"><pre
@@ -718,8 +797,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb14-6"><a href="#cb14-6"></a>    <span class="co">// ^^^^^^</span></span>
 <span id="cb14-7"><a href="#cb14-7"></a>MY_FOO<span class="op">(</span>puts<span class="op">(</span><span class="st">&quot;X&quot;</span><span class="op">));</span></span>
 <span id="cb14-8"><a href="#cb14-8"></a>MY_FOO<span class="op">(</span>puts<span class="op">(</span><span class="st">&quot;Y&quot;</span><span class="op">));</span></span></code></pre></div>
-<h3 data-number="7" id="7"><span class="header-section-number">7</span>
-<a href="#7"># </a>call a method of a template base class</h3>
+<h3 data-number="0.0.7" id="7"><span
+class="header-section-number">0.0.7</span> <a href="#7"># </a>call a
+method of a template base class</h3>
 <p>See also <a
 href="https://yunmingzhang.wordpress.com/2019/01/26/accessing-template-base-class-members-in-c/">Accessing
 template base class members in C++</a>.</p>
@@ -744,8 +824,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p><code>this-&gt;Foo()</code> becomes <a
 href="https://en.cppreference.com/w/cpp/language/dependent_name">type-dependent
 expression</a>.</p>
-<h3 data-number="8" id="8"><span class="header-section-number">8</span>
-<a href="#8"># </a><code>= default</code> on implementation</h3>
+<h3 data-number="0.0.8" id="8"><span
+class="header-section-number">0.0.8</span> <a href="#8">#
+</a><code>= default</code> on implementation</h3>
 <p>You can default special member functions in the .cpp/out of line
 definition:</p>
 <div class="sourceCode" id="cb17"><pre
@@ -772,8 +853,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb18-7"><a href="#cb18-7"></a><span class="co">// myclass.cpp</span></span>
 <span id="cb18-8"><a href="#cb18-8"></a><span class="pp">#include </span><span class="im">&quot;MyInterface.h&quot;</span><span class="pp"> </span><span class="co">// include only now</span></span>
 <span id="cb18-9"><a href="#cb18-9"></a>MyClass<span class="op">::~</span>MyClass<span class="op">()</span> <span class="op">=</span> <span class="cf">default</span><span class="op">;</span> <span class="co">// generate a call to my_ptr.~unique_ptr()</span></span></code></pre></div>
-<h3 data-number="9" id="9"><span class="header-section-number">9</span>
-<a href="#9"># </a><code>= delete</code> for free functions</h3>
+<h3 data-number="0.0.9" id="9"><span
+class="header-section-number">0.0.9</span> <a href="#9">#
+</a><code>= delete</code> for free functions</h3>
 <p>You can delete unneeded function overload anywhere:</p>
 <div class="sourceCode" id="cb19"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb19-1"><a href="#cb19-1"></a><span class="dt">void</span> MyHandle<span class="op">(</span><span class="dt">char</span><span class="op">)</span> <span class="op">=</span> <span class="kw">delete</span><span class="op">;</span></span>
@@ -783,8 +865,8 @@ href="https://en.cppreference.com/w/cpp/utility/functional/ref">std::ref</a>,
 <a
 href="https://en.cppreference.com/w/cpp/utility/as_const">std::as_const</a>
 for the use in STL.</p>
-<h3 data-number="10" id="10"><span
-class="header-section-number">10</span> <a href="#10">#
+<h3 data-number="0.0.10" id="10"><span
+class="header-section-number">0.0.10</span> <a href="#10">#
 </a><code>#line</code> and file renaming</h3>
 <p>See <a
 href="https://en.cppreference.com/w/c/preprocessor/line">cppreference</a>:</p>
@@ -803,8 +885,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 </blockquote>
 <p>Note: this could break .pdb(s).<br />
 Bonus: what happens if you do <code>#line 4294967295</code>?</p>
-<h3 data-number="11" id="11"><span
-class="header-section-number">11</span> <a href="#11"># </a>Meyers
+<h3 data-number="0.0.11" id="11"><span
+class="header-section-number">0.0.11</span> <a href="#11"># </a>Meyers
 cons_cast</h3>
 <p>To not repeat code inside const and non-const function, <a
 href="https://stackoverflow.com/a/123995">see SO</a>:</p>
@@ -828,8 +910,8 @@ version, not the other way around (which would be UB).</p>
 <p>Kind-a outdated with <a
 href="https://devblogs.microsoft.com/cppblog/cpp23-deducing-this/">C++23’s
 Deducing this</a> or is it? (template, compile time, .h vs .cpp).</p>
-<h3 data-number="12" id="12"><span
-class="header-section-number">12</span> <a href="#12"># </a>missing
+<h3 data-number="0.0.12" id="12"><span
+class="header-section-number">0.0.12</span> <a href="#12"># </a>missing
 <code>std::</code> and why it still compiles (ADL)</h3>
 <p>Notice, that code below will compile (most of the time):</p>
 <div class="sourceCode" id="cb22"><pre
@@ -843,9 +925,9 @@ lookup (ADL), also known as Koenig lookup</a>.</p>
 it’s implementation defined (?) where or not iterator is inside std.
 Meaning the code above is not portable (across different implementations
 of STL).</p>
-<h3 data-number="13" id="13"><span
-class="header-section-number">13</span> <a href="#13"># </a>why STL is
-using <code>::std::move</code> everywhere?</h3>
+<h3 data-number="0.0.13" id="13"><span
+class="header-section-number">0.0.13</span> <a href="#13"># </a>why STL
+is using <code>::std::move</code> everywhere?</h3>
 <p>Take a look at <a
 href="https://github.com/microsoft/STL/blob/faccf0084ed9b8b58df103358174537233b178c7/stl/inc/algorithm#L452-L453">MSVC’s
 implementation of the C++ Standard Library</a>:</p>
@@ -857,12 +939,12 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp" sty
 and make sure implementation of <code>move</code> from namespace
 <code>std</code> is choosen. Who knows what user-defined custom type
 could bring into the table?</p>
-<h3 data-number="14" id="14"><span
-class="header-section-number">14</span> <a href="#14"># </a>the use of
-shared_ptr in public API is a code smell</h3>
+<h3 data-number="0.0.14" id="14"><span
+class="header-section-number">0.0.14</span> <a href="#14"># </a>the use
+of shared_ptr in public API is a code smell</h3>
 <p><mark>TBD</mark></p>
-<h3 data-number="15" id="15"><span
-class="header-section-number">15</span> <a href="#15">#
+<h3 data-number="0.0.15" id="15"><span
+class="header-section-number">0.0.15</span> <a href="#15">#
 </a>enable_shared_from_this requires factory function</h3>
 <p>If class derives from <code>enable_shared_from_this</code>:</p>
 <ul>
@@ -890,8 +972,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 href="https://en.cppreference.com/w/cpp/memory/enable_shared_from_this#Example">cppreference
 example</a>. Most-likely, you also want class copy/move ctor/assignments
 to be deleted.</p>
-<h3 data-number="16" id="16"><span
-class="header-section-number">16</span> <a href="#16">#
+<h3 data-number="0.0.16" id="16"><span
+class="header-section-number">0.0.16</span> <a href="#16">#
 </a><code>std::shared_ptr</code> aliasing constructor</h3>
 <p>See <a
 href="https://en.cppreference.com/w/cpp/memory/shared_ptr/shared_ptr">aliasing
@@ -906,8 +988,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb25-7"><a href="#cb25-7"></a><span class="bu">std::</span>shared_ptr<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> v2<span class="op">{</span>v1<span class="op">,</span> <span class="op">&amp;</span>v1<span class="op">-&gt;</span>data<span class="op">};</span></span></code></pre></div>
 <p>v2 and v1 now share the same control block. You can also put a
 pointer to unrelative data (is there real-life use-case?).</p>
-<h3 data-number="17" id="17"><span
-class="header-section-number">17</span> <a href="#17">#
+<h3 data-number="0.0.17" id="17"><span
+class="header-section-number">0.0.17</span> <a href="#17">#
 </a><code>dynamic_cast&lt;void*&gt;</code> to get most-derived
 object</h3>
 <p>From anywhere in the hierarhy of polimorphic type, you can restore a
@@ -926,8 +1008,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>See <a
 href="https://en.cppreference.com/w/cpp/language/dynamic_cast">cppreference</a>.
 Most-likely useful to interop with C library/external code.</p>
-<h3 data-number="18" id="18"><span
-class="header-section-number">18</span> <a href="#18">#
+<h3 data-number="0.0.18" id="18"><span
+class="header-section-number">0.0.18</span> <a href="#18">#
 </a><code>std::shared_ptr&lt;base&gt;</code> with no virtual
 destructor</h3>
 <p>Usually, if you delete pointer-to-base, destructor needs to be
@@ -952,8 +1034,8 @@ Overriding Virtual Functions</a>:</p>
 <blockquote>
 <p>Make base class destructors virtual</p>
 </blockquote>
-<h3 data-number="19" id="19"><span
-class="header-section-number">19</span> <a href="#19"># </a>stateful
+<h3 data-number="0.0.19" id="19"><span
+class="header-section-number">0.0.19</span> <a href="#19"># </a>stateful
 metaprogramming / type loophole</h3>
 <p>This <a href="https://b.atch.se/posts/constexpr-counter/">works</a>
 and a and b have different values:</p>
@@ -990,8 +1072,8 @@ the template was instantiated</a></li>
 <li><a href="https://godbolt.org/z/4z7WY3j1q">get all the types that the
 template was instantiated with</a></li>
 </ul>
-<h3 data-number="20" id="20"><span
-class="header-section-number">20</span> <a href="#20"># </a>access
+<h3 data-number="0.0.20" id="20"><span
+class="header-section-number">0.0.20</span> <a href="#20"># </a>access
 private members (via friend injection)</h3>
 <p>Self-contained example from <a
 href="https://www.worldcadaccess.com/blog/2020/05/how-to-hack-c-with-templates-and-friends.html">How
@@ -1012,8 +1094,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb29-13"><a href="#cb29-13"></a>dataGetter<span class="op">(</span>obj<span class="op">)</span> <span class="op">=</span> <span class="dv">31</span><span class="op">;</span>   <span class="co">// Ok</span></span></code></pre></div>
 <p>See <a href="https://github.com/martong/access_private">this</a> for
 more details.</p>
-<h3 data-number="21" id="21"><span
-class="header-section-number">21</span> <a href="#21"># </a>extern
+<h3 data-number="0.0.21" id="21"><span
+class="header-section-number">0.0.21</span> <a href="#21"># </a>extern
 templates</h3>
 <p>See, <a
 href="https://isocpp.org/wiki/faq/cpp11-language-templates#extern-templates">this</a>
@@ -1045,9 +1127,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 href="https://en.cppreference.com/w/cpp/keyword/export">export
 keyword</a> (C++98, nothing to do with <a
 href="https://en.cppreference.com/w/cpp/language/modules">modules</a>).</p>
-<h3 data-number="22" id="22"><span
-class="header-section-number">22</span> <a href="#22"># </a>templates in
-.cpp file</h3>
+<h3 data-number="0.0.22" id="22"><span
+class="header-section-number">0.0.22</span> <a href="#22">#
+</a>templates in .cpp file</h3>
 <p>It’s usually stated that templates could only be defined in header
 file. However, you just need to define them anywhere so definition is
 visible at the point of use/instantiation.</p>
@@ -1084,8 +1166,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb31-29"><a href="#cb31-29"></a>    <span class="cf">return</span> Bar<span class="op">&lt;</span><span class="dt">char</span><span class="op">&gt;();</span></span>
 <span id="cb31-30"><a href="#cb31-30"></a><span class="op">}</span></span></code></pre></div>
 <p>See also <a href="#21">extern templates</a>.</p>
-<h3 data-number="23" id="23"><span
-class="header-section-number">23</span> <a href="#23">#
+<h3 data-number="0.0.23" id="23"><span
+class="header-section-number">0.0.23</span> <a href="#23">#
 </a>double-template syntax</h3>
 <p>If you have template class that has template member function and you
 want to define such function out-of-class, you need:</p>
@@ -1100,9 +1182,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb32-8"><a href="#cb32-8"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T1<span class="op">,</span> <span class="kw">typename</span> T2<span class="op">&gt;</span>  <span class="co">// for MyClass</span></span>
 <span id="cb32-9"><a href="#cb32-9"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> U<span class="op">&gt;</span>                <span class="co">// for Foo</span></span>
 <span id="cb32-10"><a href="#cb32-10"></a><span class="dt">void</span> MyClass<span class="op">&lt;</span>T1<span class="op">,</span> T2<span class="op">&gt;::</span>Foo<span class="op">(</span>U v<span class="op">)</span> <span class="op">{}</span></span></code></pre></div>
-<h3 data-number="24" id="24"><span
-class="header-section-number">24</span> <a href="#24"># </a>when type T
-is bitcopyable?</h3>
+<h3 data-number="0.0.24" id="24"><span
+class="header-section-number">0.0.24</span> <a href="#24"># </a>when
+type T is bitcopyable?</h3>
 <p>When implementors do use memcopy/memmove to construct/assign range of
 values for some user-defined type T? Use
 <code>std::is_trivially_*</code> <a
@@ -1130,8 +1212,8 @@ memory management and <a
 href="https://en.cppreference.com/w/cpp/algorithm/copy">std::copy
 algorithm</a> and/or analogs that are already optimized for trivial/pod
 types by your standard library implementation for you.</p>
-<h3 data-number="25" id="25"><span
-class="header-section-number">25</span> <a href="#25"># </a>pseudo
+<h3 data-number="0.0.25" id="25"><span
+class="header-section-number">0.0.25</span> <a href="#25"># </a>pseudo
 destructors (~int)</h3>
 <p>In generic context, it’s possible to invoke the destructor of
 int:</p>
@@ -1145,8 +1227,8 @@ and <a
 href="https://en.cppreference.com/w/cpp/language/operator_member_access#Built-in_member_access_operators">built-in
 member access operators</a>. Exists so you don’t need to special-case
 destructor call in generic/template code.</p>
-<h3 data-number="26" id="26"><span
-class="header-section-number">26</span> <a href="#26"># </a>manually
+<h3 data-number="0.0.26" id="26"><span
+class="header-section-number">0.0.26</span> <a href="#26"># </a>manually
 invoke constructor</h3>
 <p>In the same way you can call destructor manually, you can call
 constructor:</p>
@@ -1160,8 +1242,8 @@ new</a>.</p>
 <p>Note on the use of <code>static_cast&lt;void*&gt;</code> - while not
 needed in this example, it’s needed to be done in generic context to
 avoid invoking overloaded version of new, if any.</p>
-<h3 data-number="27" id="27"><span
-class="header-section-number">27</span> <a href="#27">#
+<h3 data-number="0.0.27" id="27"><span
+class="header-section-number">0.0.27</span> <a href="#27">#
 </a>injected-class-name</h3>
 <p>See <a
 href="https://en.cppreference.com/w/cpp/language/injected-class-name">cppreference</a>.
@@ -1197,9 +1279,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb37-4"><a href="#cb37-4"></a>    <span class="co">// same as Self = MyVector&lt;T, A&gt;</span></span>
 <span id="cb37-5"><a href="#cb37-5"></a>    <span class="kw">using</span> Self <span class="op">=</span> MyVector<span class="op">;</span></span>
 <span id="cb37-6"><a href="#cb37-6"></a><span class="op">};</span></span></code></pre></div>
-<h3 data-number="28" id="28"><span
-class="header-section-number">28</span> <a href="#28"># </a>invoke base
-virtual function directly</h3>
+<h3 data-number="0.0.28" id="28"><span
+class="header-section-number">0.0.28</span> <a href="#28"># </a>invoke
+base virtual function directly</h3>
 <p>Given an instance of derived class, one can skip invoking its own
 function override and call parent function directly (see <a
 href="#27">injected-class-name</a>):</p>
@@ -1225,8 +1307,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb38-19"><a href="#cb38-19"></a><span class="op">}</span></span></code></pre></div>
 <p>This will print <code>MyBase</code> 2 times since we explicitly call
 MyBase::Foo().</p>
-<h3 data-number="29" id="29"><span
-class="header-section-number">29</span> <a href="#29"># </a>perfect
+<h3 data-number="0.0.29" id="29"><span
+class="header-section-number">0.0.29</span> <a href="#29"># </a>perfect
 construct with factory function</h3>
 <p>See <code>class rvalue</code> trick discussed <a
 href="https://akrzemi1.wordpress.com/2018/05/16/rvalues-redefined/">there</a>;
@@ -1280,8 +1362,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb41-11"><a href="#cb41-11"></a>    <span class="bu">std::</span>optional<span class="op">&lt;</span>Widget<span class="op">&gt;</span> o<span class="op">;</span></span>
 <span id="cb41-12"><a href="#cb41-12"></a>    o<span class="op">.</span>emplace<span class="op">(</span>WidgetFactory<span class="op">{});</span> <span class="co">// works</span></span>
 <span id="cb41-13"><a href="#cb41-13"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="30" id="30"><span
-class="header-section-number">30</span> <a href="#30"># </a>disable
+<h3 data-number="0.0.30" id="30"><span
+class="header-section-number">0.0.30</span> <a href="#30"># </a>disable
 template argument deduction</h3>
 <p>See, for instance, <a
 href="https://devblogs.microsoft.com/oldnewthing/20240607-00/?p=109865">What’s
@@ -1317,9 +1399,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb43-10"><a href="#cb43-10"></a><span class="op">}</span></span></code></pre></div>
 <p>T is deduced from 2nd argument, std::function is constructed from a
 given lamda as it is.</p>
-<h3 data-number="31" id="31"><span
-class="header-section-number">31</span> <a href="#31"># </a>priority_tag
-for tag dispatch</h3>
+<h3 data-number="0.0.31" id="31"><span
+class="header-section-number">0.0.31</span> <a href="#31">#
+</a>priority_tag for tag dispatch</h3>
 <p>From <a
 href="https://quuxplusone.github.io/blog/2021/07/09/priority-tag/">priority_tag
 for ad-hoc tag dispatch</a> and <a
@@ -1353,7 +1435,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb44-22"><a href="#cb44-22"></a><span class="kw">auto</span> stringify_impl<span class="op">(</span><span class="at">const</span> T<span class="op">&amp;</span> x<span class="op">,</span> priority_tag<span class="op">&lt;</span><span class="dv">0</span><span class="op">&gt;)</span></span>
 <span id="cb44-23"><a href="#cb44-23"></a>    <span class="op">-&gt;</span> <span class="kw">decltype</span><span class="op">(</span><span class="bu">std::</span>move<span class="op">(</span><span class="bu">std::</span>declval<span class="op">&lt;</span><span class="bu">std::</span>ostream<span class="op">&amp;&gt;()</span> <span class="op">&lt;&lt;</span> x<span class="op">).</span>str<span class="op">())</span></span>
 <span id="cb44-24"><a href="#cb44-24"></a><span class="op">{</span></span>
-<span id="cb44-25"><a href="#cb44-25"></a>    <span class="bu">std::</span>ostringstream s<span class="op">;</span></span>
+<span id="cb44-25"><a href="#cb44-25"></a>    <span class="bu">std::</span>ostringstream<span class="op"> </span>s<span class="op">;</span></span>
 <span id="cb44-26"><a href="#cb44-26"></a>    s <span class="op">&lt;&lt;</span> x<span class="op">;</span></span>
 <span id="cb44-27"><a href="#cb44-27"></a>    <span class="cf">return</span> <span class="bu">std::</span>move<span class="op">(</span>s<span class="op">).</span>str<span class="op">();</span></span>
 <span id="cb44-28"><a href="#cb44-28"></a><span class="op">}</span></span>
@@ -1363,8 +1445,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb44-32"><a href="#cb44-32"></a><span class="op">{</span></span>
 <span id="cb44-33"><a href="#cb44-33"></a>    <span class="cf">return</span> stringify_impl<span class="op">(</span>x<span class="op">,</span> priority_tag<span class="op">&lt;</span><span class="dv">2</span><span class="op">&gt;());</span></span>
 <span id="cb44-34"><a href="#cb44-34"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="32" id="32"><span
-class="header-section-number">32</span> <a href="#32"># </a>new
+<h3 data-number="0.0.32" id="32"><span
+class="header-section-number">0.0.32</span> <a href="#32"># </a>new
 auto(10)</h3>
 <p>You can leave type dedcution to the compiler when using new:</p>
 <div class="sourceCode" id="cb45"><pre
@@ -1376,10 +1458,10 @@ href="https://en.cppreference.com/w/cpp/language/new">cppreference</a>:</p>
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb46-1"><a href="#cb46-1"></a><span class="dt">double</span><span class="op">*</span> x <span class="op">=</span> <span class="kw">new</span> <span class="dt">double</span><span class="op">[]{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">};</span>  <span class="co">// creates an array of type double[3]</span></span>
 <span id="cb46-2"><a href="#cb46-2"></a><span class="kw">auto</span> p <span class="op">=</span> <span class="kw">new</span> <span class="kw">auto</span><span class="op">(</span><span class="ch">&#39;c&#39;</span><span class="op">);</span>             <span class="co">// creates a single object of type char.</span></span>
 <span id="cb46-3"><a href="#cb46-3"></a>                                    <span class="co">//     p is a char*</span></span>
-<span id="cb46-4"><a href="#cb46-4"></a><span class="kw">auto</span> q <span class="op">=</span> <span class="kw">new</span> <span class="bu">std::</span>integral <span class="kw">auto</span><span class="op">(</span><span class="dv">1</span><span class="op">);</span> <span class="co">// OK: q is an int*</span></span>
+<span id="cb46-4"><a href="#cb46-4"></a><span class="kw">auto</span> q <span class="op">=</span> <span class="kw">new</span> <span class="bu">std::</span>integral<span class="op"> </span><span class="kw">auto</span><span class="op">(</span><span class="dv">1</span><span class="op">);</span> <span class="co">// OK: q is an int*</span></span>
 <span id="cb46-5"><a href="#cb46-5"></a><span class="kw">auto</span> r <span class="op">=</span> <span class="kw">new</span> <span class="bu">std::</span>pair<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="kw">true</span><span class="op">);</span>    <span class="co">// OK: r is a std::pair&lt;int, bool&gt;*</span></span></code></pre></div>
-<h3 data-number="33" id="33"><span
-class="header-section-number">33</span> <a href="#33">#
+<h3 data-number="0.0.33" id="33"><span
+class="header-section-number">0.0.33</span> <a href="#33">#
 </a><code>std::forward</code> use in std::function-like case</h3>
 <p>Most of the times, we say that std::forward should be used in the
 context of forwarding references that, <em>usually</em>, look like
@@ -1416,8 +1498,8 @@ template now.</p>
 href="https://en.cppreference.com/w/cpp/language/reference">reference
 collapsing</a> rules over possible <code>Types</code> and
 <code>Args</code>, <code>std::forward</code> is just right.</p>
-<h3 data-number="34" id="34"><span
-class="header-section-number">34</span> <a href="#34"># </a>virtual
+<h3 data-number="0.0.34" id="34"><span
+class="header-section-number">0.0.34</span> <a href="#34"># </a>virtual
 functions default arguments</h3>
 <p>See <a href="http://www.gotw.ca/gotw/005.htm">GotW #5, Overriding
 Virtual Functions</a>:</p>
@@ -1440,8 +1522,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb49-10"><a href="#cb49-10"></a>ptr<span class="op">-&gt;</span>Foo<span class="op">();</span> <span class="co">// calls MyDerived::Foo, but with v = 34 from MyBase</span></span></code></pre></div>
 <p>default arguments are resolved at compile time, override function
 target - at run-time; may lead to confusion.</p>
-<h3 data-number="35" id="35"><span
-class="header-section-number">35</span> <a href="#35"># </a>virtual
+<h3 data-number="0.0.35" id="35"><span
+class="header-section-number">0.0.35</span> <a href="#35"># </a>virtual
 functions overloads</h3>
 <p>See <a href="http://www.gotw.ca/gotw/005.htm">GotW #5, Overriding
 Virtual Functions</a>:</p>
@@ -1481,9 +1563,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>Note: bringing base class method with using declation is,
 potentially, a breaking change (see above, <code>derived.Foo('x')</code>
 now returns 1 instead of 2).</p>
-<h3 data-number="36" id="36"><span
-class="header-section-number">36</span> <a href="#36"># </a>change base
-class member access rights</h3>
+<h3 data-number="0.0.36" id="36"><span
+class="header-section-number">0.0.36</span> <a href="#36"># </a>change
+base class member access rights</h3>
 <p>See <a
 href="https://en.cppreference.com/w/cpp/language/using_declaration">Using-declaration</a>.
 You can make protected member to be public in derived class:</p>
@@ -1498,9 +1580,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb52-8"><a href="#cb52-8"></a><span class="kw">public</span><span class="op">:</span></span>
 <span id="cb52-9"><a href="#cb52-9"></a>    <span class="kw">using</span> MyBase<span class="op">::</span>data<span class="op">;</span> <span class="co">// make data public now</span></span>
 <span id="cb52-10"><a href="#cb52-10"></a><span class="op">};</span></span></code></pre></div>
-<h3 data-number="37" id="37"><span
-class="header-section-number">37</span> <a href="#37"># </a>use default
-constructor for state reset</h3>
+<h3 data-number="0.0.37" id="37"><span
+class="header-section-number">0.0.37</span> <a href="#37"># </a>use
+default constructor for state reset</h3>
 <p>It’s observed that, often, class API has .Reset() function (even more
 often when two phase initialization is used):</p>
 <div class="sourceCode" id="cb53"><pre
@@ -1519,8 +1601,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb54-2"><a href="#cb54-2"></a><span class="co">// ...</span></span>
 <span id="cb54-3"><a href="#cb54-3"></a>instance <span class="op">=</span> MyClass<span class="op">{};</span> <span class="co">// same as .Reset()</span></span></code></pre></div>
 <p>See also “default constructor is a must for modern C++”</p>
-<h3 data-number="38" id="38"><span
-class="header-section-number">38</span> <a href="#38"># </a>default
+<h3 data-number="0.0.38" id="38"><span
+class="header-section-number">0.0.38</span> <a href="#38"># </a>default
 constructor is a must for modern C++</h3>
 <p>What happens with the object after the move? The known answer for C++
 library types is that it’s in <a
@@ -1573,8 +1655,8 @@ easier. See also “state reset”.</p>
 <p>Relative: <a
 href="https://www.foonathan.net/2016/08/move-default-ctor/">Move
 Semantics and Default Constructors - Rule of Six?</a>.</p>
-<h3 data-number="39" id="39"><span
-class="header-section-number">39</span> <a href="#39"># </a>default
+<h3 data-number="0.0.39" id="39"><span
+class="header-section-number">0.0.39</span> <a href="#39"># </a>default
 constructor must do no work</h3>
 <p>Default constructor may be used as a fallback in a few places of
 STL/your code:</p>
@@ -1595,11 +1677,11 @@ data member initialization. Specifically, no memory allocations, no side
 effects.</p>
 <p>Bonus question: why does this code allocates under MSVC debug?</p>
 <div class="sourceCode" id="cb60"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb60-1"><a href="#cb60-1"></a><span class="bu">std::</span>string s<span class="op">;</span> <span class="co">// ?</span></span></code></pre></div>
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb60-1"><a href="#cb60-1"></a><span class="bu">std::</span>string<span class="op"> </span>s<span class="op">;</span> <span class="co">// ?</span></span></code></pre></div>
 <p>Hint: MSVC STL debug iterators machinery.</p>
-<h3 data-number="40" id="40"><span
-class="header-section-number">40</span> <a href="#40"># </a>constructors
-should do no work</h3>
+<h3 data-number="0.0.40" id="40"><span
+class="header-section-number">0.0.40</span> <a href="#40">#
+</a>constructors should do no work</h3>
 <p>Constructors (at least of objects for types that are part of your
 application domain) should just assign/default initialize data members,
 NO business/application logic inside. This applies to copy constructor,
@@ -1636,8 +1718,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 exceptions change anything there.</p>
 <p>Sometimes I even leave <code>MyFile(FileHandle handle)</code>-like
 constructors public. This makes API extremely hackable and testable.</p>
-<h3 data-number="41" id="41"><span
-class="header-section-number">41</span> <a href="#41">#
+<h3 data-number="0.0.41" id="41"><span
+class="header-section-number">0.0.41</span> <a href="#41">#
 </a><code>std::unique_ptr</code> with decltype lambda</h3>
 <p>Since C++20, with <a
 href="https://andreasfertig.blog/2022/08/cpp-insights-lambdas-in-unevaluated-contexts/">Lambdas
@@ -1654,8 +1736,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>from <a
 href="https://youtu.be/O2G3bwNP5p4?si=_2yfyq9BEoxF3etB">Creating a
 Sender/Receiver HTTP Server for Asynchronous Operations in C++</a>.</p>
-<h3 data-number="42" id="42"><span
-class="header-section-number">42</span> <a href="#42">#
+<h3 data-number="0.0.42" id="42"><span
+class="header-section-number">0.0.42</span> <a href="#42">#
 </a><code>auto</code> vs <code>auto*</code> for pointers</h3>
 <p>Since auto type deduction comes from <a
 href="https://en.cppreference.com/w/cpp/language/template_argument_deduction#Other_contexts">template
@@ -1668,8 +1750,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb63-4"><a href="#cb63-4"></a><span class="at">const</span> <span class="kw">auto</span><span class="op">*</span> p4 <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">;</span>  <span class="co">// p4 = const int*</span></span></code></pre></div>
 <p>Still, note the difference for p3 vs p4 - const pointer to int vs
 just pointer to const int!</p>
-<h3 data-number="43" id="43"><span
-class="header-section-number">43</span> <a href="#43">#
+<h3 data-number="0.0.43" id="43"><span
+class="header-section-number">0.0.43</span> <a href="#43">#
 </a>std::transform and LIFT (passing overload set)</h3>
 <p>See <a
 href="https://blog.tartanllama.xyz/passing-overload-sets/">Passing
@@ -1687,9 +1769,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb64-10"><a href="#cb64-10"></a></span>
 <span id="cb64-11"><a href="#cb64-11"></a><span class="co">// ...</span></span>
 <span id="cb64-12"><a href="#cb64-12"></a><span class="bu">std::</span>transform<span class="op">(</span>first<span class="op">,</span> last<span class="op">,</span> target<span class="op">,</span> LIFT<span class="op">(</span>foo<span class="op">));</span></span></code></pre></div>
-<h3 data-number="44" id="44"><span
-class="header-section-number">44</span> <a href="#44"># </a>you can’t
-take an address of <code>tolower</code> function</h3>
+<h3 data-number="0.0.44" id="44"><span
+class="header-section-number">0.0.44</span> <a href="#44"># </a>you
+can’t take an address of <code>tolower</code> function</h3>
 <p>You can’t take an adress of std:: function since the function could
 be implemented differently with different STL(s) and/or in the feature
 the function may change, hence such code is not portable. From <a
@@ -1705,11 +1787,11 @@ standard.</p>
 <p>So, strictly speaking, ignoring facts from the article, this is not
 portable C++:</p>
 <div class="sourceCode" id="cb65"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb65-1"><a href="#cb65-1"></a><span class="bu">std::</span>wstring name<span class="op">;</span></span>
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb65-1"><a href="#cb65-1"></a><span class="bu">std::</span>wstring<span class="op"> </span>name<span class="op">;</span></span>
 <span id="cb65-2"><a href="#cb65-2"></a><span class="bu">std::</span>transform<span class="op">(</span>name<span class="op">.</span>begin<span class="op">(),</span> name<span class="op">.</span>end<span class="op">(),</span> name<span class="op">.</span>begin<span class="op">(),</span></span>
 <span id="cb65-3"><a href="#cb65-3"></a>    <span class="bu">std::</span>tolower<span class="op">);</span></span></code></pre></div>
-<h3 data-number="45" id="45"><span
-class="header-section-number">45</span> <a href="#45"># </a>replace
+<h3 data-number="0.0.45" id="45"><span
+class="header-section-number">0.0.45</span> <a href="#45"># </a>replace
 operator new to track third-party code allocations</h3>
 <p><code>operator new</code>/<code>operator delete</code> can have <a
 href="https://en.cppreference.com/w/cpp/memory/new/operator_new#Global_replacements">global
@@ -1717,7 +1799,7 @@ replacement</a>. Usually used to actually inject custom memory
 allocator, but also is used for tracking/profiling purpose. And can be
 used for debugging:</p>
 <div class="sourceCode" id="cb66"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb66-1"><a href="#cb66-1"></a><span class="dt">void</span><span class="op">*</span> <span class="kw">operator</span> <span class="kw">new</span><span class="op">(</span><span class="bu">std::</span>size_t size<span class="op">)</span></span>
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb66-1"><a href="#cb66-1"></a><span class="dt">void</span><span class="op">*</span> <span class="kw">operator</span> <span class="kw">new</span><span class="op">(</span><span class="bu">std::</span>size_t<span class="op"> </span>size<span class="op">)</span></span>
 <span id="cb66-2"><a href="#cb66-2"></a><span class="op">{</span></span>
 <span id="cb66-3"><a href="#cb66-3"></a>    <span class="cf">return</span> malloc<span class="op">(</span>size<span class="op">);</span> <span class="co">// assume size &gt; 0</span></span>
 <span id="cb66-4"><a href="#cb66-4"></a><span class="op">}</span></span>
@@ -1727,15 +1809,15 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb66-8"><a href="#cb66-8"></a><span class="op">}</span></span>
 <span id="cb66-9"><a href="#cb66-9"></a><span class="dt">int</span> main<span class="op">()</span></span>
 <span id="cb66-10"><a href="#cb66-10"></a><span class="op">{</span></span>
-<span id="cb66-11"><a href="#cb66-11"></a>    <span class="bu">std::</span>string s<span class="op">{</span><span class="st">&quot;does it allocate for this input?&quot;</span><span class="op">};</span></span>
+<span id="cb66-11"><a href="#cb66-11"></a>    <span class="bu">std::</span>string<span class="op"> </span>s<span class="op">{</span><span class="st">&quot;does it allocate for this input?&quot;</span><span class="op">};</span></span>
 <span id="cb66-12"><a href="#cb66-12"></a>    <span class="co">// ...</span></span>
 <span id="cb66-13"><a href="#cb66-13"></a><span class="op">}</span></span></code></pre></div>
 <p>Just put a breakpoint inside your version of new/delete; observe
 callstack and all the useful context.</p>
 <p>Hint: same can be done with, let say, WinAPI - use <a
 href="https://github.com/microsoft/Detours">Detours</a>.</p>
-<h3 data-number="46" id="46"><span
-class="header-section-number">46</span> <a href="#46">#
+<h3 data-number="0.0.46" id="46"><span
+class="header-section-number">0.0.46</span> <a href="#46">#
 </a><code>std::shared_ptr&lt;void&gt;</code> as user-data pointer</h3>
 <p><code>std::shared_ptr&lt;void&gt;</code> holds <code>void*</code>
 pointer, but also has <a
@@ -1750,8 +1832,8 @@ href="https://stackoverflow.com/questions/5913396/why-do-stdshared-ptrvoid-work"
 do std::shared_ptr<void> work</a> and <a
 href="https://www.nextptr.com/tutorial/ta1227747841/the-stdshared_ptrvoid-as-arbitrary-userdata-pointer">The
 std::shared_ptr as arbitrary user-data pointer</a>.</p>
-<h3 data-number="47" id="47"><span
-class="header-section-number">47</span> <a href="#47">#
+<h3 data-number="0.0.47" id="47"><span
+class="header-section-number">0.0.47</span> <a href="#47">#
 </a>sync_with_stdio for stdout vs std::cout</h3>
 <p>See <a
 href="https://en.cppreference.com/w/cpp/io/ios_base/sync_with_stdio">sync_with_stdio</a>.</p>
@@ -1767,16 +1849,16 @@ thread-safe (individual characters output from multiple threads may
 interleave, but no data races occur).</p>
 </blockquote>
 <div class="sourceCode" id="cb68"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb68-1"><a href="#cb68-1"></a><span class="bu">std::</span>ios::sync_with_stdio<span class="op">(</span><span class="kw">false</span><span class="op">);</span></span>
-<span id="cb68-2"><a href="#cb68-2"></a><span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">&quot;a</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb68-1"><a href="#cb68-1"></a><span class="bu">std::</span>ios<span class="bu">::</span>sync_with_stdio<span class="op">(</span><span class="kw">false</span><span class="op">);</span></span>
+<span id="cb68-2"><a href="#cb68-2"></a><span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> <span class="st">&quot;a</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
 <span id="cb68-3"><a href="#cb68-3"></a><span class="bu">std::</span>printf<span class="op">(</span><span class="st">&quot;b</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span> <span class="co">// may be output before &#39;a&#39; above</span></span>
-<span id="cb68-4"><a href="#cb68-4"></a><span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">&quot;c</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span></code></pre></div>
+<span id="cb68-4"><a href="#cb68-4"></a><span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> <span class="st">&quot;c</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span></code></pre></div>
 <p>Note: not the same as <a
 href="https://en.cppreference.com/w/cpp/io/basic_osyncstream">syncstream/C++20</a>.</p>
 <p>See also <code>cin.tie(nullptr)</code>.</p>
-<h3 data-number="48" id="48"><span
-class="header-section-number">48</span> <a href="#48"># </a>std::clog vs
-std::cerr</h3>
+<h3 data-number="0.0.48" id="48"><span
+class="header-section-number">0.0.48</span> <a href="#48">#
+</a>std::clog vs std::cerr</h3>
 <p><a href="https://en.cppreference.com/w/cpp/io/clog">clog</a>
 cppreference and <a
 href="https://en.cppreference.com/w/cpp/io/cerr">cerr</a>. Associated
@@ -1787,12 +1869,12 @@ cerr), but:</p>
 std::cout, while output to stderr via std::clog does not.</p>
 </blockquote>
 <div class="sourceCode" id="cb69"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb69-1"><a href="#cb69-1"></a><span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">&quot;aaaaa</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
-<span id="cb69-2"><a href="#cb69-2"></a><span class="bu">std::</span>clog <span class="op">&lt;&lt;</span> <span class="st">&quot;bbbbb</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span> <span class="co">// may not flush &quot;aaaaa&quot;</span></span>
-<span id="cb69-3"><a href="#cb69-3"></a><span class="bu">std::</span>cerr <span class="op">&lt;&lt;</span> <span class="st">&quot;ccccc</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span> <span class="co">// flush &quot;aaaaa&quot;</span></span></code></pre></div>
-<h3 data-number="49" id="49"><span
-class="header-section-number">49</span> <a href="#49"># </a>capture-less
-lambda can be converted to c-function</h3>
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb69-1"><a href="#cb69-1"></a><span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> <span class="st">&quot;aaaaa</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
+<span id="cb69-2"><a href="#cb69-2"></a><span class="bu">std::</span>clog<span class="op"> &lt;&lt;</span> <span class="st">&quot;bbbbb</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span> <span class="co">// may not flush &quot;aaaaa&quot;</span></span>
+<span id="cb69-3"><a href="#cb69-3"></a><span class="bu">std::</span>cerr<span class="op"> &lt;&lt;</span> <span class="st">&quot;ccccc</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span> <span class="co">// flush &quot;aaaaa&quot;</span></span></code></pre></div>
+<h3 data-number="0.0.49" id="49"><span
+class="header-section-number">0.0.49</span> <a href="#49">#
+</a>capture-less lambda can be converted to c-function</h3>
 <div class="sourceCode" id="cb70"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb70-1"><a href="#cb70-1"></a><span class="at">extern</span> <span class="st">&quot;C&quot;</span> <span class="dt">void</span> Handle<span class="op">(</span><span class="dt">void</span> <span class="op">(*</span>MyCallback<span class="op">)(</span><span class="dt">int</span><span class="op">));</span></span>
 <span id="cb70-2"><a href="#cb70-2"></a></span>
@@ -1802,8 +1884,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 it can be converted to c-style function pointer (has conversion
 operator). See <a
 href="https://en.cppreference.com/w/cpp/language/lambda">lambda</a>.</p>
-<h3 data-number="50" id="50"><span
-class="header-section-number">50</span> <a href="#50">#
+<h3 data-number="0.0.50" id="50"><span
+class="header-section-number">0.0.50</span> <a href="#50">#
 </a><code>+[](){}</code> to convert lambda to c-function</h3>
 <p>See <a
 href="https://stackoverflow.com/questions/18889028/a-positive-lambda-what-sorcery-is-this">A
@@ -1825,8 +1907,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 </blockquote>
 <p>In addition: what <code>*[](){}</code> does? And
 <code>+*[](){}</code>?.</p>
-<h3 data-number="51" id="51"><span
-class="header-section-number">51</span> <a href="#51"># </a>virtual
+<h3 data-number="0.0.51" id="51"><span
+class="header-section-number">0.0.51</span> <a href="#51"># </a>virtual
 operator int</h3>
 <p><a
 href="https://en.cppreference.com/w/cpp/language/cast_operator">conversion
@@ -1854,9 +1936,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb72-19"><a href="#cb72-19"></a><span class="op">{</span></span>
 <span id="cb72-20"><a href="#cb72-20"></a>    Handle<span class="op">(</span>MyDerived<span class="op">{});</span> <span class="co">// prints 2</span></span>
 <span id="cb72-21"><a href="#cb72-21"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="52" id="52"><span
-class="header-section-number">52</span> <a href="#52"># </a>placement
-new emplace_back pre-C++11</h3>
+<h3 data-number="0.0.52" id="52"><span
+class="header-section-number">0.0.52</span> <a href="#52">#
+</a>placement new emplace_back pre-C++11</h3>
 <p>Used to perfect-construct object in-place. Below is valid C++98:</p>
 <div class="sourceCode" id="cb73"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb73-1"><a href="#cb73-1"></a><span class="pp">#include </span><span class="im">&lt;cassert&gt;</span></span>
@@ -1887,8 +1969,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <div class="sourceCode" id="cb74"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb74-1"><a href="#cb74-1"></a>TArray<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> Data<span class="op">;</span></span>
 <span id="cb74-2"><a href="#cb74-2"></a><span class="kw">new</span><span class="op">(</span>Data<span class="op">)</span> <span class="dt">int</span><span class="op">{</span><span class="dv">67</span><span class="op">};</span> <span class="co">// push_back to Data</span></span></code></pre></div>
-<h3 data-number="53" id="53"><span
-class="header-section-number">53</span> <a href="#53">#
+<h3 data-number="0.0.53" id="53"><span
+class="header-section-number">0.0.53</span> <a href="#53">#
 </a><code>operator-&gt;</code> recursion (returning non-pointer
 type)</h3>
 <p>If <code>operator-&gt;</code> returns non-pointer type, compiler will
@@ -1916,9 +1998,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb75-19"><a href="#cb75-19"></a><span class="op">}</span></span></code></pre></div>
 <p>Used for <a
 href="https://quuxplusone.github.io/blog/2019/02/06/arrow-proxy/">arrow_proxy</a>.</p>
-<h3 data-number="54" id="54"><span
-class="header-section-number">54</span> <a href="#54"># </a>move-only
-types and initializer_list</h3>
+<h3 data-number="0.0.54" id="54"><span
+class="header-section-number">0.0.54</span> <a href="#54">#
+</a>move-only types and initializer_list</h3>
 <p>std::initializer_list with “uniform initialization” was introduced
 together with move semantics in C++11. However, surprisingly,
 initializer_list does not support move-only types like std::unique_ptr.
@@ -1936,8 +2018,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb77-5"><a href="#cb77-5"></a>    <span class="bu">std::</span>make_move_iterator<span class="op">(</span><span class="bu">std::</span>begin<span class="op">(</span>temp<span class="op">)),</span></span>
 <span id="cb77-6"><a href="#cb77-6"></a>    <span class="bu">std::</span>make_move_iterator<span class="op">(</span><span class="bu">std::</span>end<span class="op">(</span>temp<span class="op">))</span></span>
 <span id="cb77-7"><a href="#cb77-7"></a>    <span class="op">};</span></span></code></pre></div>
-<h3 data-number="55" id="55"><span
-class="header-section-number">55</span> <a href="#55"># </a>unicorn
+<h3 data-number="0.0.55" id="55"><span
+class="header-section-number">0.0.55</span> <a href="#55"># </a>unicorn
 initialization</h3>
 <p>C++ initialization is famously complex. C++11 “uniform
 initialization” with braces <code>{}</code> (list-initialization) is
@@ -1988,9 +2070,9 @@ for Different Ways of Initialization, Josuttis</a></li>
 href="https://x.com/timur_audio/status/1119160309573242880">Initialisation
 in Modern C++, Timur Doumler</a></li>
 </ul>
-<h3 data-number="56" id="56"><span
-class="header-section-number">56</span> <a href="#56"># </a>move-only
-lambda and std::function</h3>
+<h3 data-number="0.0.56" id="56"><span
+class="header-section-number">0.0.56</span> <a href="#56">#
+</a>move-only lambda and std::function</h3>
 <p><code>std::function</code> was introduced together with move
 semantics in C++11. However, surprisingly, std::function does not
 support move-only lambda/function objects. This does not compile:</p>
@@ -1999,8 +2081,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>That’s one of the reasons C++23 <a
 href="https://en.cppreference.com/w/cpp/utility/functional/move_only_function">std::move_only_function</a>
 was introduced.</p>
-<h3 data-number="57" id="57"><span
-class="header-section-number">57</span> <a href="#57">#
+<h3 data-number="0.0.57" id="57"><span
+class="header-section-number">0.0.57</span> <a href="#57">#
 </a>std::function issues</h3>
 <p>From <a href="https://wg21.link/n4159">std::functionand
 Beyond</a>:</p>
@@ -2016,9 +2098,9 @@ Beyond</a>:</p>
 C++23</li>
 <li><a href="https://wg21.link/P0792">function_ref</a> - C++26</li>
 </ul>
-<h3 data-number="58" id="58"><span
-class="header-section-number">58</span> <a href="#58"># </a>non-trivial
-types in union</h3>
+<h3 data-number="0.0.58" id="58"><span
+class="header-section-number">0.0.58</span> <a href="#58">#
+</a>non-trivial types in union</h3>
 <p>Since C++11, you can manually control lifetime of user-defined types.
 See <a href="https://en.cppreference.com/w/cpp/language/union">Union
 declaration</a> for more precise definition:</p>
@@ -2040,9 +2122,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb80-15"><a href="#cb80-15"></a>    <span class="co">// ...</span></span>
 <span id="cb80-16"><a href="#cb80-16"></a>    u<span class="op">.</span>s1<span class="op">.~</span>String<span class="op">();</span> <span class="co">// clean-up</span></span>
 <span id="cb80-17"><a href="#cb80-17"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="59" id="59"><span
-class="header-section-number">59</span> <a href="#59"># </a>lambda with
-access to const and global variables</h3>
+<h3 data-number="0.0.59" id="59"><span
+class="header-section-number">0.0.59</span> <a href="#59"># </a>lambda
+with access to const and global variables</h3>
 <p>You can omit capture of const/global data in a simple cases:</p>
 <div class="sourceCode" id="cb81"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb81-1"><a href="#cb81-1"></a><span class="dt">int</span> MyGlobal <span class="op">=</span> <span class="dv">98</span><span class="op">;</span></span>
@@ -2068,9 +2150,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb82-9"><a href="#cb82-9"></a><span class="op">}</span></span></code></pre></div>
 <p>See “implicit”/“odr-usable” in <a
 href="https://en.cppreference.com/w/cpp/language/lambda">cppreference</a>.</p>
-<h3 data-number="60" id="60"><span
-class="header-section-number">60</span> <a href="#60"># </a>std::variant
-overload pattern</h3>
+<h3 data-number="0.0.60" id="60"><span
+class="header-section-number">0.0.60</span> <a href="#60">#
+</a>std::variant overload pattern</h3>
 <p>See <a
 href="https://www.cppstories.com/2019/02/2lines3featuresoverload.html/">2
 Lines Of Code and 3 C++17 Features - The overload Pattern</a>.</p>
@@ -2082,8 +2164,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb83-4"><a href="#cb83-4"></a><span class="bu">std::</span>variant<span class="op">&lt;</span><span class="dt">int</span><span class="op">,</span> <span class="dt">float</span><span class="op">&gt;</span> vv<span class="op">{</span><span class="dv">67</span><span class="op">};</span></span>
 <span id="cb83-5"><a href="#cb83-5"></a><span class="bu">std::</span>visit<span class="op">(</span>overload</span>
 <span id="cb83-6"><a href="#cb83-6"></a>    <span class="op">{</span></span>
-<span id="cb83-7"><a href="#cb83-7"></a>      <span class="op">[](</span><span class="at">const</span> <span class="dt">int</span><span class="op">&amp;</span> i<span class="op">)</span>   <span class="op">{</span> <span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">&quot;int: &quot;</span> <span class="op">&lt;&lt;</span> i<span class="op">;</span> <span class="op">},</span></span>
-<span id="cb83-8"><a href="#cb83-8"></a>      <span class="op">[](</span><span class="at">const</span> <span class="dt">float</span><span class="op">&amp;</span> f<span class="op">)</span> <span class="op">{</span> <span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">&quot;float: &quot;</span> <span class="op">&lt;&lt;</span> f<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb83-7"><a href="#cb83-7"></a>      <span class="op">[](</span><span class="at">const</span> <span class="dt">int</span><span class="op">&amp;</span> i<span class="op">)</span>   <span class="op">{</span> <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> <span class="st">&quot;int: &quot;</span> <span class="op">&lt;&lt;</span> i<span class="op">;</span> <span class="op">},</span></span>
+<span id="cb83-8"><a href="#cb83-8"></a>      <span class="op">[](</span><span class="at">const</span> <span class="dt">float</span><span class="op">&amp;</span> f<span class="op">)</span> <span class="op">{</span> <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> <span class="st">&quot;float: &quot;</span> <span class="op">&lt;&lt;</span> f<span class="op">;</span> <span class="op">}</span></span>
 <span id="cb83-9"><a href="#cb83-9"></a>    <span class="op">},</span></span>
 <span id="cb83-10"><a href="#cb83-10"></a>    vv<span class="op">);</span></span></code></pre></div>
 <p>C++20 version:</p>
@@ -2104,9 +2186,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb85-9"><a href="#cb85-9"></a>    <span class="kw">static_assert</span><span class="op">(</span><span class="kw">false</span><span class="op">,</span> <span class="st">&quot;Unsupported type&quot;</span><span class="op">);</span></span>
 <span id="cb85-10"><a href="#cb85-10"></a>  <span class="op">}</span></span>
 <span id="cb85-11"><a href="#cb85-11"></a><span class="op">};</span></span></code></pre></div>
-<h3 data-number="61" id="61"><span
-class="header-section-number">61</span> <a href="#61"># </a>unique_ptr
-to incomplete type and class destructor</h3>
+<h3 data-number="0.0.61" id="61"><span
+class="header-section-number">0.0.61</span> <a href="#61">#
+</a>unique_ptr to incomplete type and class destructor</h3>
 <p>See <a
 href="https://andreasfertig.blog/2023/12/when-an-empty-destructor-is-required/">When
 an empty destructor is required</a> and <a
@@ -2139,9 +2221,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb87-10"><a href="#cb87-10"></a></span>
 <span id="cb87-11"><a href="#cb87-11"></a><span class="co">// use (fine)</span></span>
 <span id="cb87-12"><a href="#cb87-12"></a>Apple a<span class="op">{};</span></span></code></pre></div>
-<h3 data-number="62" id="62"><span
-class="header-section-number">62</span> <a href="#62"># </a>the use of
-<code>shared_ptr&lt;const T&gt;</code></h3>
+<h3 data-number="0.0.62" id="62"><span
+class="header-section-number">0.0.62</span> <a href="#62"># </a>the use
+of <code>shared_ptr&lt;const T&gt;</code></h3>
 <ul>
 <li><a href="https://youtu.be/_BpMYeUFXv8?si=t1XrdB4wjzdGksYd">Sean
 Parent: Value Semantics and Concepts-based Polymorphism</a></li>
@@ -2152,15 +2234,15 @@ href="https://github.com/stlab/libraries/blob/1cd251b49cac434ca519af17da32c4969e
 from STLab.</li>
 </ul>
 <p><mark>TBD</mark>: code sample</p>
-<h3 data-number="63" id="63"><span
-class="header-section-number">63</span> <a href="#63"># </a>string_view
-issues</h3>
+<h3 data-number="0.0.63" id="63"><span
+class="header-section-number">0.0.63</span> <a href="#63">#
+</a>string_view issues</h3>
 <p>See <a
 href="https://ciura.ro/presentations/2018/Conferences/Enough%20string_view%20to%20hang%20ourselves%20-%20Victor%20Ciura%20-%20CppCon%202018.pdf">Enough
 string_view to hang ourselves</a>.</p>
 <p><mark>TBD</mark>: code sample</p>
-<h3 data-number="64" id="64"><span
-class="header-section-number">64</span> <a href="#64">#
+<h3 data-number="0.0.64" id="64"><span
+class="header-section-number">0.0.64</span> <a href="#64">#
 </a>user-provided constructor and garbage initialization</h3>
 <p>See <a href="https://consteval.ca/2024/07/03/initialization/">I Have
 No Constructor, and I Must Initialize</a>:</p>
@@ -2172,14 +2254,14 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb88-5"><a href="#cb88-5"></a>T<span class="op">::</span>T<span class="op">()</span> <span class="op">=</span> <span class="cf">default</span><span class="op">;</span></span>
 <span id="cb88-6"><a href="#cb88-6"></a></span>
 <span id="cb88-7"><a href="#cb88-7"></a>T t<span class="op">{};</span></span>
-<span id="cb88-8"><a href="#cb88-8"></a><span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> t<span class="op">.</span>x <span class="op">&lt;&lt;</span> <span class="bu">std::</span>endl<span class="op">;</span></span></code></pre></div>
+<span id="cb88-8"><a href="#cb88-8"></a><span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> t<span class="op">.</span>x <span class="op">&lt;&lt;</span> <span class="bu">std::</span>endl<span class="op">;</span></span></code></pre></div>
 <blockquote>
 <p>You’d expect the printed result to be 0, right? You poor thing.
 AlasвЂ”it will be garbage.</p>
 </blockquote>
-<h3 data-number="65" id="65"><span
-class="header-section-number">65</span> <a href="#65"># </a>beaware of
-std::string_view-like key with std::meow_map</h3>
+<h3 data-number="0.0.65" id="65"><span
+class="header-section-number">0.0.65</span> <a href="#65"># </a>beaware
+of std::string_view-like key with std::meow_map</h3>
 <p>See, for instance, <a
 href="https://olafurw.com/2022-12-03-a-view-of-a-map/">std::string_view
 and std::map</a>. std::meow_map has invariant and does not allow easily
@@ -2189,8 +2271,8 @@ UB:</p>
 <div class="sourceCode" id="cb89"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb89-1"><a href="#cb89-1"></a><span class="dt">int</span> main<span class="op">()</span></span>
 <span id="cb89-2"><a href="#cb89-2"></a><span class="op">{</span></span>
-<span id="cb89-3"><a href="#cb89-3"></a>    <span class="bu">std::</span>string s1 <span class="op">=</span> <span class="st">&quot;wwwwwwwwwwwwwwwwwwwww&quot;</span><span class="op">;</span></span>
-<span id="cb89-4"><a href="#cb89-4"></a>    <span class="bu">std::</span>string s2 <span class="op">=</span> <span class="st">&quot;bbbbbbbbbbbbbbbbbbbbb&quot;</span><span class="op">;</span></span>
+<span id="cb89-3"><a href="#cb89-3"></a>    <span class="bu">std::</span>string<span class="op"> </span>s1 <span class="op">=</span> <span class="st">&quot;wwwwwwwwwwwwwwwwwwwww&quot;</span><span class="op">;</span></span>
+<span id="cb89-4"><a href="#cb89-4"></a>    <span class="bu">std::</span>string<span class="op"> </span>s2 <span class="op">=</span> <span class="st">&quot;bbbbbbbbbbbbbbbbbbbbb&quot;</span><span class="op">;</span></span>
 <span id="cb89-5"><a href="#cb89-5"></a>    <span class="bu">std::</span>map<span class="op">&lt;</span><span class="bu">std::</span>string_view<span class="op">,</span> <span class="dt">int</span><span class="op">&gt;</span> m<span class="op">;</span></span>
 <span id="cb89-6"><a href="#cb89-6"></a>    m<span class="op">[</span>s1<span class="op">]</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
 <span id="cb89-7"><a href="#cb89-7"></a>    m<span class="op">[</span>s2<span class="op">]</span> <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
@@ -2199,8 +2281,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>This is also the reason std::owner_less/owner_hash/owner_equal exist.
 See <a href="https://wg21.link/P1901">Enabling the Use of weak_ptr as
 Keys in Unordered Associative Containers</a>.</p>
-<h3 data-number="66" id="66"><span
-class="header-section-number">66</span> <a href="#66">#
+<h3 data-number="0.0.66" id="66"><span
+class="header-section-number">0.0.66</span> <a href="#66">#
 </a><code>std::piecewise_construct</code></h3>
 <p>See also <a
 href="https://devblogs.microsoft.com/oldnewthing/20220428-00/?p=106540">What’s
@@ -2220,12 +2302,12 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb90-6"><a href="#cb90-6"></a><span class="bu">std::</span>pair<span class="op">&lt;</span><span class="dt">int</span><span class="op">,</span> MyIds<span class="op">&gt;</span> p1<span class="op">{</span><span class="dv">1</span><span class="op">,</span> MyIds<span class="op">{</span><span class="dv">4</span><span class="op">,</span> <span class="dv">6</span><span class="op">}};</span> <span class="co">// unneeded move</span></span></code></pre></div>
 <p>To foward a set of arguments to a sigle constructor, then:</p>
 <div class="sourceCode" id="cb91"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb91-1"><a href="#cb91-1"></a><span class="bu">std::</span>pair<span class="op">&lt;</span><span class="dt">int</span><span class="op">,</span> MyIds<span class="op">&gt;</span> p2<span class="op">{</span><span class="bu">std::</span>piecewise_construct <span class="co">// for tag-dispatch</span></span>
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb91-1"><a href="#cb91-1"></a><span class="bu">std::</span>pair<span class="op">&lt;</span><span class="dt">int</span><span class="op">,</span> MyIds<span class="op">&gt;</span> p2<span class="op">{</span><span class="bu">std::</span>piecewise_construct<span class="op"> </span><span class="co">// for tag-dispatch</span></span>
 <span id="cb91-2"><a href="#cb91-2"></a>    <span class="op">,</span> <span class="bu">std::</span>tuple<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;(</span><span class="dv">1</span><span class="op">)</span> <span class="co">// first value</span></span>
 <span id="cb91-3"><a href="#cb91-3"></a>    <span class="op">,</span> <span class="bu">std::</span>tuple<span class="op">&lt;</span><span class="dt">int</span><span class="op">,</span> <span class="dt">int</span><span class="op">&gt;(</span><span class="dv">4</span><span class="op">,</span> <span class="dv">6</span><span class="op">)</span> <span class="co">// second value</span></span>
 <span id="cb91-4"><a href="#cb91-4"></a>    <span class="op">};</span></span>
 <span id="cb91-5"><a href="#cb91-5"></a><span class="co">// OR</span></span>
-<span id="cb91-6"><a href="#cb91-6"></a><span class="bu">std::</span>pair<span class="op">&lt;</span><span class="dt">int</span><span class="op">,</span> MyIds<span class="op">&gt;</span> p3<span class="op">{</span><span class="bu">std::</span>piecewise_construct <span class="co">// for tag-dispatch</span></span>
+<span id="cb91-6"><a href="#cb91-6"></a><span class="bu">std::</span>pair<span class="op">&lt;</span><span class="dt">int</span><span class="op">,</span> MyIds<span class="op">&gt;</span> p3<span class="op">{</span><span class="bu">std::</span>piecewise_construct<span class="op"> </span><span class="co">// for tag-dispatch</span></span>
 <span id="cb91-7"><a href="#cb91-7"></a>    <span class="op">,</span> <span class="bu">std::</span>forward_as_tuple<span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="co">// first value, from std::tuple&lt;int&amp;&amp;&gt;</span></span>
 <span id="cb91-8"><a href="#cb91-8"></a>    <span class="op">,</span> <span class="bu">std::</span>forward_as_tuple<span class="op">(</span><span class="dv">4</span><span class="op">,</span> <span class="dv">6</span><span class="op">)</span> <span class="co">// second value, from std::tuple&lt;int&amp;&amp;, int&amp;&amp;&gt;</span></span>
 <span id="cb91-9"><a href="#cb91-9"></a>    <span class="op">};</span></span></code></pre></div>
@@ -2234,10 +2316,10 @@ href="https://en.cppreference.com/w/cpp/container/map/emplace">emplace</a>:</p>
 <div class="sourceCode" id="cb92"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb92-1"><a href="#cb92-1"></a><span class="bu">std::</span>map<span class="op">&lt;</span><span class="dt">int</span><span class="op">,</span> MyIds<span class="op">&gt;</span> my_map<span class="op">;</span></span>
 <span id="cb92-2"><a href="#cb92-2"></a><span class="kw">auto</span> <span class="op">[</span>_<span class="op">,</span> inserted<span class="op">]</span> <span class="op">=</span> my_map<span class="op">.</span>emplace<span class="op">(</span><span class="bu">std::</span>piecewise_construct</span>
-<span id="cb92-3"><a href="#cb92-3"></a>    <span class="op">,</span> <span class="bu">std::</span>forward_as_tuple<span class="op">(</span><span class="dv">1</span><span class="op">)</span></span>
+<span id="cb92-3"><a href="#cb92-3"></a><span class="op"> </span>   <span class="op">,</span> <span class="bu">std::</span>forward_as_tuple<span class="op">(</span><span class="dv">1</span><span class="op">)</span></span>
 <span id="cb92-4"><a href="#cb92-4"></a>    <span class="op">,</span> <span class="bu">std::</span>forward_as_tuple<span class="op">(</span><span class="dv">4</span><span class="op">,</span> <span class="dv">6</span><span class="op">));</span></span></code></pre></div>
-<h3 data-number="67" id="67"><span
-class="header-section-number">67</span> <a href="#67">#
+<h3 data-number="0.0.67" id="67"><span
+class="header-section-number">0.0.67</span> <a href="#67">#
 </a><code>map[key]</code> creates default-constructed value first</h3>
 <p>See <a
 href="https://en.cppreference.com/w/cpp/container/map/operator_at">map::operator[]</a>
@@ -2254,8 +2336,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb94-4"><a href="#cb94-4"></a>                   <span class="co">// empty string re-assigned next</span></span></code></pre></div>
 <p>See also <a href="#39">“default constructor must do no work”</a> and
 <a href="#68">“const map[key] does not compile”</a>.</p>
-<h3 data-number="68" id="68"><span
-class="header-section-number">68</span> <a href="#68"># </a>const
+<h3 data-number="0.0.68" id="68"><span
+class="header-section-number">0.0.68</span> <a href="#68"># </a>const
 <code>map[key]</code> does not compile, use <code>.find()</code></h3>
 <p>See “map[key] creates default-constructed value first”. Because
 <code>map::operator[]</code> is:</p>
@@ -2268,8 +2350,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb96-2"><a href="#cb96-2"></a><span class="op">{</span></span>
 <span id="cb96-3"><a href="#cb96-3"></a>    <span class="at">const</span> <span class="bu">std::</span>string<span class="op">&amp;</span> my_value <span class="op">=</span> kv<span class="op">[</span><span class="dv">42</span><span class="op">];</span> <span class="co">// does not compile</span></span>
 <span id="cb96-4"><a href="#cb96-4"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="69" id="69"><span
-class="header-section-number">69</span> <a href="#69">#
+<h3 data-number="0.0.69" id="69"><span
+class="header-section-number">0.0.69</span> <a href="#69">#
 </a><code>if not map.find(x) then map[x]</code> is an antipattern</h3>
 <p>In case you need to do extra work only if key does not exist, having
 code like this:</p>
@@ -2294,8 +2376,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb98-7"><a href="#cb98-7"></a>    <span class="op">}</span></span>
 <span id="cb98-8"><a href="#cb98-8"></a><span class="op">}</span></span></code></pre></div>
 <p>(You can use emplace to avoid default-constructing std::string).</p>
-<h3 data-number="70" id="70"><span
-class="header-section-number">70</span> <a href="#70"># </a>Meyer’s
+<h3 data-number="0.0.70" id="70"><span
+class="header-section-number">0.0.70</span> <a href="#70"># </a>Meyer’s
 singleton</h3>
 <p>Relies on static local variables. Points to consider:</p>
 <ul>
@@ -2314,8 +2396,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>See also <a
 href="https://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf">C++
 and the Perils of Double-Checked Locking</a>.</p>
-<h3 data-number="71" id="71"><span
-class="header-section-number">71</span> <a href="#71"># </a>magic
+<h3 data-number="0.0.71" id="71"><span
+class="header-section-number">0.0.71</span> <a href="#71"># </a>magic
 static</h3>
 <p>From <a
 href="https://learn.microsoft.com/en-us/cpp/cpp/storage-classes-cpp?view=msvc-170#static">Storage
@@ -2354,8 +2436,8 @@ class="sourceCode numberSource asm numberLines"><code class="sourceCode fasm"><s
 <span id="cb101-6"><a href="#cb101-6"></a>    <span class="cf">je</span>      <span class="op">.</span>L15</span>
 <span id="cb101-7"><a href="#cb101-7"></a>    <span class="bu">mov</span>     <span class="kw">eax</span><span class="op">,</span> OFFSET FLAT<span class="op">:</span>MyClass<span class="op">::</span>GetInstance<span class="op">()::</span>instance</span>
 <span id="cb101-8"><a href="#cb101-8"></a>    <span class="cf">ret</span></span></code></pre></div>
-<h3 data-number="72" id="72"><span
-class="header-section-number">72</span> <a href="#72">#
+<h3 data-number="0.0.72" id="72"><span
+class="header-section-number">0.0.72</span> <a href="#72">#
 </a>(std::min)(x, y) thanks to Windows.h</h3>
 <p>A trick to avoid macro invocation.</p>
 <p>You see code like this?</p>
@@ -2380,8 +2462,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 href="https://devblogs.microsoft.com/oldnewthing/20091130-00/?p=15863">WIN32_LEAN_AND_MEAN</a>,
 NOMINMAX and heard about <a
 href="http://web.archive.org/web/20121219084749/http://support.microsoft.com/kb/166474">VC_EXTRALEAN</a>.</p>
-<h3 data-number="73" id="73"><span
-class="header-section-number">73</span> <a href="#73"># </a>!!v
+<h3 data-number="0.0.73" id="73"><span
+class="header-section-number">0.0.73</span> <a href="#73"># </a>!!v
 double-negation</h3>
 <p>It’s a trick to convert to bool.</p>
 <p>Lets have a look at MSVC <code>assert</code> implementation:</p>
@@ -2401,8 +2483,8 @@ about <code>(bool)a</code>, <code>bool(a)</code> and
 <code>static_cast&lt;bool&gt;(a)</code>. See also <a
 href="https://en.cppreference.com/w/cpp/language/implicit_conversion#Contextual_conversions">contextually
 converted to bool</a>.</p>
-<h3 data-number="74" id="74"><span
-class="header-section-number">74</span> <a href="#74">#
+<h3 data-number="0.0.74" id="74"><span
+class="header-section-number">0.0.74</span> <a href="#74">#
 </a><code>sizeof v</code> and <code>sizeof(v)</code></h3>
 <p>Turns out, for expression sizeof does not requre parentheses:</p>
 <div class="sourceCode" id="cb107"><pre
@@ -2412,8 +2494,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>where <code>sizeof(Type)</code> requires parentheses for a type. See
 <a href="https://en.cppreference.com/w/cpp/language/sizeof">sizeof
 operator</a>.</p>
-<h3 data-number="75" id="75"><span
-class="header-section-number">75</span> <a href="#75"># </a>six dots
+<h3 data-number="0.0.75" id="75"><span
+class="header-section-number">0.0.75</span> <a href="#75"># </a>six dots
 <code>Ts......</code></h3>
 <p>See <a href="https://lbrandy.com/blog/2013/02/c11s-six-dots/">C++11’s
 six dots</a>:</p>
@@ -2438,8 +2520,8 @@ href="https://wg21.link/P3176">The Oxford variadic comma</a>:</p>
 (int…) is incompatible with C, detrimental to C++, and easily
 replaceable with (int, …)</p>
 </blockquote>
-<h3 data-number="76" id="76"><span
-class="header-section-number">76</span> <a href="#76">#
+<h3 data-number="0.0.76" id="76"><span
+class="header-section-number">0.0.76</span> <a href="#76">#
 </a><code>assert(x &amp;&amp; "message")</code></h3>
 <p>Used to print “message” when assert fails. Compare the output of:</p>
 <div class="sourceCode" id="cb110"><pre
@@ -2458,8 +2540,8 @@ message:</p>
 <div class="sourceCode" id="cb112"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb112-1"><a href="#cb112-1"></a><span class="ot">assert</span><span class="op">(</span><span class="kw">false</span> <span class="op">&amp;&amp;</span> <span class="st">&quot;message&quot;</span><span class="op">);</span> <span class="co">// fail always, print &quot;message&quot;</span></span>
 <span id="cb112-2"><a href="#cb112-2"></a><span class="ot">assert</span><span class="op">(!</span><span class="st">&quot;message&quot;</span><span class="op">);</span>         <span class="co">// same</span></span></code></pre></div>
-<h3 data-number="77" id="77"><span
-class="header-section-number">77</span> <a href="#77">#
+<h3 data-number="0.0.77" id="77"><span
+class="header-section-number">0.0.77</span> <a href="#77">#
 </a><code>&lt;assert.h&gt;</code> and NDEBUG with no include guard</h3>
 <p><code>&lt;assert.h&gt;</code> and <code>&lt;cassert&gt;</code> are
 special in the sense that there is no header include guard, <strong>by
@@ -2506,9 +2588,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb115-12"><a href="#cb115-12"></a>    <span class="ot">assert</span><span class="op">(</span>argc <span class="op">&gt;</span> <span class="dv">1</span> <span class="op">&amp;&amp;</span> <span class="st">&quot;Expected single &lt;file_name&gt; argument passed&quot;</span><span class="op">);</span></span>
 <span id="cb115-13"><a href="#cb115-13"></a>    <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file_name <span class="op">=</span> argv<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
 <span id="cb115-14"><a href="#cb115-14"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="78" id="78"><span
-class="header-section-number">78</span> <a href="#78"># </a>universal
-reference vs forwarding reference</h3>
+<h3 data-number="0.0.78" id="78"><span
+class="header-section-number">0.0.78</span> <a href="#78">#
+</a>universal reference vs forwarding reference</h3>
 <p>The same thing:</p>
 <div class="sourceCode" id="cb116"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb116-1"><a href="#cb116-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
@@ -2525,8 +2607,8 @@ remedied by N4164 […]</p>
 href="https://isocpp.org/blog/2012/11/universal-references-in-c11-scott-meyers">Universal
 References in C++11</a> and <a
 href="https://wg21.link/n4164">n4164/Forwarding References</a>.</p>
-<h3 data-number="79" id="79"><span
-class="header-section-number">79</span> <a href="#79"># </a>force
+<h3 data-number="0.0.79" id="79"><span
+class="header-section-number">0.0.79</span> <a href="#79"># </a>force
 constexpr to evaluate at compile time</h3>
 <p>Even if arguments of constexpr function are known at compile time,
 it’s not guarantee that its going to be evaluated at compile time. To
@@ -2550,8 +2632,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb117-14"><a href="#cb117-14"></a><span class="op">}</span></span></code></pre></div>
 <p>See also Epic’s Unreal Engine version: UE_FORCE_CONSTEVAL, where
 variable template is used instead.</p>
-<h3 data-number="80" id="80"><span
-class="header-section-number">80</span> <a href="#80"># </a>variadic
+<h3 data-number="0.0.80" id="80"><span
+class="header-section-number">0.0.80</span> <a href="#80"># </a>variadic
 template with default argument</h3>
 <p>See <a href="https://cor3ntin.github.io/posts/variadic/">Non-terminal
 variadic template parameters</a> where <code>apply_last</code> is
@@ -2575,15 +2657,15 @@ kind of API:</p>
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb120-1"><a href="#cb120-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span></span>
 <span id="cb120-2"><a href="#cb120-2"></a><span class="dt">void</span> WaitAll<span class="op">(</span>Args<span class="op">&amp;&amp;...</span> args<span class="op">,</span> milliseconds timeout <span class="op">=</span> milliseconds<span class="op">::</span>max<span class="op">());</span></span></code></pre></div>
 <p><mark>TODO</mark> - show simple code snippet.</p>
-<h3 data-number="81" id="81"><span
-class="header-section-number">81</span> <a href="#81"># </a>variadic
+<h3 data-number="0.0.81" id="81"><span
+class="header-section-number">0.0.81</span> <a href="#81"># </a>variadic
 template with default std::source_location::current()</h3>
 <p>Something like this does not work (see <a
 href="https://stackoverflow.com/q/57547273/2451677">this SO</a>):</p>
 <div class="sourceCode" id="cb121"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb121-1"><a href="#cb121-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Args<span class="op">&gt;</span></span>
 <span id="cb121-2"><a href="#cb121-2"></a><span class="dt">void</span> debug<span class="op">(</span>Args<span class="op">&amp;&amp;...</span> args<span class="op">,</span></span>
-<span id="cb121-3"><a href="#cb121-3"></a>           <span class="at">const</span> <span class="bu">std::</span>source_location<span class="op">&amp;</span> loc <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">());</span></span></code></pre></div>
+<span id="cb121-3"><a href="#cb121-3"></a>           <span class="at">const</span> <span class="bu">std::</span>source_location<span class="op">&amp;</span> loc <span class="op">=</span> <span class="bu">std::</span>source_location<span class="bu">::</span>current<span class="op">());</span></span></code></pre></div>
 <p>Introducing type with implicit constructor is the trick:</p>
 <div class="sourceCode" id="cb122"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb122-1"><a href="#cb122-1"></a><span class="pp">#include </span><span class="im">&lt;source_location&gt;</span></span>
@@ -2591,11 +2673,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb122-3"><a href="#cb122-3"></a></span>
 <span id="cb122-4"><a href="#cb122-4"></a><span class="kw">struct</span> FormatWithLocation <span class="op">{</span></span>
 <span id="cb122-5"><a href="#cb122-5"></a>  <span class="at">const</span> <span class="dt">char</span><span class="op">*</span> fmt<span class="op">;</span></span>
-<span id="cb122-6"><a href="#cb122-6"></a>  <span class="bu">std::</span>source_location loc<span class="op">;</span></span>
+<span id="cb122-6"><a href="#cb122-6"></a>  <span class="bu">std::</span>source_location<span class="op"> </span>loc<span class="op">;</span></span>
 <span id="cb122-7"><a href="#cb122-7"></a></span>
 <span id="cb122-8"><a href="#cb122-8"></a>  FormatWithLocation<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> <span class="va">fmt_</span><span class="op">,</span></span>
 <span id="cb122-9"><a href="#cb122-9"></a>                     <span class="at">const</span> <span class="bu">std::</span>source_location<span class="op">&amp;</span> <span class="va">loc_</span></span>
-<span id="cb122-10"><a href="#cb122-10"></a>                         <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">())</span></span>
+<span id="cb122-10"><a href="#cb122-10"></a>                         <span class="op">=</span> <span class="bu">std::</span>source_location<span class="bu">::</span>current<span class="op">())</span></span>
 <span id="cb122-11"><a href="#cb122-11"></a>      <span class="op">:</span> fmt<span class="op">(</span><span class="va">fmt_</span><span class="op">),</span> loc<span class="op">(</span><span class="va">loc_</span><span class="op">)</span> <span class="op">{}</span></span>
 <span id="cb122-12"><a href="#cb122-12"></a><span class="op">};</span></span>
 <span id="cb122-13"><a href="#cb122-13"></a></span>
@@ -2609,8 +2691,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>See also <a
 href="https://cor3ntin.github.io/posts/variadic/">Non-terminal variadic
 template parameters</a>.</p>
-<h3 data-number="82" id="82"><span
-class="header-section-number">82</span> <a href="#82"># </a>variadic
+<h3 data-number="0.0.82" id="82"><span
+class="header-section-number">0.0.82</span> <a href="#82"># </a>variadic
 template with default argument and deduction guide</h3>
 <p>See <a href="https://stackoverflow.com/q/57547273/2451677">this
 SO</a>:</p>
@@ -2619,7 +2701,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb123-2"><a href="#cb123-2"></a><span class="kw">struct</span> debug</span>
 <span id="cb123-3"><a href="#cb123-3"></a><span class="op">{</span>    </span>
 <span id="cb123-4"><a href="#cb123-4"></a>    debug<span class="op">(</span>Ts<span class="op">&amp;&amp;...</span> ts</span>
-<span id="cb123-5"><a href="#cb123-5"></a>        <span class="op">,</span> <span class="at">const</span> <span class="bu">std::</span>source_location<span class="op">&amp;</span> loc <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">());</span></span>
+<span id="cb123-5"><a href="#cb123-5"></a>        <span class="op">,</span> <span class="at">const</span> <span class="bu">std::</span>source_location<span class="op">&amp;</span> loc <span class="op">=</span> <span class="bu">std::</span>source_location<span class="bu">::</span>current<span class="op">());</span></span>
 <span id="cb123-6"><a href="#cb123-6"></a><span class="op">};</span></span>
 <span id="cb123-7"><a href="#cb123-7"></a></span>
 <span id="cb123-8"><a href="#cb123-8"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Ts<span class="op">&gt;</span></span>
@@ -2630,9 +2712,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 href="https://cor3ntin.github.io/posts/variadic/">Non-terminal variadic
 template parameters</a> and “variadic template with default argument”
 section.</p>
-<h3 data-number="83" id="83"><span
-class="header-section-number">83</span> <a href="#83"># </a>debug: print
-type at compile time with error</h3>
+<h3 data-number="0.0.83" id="83"><span
+class="header-section-number">0.0.83</span> <a href="#83"># </a>debug:
+print type at compile time with error</h3>
 <p>Sometimes it’s useful to know the type of a variable deep inside
 templates:</p>
 <div class="sourceCode" id="cb124"><pre
@@ -2655,8 +2737,8 @@ the error message like this:</p>
 <p>See also <a
 href="https://cukic.co/2019/02/19/tmp-testing-and-debugging-templates">Template
 meta-programming: Some testing and debugging tricks</a>.</p>
-<h3 data-number="84" id="84"><span
-class="header-section-number">84</span> <a href="#84"># </a>debug:
+<h3 data-number="0.0.84" id="84"><span
+class="header-section-number">0.0.84</span> <a href="#84"># </a>debug:
 useful custom assert</h3>
 <p>When custom version of assert is needed, it’s useful to inject
 <code>__debugbreak</code> right at assert definition so you can get
@@ -2675,19 +2757,20 @@ assert/verify location:</p>
 <p><img src="cpp_tips_tricks_quirks/cpp_tips_tricks_quirks0.png" /></p>
 <p>Side question: why operator comma is used in
 <code>(KK_ABORT(...), false)</code>?</p>
-<h3 data-number="85" id="85"><span
-class="header-section-number">85</span> <a href="#85"># </a>non-standard
-<code>, ##__VA_ARGS__</code> vs C++20 <code>__VA_OPT__</code></h3>
+<h3 data-number="0.0.85" id="85"><span
+class="header-section-number">0.0.85</span> <a href="#85">#
+</a>non-standard <code>, ##__VA_ARGS__</code> vs C++20
+<code>__VA_OPT__</code></h3>
 <p><mark>TBD</mark>. See <a
 href="https://stackoverflow.com/questions/52891546/what-does-va-args-mean">SO</a>,
 <a
 href="https://en.cppreference.com/w/cpp/preprocessor/replace">cppreference</a>.</p>
-<h3 data-number="86" id="86"><span
-class="header-section-number">86</span> <a href="#86"># </a>std::move
-does not move</h3>
+<h3 data-number="0.0.86" id="86"><span
+class="header-section-number">0.0.86</span> <a href="#86">#
+</a>std::move does not move</h3>
 <p><code>std::move(object)</code> does not “move” on its own. So</p>
 <div class="sourceCode" id="cb127"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb127-1"><a href="#cb127-1"></a><span class="bu">std::</span>string s<span class="op">;</span></span>
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb127-1"><a href="#cb127-1"></a><span class="bu">std::</span>string<span class="op"> </span>s<span class="op">;</span></span>
 <span id="cb127-2"><a href="#cb127-2"></a><span class="bu">std::</span>move<span class="op">(</span>s<span class="op">);</span> <span class="co">// no-op</span></span></code></pre></div>
 <p>Similarly, you can move into function that accepts rvalue refence. If
 function implementation does not actually modify/move argument - initial
@@ -2698,7 +2781,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb128-3"><a href="#cb128-3"></a>    <span class="bu">std::</span>puts<span class="op">(</span><span class="st">&quot;not using str&quot;</span><span class="op">);</span></span>
 <span id="cb128-4"><a href="#cb128-4"></a><span class="op">}</span></span>
 <span id="cb128-5"><a href="#cb128-5"></a></span>
-<span id="cb128-6"><a href="#cb128-6"></a><span class="bu">std::</span>string str <span class="op">=</span> <span class="op">...</span></span>
+<span id="cb128-6"><a href="#cb128-6"></a><span class="bu">std::</span>string<span class="op"> </span>str <span class="op">=</span> <span class="op">...</span></span>
 <span id="cb128-7"><a href="#cb128-7"></a>Foo<span class="op">(</span><span class="bu">std::</span>move<span class="op">(</span>str<span class="op">));</span> <span class="co">// no-op</span></span>
 <span id="cb128-8"><a href="#cb128-8"></a><span class="co">// str is unchanged, can be used freely,</span></span>
 <span id="cb128-9"><a href="#cb128-9"></a><span class="co">// but only because you **know** exact implementation of `Foo`</span></span></code></pre></div>
@@ -2732,20 +2815,20 @@ constructor instead of copy constructor if both present, etc.</p>
 <p>See <a
 href="https://web.archive.org/web/20240719173118/http://thbecker.net/articles/rvalue_references/section_01.html">C++
 Rvalue References Explained</a> web archive (July 2024).</p>
-<h3 data-number="87" id="87"><span
-class="header-section-number">87</span> <a href="#87"># </a>no
+<h3 data-number="0.0.87" id="87"><span
+class="header-section-number">0.0.87</span> <a href="#87"># </a>no
 destructive move</h3>
 <p>After std::move object still alive and invokes destructor.</p>
 <p><mark>TODO</mark></p>
-<h3 data-number="88" id="88"><span
-class="header-section-number">88</span> <a href="#88"># </a>std::move on
-return</h3>
+<h3 data-number="0.0.88" id="88"><span
+class="header-section-number">0.0.88</span> <a href="#88">#
+</a>std::move on return</h3>
 <p>See <a
 href="https://devblogs.microsoft.com/oldnewthing/20231124-00/?p=109059">On
 harmful overuse of std::move</a>.</p>
 <p><mark>TODO</mark></p>
-<h3 data-number="89" id="89"><span
-class="header-section-number">89</span> <a href="#89">#
+<h3 data-number="0.0.89" id="89"><span
+class="header-section-number">0.0.89</span> <a href="#89">#
 </a><code>const T&amp;&amp;</code> (const rvalue)</h3>
 <p>rvalue is still a <strong>REFERENCE</strong>, const rvalue can be
 formed in the same way as normal const lvalue:</p>
@@ -2772,8 +2855,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb132-2"><a href="#cb132-2"></a><span class="dt">void</span> ref<span class="op">(</span> <span class="at">const</span> T<span class="op">&amp;&amp;</span> <span class="op">)</span> <span class="op">=</span> <span class="kw">delete</span><span class="op">;</span> <span class="co">// rvalue reference wrapper is deleted</span></span></code></pre></div>
 <p>See <a href="https://stackoverflow.com/q/4938875">SO discussion</a>
 on usefullness.</p>
-<h3 data-number="90" id="90"><span
-class="header-section-number">90</span> <a href="#90"># </a>enum
+<h3 data-number="0.0.90" id="90"><span
+class="header-section-number">0.0.90</span> <a href="#90"># </a>enum
 struct</h3>
 <p>Does below compile?</p>
 <div class="sourceCode" id="cb133"><pre
@@ -2783,9 +2866,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb133-4"><a href="#cb133-4"></a>    V1 <span class="op">=</span> <span class="dv">1</span><span class="op">,</span></span>
 <span id="cb133-5"><a href="#cb133-5"></a><span class="op">};</span></span></code></pre></div>
 <p>Yes. Exactly the same as <code>enum class MyEnum</code>.</p>
-<h3 data-number="91" id="91"><span
-class="header-section-number">91</span> <a href="#91"># </a>using enum
-declaration</h3>
+<h3 data-number="0.0.91" id="91"><span
+class="header-section-number">0.0.91</span> <a href="#91"># </a>using
+enum declaration</h3>
 <p><a href="https://en.cppreference.com/w/cpp/language/enum">This works
 (C++20)</a>:</p>
 <div class="sourceCode" id="cb134"><pre
@@ -2826,8 +2909,8 @@ struct MyType
 </blockquote>
 <p>see <a href="#120">specialize a template class member without
 specializing whole class</a> for an explanation.</p>
-<h3 data-number="92" id="92"><span
-class="header-section-number">92</span> <a href="#92"># </a>using
+<h3 data-number="0.0.92" id="92"><span
+class="header-section-number">0.0.92</span> <a href="#92"># </a>using
 declaration vs using directive</h3>
 <p>See <a
 href="https://learn.microsoft.com/en-us/cpp/cpp/using-declaration?view=msvc-170">using
@@ -2846,8 +2929,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb136-9"><a href="#cb136-9"></a><span class="kw">using</span> <span class="kw">namespace</span> MyNamespace<span class="op">;</span> <span class="co">// using directive</span></span>
 <span id="cb136-10"><a href="#cb136-10"></a>Foo<span class="op">();</span></span></code></pre></div>
 <p>One brings single name; another brings whole namespace.</p>
-<h3 data-number="93" id="93"><span
-class="header-section-number">93</span> <a href="#93">#
+<h3 data-number="0.0.93" id="93"><span
+class="header-section-number">0.0.93</span> <a href="#93">#
 </a><code>dynamic_cast&lt;T*&gt;</code> and
 <code>dynamic_cast&lt;T&amp;&gt;</code></h3>
 <p>One returns nullptr on fail, the other one throws <a
@@ -2873,8 +2956,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb137-18"><a href="#cb137-18"></a>        <span class="ot">assert</span><span class="op">(</span><span class="kw">false</span><span class="op">);</span> <span class="co">// exception of fail</span></span>
 <span id="cb137-19"><a href="#cb137-19"></a>    <span class="op">}</span></span>
 <span id="cb137-20"><a href="#cb137-20"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="94" id="94"><span
-class="header-section-number">94</span> <a href="#94">#
+<h3 data-number="0.0.94" id="94"><span
+class="header-section-number">0.0.94</span> <a href="#94">#
 </a><code>dynamic_cast&lt;const T*&gt;</code> adds const</h3>
 <div class="sourceCode" id="cb138"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb138-1"><a href="#cb138-1"></a><span class="kw">struct</span> V <span class="op">{};</span></span>
@@ -2891,8 +2974,8 @@ still a class type). See also
 <code>dynamic_cast&lt;void*&gt;</code>.</p>
 <p>Notice, `const_cast&lt;const V*&gt;`` can also be used to
 <strong>add</strong> const, not only remove it.</p>
-<h3 data-number="95" id="95"><span
-class="header-section-number">95</span> <a href="#95">#
+<h3 data-number="0.0.95" id="95"><span
+class="header-section-number">0.0.95</span> <a href="#95">#
 </a><code>CONOUT$</code>, <code>CONIN$</code> for
 <code>::AllocConsole()</code></h3>
 <p>See <a
@@ -2916,52 +2999,52 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb139-14"><a href="#cb139-14"></a><span class="op">}</span></span></code></pre></div>
 <p>See <a href="https://stackoverflow.com/a/57241985/2451677">this
 SO</a> for std::wcout and friends reinitilization.</p>
-<h3 data-number="96" id="96"><span
-class="header-section-number">96</span> <a href="#96"># </a>rdbuf to
+<h3 data-number="0.0.96" id="96"><span
+class="header-section-number">0.0.96</span> <a href="#96"># </a>rdbuf to
 read whole file</h3>
 <p>In case you just need a file content as std::string:</p>
 <div class="sourceCode" id="cb140"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb140-1"><a href="#cb140-1"></a><span class="bu">std::</span>string ReadFileAsString<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file_path<span class="op">)</span></span>
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb140-1"><a href="#cb140-1"></a><span class="bu">std::</span>string<span class="op"> </span>ReadFileAsString<span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">*</span> file_path<span class="op">)</span></span>
 <span id="cb140-2"><a href="#cb140-2"></a><span class="op">{</span></span>
-<span id="cb140-3"><a href="#cb140-3"></a>    <span class="bu">std::</span>ifstream file<span class="op">{</span>file_path<span class="op">};</span></span>
+<span id="cb140-3"><a href="#cb140-3"></a>    <span class="bu">std::</span>ifstream<span class="op"> </span>file<span class="op">{</span>file_path<span class="op">};</span></span>
 <span id="cb140-4"><a href="#cb140-4"></a>    KK_VERIFY<span class="op">(</span>file<span class="op">);</span></span>
-<span id="cb140-5"><a href="#cb140-5"></a>    <span class="bu">std::</span>ostringstream ss<span class="op">;</span></span>
+<span id="cb140-5"><a href="#cb140-5"></a>    <span class="bu">std::</span>ostringstream<span class="op"> </span>ss<span class="op">;</span></span>
 <span id="cb140-6"><a href="#cb140-6"></a>    ss <span class="op">&lt;&lt;</span> file<span class="op">.</span>rdbuf<span class="op">();</span></span>
 <span id="cb140-7"><a href="#cb140-7"></a>    KK_VERIFY<span class="op">(</span>ss<span class="op">);</span></span>
-<span id="cb140-8"><a href="#cb140-8"></a>    <span class="bu">std::</span>string content <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>ss<span class="op">).</span>str<span class="op">();</span></span>
+<span id="cb140-8"><a href="#cb140-8"></a>    <span class="bu">std::</span>string<span class="op"> </span>content <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>ss<span class="op">).</span>str<span class="op">();</span></span>
 <span id="cb140-9"><a href="#cb140-9"></a>    <span class="cf">return</span> content<span class="op">;</span></span>
 <span id="cb140-10"><a href="#cb140-10"></a><span class="op">}</span></span></code></pre></div>
 <p>Is it “fast” enough?</p>
-<h3 data-number="97" id="97"><span
-class="header-section-number">97</span> <a href="#97"># </a>rdbuf to
+<h3 data-number="0.0.97" id="97"><span
+class="header-section-number">0.0.97</span> <a href="#97"># </a>rdbuf to
 redirect</h3>
 <p>See also <a
 href="https://en.cppreference.com/w/cpp/io/basic_ios/rdbuf">rdbuf</a>:</p>
 <div class="sourceCode" id="cb141"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb141-1"><a href="#cb141-1"></a><span class="dt">int</span> main<span class="op">()</span></span>
 <span id="cb141-2"><a href="#cb141-2"></a><span class="op">{</span></span>
-<span id="cb141-3"><a href="#cb141-3"></a>    <span class="bu">std::</span>ifstream in<span class="op">(</span><span class="st">&quot;in.txt&quot;</span><span class="op">);</span></span>
+<span id="cb141-3"><a href="#cb141-3"></a>    <span class="bu">std::</span>ifstream<span class="op"> </span>in<span class="op">(</span><span class="st">&quot;in.txt&quot;</span><span class="op">);</span></span>
 <span id="cb141-4"><a href="#cb141-4"></a>    KK_VERIFY<span class="op">(</span>in<span class="op">);</span></span>
 <span id="cb141-5"><a href="#cb141-5"></a>    <span class="co">// redirect std::cin to in.txt</span></span>
 <span id="cb141-6"><a href="#cb141-6"></a>    <span class="bu">std::</span>streambuf<span class="op">*</span> old_cin <span class="op">=</span> <span class="bu">std::</span>cin<span class="op">.</span>rdbuf<span class="op">(</span>in<span class="op">.</span>rdbuf<span class="op">());</span></span>
 <span id="cb141-7"><a href="#cb141-7"></a>    KK_VERIFY<span class="op">(</span>old_cin<span class="op">);</span></span>
 <span id="cb141-8"><a href="#cb141-8"></a></span>
-<span id="cb141-9"><a href="#cb141-9"></a>    <span class="bu">std::</span>ofstream out<span class="op">(</span><span class="st">&quot;out.txt&quot;</span><span class="op">);</span></span>
+<span id="cb141-9"><a href="#cb141-9"></a>    <span class="bu">std::</span>ofstream<span class="op"> </span>out<span class="op">(</span><span class="st">&quot;out.txt&quot;</span><span class="op">);</span></span>
 <span id="cb141-10"><a href="#cb141-10"></a>    KK_VERIFY<span class="op">(</span>out<span class="op">);</span></span>
 <span id="cb141-11"><a href="#cb141-11"></a>    <span class="co">// redirect std::cout to out.txt</span></span>
 <span id="cb141-12"><a href="#cb141-12"></a>    <span class="bu">std::</span>streambuf<span class="op">*</span> old_cout <span class="op">=</span> <span class="bu">std::</span>cout<span class="op">.</span>rdbuf<span class="op">(</span>out<span class="op">.</span>rdbuf<span class="op">());</span></span>
 <span id="cb141-13"><a href="#cb141-13"></a>    KK_VERIFY<span class="op">(</span>old_cout<span class="op">);</span></span>
 <span id="cb141-14"><a href="#cb141-14"></a></span>
 <span id="cb141-15"><a href="#cb141-15"></a>    <span class="co">// read/write</span></span>
-<span id="cb141-16"><a href="#cb141-16"></a>    <span class="bu">std::</span>string word<span class="op">;</span></span>
-<span id="cb141-17"><a href="#cb141-17"></a>    <span class="bu">std::</span>cin <span class="op">&gt;&gt;</span> word<span class="op">;</span></span>
-<span id="cb141-18"><a href="#cb141-18"></a>    <span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> word<span class="op">;</span></span>
+<span id="cb141-16"><a href="#cb141-16"></a>    <span class="bu">std::</span>string<span class="op"> </span>word<span class="op">;</span></span>
+<span id="cb141-17"><a href="#cb141-17"></a>    <span class="bu">std::</span>cin<span class="op"> &gt;&gt;</span> word<span class="op">;</span></span>
+<span id="cb141-18"><a href="#cb141-18"></a>    <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> word<span class="op">;</span></span>
 <span id="cb141-19"><a href="#cb141-19"></a></span>
 <span id="cb141-20"><a href="#cb141-20"></a>    <span class="bu">std::</span>cin<span class="op">.</span>rdbuf<span class="op">(</span>old_cin<span class="op">);</span> <span class="co">// rollback</span></span>
 <span id="cb141-21"><a href="#cb141-21"></a>    <span class="bu">std::</span>cout<span class="op">.</span>rdbuf<span class="op">(</span>old_cout<span class="op">);</span></span>
 <span id="cb141-22"><a href="#cb141-22"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="98" id="98"><span
-class="header-section-number">98</span> <a href="#98"># </a>compile
+<h3 data-number="0.0.98" id="98"><span
+class="header-section-number">0.0.98</span> <a href="#98"># </a>compile
 error on missing switch enum case</h3>
 <p>When adding new enum value to existing enum what places need to be
 updated?</p>
@@ -3013,9 +3096,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb145-12"><a href="#cb145-12"></a>    <span class="op">}</span></span>
 <span id="cb145-13"><a href="#cb145-13"></a>    <span class="bu">std::</span>unreachable<span class="op">();</span></span>
 <span id="cb145-14"><a href="#cb145-14"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="99" id="99"><span
-class="header-section-number">99</span> <a href="#99"># </a>use compiler
-to write down pointer-to-member syntax</h3>
+<h3 data-number="0.0.99" id="99"><span
+class="header-section-number">0.0.99</span> <a href="#99"># </a>use
+compiler to write down pointer-to-member syntax</h3>
 <p>Just use a wrong type first, see what compiler says, copy the correct
 type from the error:</p>
 <div class="sourceCode" id="cb146"><pre
@@ -3039,9 +3122,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb148-3"><a href="#cb148-3"></a><span class="kw">using</span> MyIntMember <span class="op">=</span> <span class="dt">int</span> MyClass<span class="op">::*;</span></span>
 <span id="cb148-4"><a href="#cb148-4"></a>MyIntMember ptr <span class="op">=</span> <span class="op">&amp;</span>MyClass<span class="op">::</span>my_data<span class="op">;</span></span></code></pre></div>
 <p>Same works for member function pointers, etc.</p>
-<h3 data-number="100" id="100"><span
-class="header-section-number">100</span> <a href="#100"># </a>enum and
-falling out of switch case</h3>
+<h3 data-number="0.0.100" id="100"><span
+class="header-section-number">0.0.100</span> <a href="#100"># </a>enum
+and falling out of switch case</h3>
 <p><a href="https://en.cppreference.com/w/cpp/language/enum">With
 C++17</a>, for instance, it’s possible to initialize enum with integer
 that does not match any named enum value:</p>
@@ -3069,8 +3152,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb150-13"><a href="#cb150-13"></a><span class="op">}</span></span>
 <span id="cb150-14"><a href="#cb150-14"></a></span>
 <span id="cb150-15"><a href="#cb150-15"></a>MyProcess<span class="op">(</span>MyEnum<span class="op">{</span><span class="dv">78</span><span class="op">});</span> <span class="co">// perfectly fine</span></span></code></pre></div>
-<h3 data-number="101" id="101"><span
-class="header-section-number">101</span> <a href="#101">#
+<h3 data-number="0.0.101" id="101"><span
+class="header-section-number">0.0.101</span> <a href="#101">#
 </a>ON_SCOPE_EXIT</h3>
 <p>See <a
 href="https://gist.github.com/maddouri/e22288fe973e107abf5bb775df84779d"
@@ -3081,9 +3164,9 @@ class="uri">https://gist.github.com/maddouri/e22288fe973e107abf5bb775df84779d</a
     ON_SCOPE_EXIT { fclose(f); }
     // ...    
 }</code></pre>
-<h3 data-number="102" id="102"><span
-class="header-section-number">102</span> <a href="#102"># </a>float to
-double and integer promotions (variadic function)</h3>
+<h3 data-number="0.0.102" id="102"><span
+class="header-section-number">0.0.102</span> <a href="#102"># </a>float
+to double and integer promotions (variadic function)</h3>
 <p>For C-style variadic function, each argument of integer type
 undergoes integer promotion, and each argument of type float is
 implicitly converted to the type double. See <a
@@ -3114,9 +3197,9 @@ warning:</p>
 class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="cb153-1"><a href="#cb153-1"></a>&gt; warning: second argument to &#39;va_arg&#39; is of promotable type &#39;float&#39;;</span>
 <span id="cb153-2"><a href="#cb153-2"></a>&gt; this va_arg has undefined behavior because arguments will</span>
 <span id="cb153-3"><a href="#cb153-3"></a>&gt; be promoted to &#39;double&#39; [-Wvarargs]</span></code></pre></div>
-<h3 data-number="103" id="103"><span
-class="header-section-number">103</span> <a href="#103"># </a>surrogate
-call functions (/ conversion operator)</h3>
+<h3 data-number="0.0.103" id="103"><span
+class="header-section-number">0.0.103</span> <a href="#103">#
+</a>surrogate call functions (/ conversion operator)</h3>
 <p>From <a
 href="https://timsong-cpp.github.io/cppwp/over.call.object">std/over.call.object</a>:</p>
 <div class="sourceCode" id="cb154"><pre
@@ -3134,9 +3217,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb154-12"><a href="#cb154-12"></a><span class="dt">int</span> i <span class="op">=</span> a<span class="op">(</span><span class="dv">1</span><span class="op">);</span>       <span class="co">// calls f1 via pointer</span></span>
 <span id="cb154-13"><a href="#cb154-13"></a>                    <span class="co">// returned from conversion function</span></span>
 <span id="cb154-14"><a href="#cb154-14"></a><span class="dt">char</span> c <span class="op">=</span> a<span class="op">(</span><span class="fl">0.5</span><span class="bu">f</span><span class="op">);</span>   <span class="co">// calls f2</span></span></code></pre></div>
-<h3 data-number="104" id="104"><span
-class="header-section-number">104</span> <a href="#104"># </a>ARRAY_SIZE
-/ function returning reference to an array</h3>
+<h3 data-number="0.0.104" id="104"><span
+class="header-section-number">0.0.104</span> <a href="#104">#
+</a>ARRAY_SIZE / function returning reference to an array</h3>
 <p>To get size/length/count of c-style static array pre-C++17 constexpr
 std::size(), next ARRAY_SIZE macro is used:</p>
 <div class="sourceCode" id="cb155"><pre
@@ -3159,9 +3242,9 @@ UE_ARRAY_COUNT macro.</p>
 <p>Note, also, how ArraySizeHelper is a function that accepts reference
 to array of size N (known at compile time) and returns reference to
 array of size N.</p>
-<h3 data-number="105" id="105"><span
-class="header-section-number">105</span> <a href="#105"># </a>infinite
-function pointer dereference</h3>
+<h3 data-number="0.0.105" id="105"><span
+class="header-section-number">0.0.105</span> <a href="#105">#
+</a>infinite function pointer dereference</h3>
 <div class="sourceCode" id="cb156"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb156-1"><a href="#cb156-1"></a><span class="dt">void</span> f<span class="op">()</span> <span class="op">{}</span></span>
 <span id="cb156-2"><a href="#cb156-2"></a><span class="dt">void</span> <span class="op">(*</span>fp1<span class="op">)()</span> <span class="op">=</span> f<span class="op">;</span></span>
@@ -3186,8 +3269,8 @@ href="https://en.cppreference.com/w/cpp/language/implicit_conversion">Function-t
 conversion</a> and <a
 href="https://en.cppreference.com/w/cpp/language/function">Function
 declaration</a>.</p>
-<h3 data-number="106" id="106"><span
-class="header-section-number">106</span> <a href="#106">#
+<h3 data-number="0.0.106" id="106"><span
+class="header-section-number">0.0.106</span> <a href="#106">#
 </a>(historical?) Schwarz Counter / Nifty Counter (static
 initialization)</h3>
 <p>In the context of <a
@@ -3261,9 +3344,9 @@ runtime linked first? <mark>TBD</mark>).</p>
 <p>Note: may not work in case of precompiled headers use, see <a
 href="https://developercommunity.visualstudio.com/t/Schwarz-counter-vs-precompiled-header/1256884">bug
 report</a>.</p>
-<h3 data-number="107" id="107"><span
-class="header-section-number">107</span> <a href="#107"># </a>emulate
-concept passing as template argument</h3>
+<h3 data-number="0.0.107" id="107"><span
+class="header-section-number">0.0.107</span> <a href="#107">#
+</a>emulate concept passing as template argument</h3>
 <p>From <a
 href="https://x.com/krisjusiak/status/1622679895514963970">Kris
 Jusiak</a>, <a href="https://t.co/BKRhl1hD9e">godbolt</a>:</p>
@@ -3288,8 +3371,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb159-18"><a href="#cb159-18"></a>  f<span class="op">.</span>fn<span class="op">(</span>Foo<span class="op">{});</span></span>
 <span id="cb159-19"><a href="#cb159-19"></a>  f<span class="op">.</span>fn<span class="op">(</span>Bar<span class="op">{});</span> <span class="co">// static_assert, contrained not satisfied</span></span>
 <span id="cb159-20"><a href="#cb159-20"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="108" id="108"><span
-class="header-section-number">108</span> <a href="#108">#
+<h3 data-number="0.0.108" id="108"><span
+class="header-section-number">0.0.108</span> <a href="#108">#
 </a>underscores and _Ugly reserved names</h3>
 <p>See <a
 href="https://devblogs.microsoft.com/oldnewthing/20230109-00/?p=107685">On
@@ -3301,28 +3384,28 @@ From Raymond Chen:</p>
 <col style="width: 40%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th style="text-align: left;">Pattern</th>
 <th style="text-align: left;">Conditions</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td style="text-align: left;">Begins with two underscores</td>
 <td style="text-align: left;">Reserved</td>
 </tr>
-<tr>
+<tr class="even">
 <td style="text-align: left;">Begins with underscore and uppercase
 letter</td>
 <td style="text-align: left;">Reserved</td>
 </tr>
-<tr>
+<tr class="odd">
 <td style="text-align: left;">Begins with underscore and something
 else</td>
 <td style="text-align: left;">Reserved in global scope (includes
 macros)</td>
 </tr>
-<tr>
+<tr class="even">
 <td style="text-align: left;">Contains two consecutive underscores</td>
 <td style="text-align: left;">Reserved in C++ (but okay in C)</td>
 </tr>
@@ -3351,8 +3434,8 @@ namespace separators/class separators was <strong>__</strong> (see this
 href="https://www.reddit.com/r/cpp/comments/1jajhe0/comment/mhm3z8x/">reddit
 post</a>)</p></li>
 </ul>
-<h3 data-number="109" id="109"><span
-class="header-section-number">109</span> <a href="#109"># </a>invoke
+<h3 data-number="0.0.109" id="109"><span
+class="header-section-number">0.0.109</span> <a href="#109"># </a>invoke
 private method with mangled name</h3>
 <p>See this <a
 href="https://www.reddit.com/r/cpp/comments/jdlrg2/comment/g9a7pgp/">reddit
@@ -3370,9 +3453,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb161-9"><a href="#cb161-9"></a>    Class c<span class="op">;</span></span>
 <span id="cb161-10"><a href="#cb161-10"></a>    _ZN5Class8functionEv<span class="op">(&amp;</span>c<span class="op">);</span></span>
 <span id="cb161-11"><a href="#cb161-11"></a><span class="op">}</span></span></code></pre></div>
-<h3 data-number="110" id="110"><span
-class="header-section-number">110</span> <a href="#110"># </a>coroutines
-and std::source_location::current()</h3>
+<h3 data-number="0.0.110" id="110"><span
+class="header-section-number">0.0.110</span> <a href="#110">#
+</a>coroutines and std::source_location::current()</h3>
 <p>You can inject <code>std::source_location</code> into all coroutines
 customization points to get information on where coroutine is
 created/suspended/awaited/etc, see <a
@@ -3383,8 +3466,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb162-3"><a href="#cb162-3"></a></span>
 <span id="cb162-4"><a href="#cb162-4"></a><span class="kw">struct</span> <span class="dt">promise_type</span></span>
 <span id="cb162-5"><a href="#cb162-5"></a><span class="op">{</span></span>
-<span id="cb162-6"><a href="#cb162-6"></a>    co_task get_return_object<span class="op">(</span><span class="bu">std::</span>source_location loc</span>
-<span id="cb162-7"><a href="#cb162-7"></a>                            <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">())</span> <span class="kw">noexcept</span></span>
+<span id="cb162-6"><a href="#cb162-6"></a>    co_task get_return_object<span class="op">(</span><span class="bu">std::</span>source_location<span class="op"> </span>loc</span>
+<span id="cb162-7"><a href="#cb162-7"></a>                            <span class="op">=</span> <span class="bu">std::</span>source_location<span class="bu">::</span>current<span class="op">())</span> <span class="kw">noexcept</span></span>
 <span id="cb162-8"><a href="#cb162-8"></a>    <span class="op">{</span></span>
 <span id="cb162-9"><a href="#cb162-9"></a>        print<span class="op">(</span><span class="st">&quot;get_return_object&quot;</span><span class="op">,</span> loc<span class="op">);</span></span>
 <span id="cb162-10"><a href="#cb162-10"></a>        <span class="cf">return</span> <span class="op">{};</span></span>
@@ -3393,8 +3476,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb162-13"><a href="#cb162-13"></a></span>
 <span id="cb162-14"><a href="#cb162-14"></a>    <span class="kw">struct</span> awaitable</span>
 <span id="cb162-15"><a href="#cb162-15"></a>    <span class="op">{</span></span>
-<span id="cb162-16"><a href="#cb162-16"></a>        <span class="dt">bool</span> await_ready<span class="op">(</span><span class="bu">std::</span>source_location loc</span>
-<span id="cb162-17"><a href="#cb162-17"></a>                       <span class="op">=</span> <span class="bu">std::</span>source_location::current<span class="op">())</span></span>
+<span id="cb162-16"><a href="#cb162-16"></a>        <span class="dt">bool</span> await_ready<span class="op">(</span><span class="bu">std::</span>source_location<span class="op"> </span>loc</span>
+<span id="cb162-17"><a href="#cb162-17"></a>                       <span class="op">=</span> <span class="bu">std::</span>source_location<span class="bu">::</span>current<span class="op">())</span></span>
 <span id="cb162-18"><a href="#cb162-18"></a>        <span class="op">{</span></span>
 <span id="cb162-19"><a href="#cb162-19"></a>            print<span class="op">(</span><span class="st">&quot;await_ready&quot;</span><span class="op">,</span> loc<span class="op">);</span></span>
 <span id="cb162-20"><a href="#cb162-20"></a>            <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span></span>
@@ -3426,9 +3509,9 @@ class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="c
 <span id="cb163-7"><a href="#cb163-7"></a>final_suspend       : &#39;/app/example.cpp&#39;/&#39;co_task co_test()&#39;/&#39;63&#39;</span></code></pre></div>
 <p>Originally comes from reading <a
 href="https://github.com/boostorg/cobalt/blob/0c6cf566471803dd8a53a5e98511da4516583e88/include/boost/cobalt/detail/task.hpp#L196">boost.cobalt</a>.</p>
-<h3 data-number="111" id="111"><span
-class="header-section-number">111</span> <a href="#111"># </a>moved-from
-std::optional does not reset</h3>
+<h3 data-number="0.0.111" id="111"><span
+class="header-section-number">0.0.111</span> <a href="#111">#
+</a>moved-from std::optional does not reset</h3>
 <p>Moved-from std::optional <code>x</code> still holds value after a
 move:</p>
 <div class="sourceCode" id="cb164"><pre
@@ -3450,8 +3533,8 @@ moving a std::optional!”</a> article (which has wrong conclusions and
 solution) and this <a
 href="https://www.reddit.com/r/cpp/comments/75paqu/design_decision_for_stdoptional_moved_from_state">reddit
 discussion</a>.</p>
-<h3 data-number="112" id="112"><span
-class="header-section-number">112</span> <a href="#112">#
+<h3 data-number="0.0.112" id="112"><span
+class="header-section-number">0.0.112</span> <a href="#112">#
 </a>std::exchange idiom</h3>
 <p>set-new-and-check-old value in one go:</p>
 <div class="sourceCode" id="cb166"><pre
@@ -3467,15 +3550,15 @@ Idioms” talk</a> and <a
 href="https://www.fluentcpp.com/2020/09/25/stdexchange-patterns-fast-safe-expressive-and-probably-underused/">“std::exchange
 Patterns” article</a>.</p>
 <p>Has nothing to do with <code>atomic::exchange()</code>.</p>
-<h3 data-number="113" id="113"><span
-class="header-section-number">113</span> <a href="#113"># </a>std::tie
-idiom for comparisons operators</h3>
+<h3 data-number="0.0.113" id="113"><span
+class="header-section-number">0.0.113</span> <a href="#113">#
+</a>std::tie idiom for comparisons operators</h3>
 <p>For quick-and-dirty (but 100% correct) code to generate comparison
 operator with multiple members:</p>
 <div class="sourceCode" id="cb167"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb167-1"><a href="#cb167-1"></a><span class="kw">struct</span> Person</span>
 <span id="cb167-2"><a href="#cb167-2"></a><span class="op">{</span></span>
-<span id="cb167-3"><a href="#cb167-3"></a>    <span class="bu">std::</span>string name<span class="op">;</span></span>
+<span id="cb167-3"><a href="#cb167-3"></a>    <span class="bu">std::</span>string<span class="op"> </span>name<span class="op">;</span></span>
 <span id="cb167-4"><a href="#cb167-4"></a>    <span class="dt">int</span> age <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
 <span id="cb167-5"><a href="#cb167-5"></a><span class="op">};</span></span>
 <span id="cb167-6"><a href="#cb167-6"></a></span>
@@ -3493,9 +3576,9 @@ href="https://en.cppreference.com/w/cpp/language/default_comparisons">default
 comparisons</a>) since C++20? Probably. See also <a
 href="https://bajamircea.github.io/coding/cpp/2017/03/10/std-tie.html">this
 article</a>.</p>
-<h3 data-number="114" id="114"><span
-class="header-section-number">114</span> <a href="#114"># </a>std::tie
-idiom to decompose/unpack</h3>
+<h3 data-number="0.0.114" id="114"><span
+class="header-section-number">0.0.114</span> <a href="#114">#
+</a>std::tie idiom to decompose/unpack</h3>
 <p>Consider</p>
 <div class="sourceCode" id="cb168"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb168-1"><a href="#cb168-1"></a><span class="at">extern</span> <span class="bu">std::</span>set<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> vs<span class="op">;</span></span>
@@ -3514,9 +3597,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>Note, <code>_</code> here is a usual variable, nothing special (up
 until C++26, see <a href="http://wg21.link/P2169R4">A nice placeholder
 with no name</a>).</p>
-<h3 data-number="115" id="115"><span
-class="header-section-number">115</span> <a href="#115"># </a>move is
-the same as copy… sometimes</h3>
+<h3 data-number="0.0.115" id="115"><span
+class="header-section-number">0.0.115</span> <a href="#115"># </a>move
+is the same as copy… sometimes</h3>
 <p>For a class with inline data, most of the time, data needs to be
 copied during the move. Consider:</p>
 <div class="sourceCode" id="cb170"><pre
@@ -3542,9 +3625,9 @@ href="https://voithos.io/articles/std-move-is-not-free/">std::move() Is
 <p>This also hints that moving small std::string(s) (usually &lt;= 15
 chars) is the same as copying them since inline buffer because of SSO
 needs to be copied anyway.</p>
-<h3 data-number="116" id="116"><span
-class="header-section-number">116</span> <a href="#116"># </a>declaring
-a (tag) type while passing template argument</h3>
+<h3 data-number="0.0.116" id="116"><span
+class="header-section-number">0.0.116</span> <a href="#116">#
+</a>declaring a (tag) type while passing template argument</h3>
 <p>It’s valid to forward-declare a type as an argument to a
 template:</p>
 <div class="sourceCode" id="cb171"><pre
@@ -3561,8 +3644,8 @@ explanation</a>.</p>
 <p>Usually used in a template-heavy generic libraries to quickly
 introduce unique type, hence, “tagging” (<mark>TODO</mark>: find an
 example).</p>
-<h3 data-number="117" id="117"><span
-class="header-section-number">117</span> <a href="#117">#
+<h3 data-number="0.0.117" id="117"><span
+class="header-section-number">0.0.117</span> <a href="#117">#
 </a>__PRETTY_FUNCTION__ as compile time type name</h3>
 <p><code>__PRETTY_FUNCTION__</code> (Clang, GCC) and
 <code>__FUNCSIG__</code> (MSVC) give a string with type names included
@@ -3594,9 +3677,9 @@ href="https://github.com/TheLartians/StaticTypeInfo/blob/425fa62e49c2052be3e255b
 href="https://github.com/Neargye/magic_enum/blob/a413fcc9c46a020a746907136a384c227f3cd095/include/magic_enum/magic_enum.hpp#L438-L447">magic_enum</a>,
 <a
 href="https://github.com/foonathan/lexy/blob/8c1ebec673b498bbb1728444d202586ea81c4142/include/lexy/_detail/type_name.hpp#L21">lexy</a>.</p>
-<h3 data-number="118" id="118"><span
-class="header-section-number">118</span> <a href="#118"># </a>compile
-time type id</h3>
+<h3 data-number="0.0.118" id="118"><span
+class="header-section-number">0.0.118</span> <a href="#118">#
+</a>compile time type id</h3>
 <p>Similarly to <a href="#117">__PRETTY_FUNCTION__ as compile time type
 name</a>, <code>__PRETTY_FUNCTION__</code>/<code>__FUNCSIG__</code>
 could be used to generate a hash for a type at compile time, see, for
@@ -3604,14 +3687,14 @@ instance, <a href="https://stackoverflow.com/a/56326294">this
 SO</a>:</p>
 <div class="sourceCode" id="cb174"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb174-1"><a href="#cb174-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
-<span id="cb174-2"><a href="#cb174-2"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t Hash<span class="op">()</span></span>
+<span id="cb174-2"><a href="#cb174-2"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t<span class="op"> </span>Hash<span class="op">()</span></span>
 <span id="cb174-3"><a href="#cb174-3"></a><span class="op">{</span></span>
 <span id="cb174-4"><a href="#cb174-4"></a><span class="pp">#ifdef _MSC_VER</span></span>
 <span id="cb174-5"><a href="#cb174-5"></a><span class="pp">#define F </span>__FUNCSIG__</span>
 <span id="cb174-6"><a href="#cb174-6"></a><span class="pp">#else</span></span>
 <span id="cb174-7"><a href="#cb174-7"></a><span class="pp">#define F </span><span class="ot">__PRETTY_FUNCTION__</span></span>
 <span id="cb174-8"><a href="#cb174-8"></a><span class="pp">#endif</span></span>
-<span id="cb174-9"><a href="#cb174-9"></a>    <span class="bu">std::</span>size_t result <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb174-9"><a href="#cb174-9"></a>    <span class="bu">std::</span>size_t<span class="op"> </span>result <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
 <span id="cb174-10"><a href="#cb174-10"></a>    <span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="dt">char</span><span class="op">&amp;</span> c <span class="op">:</span> F<span class="op">)</span></span>
 <span id="cb174-11"><a href="#cb174-11"></a>        <span class="op">(</span>result <span class="op">^=</span> c<span class="op">)</span> <span class="op">&lt;&lt;=</span> <span class="dv">1</span><span class="op">;</span></span>
 <span id="cb174-12"><a href="#cb174-12"></a>    <span class="cf">return</span> result<span class="op">;</span></span>
@@ -3619,11 +3702,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb174-14"><a href="#cb174-14"></a><span class="op">}</span></span>
 <span id="cb174-15"><a href="#cb174-15"></a></span>
 <span id="cb174-16"><a href="#cb174-16"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
-<span id="cb174-17"><a href="#cb174-17"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t constexpr_hash <span class="op">=</span> Hash<span class="op">&lt;</span>T<span class="op">&gt;();</span></span>
+<span id="cb174-17"><a href="#cb174-17"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t<span class="op"> </span>constexpr_hash <span class="op">=</span> Hash<span class="op">&lt;</span>T<span class="op">&gt;();</span></span>
 <span id="cb174-18"><a href="#cb174-18"></a></span>
 <span id="cb174-19"><a href="#cb174-19"></a><span class="co">// usage</span></span>
-<span id="cb174-20"><a href="#cb174-20"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t f <span class="op">=</span> constexpr_hash<span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;;</span></span>
-<span id="cb174-21"><a href="#cb174-21"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t i <span class="op">=</span> constexpr_hash<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;;</span></span></code></pre></div>
+<span id="cb174-20"><a href="#cb174-20"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t<span class="op"> </span>f <span class="op">=</span> constexpr_hash<span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;;</span></span>
+<span id="cb174-21"><a href="#cb174-21"></a><span class="kw">constexpr</span> <span class="bu">std::</span>size_t<span class="op"> </span>i <span class="op">=</span> constexpr_hash<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;;</span></span></code></pre></div>
 <p>Notes:</p>
 <ul>
 <li>may not work for unnamed structs</li>
@@ -3631,9 +3714,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 platforms AND compilers</li>
 </ul>
 <p>but could be good enoug for known environments.</p>
-<h3 data-number="119" id="119"><span
-class="header-section-number">119</span> <a href="#119"># </a>run time
-type id</h3>
+<h3 data-number="0.0.119" id="119"><span
+class="header-section-number">0.0.119</span> <a href="#119"># </a>run
+time type id</h3>
 <p>A trick to use global static counter and static local for a template
 to generate type id once:</p>
 <div class="sourceCode" id="cb175"><pre
@@ -3671,9 +3754,10 @@ same types</li>
 initialization order fiasco</li>
 </ul>
 <p>but could be made good enough for specific use-case.</p>
-<h3 data-number="120" id="120"><span
-class="header-section-number">120</span> <a href="#120"># </a>specialize
-a template class member without specializing whole class</h3>
+<h3 data-number="0.0.120" id="120"><span
+class="header-section-number">0.0.120</span> <a href="#120">#
+</a>specialize a template class member without specializing whole
+class</h3>
 <p>From this <a
 href="https://www.reddit.com/r/cpp/comments/1iw4o9f/comment/meboxy0/">reddit
 comment</a>:</p>
@@ -3713,8 +3797,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 MyType still has <code>MyEnum v</code> data member for both cases, but
 with completely different enum values.</p>
 <p>See also <a href="#91">using enum declaration</a>.</p>
-<h3 data-number="121" id="121"><span
-class="header-section-number">121</span> <a href="#121"># </a>hidden
+<h3 data-number="0.0.121" id="121"><span
+class="header-section-number">0.0.121</span> <a href="#121"># </a>hidden
 friend idiom</h3>
 <p>See <a
 href="https://www.justsoftwaresolutions.co.uk/cplusplus/hidden-friends.html">The
@@ -3782,8 +3866,8 @@ article</a> for compile time differences</li>
 <p>See also “Hidden Friends and Enumerations” section <a
 href="https://www.justsoftwaresolutions.co.uk/cplusplus/hidden-friends.html">from
 article above</a>.</p>
-<h3 data-number="122" id="122"><span
-class="header-section-number">122</span> <a href="#122"># </a>ADL
+<h3 data-number="0.0.122" id="122"><span
+class="header-section-number">0.0.122</span> <a href="#122"># </a>ADL
 isolation</h3>
 <p>See also <a href="#121">hidden friend idiom</a>. From <a
 href="https://github.com/NVIDIA/stdexec/blob/954159ad82386b3564ea4125d9f4b7a68ccb912c/MAINTAINERS.md#class-template-parameters">stdexec/MAINTAINERS.md</a>:</p>
@@ -3825,9 +3909,9 @@ template parameters of the enclosing template</p>
 <p>this is what <code>struct __t</code> for in the <a
 href="https://github.com/NVIDIA/stdexec/blob/954159ad82386b3564ea4125d9f4b7a68ccb912c/include/stdexec/__detail/__as_awaitable.hpp#L157-L158">source
 code of stdexec</a>.</p>
-<h3 data-number="123" id="123"><span
-class="header-section-number">123</span> <a href="#123"># </a>initialize
-base class with a call to copy constructor</h3>
+<h3 data-number="0.0.123" id="123"><span
+class="header-section-number">0.0.123</span> <a href="#123">#
+</a>initialize base class with a call to copy constructor</h3>
 <p>From <a
 href="https://www.reddit.com/r/cpp/comments/1j5hsev/comment/mgh94sl">the
 discussion</a> of <a
@@ -3876,9 +3960,9 @@ from Richard Smith</a>:</p>
 is that guaranteed copy elision doesn’t apply for a base class
 initializer</p>
 </blockquote>
-<h3 data-number="124" id="124"><span
-class="header-section-number">124</span> <a href="#124"># </a>acronyms
-glossary / ICE, CPO, etc.</h3>
+<h3 data-number="0.0.124" id="124"><span
+class="header-section-number">0.0.124</span> <a href="#124">#
+</a>acronyms glossary / ICE, CPO, etc.</h3>
 <p>See:</p>
 <ul>
 <li><a

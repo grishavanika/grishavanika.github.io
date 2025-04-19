@@ -1,5 +1,5 @@
 ---
-title: C++ tips, tricks and quirks.
+title: C++ tips, tricks and quirks
 include-before: |
     Updated on 2025/04/15. Go to [meta](#meta).  
     Inspired by [Lesser known tricks, quirks and features of C](https://jorenar.com/blog/less-known-c).
