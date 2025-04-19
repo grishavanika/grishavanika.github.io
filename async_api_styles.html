@@ -232,10 +232,10 @@
   <![endif]-->
 </head>
 <body>
-<p>Showcase different possibilities to build asynchronous API with an
-examples of using <a href="https://curl.se/libcurl/c/">libcurl</a>,
-specifically, doing 2 consecutive GET requests, sequentially and 2 GET
-requests concurrently.</p>
+<p>Showcase different variations of asynchronous API with an examples of
+using <a href="https://curl.se/libcurl/c/">libcurl</a>, specifically,
+doing 2 consecutive GET requests, sequentially and 2 GET requests -
+concurrently.</p>
 <p>NO threads and/or multithreading involved. Something is intentionally
 simpler, while still having as much details as possible.</p>
 <header id="title-block-header">
@@ -244,86 +244,72 @@ simpler, while still having as much details as possible.</p>
 <nav id="TOC" role="doc-toc">
 <ul>
 <li><a href="#intro" id="toc-intro"><span
-class="toc-section-number">1</span> # Intro</a></li>
+class="toc-section-number">1</span> # intro</a></li>
+<li><a href="#cmake-with-libcurl-vcpkg-setup"
+id="toc-cmake-with-libcurl-vcpkg-setup"><span
+class="toc-section-number">2</span> # cmake with libcurl vcpkg
+setup</a></li>
+<li><a href="#libcurl-blocking-api-with-easy-interface"
+id="toc-libcurl-blocking-api-with-easy-interface"><span
+class="toc-section-number">3</span> # libcurl, blocking API with easy
+interface</a></li>
+<li><a href="#libcurl-asynchronous-api-with-multi-interface"
+id="toc-libcurl-asynchronous-api-with-multi-interface"><span
+class="toc-section-number">4</span> # libcurl, asynchronous API with
+multi interface</a></li>
 <li><a href="#sync" id="toc-sync"><span
-class="toc-section-number">2</span> # blocking, synchronous
+class="toc-section-number">5</span> # blocking, synchronous
 (App_Blocking)</a>
 <ul>
 <li><a href="#on-error-handling" id="toc-on-error-handling"><span
-class="toc-section-number">2.1</span> # On Error handling</a>
-<ul>
-<li><a href="#assume-success-always-tooling"
-id="toc-assume-success-always-tooling"><span
-class="toc-section-number">2.1.1</span> # assume success always
-(tooling)</a></li>
-<li><a href="#implicit-return-empty-string"
-id="toc-implicit-return-empty-string"><span
-class="toc-section-number">2.1.2</span> # implicit, return empty
-string</a></li>
-<li><a href="#status-code-out-parameter-stdfilesystem-style"
-id="toc-status-code-out-parameter-stdfilesystem-style"><span
-class="toc-section-number">2.1.3</span> # status code, out parameter
-(std::filesystem-style)</a></li>
-<li><a href="#optional" id="toc-optional"><span
-class="toc-section-number">2.1.4</span> # optional</a></li>
-<li><a href="#exceptions" id="toc-exceptions"><span
-class="toc-section-number">2.1.5</span> # exceptions</a></li>
-<li><a href="#resultvariant-like" id="toc-resultvariant-like"><span
-class="toc-section-number">2.1.6</span> # result/variant-like</a></li>
-<li><a href="#resulttuple-like" id="toc-resulttuple-like"><span
-class="toc-section-number">2.1.7</span> # result/tuple-like</a></li>
-<li><a href="#resultspecialized" id="toc-resultspecialized"><span
-class="toc-section-number">2.1.8</span> # result/specialized</a></li>
-</ul></li>
+class="toc-section-number">5.1</span> # on error handling</a></li>
 </ul></li>
 <li><a href="#async-polling-tasks-app_tasks"
 id="toc-async-polling-tasks-app_tasks"><span
-class="toc-section-number">3</span> # async polling, tasks
+class="toc-section-number">6</span> # async polling, tasks
 (App_Tasks)</a></li>
 <li><a href="#blocking-stdfuturepromise"
 id="toc-blocking-stdfuturepromise"><span
-class="toc-section-number">4</span> # blocking
+class="toc-section-number">7</span> # blocking
 std::future/promise</a></li>
 <li><a href="#async-polling-stdfuturepromise"
 id="toc-async-polling-stdfuturepromise"><span
-class="toc-section-number">5</span> # async polling,
+class="toc-section-number">8</span> # async polling,
 std::future/promise</a></li>
 <li><a href="#async-callbacks-app_callbacks"
 id="toc-async-callbacks-app_callbacks"><span
-class="toc-section-number">6</span> # async, callbacks
+class="toc-section-number">9</span> # async, callbacks
 (App_Callbacks)</a></li>
 <li><a href="#async-callbacks-polling-tasks-handle"
 id="toc-async-callbacks-polling-tasks-handle"><span
-class="toc-section-number">7</span> # async, callbacks + polling (tasks,
-handle)</a></li>
+class="toc-section-number">10</span> # async, callbacks + polling
+(tasks, handle)</a></li>
 <li><a
 href="#async-with-statefullimplicit-callback-state.on_x.subscribedelegates"
 id="toc-async-with-statefullimplicit-callback-state.on_x.subscribedelegates"><span
-class="toc-section-number">8</span> # async with statefull/implicit
+class="toc-section-number">11</span> # async with statefull/implicit
 callback (state.on_X.subscribe/delegates)</a></li>
 <li><a href="#coroutines-on-top-of-callbacks-app_coro"
 id="toc-coroutines-on-top-of-callbacks-app_coro"><span
-class="toc-section-number">9</span> # coroutines on top of callbacks
+class="toc-section-number">12</span> # coroutines on top of callbacks
 (App_Coro)</a></li>
 <li><a href="#coroutines-on-top-polling-tasks"
 id="toc-coroutines-on-top-polling-tasks"><span
-class="toc-section-number">10</span> # coroutines on top polling
+class="toc-section-number">13</span> # coroutines on top polling
 tasks</a></li>
 <li><a href="#fibers-win32-app_fibers"
 id="toc-fibers-win32-app_fibers"><span
-class="toc-section-number">11</span> # fibers (WIN32)
+class="toc-section-number">14</span> # fibers (WIN32)
 (App_Fibers)</a></li>
 <li><a href="#senders" id="toc-senders"><span
-class="toc-section-number">12</span> # senders</a></li>
-<li><a href="#reactive-streams-observables-rxcpp"
-id="toc-reactive-streams-observables-rxcpp"><span
-class="toc-section-number">13</span> # Reactive Streams / Observables –
-RxCpp</a></li>
+class="toc-section-number">15</span> # senders</a></li>
+<li><a href="#reactive-streams" id="toc-reactive-streams"><span
+class="toc-section-number">16</span> # reactive streams</a></li>
 </ul>
 </nav>
 <hr />
 <h1 data-number="1" id="intro"><span
-class="header-section-number">1</span> <a href="#intro"># </a>Intro</h1>
+class="header-section-number">1</span> <a href="#intro"># </a>intro</h1>
 <p>I want to have simple C-style API on top of <a
 href="https://curl.se/libcurl/c/">libcurl C API</a> and build a program
 that may look like this:</p>
@@ -390,83 +376,87 @@ variations of asynchronous API on top of C-style callbacks.</p>
 <p>But before that, lets wrap <a
 href="https://curl.se/libcurl/c/">libcurl C API</a> for our needs.</p>
 <hr />
-<h1 data-number="2" id="sync"><span
-class="header-section-number">2</span> <a href="#sync"># </a>blocking,
+<h1 data-number="2" id="cmake-with-libcurl-vcpkg-setup"><span
+class="header-section-number">2</span> <a
+href="#cmake-with-libcurl-vcpkg-setup"># </a>cmake with libcurl vcpkg
+setup</h1>
+<h1 data-number="3" id="libcurl-blocking-api-with-easy-interface"><span
+class="header-section-number">3</span> <a
+href="#libcurl-blocking-api-with-easy-interface"># </a>libcurl, blocking
+API with easy interface</h1>
+<h1 data-number="4"
+id="libcurl-asynchronous-api-with-multi-interface"><span
+class="header-section-number">4</span> <a
+href="#libcurl-asynchronous-api-with-multi-interface"># </a>libcurl,
+asynchronous API with multi interface</h1>
+<h1 data-number="5" id="sync"><span
+class="header-section-number">5</span> <a href="#sync"># </a>blocking,
 synchronous (App_Blocking)</h1>
-<h2 data-number="2.1" id="on-error-handling"><span
-class="header-section-number">2.1</span> <a href="#on-error-handling">#
-</a>On Error handling</h2>
-<h3 data-number="2.1.1" id="assume-success-always-tooling"><span
-class="header-section-number">2.1.1</span> <a
+<h2 data-number="5.1" id="on-error-handling"><span
+class="header-section-number">5.1</span> <a href="#on-error-handling">#
+</a>on error handling</h2>
+<h3 class="unnumbered unlisted" id="assume-success-always-tooling"><a
 href="#assume-success-always-tooling"># </a>assume success always
 (tooling)</h3>
-<h3 data-number="2.1.2" id="implicit-return-empty-string"><span
-class="header-section-number">2.1.2</span> <a
+<h3 class="unnumbered unlisted" id="implicit-return-empty-string"><a
 href="#implicit-return-empty-string"># </a>implicit, return empty
 string</h3>
-<h3 data-number="2.1.3"
-id="status-code-out-parameter-stdfilesystem-style"><span
-class="header-section-number">2.1.3</span> <a
+<h3 class="unnumbered unlisted"
+id="status-code-out-parameter-stdfilesystem-style"><a
 href="#status-code-out-parameter-stdfilesystem-style"># </a>status code,
 out parameter (std::filesystem-style)</h3>
-<h3 data-number="2.1.4" id="optional"><span
-class="header-section-number">2.1.4</span> <a href="#optional">#
+<h3 class="unnumbered unlisted" id="optional"><a href="#optional">#
 </a>optional</h3>
-<h3 data-number="2.1.5" id="exceptions"><span
-class="header-section-number">2.1.5</span> <a href="#exceptions">#
+<h3 class="unnumbered unlisted" id="exceptions"><a href="#exceptions">#
 </a>exceptions</h3>
-<h3 data-number="2.1.6" id="resultvariant-like"><span
-class="header-section-number">2.1.6</span> <a
+<h3 class="unnumbered unlisted" id="resultvariant-like"><a
 href="#resultvariant-like"># </a>result/variant-like</h3>
-<h3 data-number="2.1.7" id="resulttuple-like"><span
-class="header-section-number">2.1.7</span> <a href="#resulttuple-like">#
-</a>result/tuple-like</h3>
-<h3 data-number="2.1.8" id="resultspecialized"><span
-class="header-section-number">2.1.8</span> <a
+<h3 class="unnumbered unlisted" id="resulttuple-like"><a
+href="#resulttuple-like"># </a>result/tuple-like</h3>
+<h3 class="unnumbered unlisted" id="resultspecialized"><a
 href="#resultspecialized"># </a>result/specialized</h3>
-<h1 data-number="3" id="async-polling-tasks-app_tasks"><span
-class="header-section-number">3</span> <a
+<h1 data-number="6" id="async-polling-tasks-app_tasks"><span
+class="header-section-number">6</span> <a
 href="#async-polling-tasks-app_tasks"># </a>async polling, tasks
 (App_Tasks)</h1>
-<h1 data-number="4" id="blocking-stdfuturepromise"><span
-class="header-section-number">4</span> <a
+<h1 data-number="7" id="blocking-stdfuturepromise"><span
+class="header-section-number">7</span> <a
 href="#blocking-stdfuturepromise"># </a>blocking
 std::future/promise</h1>
-<h1 data-number="5" id="async-polling-stdfuturepromise"><span
-class="header-section-number">5</span> <a
+<h1 data-number="8" id="async-polling-stdfuturepromise"><span
+class="header-section-number">8</span> <a
 href="#async-polling-stdfuturepromise"># </a>async polling,
 std::future/promise</h1>
-<h1 data-number="6" id="async-callbacks-app_callbacks"><span
-class="header-section-number">6</span> <a
+<h1 data-number="9" id="async-callbacks-app_callbacks"><span
+class="header-section-number">9</span> <a
 href="#async-callbacks-app_callbacks"># </a>async, callbacks
 (App_Callbacks)</h1>
-<h1 data-number="7" id="async-callbacks-polling-tasks-handle"><span
-class="header-section-number">7</span> <a
+<h1 data-number="10" id="async-callbacks-polling-tasks-handle"><span
+class="header-section-number">10</span> <a
 href="#async-callbacks-polling-tasks-handle"># </a>async, callbacks +
 polling (tasks, handle)</h1>
-<h1 data-number="8"
+<h1 data-number="11"
 id="async-with-statefullimplicit-callback-state.on_x.subscribedelegates"><span
-class="header-section-number">8</span> <a
+class="header-section-number">11</span> <a
 href="#async-with-statefullimplicit-callback-state.on_x.subscribedelegates">#
 </a>async with statefull/implicit callback
 (state.on_X.subscribe/delegates)</h1>
-<h1 data-number="9" id="coroutines-on-top-of-callbacks-app_coro"><span
-class="header-section-number">9</span> <a
+<h1 data-number="12" id="coroutines-on-top-of-callbacks-app_coro"><span
+class="header-section-number">12</span> <a
 href="#coroutines-on-top-of-callbacks-app_coro"># </a>coroutines on top
 of callbacks (App_Coro)</h1>
-<h1 data-number="10" id="coroutines-on-top-polling-tasks"><span
-class="header-section-number">10</span> <a
+<h1 data-number="13" id="coroutines-on-top-polling-tasks"><span
+class="header-section-number">13</span> <a
 href="#coroutines-on-top-polling-tasks"># </a>coroutines on top polling
 tasks</h1>
-<h1 data-number="11" id="fibers-win32-app_fibers"><span
-class="header-section-number">11</span> <a
+<h1 data-number="14" id="fibers-win32-app_fibers"><span
+class="header-section-number">14</span> <a
 href="#fibers-win32-app_fibers"># </a>fibers (WIN32) (App_Fibers)</h1>
-<h1 data-number="12" id="senders"><span
-class="header-section-number">12</span> <a href="#senders">#
+<h1 data-number="15" id="senders"><span
+class="header-section-number">15</span> <a href="#senders">#
 </a>senders</h1>
-<h1 data-number="13" id="reactive-streams-observables-rxcpp"><span
-class="header-section-number">13</span> <a
-href="#reactive-streams-observables-rxcpp"># </a>Reactive Streams /
-Observables – RxCpp</h1>
+<h1 data-number="16" id="reactive-streams"><span
+class="header-section-number">16</span> <a href="#reactive-streams">#
+</a>reactive streams</h1>
 </body>
 </html>

@@ -2,9 +2,9 @@
 title: Styles of Asynchronous API
 include-before: |
 
-    Showcase different possibilities to build asynchronous API with an examples
+    Showcase different variations of asynchronous API with an examples
     of using [libcurl](https://curl.se/libcurl/c/), specifically,
-    doing 2 consecutive GET requests, sequentially and 2 GET requests
+    doing 2 consecutive GET requests, sequentially and 2 GET requests -
     concurrently.
 
     NO threads and/or multithreading involved. Something is intentionally
@@ -13,7 +13,7 @@ include-before: |
 
 --------------------------------------------------------------------------------
 
-# Intro
+# intro
 
 I want to have simple C-style API on top of [libcurl C API](https://curl.se/libcurl/c/)
 and build a program that may look like this:
@@ -88,18 +88,23 @@ for our needs.
 
 --------------------------------------------------------------------------------
 
+# cmake with libcurl vcpkg setup
+
+# libcurl, blocking API with easy interface
+# libcurl, asynchronous API with multi interface
+
 # blocking, synchronous (App_Blocking) {#sync}
 
-## On Error handling
+## on error handling
 
-### assume success always (tooling)
-### implicit, return empty string
-### status code, out parameter (std::filesystem-style)
-### optional
-### exceptions
-### result/variant-like
-### result/tuple-like
-### result/specialized
+### assume success always (tooling) {.unnumbered .unlisted}
+### implicit, return empty string {.unnumbered .unlisted}
+### status code, out parameter (std::filesystem-style) {.unnumbered .unlisted}
+### optional {.unnumbered .unlisted}
+### exceptions {.unnumbered .unlisted}
+### result/variant-like {.unnumbered .unlisted}
+### result/tuple-like {.unnumbered .unlisted}
+### result/specialized {.unnumbered .unlisted}
 
 # async polling, tasks  (App_Tasks)
 # blocking std::future/promise
@@ -111,5 +116,5 @@ for our needs.
 # coroutines on top polling tasks
 # fibers (WIN32) (App_Fibers)
 # senders
-# Reactive Streams / Observables -- RxCpp
+# reactive streams
 
