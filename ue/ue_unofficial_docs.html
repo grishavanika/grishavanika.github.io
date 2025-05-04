@@ -60,10 +60,6 @@
     img {
       max-width: 100%;
     }
-    svg {
-      height: auto;
-      max-width: 100%;
-    }
     h1, h2, h3, h4, h5, h6 {
       margin-top: 1.4em;
     }
@@ -107,8 +103,8 @@
      overflow: visible;
     }
     hr {
+      background-color: #1a1a1a;
       border: none;
-      border-top: 1px solid #1a1a1a;
       height: 1px;
       margin: 1em 0;
     }
@@ -156,17 +152,17 @@
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
+    ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
 <header id="title-block-header">
@@ -176,50 +172,50 @@
 <ul>
 <li><a href="#topics-in-unreal-engine-5.0-1903-links"
 id="toc-topics-in-unreal-engine-5.0-1903-links"><span
-class="toc-section-number">1</span> <mark>Topics in Unreal Engine
+class="toc-section-number">0.1</span> <mark>Topics in Unreal Engine
 5.0</mark> = 1903 links</a></li>
 <li><a href="#removed-in-5.1-vs-5.0-30-links"
 id="toc-removed-in-5.1-vs-5.0-30-links"><span
-class="toc-section-number">2</span> Removed in 5.1 (vs 5.0) = 30
+class="toc-section-number">0.2</span> Removed in 5.1 (vs 5.0) = 30
 links</a></li>
 <li><a href="#added-in-5.1-vs-5.0-105-links"
 id="toc-added-in-5.1-vs-5.0-105-links"><span
-class="toc-section-number">3</span> <mark>Added in 5.1</mark> (vs 5.0) =
-105 links</a></li>
+class="toc-section-number">0.3</span> <mark>Added in 5.1</mark> (vs 5.0)
+= 105 links</a></li>
 <li><a href="#removed-in-5.2-vs-5.1-34-links"
 id="toc-removed-in-5.2-vs-5.1-34-links"><span
-class="toc-section-number">4</span> Removed in 5.2 (vs 5.1) = 34
+class="toc-section-number">0.4</span> Removed in 5.2 (vs 5.1) = 34
 links</a></li>
 <li><a href="#added-in-5.2-vs-5.1-95-links"
 id="toc-added-in-5.2-vs-5.1-95-links"><span
-class="toc-section-number">5</span> <mark>Added in 5.2</mark> (vs 5.1) =
-95 links</a></li>
+class="toc-section-number">0.5</span> <mark>Added in 5.2</mark> (vs 5.1)
+= 95 links</a></li>
 <li><a href="#removed-in-5.3-vs-5.2-48-links"
 id="toc-removed-in-5.3-vs-5.2-48-links"><span
-class="toc-section-number">6</span> Removed in 5.3 (vs 5.2) = 48
+class="toc-section-number">0.6</span> Removed in 5.3 (vs 5.2) = 48
 links</a></li>
 <li><a href="#added-in-5.3-vs-5.2-146-links"
 id="toc-added-in-5.3-vs-5.2-146-links"><span
-class="toc-section-number">7</span> <mark>Added in 5.3</mark> (vs 5.2) =
-146 links</a></li>
+class="toc-section-number">0.7</span> <mark>Added in 5.3</mark> (vs 5.2)
+= 146 links</a></li>
 <li><a href="#removed-in-5.4-vs-5.3-26-links"
 id="toc-removed-in-5.4-vs-5.3-26-links"><span
-class="toc-section-number">8</span> Removed in 5.4 (vs 5.3) = 26
+class="toc-section-number">0.8</span> Removed in 5.4 (vs 5.3) = 26
 links</a></li>
 <li><a href="#added-in-5.4-vs-5.3-141-links"
 id="toc-added-in-5.4-vs-5.3-141-links"><span
-class="toc-section-number">9</span> <mark>Added in 5.4</mark> (vs 5.3) =
-141 links</a></li>
+class="toc-section-number">0.9</span> <mark>Added in 5.4</mark> (vs 5.3)
+= 141 links</a></li>
 <li><a href="#removed-in-5.5-vs-5.4-28-links"
 id="toc-removed-in-5.5-vs-5.4-28-links"><span
-class="toc-section-number">10</span> Removed in 5.5 (vs 5.4) = 28
+class="toc-section-number">0.10</span> Removed in 5.5 (vs 5.4) = 28
 links</a></li>
 <li><a href="#added-in-5.5-vs-5.4-145-links"
 id="toc-added-in-5.5-vs-5.4-145-links"><span
-class="toc-section-number">11</span> <mark>Added in 5.5</mark> (vs 5.4)
-= 145 links</a></li>
+class="toc-section-number">0.11</span> <mark>Added in 5.5</mark> (vs
+5.4) = 145 links</a></li>
 <li><a href="#learning-library" id="toc-learning-library"><span
-class="toc-section-number">12</span> <mark>Learning</mark>
+class="toc-section-number">0.12</span> <mark>Learning</mark>
 library</a></li>
 </ul>
 </nav>
@@ -228,8 +224,8 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-
 Engine 5 Documentation</a> as a single page with no deep tree for simple
 grep/search with Ctrl+F.</p>
 <p>As of 2025/04/06.</p>
-<h2 data-number="1" id="topics-in-unreal-engine-5.0-1903-links"><span
-class="header-section-number">1</span> <mark>Topics in Unreal Engine
+<h2 data-number="0.1" id="topics-in-unreal-engine-5.0-1903-links"><span
+class="header-section-number">0.1</span> <mark>Topics in Unreal Engine
 5.0</mark> = 1903 links</h2>
 <ul>
 <li><a
@@ -7985,8 +7981,8 @@ loader in unreal engine</a></li>
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/zen-store-in-unreal-engine?application_version=5.0">zen
 store in unreal engine</a></li>
 </ul>
-<h2 data-number="2" id="removed-in-5.1-vs-5.0-30-links"><span
-class="header-section-number">2</span> Removed in 5.1 (vs 5.0) = 30
+<h2 data-number="0.2" id="removed-in-5.1-vs-5.0-30-links"><span
+class="header-section-number">0.2</span> Removed in 5.1 (vs 5.0) = 30
 links</h2>
 <ul>
 <li><a
@@ -8081,8 +8077,8 @@ with actors in vr mode</a></li>
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/writing-code-snippets-in-unreal-engine?application_version=5.0">writing
 code snippets in unreal engine</a></li>
 </ul>
-<h2 data-number="3" id="added-in-5.1-vs-5.0-105-links"><span
-class="header-section-number">3</span> <mark>Added in 5.1</mark> (vs
+<h2 data-number="0.3" id="added-in-5.1-vs-5.0-105-links"><span
+class="header-section-number">0.3</span> <mark>Added in 5.1</mark> (vs
 5.0) = 105 links</h2>
 <ul>
 <li><a
@@ -8610,8 +8606,8 @@ with meshes in unreal engine</a></li>
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-usd-stage-prims-in-unreal-engine?application_version=5.1">working
 with usd stage prims in unreal engine</a></li>
 </ul>
-<h2 data-number="4" id="removed-in-5.2-vs-5.1-34-links"><span
-class="header-section-number">4</span> Removed in 5.2 (vs 5.1) = 34
+<h2 data-number="0.4" id="removed-in-5.2-vs-5.1-34-links"><span
+class="header-section-number">0.4</span> Removed in 5.2 (vs 5.1) = 34
 links</h2>
 <ul>
 <li><a
@@ -8717,8 +8713,8 @@ virtual cameras in unreal engine</a></li>
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/virtual-camera-component-in-unreal-engine?application_version=5.1">virtual
 camera component in unreal engine</a></li>
 </ul>
-<h2 data-number="5" id="added-in-5.2-vs-5.1-95-links"><span
-class="header-section-number">5</span> <mark>Added in 5.2</mark> (vs
+<h2 data-number="0.5" id="added-in-5.2-vs-5.1-95-links"><span
+class="header-section-number">0.5</span> <mark>Added in 5.2</mark> (vs
 5.1) = 95 links</h2>
 <ul>
 <li><a
@@ -9044,8 +9040,8 @@ debugging and scalability options in unreal engine</a></li>
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-modular-characters-in-unreal-engine?application_version=5.2">working
 with modular characters in unreal engine</a></li>
 </ul>
-<h2 data-number="6" id="removed-in-5.3-vs-5.2-48-links"><span
-class="header-section-number">6</span> Removed in 5.3 (vs 5.2) = 48
+<h2 data-number="0.6" id="removed-in-5.3-vs-5.2-48-links"><span
+class="header-section-number">0.6</span> Removed in 5.3 (vs 5.2) = 48
 links</h2>
 <ul>
 <li><a
@@ -9194,8 +9190,8 @@ design and layout tools for umg in unreal engine</a></li>
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-speedtree-models-in-unreal-engine?application_version=5.2">working
 with speedtree models in unreal engine</a></li>
 </ul>
-<h2 data-number="7" id="added-in-5.3-vs-5.2-146-links"><span
-class="header-section-number">7</span> <mark>Added in 5.3</mark> (vs
+<h2 data-number="0.7" id="added-in-5.3-vs-5.2-146-links"><span
+class="header-section-number">0.7</span> <mark>Added in 5.3</mark> (vs
 5.2) = 146 links</h2>
 <ul>
 <li><a
@@ -9737,8 +9733,8 @@ low level tests in unreal engine</a></li>
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/xbox-development-in-unreal-engine?application_version=5.3">xbox
 development in unreal engine</a></li>
 </ul>
-<h2 data-number="8" id="removed-in-5.4-vs-5.3-26-links"><span
-class="header-section-number">8</span> Removed in 5.4 (vs 5.3) = 26
+<h2 data-number="0.8" id="removed-in-5.4-vs-5.3-26-links"><span
+class="header-section-number">0.8</span> Removed in 5.4 (vs 5.3) = 26
 links</h2>
 <ul>
 <li><a
@@ -9821,8 +9817,8 @@ editing tools</a></li>
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/zen-store-in-unreal-engine?application_version=5.3">zen
 store in unreal engine</a></li>
 </ul>
-<h2 data-number="9" id="added-in-5.4-vs-5.3-141-links"><span
-class="header-section-number">9</span> <mark>Added in 5.4</mark> (vs
+<h2 data-number="0.9" id="added-in-5.4-vs-5.3-141-links"><span
+class="header-section-number">0.9</span> <mark>Added in 5.4</mark> (vs
 5.3) = 141 links</h2>
 <ul>
 <li><a
@@ -10350,8 +10346,8 @@ first graphic with motion design in unreal engine</a></li>
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/zen-storage-server-for-unreal-engine?application_version=5.4">zen
 storage server for unreal engine</a></li>
 </ul>
-<h2 data-number="10" id="removed-in-5.5-vs-5.4-28-links"><span
-class="header-section-number">10</span> Removed in 5.5 (vs 5.4) = 28
+<h2 data-number="0.10" id="removed-in-5.5-vs-5.4-28-links"><span
+class="header-section-number">0.10</span> Removed in 5.5 (vs 5.4) = 28
 links</h2>
 <ul>
 <li><a
@@ -10440,8 +10436,8 @@ the timing insights log in unreal insights for unreal engine</a></li>
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/vertex-color-materials-in-unreal-engine?application_version=5.4">vertex
 color materials in unreal engine</a></li>
 </ul>
-<h2 data-number="11" id="added-in-5.5-vs-5.4-145-links"><span
-class="header-section-number">11</span> <mark>Added in 5.5</mark> (vs
+<h2 data-number="0.11" id="added-in-5.5-vs-5.4-145-links"><span
+class="header-section-number">0.11</span> <mark>Added in 5.5</mark> (vs
 5.4) = 145 links</h2>
 <ul>
 <li><a
@@ -10927,8 +10923,8 @@ with multiple uv channels with mutable in unreal engine</a></li>
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/world-partition-builder-commandlet-reference?application_version=5.5">world
 partition builder commandlet reference</a></li>
 </ul>
-<h2 data-number="12" id="learning-library"><span
-class="header-section-number">12</span> <mark>Learning</mark>
+<h2 data-number="0.12" id="learning-library"><span
+class="header-section-number">0.12</span> <mark>Learning</mark>
 library</h2>
 <p>From <a
 href="https://dev.epicgames.com/community/unreal-engine/learning?source=epic_games&amp;sort_by=first_published_at">Learn
