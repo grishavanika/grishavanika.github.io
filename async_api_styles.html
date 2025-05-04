@@ -317,6 +317,10 @@ type</a></li>
 id="toc-c-coroutines-basic-await"><span
 class="toc-section-number">12.2</span> # C++ coroutines, basic
 await</a></li>
+<li><a href="#c-coroutines-await-curl-callback-with-a-crash"
+id="toc-c-coroutines-await-curl-callback-with-a-crash"><span
+class="toc-section-number">12.3</span> # C++ coroutines, await CURL
+callback with a crash</a></li>
 </ul></li>
 <li><a href="#coroutines-on-top-polling-tasks"
 id="toc-coroutines-on-top-polling-tasks"><span
@@ -607,7 +611,8 @@ start a GET request and the response should arrive some time later. The
 system invokes a user-provided <code>callback</code> to notify us once
 everything is done:</p>
 <div class="sourceCode" id="cb16"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1"></a><span class="dt">void</span> CURL_async_get<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>string<span class="op">&amp;</span> url<span class="op">,</span> <span class="dt">void</span> <span class="op">(*</span>callback<span class="op">)(</span><span class="bu">std::</span>string<span class="op">));</span></span></code></pre></div>
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1"></a><span class="dt">void</span> CURL_async_get<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>string<span class="op">&amp;</span> url</span>
+<span id="cb16-2"><a href="#cb16-2"></a>    <span class="op">,</span> <span class="dt">void</span> <span class="op">(*</span>callback<span class="op">)(</span><span class="bu">std::</span>string<span class="op">));</span></span></code></pre></div>
 <p>we could use it like this:</p>
 <div class="sourceCode" id="cb17"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1"></a><span class="co">// start a request:</span></span>
@@ -986,22 +991,29 @@ C++ coroutines work</a>.</li>
 Transfer</a>, author of <a
 href="https://github.com/lewissbaker/cppcoro">cppcoro</a>.</li>
 </ul>
+<p>In short, we’d like to have somehow to be able to write something
+like this:</p>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb32-1"><a href="#cb32-1"></a><span class="at">const</span> <span class="bu">std::</span>string<span class="op"> </span>response <span class="op">=</span> <span class="cf">co_await</span> CURL_await_get<span class="op">(</span></span>
+<span id="cb32-2"><a href="#cb32-2"></a>    curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">);</span></span>
+<span id="cb32-3"><a href="#cb32-3"></a><span class="co">// use `response` as a usual variable, no callbacks</span></span></code></pre></div>
 <p>There are several moving and a bit unrelative parts to have working
 coroutines code. First, coroutine function return type needs to be
 built, just to be able to write any/empty coroutine:</p>
-<div class="sourceCode" id="cb32"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb32-1"><a href="#cb32-1"></a>Co_Task coro_work<span class="op">()</span></span>
-<span id="cb32-2"><a href="#cb32-2"></a><span class="op">{</span></span>
-<span id="cb32-3"><a href="#cb32-3"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
-<span id="cb32-4"><a href="#cb32-4"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb33-1"><a href="#cb33-1"></a>Co_Task coro_work<span class="op">()</span></span>
+<span id="cb33-2"><a href="#cb33-2"></a><span class="op">{</span></span>
+<span id="cb33-3"><a href="#cb33-3"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
+<span id="cb33-4"><a href="#cb33-4"></a><span class="op">}</span></span></code></pre></div>
 <p>Next, there is a need to write coroutine awaitable to be able to
 <code>co_await</code> some work, specifically, GET request:</p>
-<div class="sourceCode" id="cb33"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb33-1"><a href="#cb33-1"></a>Co_Task coro_work<span class="op">(</span>CURL_Async curl_async<span class="op">)</span></span>
-<span id="cb33-2"><a href="#cb33-2"></a><span class="op">{</span></span>
-<span id="cb33-3"><a href="#cb33-3"></a>    <span class="bu">std::</span>string<span class="op"> </span>response <span class="op">=</span> <span class="cf">co_await</span> CURL_await_get<span class="op">(</span>curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">);</span></span>
-<span id="cb33-4"><a href="#cb33-4"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
-<span id="cb33-5"><a href="#cb33-5"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb34-1"><a href="#cb34-1"></a>Co_Task coro_work<span class="op">(</span>CURL_Async curl_async<span class="op">)</span></span>
+<span id="cb34-2"><a href="#cb34-2"></a><span class="op">{</span></span>
+<span id="cb34-3"><a href="#cb34-3"></a>    <span class="bu">std::</span>string<span class="op"> </span>response <span class="op">=</span> <span class="cf">co_await</span> CURL_await_get<span class="op">(</span>curl_async</span>
+<span id="cb34-4"><a href="#cb34-4"></a>        <span class="op">,</span> <span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">);</span></span>
+<span id="cb34-5"><a href="#cb34-5"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
+<span id="cb34-6"><a href="#cb34-6"></a><span class="op">}</span></span></code></pre></div>
 <p>And, finally, there are some challenges to have a code that has
 several GET requests on the fly with coroutines.</p>
 <p>Lets start with basics.</p>
@@ -1014,20 +1026,20 @@ href="https://github.com/grishavanika/async_api_styles/blob/main/0x_cpp_coro_tas
 <p>There is a trick of writing some basic C++20 coroutines code -
 <strong>listen to compiler</strong>. Lets see what it takes to make the
 next code “work”:</p>
-<div class="sourceCode" id="cb34"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb34-1"><a href="#cb34-1"></a>Co_Task coro_work<span class="op">()</span></span>
-<span id="cb34-2"><a href="#cb34-2"></a><span class="op">{</span></span>
-<span id="cb34-3"><a href="#cb34-3"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
-<span id="cb34-4"><a href="#cb34-4"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb35-1"><a href="#cb35-1"></a>Co_Task coro_work<span class="op">()</span></span>
+<span id="cb35-2"><a href="#cb35-2"></a><span class="op">{</span></span>
+<span id="cb35-3"><a href="#cb35-3"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
+<span id="cb35-4"><a href="#cb35-4"></a><span class="op">}</span></span></code></pre></div>
 <p><code>Co_Task</code> is a class, lets have empty one and try to
 compile:</p>
-<div class="sourceCode" id="cb35"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb35-1"><a href="#cb35-1"></a><span class="kw">struct</span> Co_Task <span class="op">{};</span></span>
-<span id="cb35-2"><a href="#cb35-2"></a></span>
-<span id="cb35-3"><a href="#cb35-3"></a>Co_Task coro_work<span class="op">()</span></span>
-<span id="cb35-4"><a href="#cb35-4"></a><span class="op">{</span></span>
-<span id="cb35-5"><a href="#cb35-5"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
-<span id="cb35-6"><a href="#cb35-6"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb36-1"><a href="#cb36-1"></a><span class="kw">struct</span> Co_Task <span class="op">{};</span></span>
+<span id="cb36-2"><a href="#cb36-2"></a></span>
+<span id="cb36-3"><a href="#cb36-3"></a>Co_Task coro_work<span class="op">()</span></span>
+<span id="cb36-4"><a href="#cb36-4"></a><span class="op">{</span></span>
+<span id="cb36-5"><a href="#cb36-5"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
+<span id="cb36-6"><a href="#cb36-6"></a><span class="op">}</span></span></code></pre></div>
 <p>MSVC complains:</p>
 <pre><code>main.cc(164,5): error C3774: cannot find &#39;std::coroutine_traits&#39;:
                 Please include &lt;coroutine&gt; header</code></pre>
@@ -1036,18 +1048,18 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
                 &#39;std::coroutine_traits&lt;Co_Task&gt;&#39;</code></pre>
 <p>Lets add empty <code>promise_type</code> class inside
 <code>Co_Task</code>:</p>
-<div class="sourceCode" id="cb38"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb38-1"><a href="#cb38-1"></a><span class="pp">#include </span><span class="im">&lt;coroutine&gt;</span></span>
-<span id="cb38-2"><a href="#cb38-2"></a></span>
-<span id="cb38-3"><a href="#cb38-3"></a><span class="kw">struct</span> Co_Task</span>
-<span id="cb38-4"><a href="#cb38-4"></a><span class="op">{</span></span>
-<span id="cb38-5"><a href="#cb38-5"></a>    <span class="kw">struct</span> <span class="dt">promise_type</span> <span class="op">{};</span></span>
-<span id="cb38-6"><a href="#cb38-6"></a><span class="op">};</span></span>
-<span id="cb38-7"><a href="#cb38-7"></a></span>
-<span id="cb38-8"><a href="#cb38-8"></a>Co_Task coro_work<span class="op">()</span></span>
-<span id="cb38-9"><a href="#cb38-9"></a><span class="op">{</span></span>
-<span id="cb38-10"><a href="#cb38-10"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
-<span id="cb38-11"><a href="#cb38-11"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb39-1"><a href="#cb39-1"></a><span class="pp">#include </span><span class="im">&lt;coroutine&gt;</span></span>
+<span id="cb39-2"><a href="#cb39-2"></a></span>
+<span id="cb39-3"><a href="#cb39-3"></a><span class="kw">struct</span> Co_Task</span>
+<span id="cb39-4"><a href="#cb39-4"></a><span class="op">{</span></span>
+<span id="cb39-5"><a href="#cb39-5"></a>    <span class="kw">struct</span> <span class="dt">promise_type</span> <span class="op">{};</span></span>
+<span id="cb39-6"><a href="#cb39-6"></a><span class="op">};</span></span>
+<span id="cb39-7"><a href="#cb39-7"></a></span>
+<span id="cb39-8"><a href="#cb39-8"></a>Co_Task coro_work<span class="op">()</span></span>
+<span id="cb39-9"><a href="#cb39-9"></a><span class="op">{</span></span>
+<span id="cb39-10"><a href="#cb39-10"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
+<span id="cb39-11"><a href="#cb39-11"></a><span class="op">}</span></span></code></pre></div>
 <p>MSVC complains:</p>
 <pre><code>main.cc(170,1): error C3789: this function cannot be a coroutine:
                 &#39;Co_Task::promise_type&#39; does not declare the member
@@ -1066,23 +1078,23 @@ unfortunately. To speed-up things, we know that
 <code>initial_suspend()</code> and <code>final_suspend()</code> we’ll go
 with <code>std::suspend_always</code> awaitables for now. That
 gives:</p>
-<div class="sourceCode" id="cb40"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb40-1"><a href="#cb40-1"></a><span class="pp">#include </span><span class="im">&lt;coroutine&gt;</span></span>
-<span id="cb40-2"><a href="#cb40-2"></a></span>
-<span id="cb40-3"><a href="#cb40-3"></a><span class="kw">struct</span> Co_Task</span>
-<span id="cb40-4"><a href="#cb40-4"></a><span class="op">{</span></span>
-<span id="cb40-5"><a href="#cb40-5"></a>    <span class="kw">struct</span> <span class="dt">promise_type</span></span>
-<span id="cb40-6"><a href="#cb40-6"></a>    <span class="op">{</span></span>
-<span id="cb40-7"><a href="#cb40-7"></a>        Co_Task get_return_object<span class="op">()</span>           <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
-<span id="cb40-8"><a href="#cb40-8"></a>        <span class="bu">std::</span>suspend_always<span class="op"> </span>initial_suspend<span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
-<span id="cb40-9"><a href="#cb40-9"></a>        <span class="bu">std::</span>suspend_always<span class="op"> </span>final_suspend<span class="op">()</span>   <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
-<span id="cb40-10"><a href="#cb40-10"></a>    <span class="op">};</span></span>
-<span id="cb40-11"><a href="#cb40-11"></a><span class="op">};</span></span>
-<span id="cb40-12"><a href="#cb40-12"></a></span>
-<span id="cb40-13"><a href="#cb40-13"></a>Co_Task coro_work<span class="op">()</span></span>
-<span id="cb40-14"><a href="#cb40-14"></a><span class="op">{</span></span>
-<span id="cb40-15"><a href="#cb40-15"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
-<span id="cb40-16"><a href="#cb40-16"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb41-1"><a href="#cb41-1"></a><span class="pp">#include </span><span class="im">&lt;coroutine&gt;</span></span>
+<span id="cb41-2"><a href="#cb41-2"></a></span>
+<span id="cb41-3"><a href="#cb41-3"></a><span class="kw">struct</span> Co_Task</span>
+<span id="cb41-4"><a href="#cb41-4"></a><span class="op">{</span></span>
+<span id="cb41-5"><a href="#cb41-5"></a>    <span class="kw">struct</span> <span class="dt">promise_type</span></span>
+<span id="cb41-6"><a href="#cb41-6"></a>    <span class="op">{</span></span>
+<span id="cb41-7"><a href="#cb41-7"></a>        Co_Task get_return_object<span class="op">()</span>           <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
+<span id="cb41-8"><a href="#cb41-8"></a>        <span class="bu">std::</span>suspend_always<span class="op"> </span>initial_suspend<span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
+<span id="cb41-9"><a href="#cb41-9"></a>        <span class="bu">std::</span>suspend_always<span class="op"> </span>final_suspend<span class="op">()</span>   <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
+<span id="cb41-10"><a href="#cb41-10"></a>    <span class="op">};</span></span>
+<span id="cb41-11"><a href="#cb41-11"></a><span class="op">};</span></span>
+<span id="cb41-12"><a href="#cb41-12"></a></span>
+<span id="cb41-13"><a href="#cb41-13"></a>Co_Task coro_work<span class="op">()</span></span>
+<span id="cb41-14"><a href="#cb41-14"></a><span class="op">{</span></span>
+<span id="cb41-15"><a href="#cb41-15"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
+<span id="cb41-16"><a href="#cb41-16"></a><span class="op">}</span></span></code></pre></div>
 <p>MSVC complains:</p>
 <pre><code>main.cc(164,12): error C3781: Co_Task::promise_type: a coroutine&#39;s
                  promise must declare either
@@ -1092,44 +1104,44 @@ main.cc(176,1): error C2039: &#39;unhandled_exception&#39;: is not a member
 <p>Since our <code>coro_work()</code> coroutine has just
 <code>co_return</code>, we should provide <code>return_void()</code>
 member function. With <code>unhandled_exception()</code>, we have:</p>
-<div class="sourceCode" id="cb42"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb42-1"><a href="#cb42-1"></a><span class="kw">struct</span> <span class="dt">promise_type</span></span>
-<span id="cb42-2"><a href="#cb42-2"></a><span class="op">{</span></span>
-<span id="cb42-3"><a href="#cb42-3"></a>    Co_Task get_return_object<span class="op">()</span>           <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
-<span id="cb42-4"><a href="#cb42-4"></a>    <span class="bu">std::</span>suspend_always<span class="op"> </span>initial_suspend<span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
-<span id="cb42-5"><a href="#cb42-5"></a>    <span class="bu">std::</span>suspend_always<span class="op"> </span>final_suspend<span class="op">()</span>   <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
-<span id="cb42-6"><a href="#cb42-6"></a>    <span class="dt">void</span> return_void<span class="op">()</span>                    <span class="op">{}</span></span>
-<span id="cb42-7"><a href="#cb42-7"></a>    <span class="dt">void</span> unhandled_exception<span class="op">()</span>            <span class="op">{}</span></span>
-<span id="cb42-8"><a href="#cb42-8"></a><span class="op">};</span></span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb43-1"><a href="#cb43-1"></a><span class="kw">struct</span> <span class="dt">promise_type</span></span>
+<span id="cb43-2"><a href="#cb43-2"></a><span class="op">{</span></span>
+<span id="cb43-3"><a href="#cb43-3"></a>    Co_Task get_return_object<span class="op">()</span>           <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
+<span id="cb43-4"><a href="#cb43-4"></a>    <span class="bu">std::</span>suspend_always<span class="op"> </span>initial_suspend<span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
+<span id="cb43-5"><a href="#cb43-5"></a>    <span class="bu">std::</span>suspend_always<span class="op"> </span>final_suspend<span class="op">()</span>   <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
+<span id="cb43-6"><a href="#cb43-6"></a>    <span class="dt">void</span> return_void<span class="op">()</span>                    <span class="op">{}</span></span>
+<span id="cb43-7"><a href="#cb43-7"></a>    <span class="dt">void</span> unhandled_exception<span class="op">()</span>            <span class="op">{}</span></span>
+<span id="cb43-8"><a href="#cb43-8"></a><span class="op">};</span></span></code></pre></div>
 <p>MSVC complains:</p>
 <pre><code>main.cc(168,29): error C5231: the expression
                  &#39;co_await promise.final_suspend()&#39; must be non-throwing</code></pre>
 <p>Ok, makes sense. Finally,</p>
-<div class="sourceCode" id="cb44"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb44-1"><a href="#cb44-1"></a><span class="pp">#include </span><span class="im">&lt;coroutine&gt;</span></span>
-<span id="cb44-2"><a href="#cb44-2"></a></span>
-<span id="cb44-3"><a href="#cb44-3"></a><span class="kw">struct</span> Co_Task</span>
-<span id="cb44-4"><a href="#cb44-4"></a><span class="op">{</span></span>
-<span id="cb44-5"><a href="#cb44-5"></a>    <span class="kw">struct</span> <span class="dt">promise_type</span></span>
-<span id="cb44-6"><a href="#cb44-6"></a>    <span class="op">{</span></span>
-<span id="cb44-7"><a href="#cb44-7"></a>        Co_Task get_return_object<span class="op">()</span>                  <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
-<span id="cb44-8"><a href="#cb44-8"></a>        <span class="bu">std::</span>suspend_always<span class="op"> </span>initial_suspend<span class="op">()</span>        <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
-<span id="cb44-9"><a href="#cb44-9"></a>        <span class="bu">std::</span>suspend_always<span class="op"> </span>final_suspend<span class="op">()</span> <span class="kw">noexcept</span> <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
-<span id="cb44-10"><a href="#cb44-10"></a>        <span class="dt">void</span> return_void<span class="op">()</span>                           <span class="op">{}</span></span>
-<span id="cb44-11"><a href="#cb44-11"></a>        <span class="dt">void</span> unhandled_exception<span class="op">()</span>                   <span class="op">{}</span></span>
-<span id="cb44-12"><a href="#cb44-12"></a>    <span class="op">};</span></span>
-<span id="cb44-13"><a href="#cb44-13"></a><span class="op">};</span></span>
-<span id="cb44-14"><a href="#cb44-14"></a></span>
-<span id="cb44-15"><a href="#cb44-15"></a>Co_Task coro_work<span class="op">()</span></span>
-<span id="cb44-16"><a href="#cb44-16"></a><span class="op">{</span></span>
-<span id="cb44-17"><a href="#cb44-17"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
-<span id="cb44-18"><a href="#cb44-18"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb45-1"><a href="#cb45-1"></a><span class="pp">#include </span><span class="im">&lt;coroutine&gt;</span></span>
+<span id="cb45-2"><a href="#cb45-2"></a></span>
+<span id="cb45-3"><a href="#cb45-3"></a><span class="kw">struct</span> Co_Task</span>
+<span id="cb45-4"><a href="#cb45-4"></a><span class="op">{</span></span>
+<span id="cb45-5"><a href="#cb45-5"></a>    <span class="kw">struct</span> <span class="dt">promise_type</span></span>
+<span id="cb45-6"><a href="#cb45-6"></a>    <span class="op">{</span></span>
+<span id="cb45-7"><a href="#cb45-7"></a>        Co_Task get_return_object<span class="op">()</span>                  <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
+<span id="cb45-8"><a href="#cb45-8"></a>        <span class="bu">std::</span>suspend_always<span class="op"> </span>initial_suspend<span class="op">()</span>        <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
+<span id="cb45-9"><a href="#cb45-9"></a>        <span class="bu">std::</span>suspend_always<span class="op"> </span>final_suspend<span class="op">()</span> <span class="kw">noexcept</span> <span class="op">{</span> <span class="cf">return</span> <span class="op">{};</span> <span class="op">}</span></span>
+<span id="cb45-10"><a href="#cb45-10"></a>        <span class="dt">void</span> return_void<span class="op">()</span>                           <span class="op">{}</span></span>
+<span id="cb45-11"><a href="#cb45-11"></a>        <span class="dt">void</span> unhandled_exception<span class="op">()</span>                   <span class="op">{}</span></span>
+<span id="cb45-12"><a href="#cb45-12"></a>    <span class="op">};</span></span>
+<span id="cb45-13"><a href="#cb45-13"></a><span class="op">};</span></span>
+<span id="cb45-14"><a href="#cb45-14"></a></span>
+<span id="cb45-15"><a href="#cb45-15"></a>Co_Task coro_work<span class="op">()</span></span>
+<span id="cb45-16"><a href="#cb45-16"></a><span class="op">{</span></span>
+<span id="cb45-17"><a href="#cb45-17"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
+<span id="cb45-18"><a href="#cb45-18"></a><span class="op">}</span></span></code></pre></div>
 <p>compiles! We just need to fill in details and implement given
 functions properly.</p>
 <p>There are way too many different ways to implement coroutine
 task/promise types. There are no constraints and, in general, it all
-depends on your design and needs. We’ll go with simplest working one for
-now:</p>
+depends on your design and needs. We’ll go with owning coroutine task
+type:</p>
 <ol type="1">
 <li><code>Co_Task</code> will own coroutine handle (as in free coroutine
 in the destructor).</li>
@@ -1147,36 +1159,36 @@ coroutine.</li>
 <p>For now, lets proceed with implementation. Since we own coroutine,
 our <code>Co_Task</code> needs to have destructor, should be
 move-only:</p>
-<div class="sourceCode" id="cb45"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb45-1"><a href="#cb45-1"></a><span class="kw">struct</span> Co_Task</span>
-<span id="cb45-2"><a href="#cb45-2"></a><span class="op">{</span></span>
-<span id="cb45-3"><a href="#cb45-3"></a>    <span class="kw">struct</span> <span class="dt">promise_type</span><span class="op">;</span></span>
-<span id="cb45-4"><a href="#cb45-4"></a>    <span class="kw">using</span> co_handle <span class="op">=</span> <span class="bu">std::</span>coroutine_handle<span class="op">&lt;</span><span class="dt">promise_type</span><span class="op">&gt;;</span></span>
-<span id="cb45-5"><a href="#cb45-5"></a></span>
-<span id="cb45-6"><a href="#cb45-6"></a>    <span class="kw">struct</span> <span class="dt">promise_type</span></span>
-<span id="cb45-7"><a href="#cb45-7"></a>    <span class="op">{</span></span>
-<span id="cb45-8"><a href="#cb45-8"></a>        Co_Task get_return_object<span class="op">()</span></span>
-<span id="cb45-9"><a href="#cb45-9"></a>        <span class="op">{</span></span>
-<span id="cb45-10"><a href="#cb45-10"></a>            <span class="cf">return</span> Co_Task<span class="op">{</span>co_handle<span class="op">::</span>from_promise<span class="op">(*</span><span class="kw">this</span><span class="op">)};</span></span>
-<span id="cb45-11"><a href="#cb45-11"></a>        <span class="op">}</span></span>
-<span id="cb45-12"><a href="#cb45-12"></a>        <span class="co">// ...</span></span>
-<span id="cb45-13"><a href="#cb45-13"></a>    <span class="op">};</span></span>
-<span id="cb45-14"><a href="#cb45-14"></a></span>
-<span id="cb45-15"><a href="#cb45-15"></a>    Co_Task<span class="op">(</span>co_handle coro<span class="op">)</span></span>
-<span id="cb45-16"><a href="#cb45-16"></a>        <span class="op">:</span> _coro<span class="op">{</span>coro<span class="op">}</span> <span class="op">{}</span></span>
-<span id="cb45-17"><a href="#cb45-17"></a>    Co_Task<span class="op">(</span>Co_Task<span class="op">&amp;&amp;</span> rhs<span class="op">)</span> <span class="kw">noexcept</span></span>
-<span id="cb45-18"><a href="#cb45-18"></a>        <span class="op">:</span> _coro<span class="op">{</span><span class="bu">std::</span>exchange<span class="op">(</span>rhs<span class="op">.</span>_coro<span class="op">,</span> <span class="op">{})}</span> <span class="op">{</span> <span class="op">}</span></span>
-<span id="cb45-19"><a href="#cb45-19"></a>    Co_Task<span class="op">(</span><span class="at">const</span> Co_Task<span class="op">&amp;)</span> <span class="op">=</span> <span class="kw">delete</span><span class="op">;</span></span>
-<span id="cb45-20"><a href="#cb45-20"></a>    <span class="op">~</span>Co_Task<span class="op">()</span> <span class="kw">noexcept</span></span>
-<span id="cb45-21"><a href="#cb45-21"></a>    <span class="op">{</span></span>
-<span id="cb45-22"><a href="#cb45-22"></a>        <span class="cf">if</span> <span class="op">(</span>_coro<span class="op">)</span></span>
-<span id="cb45-23"><a href="#cb45-23"></a>        <span class="op">{</span></span>
-<span id="cb45-24"><a href="#cb45-24"></a>            _coro<span class="op">.</span>destroy<span class="op">();</span></span>
-<span id="cb45-25"><a href="#cb45-25"></a>        <span class="op">}</span></span>
-<span id="cb45-26"><a href="#cb45-26"></a>    <span class="op">}</span></span>
-<span id="cb45-27"><a href="#cb45-27"></a></span>
-<span id="cb45-28"><a href="#cb45-28"></a>    co_handle _coro<span class="op">;</span></span>
-<span id="cb45-29"><a href="#cb45-29"></a><span class="op">};</span></span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb46-1"><a href="#cb46-1"></a><span class="kw">struct</span> Co_Task</span>
+<span id="cb46-2"><a href="#cb46-2"></a><span class="op">{</span></span>
+<span id="cb46-3"><a href="#cb46-3"></a>    <span class="kw">struct</span> <span class="dt">promise_type</span><span class="op">;</span></span>
+<span id="cb46-4"><a href="#cb46-4"></a>    <span class="kw">using</span> co_handle <span class="op">=</span> <span class="bu">std::</span>coroutine_handle<span class="op">&lt;</span><span class="dt">promise_type</span><span class="op">&gt;;</span></span>
+<span id="cb46-5"><a href="#cb46-5"></a></span>
+<span id="cb46-6"><a href="#cb46-6"></a>    <span class="kw">struct</span> <span class="dt">promise_type</span></span>
+<span id="cb46-7"><a href="#cb46-7"></a>    <span class="op">{</span></span>
+<span id="cb46-8"><a href="#cb46-8"></a>        Co_Task get_return_object<span class="op">()</span></span>
+<span id="cb46-9"><a href="#cb46-9"></a>        <span class="op">{</span></span>
+<span id="cb46-10"><a href="#cb46-10"></a>            <span class="cf">return</span> Co_Task<span class="op">{</span>co_handle<span class="op">::</span>from_promise<span class="op">(*</span><span class="kw">this</span><span class="op">)};</span></span>
+<span id="cb46-11"><a href="#cb46-11"></a>        <span class="op">}</span></span>
+<span id="cb46-12"><a href="#cb46-12"></a>        <span class="co">// ...</span></span>
+<span id="cb46-13"><a href="#cb46-13"></a>    <span class="op">};</span></span>
+<span id="cb46-14"><a href="#cb46-14"></a></span>
+<span id="cb46-15"><a href="#cb46-15"></a>    Co_Task<span class="op">(</span>co_handle coro<span class="op">)</span></span>
+<span id="cb46-16"><a href="#cb46-16"></a>        <span class="op">:</span> _coro<span class="op">{</span>coro<span class="op">}</span> <span class="op">{}</span></span>
+<span id="cb46-17"><a href="#cb46-17"></a>    Co_Task<span class="op">(</span>Co_Task<span class="op">&amp;&amp;</span> rhs<span class="op">)</span> <span class="kw">noexcept</span></span>
+<span id="cb46-18"><a href="#cb46-18"></a>        <span class="op">:</span> _coro<span class="op">{</span><span class="bu">std::</span>exchange<span class="op">(</span>rhs<span class="op">.</span>_coro<span class="op">,</span> <span class="op">{})}</span> <span class="op">{</span> <span class="op">}</span></span>
+<span id="cb46-19"><a href="#cb46-19"></a>    Co_Task<span class="op">(</span><span class="at">const</span> Co_Task<span class="op">&amp;)</span> <span class="op">=</span> <span class="kw">delete</span><span class="op">;</span></span>
+<span id="cb46-20"><a href="#cb46-20"></a>    <span class="op">~</span>Co_Task<span class="op">()</span> <span class="kw">noexcept</span></span>
+<span id="cb46-21"><a href="#cb46-21"></a>    <span class="op">{</span></span>
+<span id="cb46-22"><a href="#cb46-22"></a>        <span class="cf">if</span> <span class="op">(</span>_coro<span class="op">)</span></span>
+<span id="cb46-23"><a href="#cb46-23"></a>        <span class="op">{</span></span>
+<span id="cb46-24"><a href="#cb46-24"></a>            _coro<span class="op">.</span>destroy<span class="op">();</span></span>
+<span id="cb46-25"><a href="#cb46-25"></a>        <span class="op">}</span></span>
+<span id="cb46-26"><a href="#cb46-26"></a>    <span class="op">}</span></span>
+<span id="cb46-27"><a href="#cb46-27"></a></span>
+<span id="cb46-28"><a href="#cb46-28"></a>    co_handle _coro<span class="op">;</span></span>
+<span id="cb46-29"><a href="#cb46-29"></a><span class="op">};</span></span></code></pre></div>
 <p>In short, when we call <code>coro_work()</code>, compiler creates
 <code>Co_Task::promise_type</code> and invokes
 <code>get_return_object()</code> to be able to return an instance of
@@ -1189,65 +1201,65 @@ return it to the user. It’s <strong>up to the user</strong> to manage
 if <code>Co_Task</code> is destroyed, we assume coroutine is in
 suspended state and destroy it too.</p>
 <p>Writing down the rest of functions:</p>
-<div class="sourceCode" id="cb46"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb46-1"><a href="#cb46-1"></a><span class="bu">std::</span>suspend_always<span class="op"> </span><span class="dt">promise_type</span><span class="op">::</span>initial_suspend<span class="op">()</span></span>
-<span id="cb46-2"><a href="#cb46-2"></a><span class="op">{</span></span>
-<span id="cb46-3"><a href="#cb46-3"></a>    <span class="cf">return</span> <span class="op">{};</span></span>
-<span id="cb46-4"><a href="#cb46-4"></a><span class="op">}</span></span>
-<span id="cb46-5"><a href="#cb46-5"></a></span>
-<span id="cb46-6"><a href="#cb46-6"></a><span class="bu">std::</span>suspend_always<span class="op"> </span><span class="dt">promise_type</span><span class="op">::</span>final_suspend<span class="op">()</span> <span class="kw">noexcept</span></span>
-<span id="cb46-7"><a href="#cb46-7"></a><span class="op">{</span></span>
-<span id="cb46-8"><a href="#cb46-8"></a>    <span class="cf">return</span> <span class="op">{};</span></span>
-<span id="cb46-9"><a href="#cb46-9"></a><span class="op">}</span></span>
-<span id="cb46-10"><a href="#cb46-10"></a></span>
-<span id="cb46-11"><a href="#cb46-11"></a><span class="dt">void</span> <span class="dt">promise_type</span><span class="op">::</span>return_void<span class="op">()</span></span>
-<span id="cb46-12"><a href="#cb46-12"></a><span class="op">{</span></span>
-<span id="cb46-13"><a href="#cb46-13"></a>    <span class="co">// yeah, we return void. Nothing to do</span></span>
-<span id="cb46-14"><a href="#cb46-14"></a><span class="op">}</span></span>
-<span id="cb46-15"><a href="#cb46-15"></a></span>
-<span id="cb46-16"><a href="#cb46-16"></a><span class="dt">void</span> <span class="dt">promise_type</span><span class="op">::</span>unhandled_exception<span class="op">()</span></span>
-<span id="cb46-17"><a href="#cb46-17"></a><span class="op">{</span></span>
-<span id="cb46-18"><a href="#cb46-18"></a>    <span class="co">// crash, no exceptions handling</span></span>
-<span id="cb46-19"><a href="#cb46-19"></a>    <span class="ot">assert</span><span class="op">(</span><span class="kw">false</span><span class="op">);</span></span>
-<span id="cb46-20"><a href="#cb46-20"></a><span class="op">}</span></span></code></pre></div>
-<p>we can test the basics:</p>
 <div class="sourceCode" id="cb47"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb47-1"><a href="#cb47-1"></a>Co_Task coro_work<span class="op">()</span></span>
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb47-1"><a href="#cb47-1"></a><span class="bu">std::</span>suspend_always<span class="op"> </span><span class="dt">promise_type</span><span class="op">::</span>initial_suspend<span class="op">()</span></span>
 <span id="cb47-2"><a href="#cb47-2"></a><span class="op">{</span></span>
-<span id="cb47-3"><a href="#cb47-3"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;inside coro_work&quot;</span><span class="op">);</span></span>
-<span id="cb47-4"><a href="#cb47-4"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
-<span id="cb47-5"><a href="#cb47-5"></a><span class="op">}</span></span>
-<span id="cb47-6"><a href="#cb47-6"></a></span>
-<span id="cb47-7"><a href="#cb47-7"></a><span class="dt">int</span> main<span class="op">()</span></span>
-<span id="cb47-8"><a href="#cb47-8"></a><span class="op">{</span></span>
-<span id="cb47-9"><a href="#cb47-9"></a>    Co_Task coro <span class="op">=</span> coro_work<span class="op">();</span> </span>
-<span id="cb47-10"><a href="#cb47-10"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb47-3"><a href="#cb47-3"></a>    <span class="cf">return</span> <span class="op">{};</span></span>
+<span id="cb47-4"><a href="#cb47-4"></a><span class="op">}</span></span>
+<span id="cb47-5"><a href="#cb47-5"></a></span>
+<span id="cb47-6"><a href="#cb47-6"></a><span class="bu">std::</span>suspend_always<span class="op"> </span><span class="dt">promise_type</span><span class="op">::</span>final_suspend<span class="op">()</span> <span class="kw">noexcept</span></span>
+<span id="cb47-7"><a href="#cb47-7"></a><span class="op">{</span></span>
+<span id="cb47-8"><a href="#cb47-8"></a>    <span class="cf">return</span> <span class="op">{};</span></span>
+<span id="cb47-9"><a href="#cb47-9"></a><span class="op">}</span></span>
+<span id="cb47-10"><a href="#cb47-10"></a></span>
+<span id="cb47-11"><a href="#cb47-11"></a><span class="dt">void</span> <span class="dt">promise_type</span><span class="op">::</span>return_void<span class="op">()</span></span>
+<span id="cb47-12"><a href="#cb47-12"></a><span class="op">{</span></span>
+<span id="cb47-13"><a href="#cb47-13"></a>    <span class="co">// yeah, we return void. Nothing to do</span></span>
+<span id="cb47-14"><a href="#cb47-14"></a><span class="op">}</span></span>
+<span id="cb47-15"><a href="#cb47-15"></a></span>
+<span id="cb47-16"><a href="#cb47-16"></a><span class="dt">void</span> <span class="dt">promise_type</span><span class="op">::</span>unhandled_exception<span class="op">()</span></span>
+<span id="cb47-17"><a href="#cb47-17"></a><span class="op">{</span></span>
+<span id="cb47-18"><a href="#cb47-18"></a>    <span class="co">// crash, no exceptions handling</span></span>
+<span id="cb47-19"><a href="#cb47-19"></a>    <span class="ot">assert</span><span class="op">(</span><span class="kw">false</span><span class="op">);</span></span>
+<span id="cb47-20"><a href="#cb47-20"></a><span class="op">}</span></span></code></pre></div>
+<p>we can test the basics:</p>
+<div class="sourceCode" id="cb48"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb48-1"><a href="#cb48-1"></a>Co_Task coro_work<span class="op">()</span></span>
+<span id="cb48-2"><a href="#cb48-2"></a><span class="op">{</span></span>
+<span id="cb48-3"><a href="#cb48-3"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;inside coro_work&quot;</span><span class="op">);</span></span>
+<span id="cb48-4"><a href="#cb48-4"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
+<span id="cb48-5"><a href="#cb48-5"></a><span class="op">}</span></span>
+<span id="cb48-6"><a href="#cb48-6"></a></span>
+<span id="cb48-7"><a href="#cb48-7"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb48-8"><a href="#cb48-8"></a><span class="op">{</span></span>
+<span id="cb48-9"><a href="#cb48-9"></a>    Co_Task coro <span class="op">=</span> coro_work<span class="op">();</span> </span>
+<span id="cb48-10"><a href="#cb48-10"></a><span class="op">}</span></span></code></pre></div>
 <p>which runs and… prints nothing since our coroutine is created and
 immediately suspended even before executing first print.</p>
 <p>Lets expose <code>resume()</code> for our <code>Co_Task</code> and
 use it:</p>
-<div class="sourceCode" id="cb48"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb48-1"><a href="#cb48-1"></a><span class="dt">void</span> Co_Task<span class="op">::</span>resume<span class="op">()</span></span>
-<span id="cb48-2"><a href="#cb48-2"></a><span class="op">{</span></span>
-<span id="cb48-3"><a href="#cb48-3"></a>    <span class="ot">assert</span><span class="op">(</span>_coro<span class="op">);</span></span>
-<span id="cb48-4"><a href="#cb48-4"></a>    <span class="ot">assert</span><span class="op">(!</span>_coro<span class="op">.</span>done<span class="op">());</span></span>
-<span id="cb48-5"><a href="#cb48-5"></a>    _coro<span class="op">.</span>resume<span class="op">();</span></span>
-<span id="cb48-6"><a href="#cb48-6"></a><span class="op">}</span></span>
-<span id="cb48-7"><a href="#cb48-7"></a></span>
-<span id="cb48-8"><a href="#cb48-8"></a>Co_Task coro_work<span class="op">()</span></span>
-<span id="cb48-9"><a href="#cb48-9"></a><span class="op">{</span></span>
-<span id="cb48-10"><a href="#cb48-10"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;inside coro_work&quot;</span><span class="op">);</span></span>
-<span id="cb48-11"><a href="#cb48-11"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
-<span id="cb48-12"><a href="#cb48-12"></a><span class="op">}</span></span>
-<span id="cb48-13"><a href="#cb48-13"></a></span>
-<span id="cb48-14"><a href="#cb48-14"></a><span class="dt">int</span> main<span class="op">()</span></span>
-<span id="cb48-15"><a href="#cb48-15"></a><span class="op">{</span></span>
-<span id="cb48-16"><a href="#cb48-16"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;-- before coro_work()&quot;</span><span class="op">);</span></span>
-<span id="cb48-17"><a href="#cb48-17"></a>    Co_Task coro <span class="op">=</span> coro_work<span class="op">();</span></span>
-<span id="cb48-18"><a href="#cb48-18"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;-- after coro_work()&quot;</span><span class="op">);</span></span>
-<span id="cb48-19"><a href="#cb48-19"></a>    coro<span class="op">.</span>resume<span class="op">();</span></span>
-<span id="cb48-20"><a href="#cb48-20"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;-- after resume()&quot;</span><span class="op">);</span></span>
-<span id="cb48-21"><a href="#cb48-21"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb49-1"><a href="#cb49-1"></a><span class="dt">void</span> Co_Task<span class="op">::</span>resume<span class="op">()</span></span>
+<span id="cb49-2"><a href="#cb49-2"></a><span class="op">{</span></span>
+<span id="cb49-3"><a href="#cb49-3"></a>    <span class="ot">assert</span><span class="op">(</span>_coro<span class="op">);</span></span>
+<span id="cb49-4"><a href="#cb49-4"></a>    <span class="ot">assert</span><span class="op">(!</span>_coro<span class="op">.</span>done<span class="op">());</span></span>
+<span id="cb49-5"><a href="#cb49-5"></a>    _coro<span class="op">.</span>resume<span class="op">();</span></span>
+<span id="cb49-6"><a href="#cb49-6"></a><span class="op">}</span></span>
+<span id="cb49-7"><a href="#cb49-7"></a></span>
+<span id="cb49-8"><a href="#cb49-8"></a>Co_Task coro_work<span class="op">()</span></span>
+<span id="cb49-9"><a href="#cb49-9"></a><span class="op">{</span></span>
+<span id="cb49-10"><a href="#cb49-10"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;inside coro_work&quot;</span><span class="op">);</span></span>
+<span id="cb49-11"><a href="#cb49-11"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
+<span id="cb49-12"><a href="#cb49-12"></a><span class="op">}</span></span>
+<span id="cb49-13"><a href="#cb49-13"></a></span>
+<span id="cb49-14"><a href="#cb49-14"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb49-15"><a href="#cb49-15"></a><span class="op">{</span></span>
+<span id="cb49-16"><a href="#cb49-16"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;-- before coro_work()&quot;</span><span class="op">);</span></span>
+<span id="cb49-17"><a href="#cb49-17"></a>    Co_Task coro <span class="op">=</span> coro_work<span class="op">();</span></span>
+<span id="cb49-18"><a href="#cb49-18"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;-- after coro_work()&quot;</span><span class="op">);</span></span>
+<span id="cb49-19"><a href="#cb49-19"></a>    coro<span class="op">.</span>resume<span class="op">();</span></span>
+<span id="cb49-20"><a href="#cb49-20"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;-- after resume()&quot;</span><span class="op">);</span></span>
+<span id="cb49-21"><a href="#cb49-21"></a><span class="op">}</span></span></code></pre></div>
 <p>which prints:</p>
 <pre><code>-- before coro_work()
 -- after coro_work()
@@ -1256,16 +1268,18 @@ inside coro_work
 <h2 data-number="12.2" id="c-coroutines-basic-await"><span
 class="header-section-number">12.2</span> <a
 href="#c-coroutines-basic-await"># </a>C++ coroutines, basic await</h2>
+<p>Source code: <a
+href="https://github.com/grishavanika/async_api_styles/blob/main/0x_cpp_coro_basic_await/main.cc">main.cc</a>.</p>
 <p>Given that we can have simplest coroutine, what does it take to
 co_await? Lets try to compile:</p>
-<div class="sourceCode" id="cb50"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb50-1"><a href="#cb50-1"></a><span class="kw">struct</span> Co_CurlAsync <span class="op">{};</span></span>
-<span id="cb50-2"><a href="#cb50-2"></a></span>
-<span id="cb50-3"><a href="#cb50-3"></a>Co_Task coro_work<span class="op">()</span></span>
-<span id="cb50-4"><a href="#cb50-4"></a><span class="op">{</span></span>
-<span id="cb50-5"><a href="#cb50-5"></a>    <span class="cf">co_await</span> Co_CurlAsync<span class="op">{};</span></span>
-<span id="cb50-6"><a href="#cb50-6"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
-<span id="cb50-7"><a href="#cb50-7"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb51-1"><a href="#cb51-1"></a><span class="kw">struct</span> Co_CurlAsync <span class="op">{};</span></span>
+<span id="cb51-2"><a href="#cb51-2"></a></span>
+<span id="cb51-3"><a href="#cb51-3"></a>Co_Task coro_work<span class="op">()</span></span>
+<span id="cb51-4"><a href="#cb51-4"></a><span class="op">{</span></span>
+<span id="cb51-5"><a href="#cb51-5"></a>    <span class="cf">co_await</span> Co_CurlAsync<span class="op">{};</span></span>
+<span id="cb51-6"><a href="#cb51-6"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
+<span id="cb51-7"><a href="#cb51-7"></a><span class="op">}</span></span></code></pre></div>
 <p>MSVC complains:</p>
 <pre><code>main.cc(73,26): error C2039: &#39;await_ready&#39;: is not a member of &#39;Co_CurlAsync&#39;
 main.cc(73,26): error C2039: &#39;await_suspend&#39;: is not a member of &#39;Co_CurlAsync&#39;
@@ -1273,9 +1287,8 @@ main.cc(70,26): error C2039: &#39;await_resume&#39;: is not a member of &#39;Co_
 <p>So <code>co_await</code> requires “awaiter” to have those 3
 functions. We can think about awaiter as something that:</p>
 <ol type="1">
-<li>knows if some operation is ready</li>
-<li>knows how to suspend <strong>and</strong> (optionally) resume
-coroutine later</li>
+<li>knows if some operation is ready or not</li>
+<li>knows how to resume coroutine later</li>
 <li>knows how to get the result of awaited operation</li>
 </ol>
 <p>The compiler asks awaiter, specifically, <code>Co_CurlAsync</code>
@@ -1284,45 +1297,46 @@ progress. If awaiter returns false, the compiler switches current
 coroutine state to “suspended” and invokes awaiter’s
 <code>await_suspend(std::coroutine_handle&lt;&gt; coro)</code>
 customization point which allows to remember current coroutine
-<code>coro</code> handle to call <code>.resume()</code> later, once
-operation is done. Once coroutine is resumed, compiler asks for a value
-from last awaiter responsible for suspend.</p>
+<code>coro</code> handle that goes to suspend state, to call
+<code>.resume()</code> later, once operation is done. Once coroutine is
+resumed, compiler asks for a value from last awaiter responsible for
+suspend.</p>
 <p>In short, we can have <code>Co_CurlAsync</code> awaiter that tells
 that (1) operation is not ready yet (2) on suspend, resumes coroutine
 immediately and (3) returns nothing:</p>
-<div class="sourceCode" id="cb52"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb52-1"><a href="#cb52-1"></a><span class="kw">struct</span> Co_CurlAsync</span>
-<span id="cb52-2"><a href="#cb52-2"></a><span class="op">{</span></span>
-<span id="cb52-3"><a href="#cb52-3"></a>    <span class="dt">bool</span> await_ready<span class="op">()</span></span>
-<span id="cb52-4"><a href="#cb52-4"></a>    <span class="op">{</span></span>
-<span id="cb52-5"><a href="#cb52-5"></a>        <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb52-6"><a href="#cb52-6"></a>    <span class="op">}</span></span>
-<span id="cb52-7"><a href="#cb52-7"></a></span>
-<span id="cb52-8"><a href="#cb52-8"></a>    <span class="dt">void</span> await_suspend<span class="op">(</span><span class="bu">std::</span>coroutine_handle<span class="op">&lt;&gt;</span> coro<span class="op">)</span></span>
-<span id="cb52-9"><a href="#cb52-9"></a>    <span class="op">{</span></span>
-<span id="cb52-10"><a href="#cb52-10"></a>        <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;-- inside suspend, resuming immediately&quot;</span><span class="op">);</span></span>
-<span id="cb52-11"><a href="#cb52-11"></a>        coro<span class="op">.</span>resume<span class="op">();</span></span>
-<span id="cb52-12"><a href="#cb52-12"></a>    <span class="op">}</span></span>
-<span id="cb52-13"><a href="#cb52-13"></a></span>
-<span id="cb52-14"><a href="#cb52-14"></a>    <span class="dt">void</span> await_resume<span class="op">()</span></span>
-<span id="cb52-15"><a href="#cb52-15"></a>    <span class="op">{</span></span>
-<span id="cb52-16"><a href="#cb52-16"></a>        <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;-- resume&quot;</span><span class="op">);</span></span>
-<span id="cb52-17"><a href="#cb52-17"></a>    <span class="op">}</span></span>
-<span id="cb52-18"><a href="#cb52-18"></a><span class="op">};</span></span>
-<span id="cb52-19"><a href="#cb52-19"></a></span>
-<span id="cb52-20"><a href="#cb52-20"></a>Co_Task coro_work<span class="op">()</span></span>
-<span id="cb52-21"><a href="#cb52-21"></a><span class="op">{</span></span>
-<span id="cb52-22"><a href="#cb52-22"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;before co_await&quot;</span><span class="op">);</span></span>
-<span id="cb52-23"><a href="#cb52-23"></a>    <span class="cf">co_await</span> Co_CurlAsync<span class="op">{};</span></span>
-<span id="cb52-24"><a href="#cb52-24"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;after co_await&quot;</span><span class="op">);</span></span>
-<span id="cb52-25"><a href="#cb52-25"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
-<span id="cb52-26"><a href="#cb52-26"></a><span class="op">}</span></span>
-<span id="cb52-27"><a href="#cb52-27"></a></span>
-<span id="cb52-28"><a href="#cb52-28"></a><span class="dt">int</span> main<span class="op">()</span></span>
-<span id="cb52-29"><a href="#cb52-29"></a><span class="op">{</span></span>
-<span id="cb52-30"><a href="#cb52-30"></a>    Co_Task coro <span class="op">=</span> coro_work<span class="op">();</span></span>
-<span id="cb52-31"><a href="#cb52-31"></a>    coro<span class="op">.</span>resume<span class="op">();</span></span>
-<span id="cb52-32"><a href="#cb52-32"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb53-1"><a href="#cb53-1"></a><span class="kw">struct</span> Co_CurlAsync</span>
+<span id="cb53-2"><a href="#cb53-2"></a><span class="op">{</span></span>
+<span id="cb53-3"><a href="#cb53-3"></a>    <span class="dt">bool</span> await_ready<span class="op">()</span></span>
+<span id="cb53-4"><a href="#cb53-4"></a>    <span class="op">{</span></span>
+<span id="cb53-5"><a href="#cb53-5"></a>        <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb53-6"><a href="#cb53-6"></a>    <span class="op">}</span></span>
+<span id="cb53-7"><a href="#cb53-7"></a></span>
+<span id="cb53-8"><a href="#cb53-8"></a>    <span class="dt">void</span> await_suspend<span class="op">(</span><span class="bu">std::</span>coroutine_handle<span class="op">&lt;&gt;</span> coro<span class="op">)</span></span>
+<span id="cb53-9"><a href="#cb53-9"></a>    <span class="op">{</span></span>
+<span id="cb53-10"><a href="#cb53-10"></a>        <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;-- inside suspend, resuming immediately&quot;</span><span class="op">);</span></span>
+<span id="cb53-11"><a href="#cb53-11"></a>        coro<span class="op">.</span>resume<span class="op">();</span></span>
+<span id="cb53-12"><a href="#cb53-12"></a>    <span class="op">}</span></span>
+<span id="cb53-13"><a href="#cb53-13"></a></span>
+<span id="cb53-14"><a href="#cb53-14"></a>    <span class="dt">void</span> await_resume<span class="op">()</span></span>
+<span id="cb53-15"><a href="#cb53-15"></a>    <span class="op">{</span></span>
+<span id="cb53-16"><a href="#cb53-16"></a>        <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;-- resume&quot;</span><span class="op">);</span></span>
+<span id="cb53-17"><a href="#cb53-17"></a>    <span class="op">}</span></span>
+<span id="cb53-18"><a href="#cb53-18"></a><span class="op">};</span></span>
+<span id="cb53-19"><a href="#cb53-19"></a></span>
+<span id="cb53-20"><a href="#cb53-20"></a>Co_Task coro_work<span class="op">()</span></span>
+<span id="cb53-21"><a href="#cb53-21"></a><span class="op">{</span></span>
+<span id="cb53-22"><a href="#cb53-22"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;before co_await&quot;</span><span class="op">);</span></span>
+<span id="cb53-23"><a href="#cb53-23"></a>    <span class="cf">co_await</span> Co_CurlAsync<span class="op">{};</span></span>
+<span id="cb53-24"><a href="#cb53-24"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;after co_await&quot;</span><span class="op">);</span></span>
+<span id="cb53-25"><a href="#cb53-25"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
+<span id="cb53-26"><a href="#cb53-26"></a><span class="op">}</span></span>
+<span id="cb53-27"><a href="#cb53-27"></a></span>
+<span id="cb53-28"><a href="#cb53-28"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb53-29"><a href="#cb53-29"></a><span class="op">{</span></span>
+<span id="cb53-30"><a href="#cb53-30"></a>    Co_Task coro <span class="op">=</span> coro_work<span class="op">();</span></span>
+<span id="cb53-31"><a href="#cb53-31"></a>    coro<span class="op">.</span>resume<span class="op">();</span></span>
+<span id="cb53-32"><a href="#cb53-32"></a><span class="op">}</span></span></code></pre></div>
 <p>which prints:</p>
 <pre><code>before co_await
 -- inside suspend, resuming immediately
@@ -1331,6 +1345,104 @@ after co_await</code></pre>
 <p>Now, on suspend, we did nothing, but immediately resumed coroutine.
 But we also could start an async operation and, on finish, resume the
 coroutine.</p>
+<h2 data-number="12.3"
+id="c-coroutines-await-curl-callback-with-a-crash"><span
+class="header-section-number">12.3</span> <a
+href="#c-coroutines-await-curl-callback-with-a-crash"># </a>C++
+coroutines, await CURL callback with a crash</h2>
+<p>Source code: <a
+href="https://github.com/grishavanika/async_api_styles/blob/main/0x_cpp_coro_await_curl_crash/main.cc">main.cc</a>.</p>
+<p>Lets continue implementing <code>Co_CurlAsync</code> above, in
+short:</p>
+<div class="sourceCode" id="cb55"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb55-1"><a href="#cb55-1"></a><span class="kw">struct</span> Co_CurlAsync</span>
+<span id="cb55-2"><a href="#cb55-2"></a><span class="op">{</span></span>
+<span id="cb55-3"><a href="#cb55-3"></a>    CURL_Async _curl_async<span class="op">{};</span></span>
+<span id="cb55-4"><a href="#cb55-4"></a>    <span class="bu">std::</span>string<span class="op"> </span>_url<span class="op">;</span></span>
+<span id="cb55-5"><a href="#cb55-5"></a>    <span class="bu">std::</span>coroutine_handle<span class="op">&lt;&gt;</span> _coro<span class="op">;</span></span>
+<span id="cb55-6"><a href="#cb55-6"></a>    <span class="bu">std::</span>string<span class="op"> </span>_response<span class="op">;</span></span>
+<span id="cb55-7"><a href="#cb55-7"></a></span>
+<span id="cb55-8"><a href="#cb55-8"></a>    <span class="dt">bool</span> await_ready<span class="op">()</span></span>
+<span id="cb55-9"><a href="#cb55-9"></a>    <span class="op">{</span> <span class="co">// 1. CURL_async_get() is not yet started, force coroutine suspend:</span></span>
+<span id="cb55-10"><a href="#cb55-10"></a>        <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb55-11"><a href="#cb55-11"></a>    <span class="op">}</span></span>
+<span id="cb55-12"><a href="#cb55-12"></a></span>
+<span id="cb55-13"><a href="#cb55-13"></a>    <span class="dt">void</span> await_suspend<span class="op">(</span><span class="bu">std::</span>coroutine_handle<span class="op">&lt;&gt;</span> coro<span class="op">)</span></span>
+<span id="cb55-14"><a href="#cb55-14"></a>    <span class="op">{</span> <span class="co">// 2. remember coroutine handle, start request, resume on finish:</span></span>
+<span id="cb55-15"><a href="#cb55-15"></a>        _coro <span class="op">=</span> coro<span class="op">;</span></span>
+<span id="cb55-16"><a href="#cb55-16"></a></span>
+<span id="cb55-17"><a href="#cb55-17"></a>        CURL_async_get<span class="op">(</span>_curl_async<span class="op">,</span> _url<span class="op">,</span> <span class="kw">this</span></span>
+<span id="cb55-18"><a href="#cb55-18"></a>            <span class="op">,</span> <span class="op">[](</span><span class="dt">void</span><span class="op">*</span> user_data<span class="op">,</span> <span class="bu">std::</span>string<span class="op"> </span>response<span class="op">)</span></span>
+<span id="cb55-19"><a href="#cb55-19"></a>        <span class="op">{</span></span>
+<span id="cb55-20"><a href="#cb55-20"></a>            Co_CurlAsync<span class="op">&amp;</span> self <span class="op">=</span> <span class="op">*</span><span class="kw">static_cast</span><span class="op">&lt;</span>Co_CurlAsync<span class="op">*&gt;(</span>user_data<span class="op">);</span></span>
+<span id="cb55-21"><a href="#cb55-21"></a>            self<span class="op">.</span>_response <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>response<span class="op">);</span></span>
+<span id="cb55-22"><a href="#cb55-22"></a>            self<span class="op">.</span>_coro<span class="op">.</span>resume<span class="op">();</span></span>
+<span id="cb55-23"><a href="#cb55-23"></a>        <span class="op">});</span></span>
+<span id="cb55-24"><a href="#cb55-24"></a>    <span class="op">}</span></span>
+<span id="cb55-25"><a href="#cb55-25"></a></span>
+<span id="cb55-26"><a href="#cb55-26"></a>    <span class="bu">std::</span>string<span class="op"> </span>await_resume<span class="op">()</span></span>
+<span id="cb55-27"><a href="#cb55-27"></a>    <span class="op">{</span> <span class="co">// 3. after resume, return response:</span></span>
+<span id="cb55-28"><a href="#cb55-28"></a>        <span class="cf">return</span> <span class="bu">std::</span>move<span class="op">(</span>_response<span class="op">);</span></span>
+<span id="cb55-29"><a href="#cb55-29"></a>    <span class="op">}</span></span>
+<span id="cb55-30"><a href="#cb55-30"></a><span class="op">};</span></span>
+<span id="cb55-31"><a href="#cb55-31"></a></span>
+<span id="cb55-32"><a href="#cb55-32"></a>Co_CurlAsync CURL_await_get<span class="op">(</span>CURL_Async curl_async<span class="op">,</span> <span class="at">const</span> <span class="bu">std::</span>string<span class="op">&amp;</span> url<span class="op">)</span></span>
+<span id="cb55-33"><a href="#cb55-33"></a><span class="op">{</span></span>
+<span id="cb55-34"><a href="#cb55-34"></a>    <span class="cf">return</span> Co_CurlAsync<span class="op">{.</span>_curl_async <span class="op">=</span> curl_async<span class="op">,</span> <span class="op">.</span>_url <span class="op">=</span> url<span class="op">};</span></span>
+<span id="cb55-35"><a href="#cb55-35"></a><span class="op">}</span></span></code></pre></div>
+<p>So, now <code>co_await CURL_await_get(..., "url")</code> should
+compile and kind-a work. As always, there are few moving part.</p>
+<p>When coroutine function (represented as
+<code>std::coroutine_handle&lt;&gt;</code>) <code>co_await</code>s our
+CURL awaiter - Co_CurlAsync, we:</p>
+<ol type="1">
+<li>force whole coroutine to suspend, since we return false from
+<code>await_ready()</code></li>
+<li>this is needed so compiler invokes <code>await_suspend()</code> and
+gives us a handle to currently awaiting coroutine, so we can (a) start
+request and (b) resume coroutine with a call to
+<code>coro.resume()</code></li>
+<li>finally, once request is complete, we can return the
+<code>_response</code> from <code>await_resume()</code></li>
+</ol>
+<p><strong>There is one big issue there</strong>: what if we start a
+request with <code>CURL_async_get()</code>, coroutine suspends, BUT user
+discards <code>Co_Task</code> value that destroys coroutine, making
+<code>std::coroutine_handle&lt;&gt;</code> we remembered dangling? There
+are several possible solutions, but lets see the current code in action
+by writing our main() function:</p>
+<div class="sourceCode" id="cb56"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb56-1"><a href="#cb56-1"></a>Co_Task coro_main<span class="op">(</span>CURL_Async curl_async<span class="op">)</span></span>
+<span id="cb56-2"><a href="#cb56-2"></a><span class="op">{</span></span>
+<span id="cb56-3"><a href="#cb56-3"></a>    <span class="at">const</span> <span class="bu">std::</span>string<span class="op"> </span>response <span class="op">=</span> <span class="cf">co_await</span> CURL_await_get<span class="op">(</span></span>
+<span id="cb56-4"><a href="#cb56-4"></a>        curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">);</span></span>
+<span id="cb56-5"><a href="#cb56-5"></a></span>
+<span id="cb56-6"><a href="#cb56-6"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;coro_main response: &#39;</span><span class="sc">{}</span><span class="st">&#39;&quot;</span><span class="op">,</span> response<span class="op">);</span></span>
+<span id="cb56-7"><a href="#cb56-7"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
+<span id="cb56-8"><a href="#cb56-8"></a><span class="op">}</span></span>
+<span id="cb56-9"><a href="#cb56-9"></a></span>
+<span id="cb56-10"><a href="#cb56-10"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb56-11"><a href="#cb56-11"></a><span class="op">{</span></span>
+<span id="cb56-12"><a href="#cb56-12"></a>    CURL_Async curl_async <span class="op">=</span> CURL_async_create<span class="op">();</span></span>
+<span id="cb56-13"><a href="#cb56-13"></a>    Co_Task task <span class="op">=</span> coro_main<span class="op">(</span>curl_async<span class="op">);</span></span>
+<span id="cb56-14"><a href="#cb56-14"></a>    task<span class="op">.</span>resume<span class="op">();</span></span>
+<span id="cb56-15"><a href="#cb56-15"></a>    <span class="cf">while</span> <span class="op">(</span>task<span class="op">.</span>is_in_progress<span class="op">())</span></span>
+<span id="cb56-16"><a href="#cb56-16"></a>    <span class="op">{</span></span>
+<span id="cb56-17"><a href="#cb56-17"></a>        CURL_async_tick<span class="op">(</span>curl_async<span class="op">);</span></span>
+<span id="cb56-18"><a href="#cb56-18"></a>    <span class="op">}</span></span>
+<span id="cb56-19"><a href="#cb56-19"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
+<span id="cb56-20"><a href="#cb56-20"></a><span class="op">}</span></span></code></pre></div>
+<p>Here, we setup <code>CURL_Async</code>, as usual, and drive the loop
+until coroutine is in progress:</p>
+<div class="sourceCode" id="cb57"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb57-1"><a href="#cb57-1"></a><span class="dt">bool</span> Co_Task<span class="op">::</span>is_in_progress<span class="op">()</span> <span class="at">const</span></span>
+<span id="cb57-2"><a href="#cb57-2"></a><span class="op">{</span></span>
+<span id="cb57-3"><a href="#cb57-3"></a>    <span class="ot">assert</span><span class="op">(</span>_coro<span class="op">);</span></span>
+<span id="cb57-4"><a href="#cb57-4"></a>    <span class="cf">return</span> <span class="op">!</span>_coro<span class="op">.</span>done<span class="op">();</span></span>
+<span id="cb57-5"><a href="#cb57-5"></a><span class="op">}</span></span></code></pre></div>
+<p>Running the sample should print:</p>
+<pre><code>coro_main response: &#39;content 1&#39;
+</code></pre>
 <h1 data-number="13" id="coroutines-on-top-polling-tasks"><span
 class="header-section-number">13</span> <a
 href="#coroutines-on-top-polling-tasks"># </a>coroutines on top polling
