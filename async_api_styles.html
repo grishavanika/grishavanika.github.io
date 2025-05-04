@@ -317,10 +317,10 @@ type</a></li>
 id="toc-c-coroutines-basic-await"><span
 class="toc-section-number">12.2</span> # C++ coroutines, basic
 await</a></li>
-<li><a href="#c-coroutines-await-curl-callback-with-a-crash"
-id="toc-c-coroutines-await-curl-callback-with-a-crash"><span
-class="toc-section-number">12.3</span> # C++ coroutines, await CURL
-callback with a crash</a></li>
+<li><a href="#c-coroutines-await-callback-with-a-crash"
+id="toc-c-coroutines-await-callback-with-a-crash"><span
+class="toc-section-number">12.3</span> # C++ coroutines, await callback
+with a crash</a></li>
 </ul></li>
 <li><a href="#coroutines-on-top-polling-tasks"
 id="toc-coroutines-on-top-polling-tasks"><span
@@ -1346,10 +1346,10 @@ after co_await</code></pre>
 But we also could start an async operation and, on finish, resume the
 coroutine.</p>
 <h2 data-number="12.3"
-id="c-coroutines-await-curl-callback-with-a-crash"><span
+id="c-coroutines-await-callback-with-a-crash"><span
 class="header-section-number">12.3</span> <a
-href="#c-coroutines-await-curl-callback-with-a-crash"># </a>C++
-coroutines, await CURL callback with a crash</h2>
+href="#c-coroutines-await-callback-with-a-crash"># </a>C++ coroutines,
+await callback with a crash</h2>
 <p>Source code: <a
 href="https://github.com/grishavanika/async_api_styles/blob/main/0x_cpp_coro_await_curl_crash/main.cc">main.cc</a>.</p>
 <p>Lets continue implementing <code>Co_CurlAsync</code> above, in
@@ -1408,9 +1408,9 @@ request and (b) resume coroutine with a call to
 <p><strong>There is one big issue there</strong>: what if we start a
 request with <code>CURL_async_get()</code>, coroutine suspends, BUT user
 discards <code>Co_Task</code> value that destroys coroutine, making
-<code>std::coroutine_handle&lt;&gt;</code> we remembered dangling? There
-are several possible solutions, but lets see the current code in action
-by writing our main() function:</p>
+<code>std::coroutine_handle&lt;&gt;</code> we remembered - dangling?
+There are several possible solutions, but lets see the current code in
+action by writing our main() function:</p>
 <div class="sourceCode" id="cb56"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb56-1"><a href="#cb56-1"></a>Co_Task coro_main<span class="op">(</span>CURL_Async curl_async<span class="op">)</span></span>
 <span id="cb56-2"><a href="#cb56-2"></a><span class="op">{</span></span>
@@ -1443,6 +1443,58 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>Running the sample should print:</p>
 <pre><code>coro_main response: &#39;content 1&#39;
 </code></pre>
+<p>However, that works because we wait for coroutine until full
+complete. If we discard Co_Task too early, there is going to be a
+crash:</p>
+<div class="sourceCode" id="cb59"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb59-1"><a href="#cb59-1"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb59-2"><a href="#cb59-2"></a><span class="op">{</span></span>
+<span id="cb59-3"><a href="#cb59-3"></a>    CURL_Async curl_async <span class="op">=</span> CURL_async_create<span class="op">();</span></span>
+<span id="cb59-4"><a href="#cb59-4"></a></span>
+<span id="cb59-5"><a href="#cb59-5"></a>    <span class="op">{</span></span>
+<span id="cb59-6"><a href="#cb59-6"></a>        Co_Task task <span class="op">=</span> coro_main<span class="op">(</span>curl_async<span class="op">);</span></span>
+<span id="cb59-7"><a href="#cb59-7"></a>        task<span class="op">.</span>resume<span class="op">();</span> <span class="co">// run</span></span>
+<span id="cb59-8"><a href="#cb59-8"></a>    <span class="op">}</span>   <span class="co">// **destroy**</span></span>
+<span id="cb59-9"><a href="#cb59-9"></a></span>
+<span id="cb59-10"><a href="#cb59-10"></a>    <span class="cf">while</span> <span class="op">(</span><span class="kw">true</span><span class="op">)</span></span>
+<span id="cb59-11"><a href="#cb59-11"></a>    <span class="op">{</span></span>
+<span id="cb59-12"><a href="#cb59-12"></a>        CURL_async_tick<span class="op">(</span>curl_async<span class="op">);</span> <span class="co">// resume coroutine from there</span></span>
+<span id="cb59-13"><a href="#cb59-13"></a>    <span class="op">}</span></span>
+<span id="cb59-14"><a href="#cb59-14"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
+<span id="cb59-15"><a href="#cb59-15"></a><span class="op">}</span></span></code></pre></div>
+<p>It happens because <code>CURL_async_get()</code> callback remembers 2
+pointers:</p>
+<ol type="1">
+<li><code>this</code> pointer to Co_CurlAsync/awaiter which is owned by
+coroutine frame</li>
+<li>and <code>coroutine_handle&lt;&gt;</code> itself, which we destroy
+BEFORE <code>CURL_async_get()</code> finish.</li>
+</ol>
+<p>In short, we start request, then <code>.destroy()</code> coroutine
+then try to resume dangling coroutine inside a callback with a call to
+<code>.resume()</code> even using stale pointer to awaiter (user data in
+the callback).</p>
+<p>There are several solutions, few of them:</p>
+<ol type="1">
+<li>Don’t own and don’t destroy coroutine inside Co_Task destructor,
+mark final_suspend() as suspend_never which will automatically clean-up
+coroutine on final co_return.</li>
+<li>Delay coroutine destroy if there are live references to it.</li>
+<li>Be able to cancel <code>CURL_async_get()</code> request iff
+coroutine/awaiter is destroyed.</li>
+<li>Ensure that callback has a safe way to detect dead coroutine and do
+nothing.</li>
+</ol>
+<p>1st solution could be the best but changes completely the semantics
+of <code>Co_Task</code>, does not allow to easily have
+<code>Co_Task&lt;T&gt;</code> that return some value and requires to be
+able to change <code>Co_Task</code> internals.</p>
+<p>2nd solution is similar in the sense that it also requires
+<code>Co_Task</code> changes.</p>
+<p>3rd solution requires changes to our basic C-style callback API which
+we assume we can’t do.</p>
+<p>4th solution is the most ineficient and requires no changes neither
+in Co_Task nor in callback API.</p>
 <h1 data-number="13" id="coroutines-on-top-polling-tasks"><span
 class="header-section-number">13</span> <a
 href="#coroutines-on-top-polling-tasks"># </a>coroutines on top polling
