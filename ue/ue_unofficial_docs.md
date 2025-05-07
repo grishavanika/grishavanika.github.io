@@ -4096,8 +4096,10 @@ As of 2025/04/06.
 
 From [Learn Unreal Engine](https://dev.epicgames.com/community/unreal-engine/learning?source=epic_games&sort_by=first_published_at)/Epic Games/Published On.
 
-As of 2025/04/28 = 1487 links.
+As of 2025/05/07 = 1489 links.
 
+ * |tutorials| [fab the unreal engine data charts plugin](https://dev.epicgames.com/community/learning/tutorials/MPDr/fab-the-unreal-engine-data-charts-plugin)
+ * |knowledge-base| [creating platform agnostic dlcs in unreal engine](https://dev.epicgames.com/community/learning/knowledge-base/44nr/creating-platform-agnostic-dlcs-in-unreal-engine)
  * |tutorials| [creating a content only plugin in unreal engine](https://dev.epicgames.com/community/learning/tutorials/Y5Zm/creating-a-content-only-plugin-in-unreal-engine)
  * |tutorials| [eos player reports](https://dev.epicgames.com/community/learning/tutorials/DBnX/unreal-engine-eos-player-reports)
  * |knowledge-base| [ue 5 5 x most common rendering issues](https://dev.epicgames.com/community/learning/knowledge-base/j2yV/unreal-engine-ue-5-5-x-most-common-rendering-issues)
