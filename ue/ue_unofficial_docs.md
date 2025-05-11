@@ -4096,8 +4096,10 @@ As of 2025/04/06.
 
 From [Learn Unreal Engine](https://dev.epicgames.com/community/unreal-engine/learning?source=epic_games&sort_by=first_published_at)/Epic Games/Published On.
 
-As of 2025/05/07 = 1489 links.
+As of 2025/05/11 = 1491 links.
 
+ * |courses| [online services unreal essentials a roadmap to 2 5d indie games](https://dev.epicgames.com/community/learning/courses/VGp/unreal-engine-unreal-essentials-a-roadmap-to-2-5d-indie-games/m6PB/unreal-engine-online-services-unreal-essentials-a-roadmap-to-2-5d-indie-games)
+ * |tutorials| [gameplay](https://dev.epicgames.com/community/learning/tutorials/DB1x/unreal-engine-gameplay)
  * |tutorials| [fab the unreal engine data charts plugin](https://dev.epicgames.com/community/learning/tutorials/MPDr/fab-the-unreal-engine-data-charts-plugin)
  * |knowledge-base| [creating platform agnostic dlcs in unreal engine](https://dev.epicgames.com/community/learning/knowledge-base/44nr/creating-platform-agnostic-dlcs-in-unreal-engine)
  * |tutorials| [creating a content only plugin in unreal engine](https://dev.epicgames.com/community/learning/tutorials/Y5Zm/creating-a-content-only-plugin-in-unreal-engine)

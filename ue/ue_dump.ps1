@@ -151,5 +151,5 @@ function New-DumpLearningLinksToMarkdown($links_file)
 
 # New-DumpLearningLinksToMarkdown 04.04.25_ue_learnings.txt
 
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/MPDr/fab-the-unreal-engine-data-charts-plugin'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/44nr/creating-platform-agnostic-dlcs-in-unreal-engine'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/courses/VGp/unreal-engine-unreal-essentials-a-roadmap-to-2-5d-indie-games/m6PB/unreal-engine-online-services-unreal-essentials-a-roadmap-to-2-5d-indie-games'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/DB1x/unreal-engine-gameplay'
