@@ -10,6 +10,7 @@ As of 2025/04/06.
 ## [Topics in Unreal Engine 5.0]{.mark} = 1903 links
 
  - [Unreal Engine 5.0 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-0-documentation?application_version=5.0)
+ - Unreal Engine [5.0 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/46-unreal-engine-5-0)
  - Unreal Engine [5.0 Early Access](https://www.unrealengine.com/en-US/blog/unreal-engine-5-is-now-available-in-early-access)
  - Unreal Engine [5.0 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.0-release-notes?application_version=5.0) (most detailed)
  - Unreal Engine [5.0 blog post](https://www.unrealengine.com/en-US/blog/unreal-engine-5-is-now-available)
@@ -3029,6 +3030,7 @@ As of 2025/04/06.
 ## [Added in 5.1]{.mark} (vs 5.0) = 105 links
 
  - [Unreal Engine 5.1 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-1-documentation?application_version=5.1)
+ - Unreal Engine [5.1 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/80-unreal-engine-5-1)
  - Unreal Engine [5.1 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.1-release-notes?application_version=5.1) (most detailed)
  - Unreal Engine [5.1 blog post](https://www.unrealengine.com/en-US/blog/unreal-engine-5-1-is-now-available)
  - Unreal Engine [5.1 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-1-released/691237)
@@ -3305,6 +3307,7 @@ As of 2025/04/06.
 ## [Added in 5.2]{.mark} (vs 5.1) = 95 links
 
  - [Unreal Engine 5.2 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-2-documentation?application_version=5.2)
+ - Unreal Engine [5.2 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/85-unreal-engine-5-2)
  - Unreal Engine [5.2 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.2-release-notes?application_version=5.2) (most detailed)
  - Unreal Engine [5.2 blog post](https://www.unrealengine.com/en-US/blog/unreal-engine-5-2-is-now-available)
  - Unreal Engine [5.2 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-2-released/1161700)
@@ -3473,6 +3476,7 @@ As of 2025/04/06.
 ## [Added in 5.3]{.mark} (vs 5.2) = 146 links
 
  - [Unreal Engine 5.3 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-3-documentation?application_version=5.3)
+ - Unreal Engine [5.3 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/88-unreal-engine-5-3)
  - Unreal Engine [5.3 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.3-release-notes?application_version=5.3) (most detailed)
  - Unreal Engine [5.3 blog post](https://www.unrealengine.com/en-US/blog/unreal-engine-5-3-is-now-available)
  - Unreal Engine [5.3 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-3-released/1284817)
@@ -3710,6 +3714,7 @@ As of 2025/04/06.
 ## [Added in 5.4]{.mark} (vs 5.3) = 141 links
 
  - [Unreal Engine 5.4 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-4-documentation?application_version=5.4)
+ - Unreal Engine [5.4 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/106-unreal-engine-5-4)
  - Unreal Engine [5.4 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.4-release-notes?application_version=5.4) (most detailed)
  - Unreal Engine [5.4 blog post](https://www.unrealengine.com/en-US/blog/unreal-engine-5-4-is-now-available)
  - Unreal Engine [5.4 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-4-released/1817064)
@@ -3929,6 +3934,7 @@ As of 2025/04/06.
 ## [Added in 5.5]{.mark} (vs 5.4) = 145 links
 
  - [Unreal Engine 5.5 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-5-documentation)
+ - Unreal Engine [5.5 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/109-unreal-engine-5-5)
  - Unreal Engine [5.5 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.5-release-notes) (most detailed)
  - Unreal Engine [5.5 blog post](https://www.unrealengine.com/en-US/blog/unreal-engine-5-5-is-now-available)
  - Unreal Engine [5.5 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-5-released/2117936)
@@ -4092,12 +4098,27 @@ As of 2025/04/06.
  * [working with multiple uv channels with mutable in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-multiple-uv-channels-with-mutable-in-unreal-engine?application_version=5.5)
  * [world partition builder commandlet reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/world-partition-builder-commandlet-reference?application_version=5.5)
 
+## Removed in 5.6 (vs 5.5) = x links
+
+## [Added in 5.6]{.mark} (vs 5.5) = x links
+
+ - Unreal Engine 5.6 Documentation
+ - Unreal Engine [5.6 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/124-unreal-engine-5-6)
+ - Unreal Engine [5.6.0 Preview 1 forum thread](https://forums.unrealengine.com/t/unreal-engine-5-6-preview/2508377) release notes
+
+-------------------------------------------------------
+
 ## [Learning]{.mark} library
 
 From [Learn Unreal Engine](https://dev.epicgames.com/community/unreal-engine/learning?source=epic_games&sort_by=first_published_at)/Epic Games/Published On.
 
-As of 2025/05/11 = 1491 links.
+As of 2025/05/18 = 1496 links.
 
+ * |tutorials| [procedural animation with a locomotor](https://dev.epicgames.com/community/learning/tutorials/EkxO/unreal-engine-procedural-animation-with-a-locomotor)
+ * |tutorials| [baked river simulations parameter reference](https://dev.epicgames.com/community/learning/tutorials/72Lb/unreal-engine-baked-river-simulations-parameter-reference)
+ * |tutorials| [baked river simulations overview and quick start](https://dev.epicgames.com/community/learning/tutorials/Y5J6/unreal-engine-baked-river-simulations-overview-and-quick-start)
+ * |tutorials| [datasmith cad importer settings cvars](https://dev.epicgames.com/community/learning/tutorials/PYxb/unreal-engine-datasmith-cad-importer-settings-cvars)
+ * |knowledge-base| [tech note fix for gpu crash in lumen in unreal engine 5 5](https://dev.epicgames.com/community/learning/knowledge-base/6XP2/tech-note-fix-for-gpu-crash-in-lumen-in-unreal-engine-5-5)
  * |courses| [online services unreal essentials a roadmap to 2 5d indie games](https://dev.epicgames.com/community/learning/courses/VGp/unreal-engine-unreal-essentials-a-roadmap-to-2-5d-indie-games/m6PB/unreal-engine-online-services-unreal-essentials-a-roadmap-to-2-5d-indie-games)
  * |tutorials| [gameplay](https://dev.epicgames.com/community/learning/tutorials/DB1x/unreal-engine-gameplay)
  * |tutorials| [fab the unreal engine data charts plugin](https://dev.epicgames.com/community/learning/tutorials/MPDr/fab-the-unreal-engine-data-charts-plugin)

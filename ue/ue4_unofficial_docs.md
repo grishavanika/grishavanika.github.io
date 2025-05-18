@@ -7,6 +7,12 @@ as a single page with no deep tree for simple grep/search with Ctrl+F.
 
 As of 2025/04/06.
 
+ - [Unreal Engine 4.27 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-4-27-documentation?application_version=4.27)
+ - Unreal Engine [4.27 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/24-unreal-engine-4-27)
+ - Unreal Engine [4.26 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/20-unreal-engine-4-26)
+
+----------------------------------------------
+
 ## Topics in Unreal Engine UE4.27 = 2185 links
 
  * [1   prototype pass](https://dev.epicgames.com/documentation/en-us/unreal-engine/1---prototype-pass?application_version=4.27)
