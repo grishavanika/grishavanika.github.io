@@ -4112,8 +4112,12 @@ As of 2025/04/06.
 
 From [Learn Unreal Engine](https://dev.epicgames.com/community/unreal-engine/learning?source=epic_games&sort_by=first_published_at)/Epic Games/Published On.
 
-As of 2025/05/18 = 1496 links.
+As of 2025/05/24 = 1496 links.
 
+ * |knowledge-base| [tech note fix for pso management issue on nvidia hardware in unreal engine 5 5](https://dev.epicgames.com/community/learning/knowledge-base/DBOL/tech-note-fix-for-pso-management-issue-on-nvidia-hardware-in-unreal-engine-5-5)
+ * |knowledge-base| [fortnite hosting game jams](https://dev.epicgames.com/community/learning/knowledge-base/0zv6/unreal-engine-fortnite-hosting-game-jams)
+ * |courses| [3 ways to scatter pcg points on a mesh](https://dev.epicgames.com/community/learning/courses/6kw/unreal-engine-community-highlight-pcg-tutorials/eBbq/unreal-engine-3-ways-to-scatter-pcg-points-on-a-mesh)
+ * |knowledge-base| [epic for indies beyond average how tech artists can make games more accessible](https://dev.epicgames.com/community/learning/knowledge-base/2XEv/unreal-engine-epic-for-indies-beyond-average-how-tech-artists-can-make-games-more-accessible)
  * |tutorials| [procedural animation with a locomotor](https://dev.epicgames.com/community/learning/tutorials/EkxO/unreal-engine-procedural-animation-with-a-locomotor)
  * |tutorials| [baked river simulations parameter reference](https://dev.epicgames.com/community/learning/tutorials/72Lb/unreal-engine-baked-river-simulations-parameter-reference)
  * |tutorials| [baked river simulations overview and quick start](https://dev.epicgames.com/community/learning/tutorials/Y5J6/unreal-engine-baked-river-simulations-overview-and-quick-start)

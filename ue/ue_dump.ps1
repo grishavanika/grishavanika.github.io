@@ -151,9 +151,8 @@ function New-DumpLearningLinksToMarkdown($links_file)
 
 # New-DumpLearningLinksToMarkdown 04.04.25_ue_learnings.txt
 
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/EkxO/unreal-engine-procedural-animation-with-a-locomotor'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/72Lb/unreal-engine-baked-river-simulations-parameter-reference'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/Y5J6/unreal-engine-baked-river-simulations-overview-and-quick-start'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/PYxb/unreal-engine-datasmith-cad-importer-settings-cvars'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/6XP2/tech-note-fix-for-gpu-crash-in-lumen-in-unreal-engine-5-5'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/DBOL/tech-note-fix-for-pso-management-issue-on-nvidia-hardware-in-unreal-engine-5-5'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/0zv6/unreal-engine-fortnite-hosting-game-jams'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/courses/6kw/unreal-engine-community-highlight-pcg-tutorials/eBbq/unreal-engine-3-ways-to-scatter-pcg-points-on-a-mesh'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/2XEv/unreal-engine-epic-for-indies-beyond-average-how-tech-artists-can-make-games-more-accessible'
 
