@@ -146,6 +146,7 @@ As of 2025/04/06.
  * [animation sharing plugin in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-sharing-plugin-in-unreal-engine?application_version=5.0)
  * [animation shortcuts and tips unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-shortcuts-and-tips-unreal-engine?application_version=5.0)
  * [animation slots in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-slots-in-unreal-engine?application_version=5.0)
+   * TODO
  * [animation sync groups in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-sync-groups-in-unreal-engine?application_version=5.0)
  * [animation workflow guides and examples in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-workflow-guides-and-examples-in-unreal-engine?application_version=5.0)
  * [annotating in the collab viewer in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/annotating-in-the-collab-viewer-in-unreal-engine?application_version=5.0)
@@ -154,6 +155,8 @@ As of 2025/04/06.
  * [applying a physical animation profile in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/applying-a-physical-animation-profile-in-unreal-engine?application_version=5.0)
  * [applying a physics constraint profile in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/applying-a-physics-constraint-profile-in-unreal-engine?application_version=5.0)
  * [applying burn ins to your movie in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/applying-burn-ins-to-your-movie-in-unreal-engine?application_version=5.0)
+   * how you can apply overlays from UMG to rendered Sequencer movies
+   * overlays are referred to as Burn Ins as they are burned into the movie when it is rendered out
  * [arcore prerequisites in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/arcore-prerequisites-in-unreal-engine?application_version=5.0)
  * [arkit prerequisites in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/arkit-prerequisites-in-unreal-engine?application_version=5.0)
  * [arpin local storage quick start in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/arpin-local-storage-quick-start-in-unreal-engine?application_version=5.0)
@@ -271,12 +274,30 @@ As of 2025/04/06.
  * [blackmagic media reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/blackmagic-media-reference?application_version=5.0)
  * [blackmagic video io quick start for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blackmagic-video-io-quick-start-for-unreal-engine?application_version=5.0)
  * [blend gameplay animation to cinematic animation in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blend-gameplay-animation-to-cinematic-animation-in-unreal-engine?application_version=5.0)
+   * blend gameplay animation to or from animation inside your Level Sequence. Typically this is done to create seamless transitions into and out of a cinematic, which includes blending both the player animation and the player camera
+   * Normally when animating characters in Sequencer, the Animation Mode property automatically changes to Use Custom Mode.
+     Custom Mode is a special Sequencer-specific Animation Blueprint, different from the one used to animate the player in gameplay.
+     In order to blend characters between Sequencer to Gameplay, you cannot use Custom Mode, and must instead use the same
+     Animation Blueprint the character uses in gameplay
+   * When animating characters in Sequencer using their Animation Blueprint, you must ensure that Animation Blueprint contains Slots,
+     which provide a way to inject animation into the Anim Graph. Although mainly used to play animations from Montages,
+     you can also use Slots to play animation from Sequencer.
+   * Slots are stored on the Skeleton
+   * create a blend out region at the end of the animation
+   * When Finished to Keep State
+   * Uneven Terrain character animation blending
+   * Set Cinematic Mode function to manually control input
+   * you may want to release control of the player before the blend sequence ends
  * [blend masks and blend profiles in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blend-masks-and-blend-profiles-in-unreal-engine?application_version=5.0)
  * [blend material functions in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blend-material-functions-in-unreal-engine?application_version=5.0)
  * [blend spaces in animation blueprints in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blend-spaces-in-animation-blueprints-in-unreal-engine?application_version=5.0)
  * [blend spaces in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blend-spaces-in-unreal-engine?application_version=5.0)
  * [blendables in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blendables-in-unreal-engine?application_version=5.0)
  * [blending animation blueprints with sequencer in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blending-animation-blueprints-with-sequencer-in-unreal-engine?application_version=5.0)
+   * take a the pose from an Animation Blueprint and blend it with animations defined inside a Level Sequence
+   * do so using a Slot node and the Weight property of an Animation Track in Sequencer
+   * By setting the Weight to 0.0, we are stating that we want to use no part of this Animation until we increase the Weight value.
+   * under Properties, notice the Slot Name, and the three Keys we added
  * [blending animations in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blending-animations-in-unreal-engine?application_version=5.0)
  * [blind accessibility features overview in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blind-accessibility-features-overview-in-unreal-engine?application_version=5.0)
  * [bloom in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/bloom-in-unreal-engine?application_version=5.0)
@@ -444,6 +465,8 @@ As of 2025/04/06.
    * specify the Binding you want to override
    * RemoveBinding/ResetBinding/SetBinding
  * [change material in unreal engine cinematic movie](https://dev.epicgames.com/documentation/en-us/unreal-engine/change-material-in-unreal-engine-cinematic-movie?application_version=5.0)
+   * How to change materials for an Actor in a Sequence
+   * Material Element Switcher
  * [change the oculus rift guardian system color in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/change-the-oculus-rift-guardian-system-color-in-unreal-engine?application_version=5.0)
  * [changing ndisplay communication ports in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/changing-ndisplay-communication-ports-in-unreal-engine?application_version=5.0)
  * [changing the default level of an unreal engine project](https://dev.epicgames.com/documentation/en-us/unreal-engine/changing-the-default-level-of-an-unreal-engine-project?application_version=5.0)
@@ -679,6 +702,9 @@ As of 2025/04/06.
    * Set Up your Branch
    * Start your Pull Request
  * [control animation blueprint parameters from sequencer in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/control-animation-blueprint-parameters-from-sequencer-in-unreal-engine?application_version=5.0)
+   * animate variables on Anim Instances through Possessables, enabling you direct control of Anim Blueprint variables
+   * adding a Skeletal Mesh Component Track
+   * Click the + Track button on the Anim Instance and add the Move Type property
  * [control rig debugging in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/control-rig-debugging-in-unreal-engine?application_version=5.0)
  * [control rig editor in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/control-rig-editor-in-unreal-engine?application_version=5.0)
  * [control rig forwards solve and backwards solve in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/control-rig-forwards-solve-and-backwards-solve-in-unreal-engine?application_version=5.0)
@@ -771,6 +797,11 @@ As of 2025/04/06.
  * [creating landscapes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-landscapes-in-unreal-engine?application_version=5.0)
  * [creating layered materials in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-layered-materials-in-unreal-engine?application_version=5.0)
  * [creating level sequences with dynamic transforms in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-level-sequences-with-dynamic-transforms-in-unreal-engine?application_version=5.0)
+   * Sequencer's Transform Origin features to dynamically change the location of the animation at runtime
+   * By default, all Sequencer transforms are relative to the world origin (0, 0, 0)
+   * Enable Override Instance Data
+   * Assign the Level Sequence Actor to Transform Origin Actor
+   * Transform Origins also correctly adjust Sequencer content if the origin Actor is animated
  * [creating levels of detail in blueprints and python in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-levels-of-detail-in-blueprints-and-python-in-unreal-engine?application_version=5.0)
  * [creating objects in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-objects-in-unreal-engine?application_version=5.0)
    * NewObject - simplest UObject factory method
@@ -1068,6 +1099,8 @@ As of 2025/04/06.
    * available by pressing Ctrl-F
  * [finding actors in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/finding-actors-in-unreal-engine?application_version=5.0)
  * [fire blueprint events during cinematics in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/fire-blueprint-events-during-cinematics-in-unreal-engine?application_version=5.0)
+   * use Sequencer's Event Track to fire off Events in Blueprint
+   * Event Track: Track/Event
  * [first person shooter tutorial in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/first-person-shooter-tutorial-in-unreal-engine?application_version=5.0)
    * basic tutorial
    * Learn how to implement mechanics for a First Person Shooter game
@@ -1321,6 +1354,10 @@ As of 2025/04/06.
    * Add a First Person Mesh to Your Character
  * [import and export cinematic fbx animations in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/import-and-export-cinematic-fbx-animations-in-unreal-engine?application_version=5.0)
  * [import and export edl in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/import-and-export-edl-in-unreal-engine?application_version=5.0)
+   * Write Edit Decision List / Import EDL
+   * The EDL contains an ordered list of reel and timecode data representing where each video clip can be obtained in order to produce the final cut.
+     In this how-to, we export a cinematic and EDL file, take it into an external program (like Premiere), make edits to it,
+     and re-import the edited cinematic back into UE4 along with those changes
  * [import sprites in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/import-sprites-in-unreal-engine?application_version=5.0)
  * [importing animations using fbx in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/importing-animations-using-fbx-in-unreal-engine?application_version=5.0)
  * [importing assets directly into unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/importing-assets-directly-into-unreal-engine?application_version=5.0)
@@ -2121,6 +2158,8 @@ As of 2025/04/06.
  * [recommended asset naming conventions in unreal engine projects](https://dev.epicgames.com/documentation/en-us/unreal-engine/recommended-asset-naming-conventions-in-unreal-engine-projects?application_version=5.0)
  * [recommended hardware for in camera vfx in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/recommended-hardware-for-in-camera-vfx-in-unreal-engine?application_version=5.0)
  * [record gameplay in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/record-gameplay-in-unreal-engine?application_version=5.0)
+   * Take Recorder to record sequences with motion capture
+   * common usage of Take Recorder will be with projects using Live Link
  * [recording face animation on ios device in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/recording-face-animation-on-ios-device-in-unreal-engine?application_version=5.0)
  * [recovery hub in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/recovery-hub-in-unreal-engine?application_version=5.0)
  * [rectangular area lights in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/rectangular-area-lights-in-unreal-engine?application_version=5.0)
@@ -2167,6 +2206,7 @@ As of 2025/04/06.
  * [rendering features for mobile games in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/rendering-features-for-mobile-games-in-unreal-engine?application_version=5.0)
  * [rendering high quality frames with movie render queue in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/rendering-high-quality-frames-with-movie-render-queue-in-unreal-engine?application_version=5.0)
  * [rendering out cinematic movies in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/rendering-out-cinematic-movies-in-unreal-engine?application_version=5.0)
+   * Renderer Movie is deprecated. Instead, please use [Movie Render Pipeline](https://dev.epicgames.com/documentation/en-us/unreal-engine/movie-render-pipeline-in-unreal-engine), UE.5.5
  * [rendering overrides settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/rendering-overrides-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [rendering settings in the unreal engine project settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/rendering-settings-in-the-unreal-engine-project-settings?application_version=5.0)
  * [rendering to multiple displays with ndisplay in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/rendering-to-multiple-displays-with-ndisplay-in-unreal-engine?application_version=5.0)
@@ -2939,6 +2979,9 @@ As of 2025/04/06.
    * Usage Warnings: Usage as keys in Sets or Maps. Because Weak Pointers can become invalid at any time, and will not notify the container
  * [welding physics bodies in unreal engine by using the physics asset editor](https://dev.epicgames.com/documentation/en-us/unreal-engine/welding-physics-bodies-in-unreal-engine-by-using-the-physics-asset-editor?application_version=5.0)
  * [what happens when my cinematic ends in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/what-happens-when-my-cinematic-ends-in-unreal-engine?application_version=5.0)
+   * how to keep any changes made through Sequencer when it has completed or restore changes back to their original state
+   * Properties / When Finished state / Keep State
+   * Keep State has a local effect, there is a global Restore State option contained within the Level Sequence actor
  * [whats new](https://dev.epicgames.com/documentation/en-us/unreal-engine/whats-new?application_version=5.0)
  * [widget blueprints in umg for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/widget-blueprints-in-umg-for-unreal-engine?application_version=5.0)
  * [widget components in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/widget-components-in-unreal-engine?application_version=5.0)
@@ -3201,6 +3244,9 @@ As of 2025/04/06.
    * User Privilege
    * Privileges.h
  * [rendering from multiple camera angles in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/rendering-from-multiple-camera-angles-in-unreal-engine?application_version=5.1)
+   * single sequence or Shot
+   * overview of how to render multiple camera angles from a single shot using Movie Render Queue
+   * these other cameras will be correctly rendered with Movie Render Queue in the final steps
  * [replicated subobjects in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/replicated-subobjects-in-unreal-engine?application_version=5.1)
  * [retargeting bipeds with ik rig in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/retargeting-bipeds-with-ik-rig-in-unreal-engine?application_version=5.1)
  * [runtime ik retargeting in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/runtime-ik-retargeting-in-unreal-engine?application_version=5.1)
@@ -3249,6 +3295,8 @@ As of 2025/04/06.
    * Process Flow
    * TitleFile.h
  * [trigger level blueprint events from sequencer in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/trigger-level-blueprint-events-from-sequencer-in-unreal-engine?application_version=5.1)
+   * Use Blueprint Interfaces to communicate Sequencer's Event Track to a Level Blueprint
+   * Pass Bound Object To
  * [umg viewmodel](https://dev.epicgames.com/documentation/en-us/unreal-engine/umg-viewmodel?application_version=5.1)
  * [understanding polygroups in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/understanding-polygroups-in-unreal-engine?application_version=5.1)
  * [unreal cooking insights in unreal engine 5](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-cooking-insights-in-unreal-engine-5?application_version=5.1)
@@ -3354,6 +3402,7 @@ As of 2025/04/06.
  * [controlling inputs to virtual camera controls in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/controlling-inputs-to-virtual-camera-controls-in-unreal-engine?application_version=5.2)
  * [controlling your niagara systems](https://dev.epicgames.com/documentation/en-us/unreal-engine/controlling-your-niagara-systems?application_version=5.2)
  * [creating camera cuts using sequencer in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-camera-cuts-using-sequencer-in-unreal-engine?application_version=5.2)
+   * how to create camera cuts in Sequencer, basics
  * [debugging localization keys in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/debugging-localization-keys-in-unreal-engine?application_version=5.2)
  * [deform category in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/deform-category-in-unreal-engine?application_version=5.2)
  * [design guidelines for using commonui in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/design-guidelines-for-using-commonui-in-unreal-engine?application_version=5.2)
@@ -3377,6 +3426,10 @@ As of 2025/04/06.
  * [geometry scripting users guide in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/geometry-scripting-users-guide-in-unreal-engine?application_version=5.2)
  * [getting started with modeling mode](https://dev.epicgames.com/documentation/en-us/unreal-engine/getting-started-with-modeling-mode?application_version=5.2)
  * [how to reference the player in unreal engine cinematics](https://dev.epicgames.com/documentation/en-us/unreal-engine/how-to-reference-the-player-in-unreal-engine-cinematics?application_version=5.2)
+   * Reference the player in Sequencer by using a proxy substitute, then changing the binding at runtime.
+   * create a proxy (substitute) Actor to animate with instead (drag Character Blueprint into Sequencer)
+   * Rebind Proxy to Actual Player / Create Player Tag
+   * At runtime: Set Binding by Tag, with Allow Bindings from Asset=off
  * [importing assets using interchange in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/importing-assets-using-interchange-in-unreal-engine?application_version=5.2)
  * [in camera vfx editor for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/in-camera-vfx-editor-for-unreal-engine?application_version=5.2)
  * [input debugging and troubleshooting for commonui in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/input-debugging-and-troubleshooting-for-commonui-in-unreal-engine?application_version=5.2)

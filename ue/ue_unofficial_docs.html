@@ -635,7 +635,10 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-shor
 shortcuts and tips unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-slots-in-unreal-engine?application_version=5.0">animation
-slots in unreal engine</a></li>
+slots in unreal engine</a>
+<ul>
+<li>TODO</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-sync-groups-in-unreal-engine?application_version=5.0">animation
 sync groups in unreal engine</a></li>
@@ -658,7 +661,13 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/applying-a-phy
 a physics constraint profile in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/applying-burn-ins-to-your-movie-in-unreal-engine?application_version=5.0">applying
-burn ins to your movie in unreal engine</a></li>
+burn ins to your movie in unreal engine</a>
+<ul>
+<li>how you can apply overlays from UMG to rendered Sequencer
+movies</li>
+<li>overlays are referred to as Burn Ins as they are burned into the
+movie when it is rendered out</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/arcore-prerequisites-in-unreal-engine?application_version=5.0">arcore
 prerequisites in unreal engine</a></li>
@@ -955,7 +964,32 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blackmagic-vid
 video io quick start for unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blend-gameplay-animation-to-cinematic-animation-in-unreal-engine?application_version=5.0">blend
-gameplay animation to cinematic animation in unreal engine</a></li>
+gameplay animation to cinematic animation in unreal engine</a>
+<ul>
+<li>blend gameplay animation to or from animation inside your Level
+Sequence. Typically this is done to create seamless transitions into and
+out of a cinematic, which includes blending both the player animation
+and the player camera</li>
+<li>Normally when animating characters in Sequencer, the Animation Mode
+property automatically changes to Use Custom Mode. Custom Mode is a
+special Sequencer-specific Animation Blueprint, different from the one
+used to animate the player in gameplay. In order to blend characters
+between Sequencer to Gameplay, you cannot use Custom Mode, and must
+instead use the same Animation Blueprint the character uses in
+gameplay</li>
+<li>When animating characters in Sequencer using their Animation
+Blueprint, you must ensure that Animation Blueprint contains Slots,
+which provide a way to inject animation into the Anim Graph. Although
+mainly used to play animations from Montages, you can also use Slots to
+play animation from Sequencer.</li>
+<li>Slots are stored on the Skeleton</li>
+<li>create a blend out region at the end of the animation</li>
+<li>When Finished to Keep State</li>
+<li>Uneven Terrain character animation blending</li>
+<li>Set Cinematic Mode function to manually control input</li>
+<li>you may want to release control of the player before the blend
+sequence ends</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blend-masks-and-blend-profiles-in-unreal-engine?application_version=5.0">blend
 masks and blend profiles in unreal engine</a></li>
@@ -973,7 +1007,17 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blendables-in-
 in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blending-animation-blueprints-with-sequencer-in-unreal-engine?application_version=5.0">blending
-animation blueprints with sequencer in unreal engine</a></li>
+animation blueprints with sequencer in unreal engine</a>
+<ul>
+<li>take a the pose from an Animation Blueprint and blend it with
+animations defined inside a Level Sequence</li>
+<li>do so using a Slot node and the Weight property of an Animation
+Track in Sequencer</li>
+<li>By setting the Weight to 0.0, we are stating that we want to use no
+part of this Animation until we increase the Weight value.</li>
+<li>under Properties, notice the Slot Name, and the three Keys we
+added</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blending-animations-in-unreal-engine?application_version=5.0">blending
 animations in unreal engine</a></li>
@@ -1390,7 +1434,11 @@ than the one the Sequence was authored with</li>
 </ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/change-material-in-unreal-engine-cinematic-movie?application_version=5.0">change
-material in unreal engine cinematic movie</a></li>
+material in unreal engine cinematic movie</a>
+<ul>
+<li>How to change materials for an Actor in a Sequence</li>
+<li>Material Element Switcher</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/change-the-oculus-rift-guardian-system-color-in-unreal-engine?application_version=5.0">change
 the oculus rift guardian system color in unreal engine</a></li>
@@ -1946,7 +1994,14 @@ to the unreal engine</a>
 </ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/control-animation-blueprint-parameters-from-sequencer-in-unreal-engine?application_version=5.0">control
-animation blueprint parameters from sequencer in unreal engine</a></li>
+animation blueprint parameters from sequencer in unreal engine</a>
+<ul>
+<li>animate variables on Anim Instances through Possessables, enabling
+you direct control of Anim Blueprint variables</li>
+<li>adding a Skeletal Mesh Component Track</li>
+<li>Click the + Track button on the Anim Instance and add the Move Type
+property</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/control-rig-debugging-in-unreal-engine?application_version=5.0">control
 rig debugging in unreal engine</a></li>
@@ -2196,7 +2251,17 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-layer
 layered materials in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-level-sequences-with-dynamic-transforms-in-unreal-engine?application_version=5.0">creating
-level sequences with dynamic transforms in unreal engine</a></li>
+level sequences with dynamic transforms in unreal engine</a>
+<ul>
+<li>Sequencer’s Transform Origin features to dynamically change the
+location of the animation at runtime</li>
+<li>By default, all Sequencer transforms are relative to the world
+origin (0, 0, 0)</li>
+<li>Enable Override Instance Data</li>
+<li>Assign the Level Sequence Actor to Transform Origin Actor</li>
+<li>Transform Origins also correctly adjust Sequencer content if the
+origin Actor is animated</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-levels-of-detail-in-blueprints-and-python-in-unreal-engine?application_version=5.0">creating
 levels of detail in blueprints and python in unreal engine</a></li>
@@ -2954,7 +3019,11 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/finding-actors
 actors in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/fire-blueprint-events-during-cinematics-in-unreal-engine?application_version=5.0">fire
-blueprint events during cinematics in unreal engine</a></li>
+blueprint events during cinematics in unreal engine</a>
+<ul>
+<li>use Sequencer’s Event Track to fire off Events in Blueprint</li>
+<li>Event Track: Track/Event</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/first-person-shooter-tutorial-in-unreal-engine?application_version=5.0">first
 person shooter tutorial in unreal engine</a>
@@ -3628,7 +3697,16 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/import-and-exp
 and export cinematic fbx animations in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/import-and-export-edl-in-unreal-engine?application_version=5.0">import
-and export edl in unreal engine</a></li>
+and export edl in unreal engine</a>
+<ul>
+<li>Write Edit Decision List / Import EDL</li>
+<li>The EDL contains an ordered list of reel and timecode data
+representing where each video clip can be obtained in order to produce
+the final cut. In this how-to, we export a cinematic and EDL file, take
+it into an external program (like Premiere), make edits to it, and
+re-import the edited cinematic back into UE4 along with those
+changes</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/import-sprites-in-unreal-engine?application_version=5.0">import
 sprites in unreal engine</a></li>
@@ -5661,7 +5739,12 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/recommended-ha
 hardware for in camera vfx in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/record-gameplay-in-unreal-engine?application_version=5.0">record
-gameplay in unreal engine</a></li>
+gameplay in unreal engine</a>
+<ul>
+<li>Take Recorder to record sequences with motion capture</li>
+<li>common usage of Take Recorder will be with projects using Live
+Link</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/recording-face-animation-on-ios-device-in-unreal-engine?application_version=5.0">recording
 face animation on ios device in unreal engine</a></li>
@@ -5780,7 +5863,12 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/rendering-high
 high quality frames with movie render queue in unreal engine</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/rendering-out-cinematic-movies-in-unreal-engine?application_version=5.0">rendering
-out cinematic movies in unreal engine</a></li>
+out cinematic movies in unreal engine</a>
+<ul>
+<li>Renderer Movie is deprecated. Instead, please use <a
+href="https://dev.epicgames.com/documentation/en-us/unreal-engine/movie-render-pipeline-in-unreal-engine">Movie
+Render Pipeline</a>, UE.5.5</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/rendering-overrides-settings-in-the-unreal-engine-project-settings?application_version=5.0">rendering
 overrides settings in the unreal engine project settings</a></li>
@@ -7841,7 +7929,14 @@ physics bodies in unreal engine by using the physics asset
 editor</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/what-happens-when-my-cinematic-ends-in-unreal-engine?application_version=5.0">what
-happens when my cinematic ends in unreal engine</a></li>
+happens when my cinematic ends in unreal engine</a>
+<ul>
+<li>how to keep any changes made through Sequencer when it has completed
+or restore changes back to their original state</li>
+<li>Properties / When Finished state / Keep State</li>
+<li>Keep State has a local effect, there is a global Restore State
+option contained within the Level Sequence actor</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/whats-new?application_version=5.0">whats
 new</a></li>
@@ -8451,7 +8546,14 @@ voice and text chat</li>
 </ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/rendering-from-multiple-camera-angles-in-unreal-engine?application_version=5.1">rendering
-from multiple camera angles in unreal engine</a></li>
+from multiple camera angles in unreal engine</a>
+<ul>
+<li>single sequence or Shot</li>
+<li>overview of how to render multiple camera angles from a single shot
+using Movie Render Queue</li>
+<li>these other cameras will be correctly rendered with Movie Render
+Queue in the final steps</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/replicated-subobjects-in-unreal-engine?application_version=5.1">replicated
 subobjects in unreal engine</a></li>
@@ -8552,7 +8654,12 @@ runtime</li>
 </ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/trigger-level-blueprint-events-from-sequencer-in-unreal-engine?application_version=5.1">trigger
-level blueprint events from sequencer in unreal engine</a></li>
+level blueprint events from sequencer in unreal engine</a>
+<ul>
+<li>Use Blueprint Interfaces to communicate Sequencer’s Event Track to a
+Level Blueprint</li>
+<li>Pass Bound Object To</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/umg-viewmodel?application_version=5.1">umg
 viewmodel</a></li>
@@ -8832,7 +8939,10 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/controlling-yo
 your niagara systems</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/creating-camera-cuts-using-sequencer-in-unreal-engine?application_version=5.2">creating
-camera cuts using sequencer in unreal engine</a></li>
+camera cuts using sequencer in unreal engine</a>
+<ul>
+<li>how to create camera cuts in Sequencer, basics</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/debugging-localization-keys-in-unreal-engine?application_version=5.2">debugging
 localization keys in unreal engine</a></li>
@@ -8899,7 +9009,16 @@ href="https://dev.epicgames.com/documentation/en-us/unreal-engine/getting-starte
 started with modeling mode</a></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/how-to-reference-the-player-in-unreal-engine-cinematics?application_version=5.2">how
-to reference the player in unreal engine cinematics</a></li>
+to reference the player in unreal engine cinematics</a>
+<ul>
+<li>Reference the player in Sequencer by using a proxy substitute, then
+changing the binding at runtime.</li>
+<li>create a proxy (substitute) Actor to animate with instead (drag
+Character Blueprint into Sequencer)</li>
+<li>Rebind Proxy to Actual Player / Create Player Tag</li>
+<li>At runtime: Set Binding by Tag, with Allow Bindings from
+Asset=off</li>
+</ul></li>
 <li><a
 href="https://dev.epicgames.com/documentation/en-us/unreal-engine/importing-assets-using-interchange-in-unreal-engine?application_version=5.2">importing
 assets using interchange in unreal engine</a></li>
