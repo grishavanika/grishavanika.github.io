@@ -4208,8 +4208,9 @@ As of 2025/06/03 (June 3).
  - Unreal Engine 5.6 Documentation
  - Unreal Engine [5.6 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/124-unreal-engine-5-6)
  - Unreal Engine [5.6.0 Preview 1 forum thread](https://forums.unrealengine.com/t/unreal-engine-5-6-preview/2508377) release notes
- - Unreal Engine [5.6 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-6-released/2538952)
  - Unreal Engine [5.6 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-6-release-notes) (most detailed)
+ - Unreal Engine [5.6 blog post](https://www.unrealengine.com/en-US/news/unreal-engine-5-6-is-now-available)
+ - Unreal Engine [5.6 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-6-released/2538952)
 
 -------------------------------------------------------
 
