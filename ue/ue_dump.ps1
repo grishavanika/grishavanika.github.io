@@ -96,6 +96,7 @@ function New-DumpInMarkdown($old, $old_version, $new, $new_version)
 # New-DumpInMarkdown 04.04.25_ue5.2.txt '?application_version=5.2' 04.04.25_ue5.3.txt '?application_version=5.3'
 # New-DumpInMarkdown 04.04.25_ue5.3.txt '?application_version=5.3' 04.04.25_ue5.4.txt '?application_version=5.4'
 # New-DumpInMarkdown 04.04.25_ue5.4.txt '?application_version=5.4' 04.04.25_ue5.5.txt '?application_version=5.5'
+# New-DumpInMarkdown 04.04.25_ue5.5.txt '?application_version=5.5' 03.06.25_ue5.6.txt '?application_version=5.6'
 
 function New-DumpAllLinksToMarkdown($links_file, $version)
 {
@@ -126,6 +127,8 @@ function New-DumpAllLinksToMarkdown($links_file, $version)
 # New-DumpAllLinksToMarkdown 04.04.25_ue5.2.txt '?application_version=5.2'
 # New-DumpAllLinksToMarkdown 04.04.25_ue5.3.txt '?application_version=5.3'
 # New-DumpAllLinksToMarkdown 04.04.25_ue5.4.txt '?application_version=5.4'
+# New-DumpAllLinksToMarkdown 04.04.25_ue5.5.txt '?application_version=5.5'
+# New-DumpAllLinksToMarkdown 03.06.25_ue5.6.txt '?application_version=5.6'
 
 function New-DumpLearningLinksToMarkdown($links_file)
 {
@@ -151,8 +154,6 @@ function New-DumpLearningLinksToMarkdown($links_file)
 
 # New-DumpLearningLinksToMarkdown 04.04.25_ue_learnings.txt
 
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/DBOL/tech-note-fix-for-pso-management-issue-on-nvidia-hardware-in-unreal-engine-5-5'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/0zv6/unreal-engine-fortnite-hosting-game-jams'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/courses/6kw/unreal-engine-community-highlight-pcg-tutorials/eBbq/unreal-engine-3-ways-to-scatter-pcg-points-on-a-mesh'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/2XEv/unreal-engine-epic-for-indies-beyond-average-how-tech-artists-can-make-games-more-accessible'
-
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/9XyB/unreal-engine-creating-custom-constellations-for-the-celestial-vault-plugin'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/raad/unreal-engine-shot-management-with-the-cinematic-assembly-tools-cat'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/6XX1/unreal-engine-naming-tokens-system'
