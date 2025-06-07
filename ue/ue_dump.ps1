@@ -154,6 +154,11 @@ function New-DumpLearningLinksToMarkdown($links_file)
 
 # New-DumpLearningLinksToMarkdown 04.04.25_ue_learnings.txt
 
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/9XyB/unreal-engine-creating-custom-constellations-for-the-celestial-vault-plugin'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/raad/unreal-engine-shot-management-with-the-cinematic-assembly-tools-cat'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/6XX1/unreal-engine-naming-tokens-system'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/qB5K/unreal-engine-level-streaming-deep-dive'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/paths/Rkk/unreal-engine-unreal-performance-optimization-learning-path'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/6XW8/unreal-engine-the-great-hitch-hunt-tracking-down-every-frame-drop'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/nwML/unreal-engine-capturing-reality-the-epic-games-ecosystem-for-arch-viz-part-1'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/b62v/petzval-bokeh-in-unreal-engine-5-6'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/JZZE/unreal-engine-an-introduction-to-niagara-s-scratch-pad-modules'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/8XX8/unreal-engine-chasing-waterfalls-using-niagara-to-power-a-mobile-rts-unreal-fest-orlando-2025'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/nWWx/unreal-engine-unreal-animation-framework-uaf-faq'

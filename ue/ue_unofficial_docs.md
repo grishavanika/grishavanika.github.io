@@ -4281,8 +4281,16 @@ As of 2025/06/03 (June 3).
 
 From [Learn Unreal Engine](https://dev.epicgames.com/community/unreal-engine/learning?source=epic_games&sort_by=first_published_at)/Epic Games/Published On.
 
-As of 2025/06/03 = 1503 links.
+As of 2025/06/07 = 1511 links.
 
+ * |knowledge-base| [level streaming deep dive](https://dev.epicgames.com/community/learning/knowledge-base/qB5K/unreal-engine-level-streaming-deep-dive)
+ * |paths| [unreal performance optimization learning path](https://dev.epicgames.com/community/learning/paths/Rkk/unreal-engine-unreal-performance-optimization-learning-path)
+ * |tutorials| [the great hitch hunt tracking down every frame drop](https://dev.epicgames.com/community/learning/tutorials/6XW8/unreal-engine-the-great-hitch-hunt-tracking-down-every-frame-drop)
+ * |tutorials| [capturing reality the epic games ecosystem for arch viz part 1](https://dev.epicgames.com/community/learning/tutorials/nwML/unreal-engine-capturing-reality-the-epic-games-ecosystem-for-arch-viz-part-1)
+ * |tutorials| [petzval bokeh in unreal engine 5 6](https://dev.epicgames.com/community/learning/tutorials/b62v/petzval-bokeh-in-unreal-engine-5-6)
+ * |tutorials| [an introduction to niagara s scratch pad modules](https://dev.epicgames.com/community/learning/tutorials/JZZE/unreal-engine-an-introduction-to-niagara-s-scratch-pad-modules)
+ * |knowledge-base| [chasing waterfalls using niagara to power a mobile rts unreal fest orlando 2025](https://dev.epicgames.com/community/learning/knowledge-base/8XX8/unreal-engine-chasing-waterfalls-using-niagara-to-power-a-mobile-rts-unreal-fest-orlando-2025)
+ * |knowledge-base| [unreal animation framework uaf faq](https://dev.epicgames.com/community/learning/knowledge-base/nWWx/unreal-engine-unreal-animation-framework-uaf-faq)
  * |tutorials| [creating custom constellations for the celestial vault plugin](https://dev.epicgames.com/community/learning/tutorials/9XyB/unreal-engine-creating-custom-constellations-for-the-celestial-vault-plugin)
  * |tutorials| [shot management with the cinematic assembly tools cat](https://dev.epicgames.com/community/learning/tutorials/raad/unreal-engine-shot-management-with-the-cinematic-assembly-tools-cat)
  * |tutorials| [naming tokens system](https://dev.epicgames.com/community/learning/tutorials/6XX1/unreal-engine-naming-tokens-system)
