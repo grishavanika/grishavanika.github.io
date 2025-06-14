@@ -7,7 +7,7 @@ as a single page with no deep tree for simple grep/search with Ctrl+F.
 
 As of 2025/06/03 (June 3).
 
-## [Topics in Unreal Engine 5.0]{.mark} = 1903 links
+## [Topics in Unreal Engine 5.0]{.mark} = 1903 links {#ue5.0}
 
  - [Unreal Engine 5.0 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-0-documentation?application_version=5.0)
  - Unreal Engine [5.0 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/46-unreal-engine-5-0)
@@ -3065,7 +3065,7 @@ As of 2025/06/03 (June 3).
  * [zen store in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/zen-store-in-unreal-engine?application_version=5.0)
 
 
-## Removed in 5.1 (vs 5.0) = 30 links
+## Removed in 5.1 (vs 5.0) = 30 links {#ue5.1-removed}
 
  * [3ds max per object conversion settings](https://dev.epicgames.com/documentation/en-us/unreal-engine/3ds-max-per-object-conversion-settings?application_version=5.0)
  * [activating vr mode](https://dev.epicgames.com/documentation/en-us/unreal-engine/activating-vr-mode?application_version=5.0)
@@ -3099,7 +3099,7 @@ As of 2025/06/03 (June 3).
  * [writing code snippets in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/writing-code-snippets-in-unreal-engine?application_version=5.0)
 
 
-## [Added in 5.1]{.mark} (vs 5.0) = 105 links
+## [Added in 5.1]{.mark} (vs 5.0) = 105 links {#ue5.1-added}
 
  - [Unreal Engine 5.1 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-1-documentation?application_version=5.1)
  - Unreal Engine [5.1 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/80-unreal-engine-5-1)
@@ -3343,7 +3343,7 @@ As of 2025/06/03 (June 3).
  * [working with meshes in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-meshes-in-unreal-engine?application_version=5.1)
  * [working with usd stage prims in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-usd-stage-prims-in-unreal-engine?application_version=5.1)
 
-## Removed in 5.2 (vs 5.1) = 34 links
+## Removed in 5.2 (vs 5.1) = 34 links {#ue5.2-removed}
 
  * [animation insights overview](https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-insights-overview?application_version=5.1)
  * [audio files in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/audio-files-in-unreal-engine?application_version=5.1)
@@ -3381,7 +3381,7 @@ As of 2025/06/03 (June 3).
  * [virtual camera component in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/virtual-camera-component-in-unreal-engine?application_version=5.1)
 
 
-## [Added in 5.2]{.mark} (vs 5.1) = 95 links
+## [Added in 5.2]{.mark} (vs 5.1) = 95 links {#ue5.2-added}
 
  - [Unreal Engine 5.2 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-2-documentation?application_version=5.2)
  - Unreal Engine [5.2 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/85-unreal-engine-5-2)
@@ -3503,7 +3503,7 @@ As of 2025/06/03 (June 3).
  * [water debugging and scalability options in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/water-debugging-and-scalability-options-in-unreal-engine?application_version=5.2)
  * [working with modular characters in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-modular-characters-in-unreal-engine?application_version=5.2)
 
-## Removed in 5.3 (vs 5.2) = 48 links
+## Removed in 5.3 (vs 5.2) = 48 links {#ue5.3-removed}
 
  * [accessibility in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/accessibility-in-unreal-engine?application_version=5.2)
  * [actor relevancy and priority in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-relevancy-and-priority-in-unreal-engine?application_version=5.2)
@@ -3555,7 +3555,7 @@ As of 2025/06/03 (June 3).
  * [working with speedtree models in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-speedtree-models-in-unreal-engine?application_version=5.2)
 
 
-## [Added in 5.3]{.mark} (vs 5.2) = 146 links
+## [Added in 5.3]{.mark} (vs 5.2) = 146 links {#ue5.3-added}
 
  - [Unreal Engine 5.3 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-3-documentation?application_version=5.3)
  - Unreal Engine [5.3 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/88-unreal-engine-5-3)
@@ -3763,7 +3763,7 @@ As of 2025/06/03 (June 3).
  * [xbox development in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/xbox-development-in-unreal-engine?application_version=5.3)
 
 
-## Removed in 5.4 (vs 5.3) = 26 links
+## Removed in 5.4 (vs 5.3) = 26 links {#ue5.4-removed}
 
  * [activating the virtual scouting tools](https://dev.epicgames.com/documentation/en-us/unreal-engine/activating-the-virtual-scouting-tools?application_version=5.3)
  * [automation system in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/automation-system-in-unreal-engine?application_version=5.3)
@@ -3793,7 +3793,7 @@ As of 2025/06/03 (June 3).
  * [zen store in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/zen-store-in-unreal-engine?application_version=5.3)
 
 
-## [Added in 5.4]{.mark} (vs 5.3) = 141 links
+## [Added in 5.4]{.mark} (vs 5.3) = 141 links {#ue5.4-added}
 
  - [Unreal Engine 5.4 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-4-documentation?application_version=5.4)
  - Unreal Engine [5.4 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/106-unreal-engine-5-4)
@@ -3981,7 +3981,7 @@ As of 2025/06/03 (June 3).
  * [your first graphic with motion design in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/your-first-graphic-with-motion-design-in-unreal-engine?application_version=5.4)
  * [zen storage server for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/zen-storage-server-for-unreal-engine?application_version=5.4)
 
-## Removed in 5.5 (vs 5.4) = 28 links
+## Removed in 5.5 (vs 5.4) = 28 links {#ue5.5-removed}
 
  * [blackmagic media reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/blackmagic-media-reference?application_version=5.4)
  * [cinematic render settings in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/cinematic-render-settings-in-unreal-engine?application_version=5.4)
@@ -4013,7 +4013,7 @@ As of 2025/06/03 (June 3).
  * [vertex color materials in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/vertex-color-materials-in-unreal-engine?application_version=5.4)
 
 
-## [Added in 5.5]{.mark} (vs 5.4) = 145 links
+## [Added in 5.5]{.mark} (vs 5.4) = 145 links {#ue5.5-added}
 
  - [Unreal Engine 5.5 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-5-documentation)
  - Unreal Engine [5.5 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/109-unreal-engine-5-5)
@@ -4180,7 +4180,7 @@ As of 2025/06/03 (June 3).
  * [working with multiple uv channels with mutable in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/working-with-multiple-uv-channels-with-mutable-in-unreal-engine?application_version=5.5)
  * [world partition builder commandlet reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/world-partition-builder-commandlet-reference?application_version=5.5)
 
-## Removed in 5.6 (vs 5.5) = 19 links
+## Removed in 5.6 (vs 5.5) = 19 links {#ue5.6-removed}
 
  * [blueprint tutorials in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprint-tutorials-in-unreal-engine?application_version=5.5)
  * [building unreal engine as a library](https://dev.epicgames.com/documentation/en-us/unreal-engine/building-unreal-engine-as-a-library?application_version=5.5)
@@ -4203,7 +4203,7 @@ As of 2025/06/03 (June 3).
  * [using xcode with unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-xcode-with-unreal-engine?application_version=5.5)
 
 
-## [Added in 5.6]{.mark} (vs 5.5) = 60 links
+## [Added in 5.6]{.mark} (vs 5.5) = 60 links {#ue5.6-added}
 
  - Unreal Engine 5.6 Documentation
  - Unreal Engine [5.6 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/124-unreal-engine-5-6)
@@ -4277,12 +4277,16 @@ As of 2025/06/03 (June 3).
 
 -------------------------------------------------------
 
-## [Learning]{.mark} library
+## [Learning]{.mark} library {#learn}
 
 From [Learn Unreal Engine](https://dev.epicgames.com/community/unreal-engine/learning?source=epic_games&sort_by=first_published_at)/Epic Games/Published On.
 
-As of 2025/06/07 = 1511 links.
+As of 2025/06/14 = 1515 links.
 
+ * |tutorials| [epic games store chaos cloth updates 5 6](https://dev.epicgames.com/community/learning/tutorials/LZZo/unreal-engine-epic-games-store-chaos-cloth-updates-5-6)
+ * |knowledge-base| [practical debugging tips for horde](https://dev.epicgames.com/community/learning/knowledge-base/oWG6/unreal-engine-practical-debugging-tips-for-horde)
+ * |knowledge-base| [tech note known issues with nvidia 576 xx drivers on rtx 50 series gpus](https://dev.epicgames.com/community/learning/knowledge-base/44lX/unreal-engine-tech-note-known-issues-with-nvidia-576-xx-drivers-on-rtx-50-series-gpus)
+ * |knowledge-base| [interchange fbx options](https://dev.epicgames.com/community/learning/knowledge-base/KPql/unreal-engine-interchange-fbx-options)
  * |knowledge-base| [level streaming deep dive](https://dev.epicgames.com/community/learning/knowledge-base/qB5K/unreal-engine-level-streaming-deep-dive)
  * |paths| [unreal performance optimization learning path](https://dev.epicgames.com/community/learning/paths/Rkk/unreal-engine-unreal-performance-optimization-learning-path)
  * |tutorials| [the great hitch hunt tracking down every frame drop](https://dev.epicgames.com/community/learning/tutorials/6XW8/unreal-engine-the-great-hitch-hunt-tracking-down-every-frame-drop)

@@ -154,11 +154,7 @@ function New-DumpLearningLinksToMarkdown($links_file)
 
 # New-DumpLearningLinksToMarkdown 04.04.25_ue_learnings.txt
 
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/qB5K/unreal-engine-level-streaming-deep-dive'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/paths/Rkk/unreal-engine-unreal-performance-optimization-learning-path'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/6XW8/unreal-engine-the-great-hitch-hunt-tracking-down-every-frame-drop'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/nwML/unreal-engine-capturing-reality-the-epic-games-ecosystem-for-arch-viz-part-1'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/b62v/petzval-bokeh-in-unreal-engine-5-6'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/JZZE/unreal-engine-an-introduction-to-niagara-s-scratch-pad-modules'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/8XX8/unreal-engine-chasing-waterfalls-using-niagara-to-power-a-mobile-rts-unreal-fest-orlando-2025'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/nWWx/unreal-engine-unreal-animation-framework-uaf-faq'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/LZZo/unreal-engine-epic-games-store-chaos-cloth-updates-5-6'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/oWG6/unreal-engine-practical-debugging-tips-for-horde'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/44lX/unreal-engine-tech-note-known-issues-with-nvidia-576-xx-drivers-on-rtx-50-series-gpus'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/KPql/unreal-engine-interchange-fbx-options'
