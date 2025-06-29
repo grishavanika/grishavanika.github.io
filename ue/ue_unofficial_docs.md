@@ -4281,8 +4281,20 @@ As of 2025/06/03 (June 3).
 
 From [Learn Unreal Engine](https://dev.epicgames.com/community/unreal-engine/learning?source=epic_games&sort_by=first_published_at)/Epic Games/Published On.
 
-As of 2025/06/14 = 1515 links.
+As of 2025/06/29 = 1526 links.
 
+ * |tutorials| [mocap manager tutorial](https://dev.epicgames.com/community/learning/tutorials/V1Y6/unreal-engine-mocap-manager-tutorial)
+ * |tutorials| [world physics fields](https://dev.epicgames.com/community/learning/tutorials/Y5p7/unreal-engine-world-physics-fields)
+ * |talks-and-demos| [beyond print string debugging unreal engine lightning round unreal fest bali 2025](https://dev.epicgames.com/community/learning/talks-and-demos/WDmB/beyond-print-string-debugging-unreal-engine-lightning-round-unreal-fest-bali-2025)
+ * |tutorials| [unreal fest bali 2025 best practices for networked movement abilities](https://dev.epicgames.com/community/learning/tutorials/ywD1/unreal-engine-unreal-fest-bali-2025-best-practices-for-networked-movement-abilities)
+ * |talks-and-demos| [a tech artist s guide to automated performance testing unreal fest bali 2025](https://dev.epicgames.com/community/learning/talks-and-demos/0zx9/unreal-engine-a-tech-artist-s-guide-to-automated-performance-testing-unreal-fest-bali-2025)
+ * |tutorials| [learn blueprint create elegant floating items using blueprint part 2](https://dev.epicgames.com/community/learning/tutorials/B32y/unreal-engine-learn-blueprint-create-elegant-floating-items-using-blueprint-part-2)
+ * |tutorials| [unreal fest bali 2025 gameplay ability system game designer examples technical notes](https://dev.epicgames.com/community/learning/tutorials/Ekmj/unreal-engine-unreal-fest-bali-2025-gameplay-ability-system-game-designer-examples-technical-notes)
+ * |talks-and-demos| [tech designer s toolkit 2025 resources links](https://dev.epicgames.com/community/learning/talks-and-demos/JZlm/unreal-engine-tech-designer-s-toolkit-2025-resources-links)
+ * |knowledge-base| [ai moving platform with static navmesh](https://dev.epicgames.com/community/learning/knowledge-base/5Xqb/unreal-engine-ai-moving-platform-with-static-navmesh)
+ * |tutorials| [learn blueprint create elegant floating items using blueprint part 1](https://dev.epicgames.com/community/learning/tutorials/oWWP/unreal-engine-learn-blueprint-create-elegant-floating-items-using-blueprint-part-1)
+ * |knowledge-base| [understanding new default values for virtual texture streaming console variables in ue 5 6](https://dev.epicgames.com/community/learning/knowledge-base/OZ63/unreal-engine-understanding-new-default-values-for-virtual-texture-streaming-console-variables-in-ue-5-6)
+ * |tutorials| [simulated character ripples](https://dev.epicgames.com/community/learning/tutorials/b6RV/unreal-engine-simulated-character-ripples)
  * |tutorials| [epic games store chaos cloth updates 5 6](https://dev.epicgames.com/community/learning/tutorials/LZZo/unreal-engine-epic-games-store-chaos-cloth-updates-5-6)
  * |knowledge-base| [practical debugging tips for horde](https://dev.epicgames.com/community/learning/knowledge-base/oWG6/unreal-engine-practical-debugging-tips-for-horde)
  * |knowledge-base| [tech note known issues with nvidia 576 xx drivers on rtx 50 series gpus](https://dev.epicgames.com/community/learning/knowledge-base/44lX/unreal-engine-tech-note-known-issues-with-nvidia-576-xx-drivers-on-rtx-50-series-gpus)

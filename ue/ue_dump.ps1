@@ -154,7 +154,15 @@ function New-DumpLearningLinksToMarkdown($links_file)
 
 # New-DumpLearningLinksToMarkdown 04.04.25_ue_learnings.txt
 
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/LZZo/unreal-engine-epic-games-store-chaos-cloth-updates-5-6'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/oWG6/unreal-engine-practical-debugging-tips-for-horde'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/44lX/unreal-engine-tech-note-known-issues-with-nvidia-576-xx-drivers-on-rtx-50-series-gpus'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/KPql/unreal-engine-interchange-fbx-options'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/V1Y6/unreal-engine-mocap-manager-tutorial'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/Y5p7/unreal-engine-world-physics-fields'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/talks-and-demos/WDmB/beyond-print-string-debugging-unreal-engine-lightning-round-unreal-fest-bali-2025'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/ywD1/unreal-engine-unreal-fest-bali-2025-best-practices-for-networked-movement-abilities'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/talks-and-demos/0zx9/unreal-engine-a-tech-artist-s-guide-to-automated-performance-testing-unreal-fest-bali-2025'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/B32y/unreal-engine-learn-blueprint-create-elegant-floating-items-using-blueprint-part-2'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/Ekmj/unreal-engine-unreal-fest-bali-2025-gameplay-ability-system-game-designer-examples-technical-notes'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/talks-and-demos/JZlm/unreal-engine-tech-designer-s-toolkit-2025-resources-links'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/5Xqb/unreal-engine-ai-moving-platform-with-static-navmesh'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/oWWP/unreal-engine-learn-blueprint-create-elegant-floating-items-using-blueprint-part-1'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/OZ63/unreal-engine-understanding-new-default-values-for-virtual-texture-streaming-console-variables-in-ue-5-6'
+New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/b6RV/unreal-engine-simulated-character-ripples'
