@@ -2,7 +2,83 @@
 title: C++ snippets
 ---
 
-### add a value into sorted vector, trivial case
+### `__declspec(property(...))` to debug value change (MSVC, Clang) {#msvc-property}
+
+How to track all the places where access to `.my_value` happens?
+
+```cpp {.numberLines startFrom=25}
+struct MyItem
+{
+    int my_value = 0;
+};
+
+void Process(MyItem& item)
+{
+    item.my_value = 4;     // **
+}
+
+int main()
+{
+    MyItem item;
+    item.my_value = 2;
+    Process(item);
+    item.my_value = 8;
+}
+```
+
+Use `__declspec(property(...))` [MSVC extension](https://learn.microsoft.com/en-us/cpp/cpp/property-cpp?view=msvc-170), also supported by Clang:
+
+```cpp {.numberLines}
+#include <print>
+#include <source_location>
+#include <stacktrace> // clang: -lstdc++exp
+
+struct MyItem
+{
+    int get_value()
+    {
+        return _value_impl;
+    }
+
+    void set_value(int v
+        , std::source_location loc = std::source_location::current())
+    {
+        std::println(" -- set _value: {} -> {}, callsite: {},{}/{}, callstack:\n{}"
+            , _value_impl
+            , v
+            , loc.file_name()
+            , loc.line()
+            , loc.function_name()
+            , std::to_string(std::stacktrace::current()));
+        
+        _value_impl = v;
+    }
+
+    __declspec(property(get = get_value, put = set_value)) int my_value;
+    int _value_impl = 0;
+};
+```
+
+See [godbolt](https://godbolt.org/z/7YW7Ys6xa), [SO](https://stackoverflow.com/a/62330671):
+
+``` {.numberLines}
+ -- set _value: 0 -> 2, callsite: /app/example.cpp,38/int main(), callstack:
+   0# MyItem::set_value(int, std::source_location) at /app/example.cpp:21
+   1# main at /app/example.cpp:38
+
+ -- set _value: 2 -> 4, callsite: /app/example.cpp,32/void Process(MyItem &), callstack:
+   0# MyItem::set_value(int, std::source_location) at /app/example.cpp:21
+   1# Process(MyItem&) at /app/example.cpp:32
+   2# main at /app/example.cpp:39
+
+ -- set _value: 4 -> 8, callsite: /app/example.cpp,40/int main(), callstack:
+   0# MyItem::set_value(int, std::source_location) at /app/example.cpp:21
+   1# main at /app/example.cpp:40
+```
+
+Note, `/std:c++latest -Z7` for MSVC (mostly so stacktrace resolves) and `-std=c++23 -fdeclspec -lstdc++exp` for Clang.
+
+### add a value into sorted vector, trivial case {#sorted-add}
 
 ```cpp {.numberLines}
 #include <vector>
@@ -43,38 +119,7 @@ position is observable.
 
 See [this SO](https://stackoverflow.com/a/25524075) and [std::upper_bound](https://en.cppreference.com/w/cpp/algorithm/upper_bound).
 
-[General note:]{.mark}
-
-Here (and everywhere else), `int` type is used as a placeholder, meaning that
-templated version could look like this:
-
-```cpp {.numberLines}
-#include <vector>
-#include <algorithm>
-
-template<typename T>
-void Sorted_Add(std::vector<T>& vs, T v)
-{
-	auto it = std::upper_bound(vs.begin(), vs.end(), v);
-	vs.insert(it, std::move(v));
-}
-```
-
-or this, depending on the needs (note on additional typename U and std::forward):
-
-```cpp {.numberLines}
-#include <vector>
-#include <algorithm>
-
-template<typename T, typename U>
-void Sorted_Add(std::vector<T>& vs, U&& v)
-{
-	auto it = std::upper_bound(vs.begin(), vs.end(), v);
-	vs.insert(it, std::forward<U>(v));
-}
-```
-
-### validate printf format at compile time
+### validate printf format at compile time {#validate-printf}
 
 ```cpp {.numberLines}
 #include <cstdio>
@@ -94,7 +139,7 @@ by using SAL Annotations for MSVC (see this [SO](https://stackoverflow.com/a/684
 and `__attribute__((format(printf, 1, 2)))` for GCC/Clang. However, using printf
 directly is the easiest way.
 
-### parse string to int, strict version
+### parse string to int, strict version {#parse-int}
 
 ```cpp {.numberLines}
 #include <string_view>
@@ -118,10 +163,7 @@ where it does not allow to have string leftovers, so `ParseToU64("10a")` fails,
 compared to regular `std::from_chars("10a", ...)` and old-style `atoi("10a")`
 analogs.
 
-### custom assert, std::printf-based (<=C++17), simplest (?)
-
- * with enabled printf format validation on GCC with `-Werror=format`, need to silence
-   one other warning with `-Wno-format-zero-length` caused by `KK_VERIFY(false)`
+### custom assert, std::printf-based (<=C++17) {#assert-v0}
 
 Sample:
 
@@ -130,6 +172,9 @@ KK_VERIFY(false);
 KK_VERIFY(false, "message");
 KK_VERIFY(false, "message %s %s", "format", "args");
 ```
+
+ * with enabled printf format validation on GCC (`-Werror=format`), need to silence
+   one other warning with `-Wno-format-zero-length` caused by `KK_VERIFY(false)`
 
 Code:
 
@@ -180,7 +225,7 @@ namespace detail
 } // namespace detail
 ```
 
-### custom assert, std::printf-based (<=C++17), ALT
+#### custom assert, std::printf-based (<=C++17), v2 {.unnumbered .unlisted}
 
  * with std::printf format & args validation
  * with overload for optional message and or custom format
@@ -270,7 +315,7 @@ namespace detail
 } // namespace detail
 ```
 
-### custom assert, std::format-based (>=C++20)
+#### custom assert, std::format-based (>=C++20), v3 {.unnumbered .unlisted}
 
  * with std::format
  * with overload for optional message and or custom format
