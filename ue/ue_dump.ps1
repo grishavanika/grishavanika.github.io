@@ -20,7 +20,7 @@ function New-MakrdownLinkFromLearningUrl($url)
 	$s = $url.IndexOf('/learning/') + '/learning/'.Length
 	$e = $url.IndexOf('/', $s + 1)
 	$kind = $url.Substring($s, $e - $s)
-	return "|$($kind)| [$($title)]($($url))"
+	return " * |$($kind)| [$($title)]($($url))"
 }
 
 function New-Dump($old, $old_version, $new, $new_version)
@@ -164,35 +164,8 @@ function New-DumpLearningLinksToMarkdown($links_file)
 
 # New-DumpLearningLinksToMarkdown 04.04.25_ue_learnings.txt
 # New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/V1Y6/unreal-engine-mocap-manager-tutorial'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/89n2/unreal-engine-setting-up-a-curve-atlas-for-a-stylized-banding'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/y0r9/unreal-engine-creating-stylized-comic-fx-pt-1-smoke-trails'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/courses/QQv/unreal-engine-building-an-rpg-with-gameplay-ability-system/zBvq/unreal-engine-introduction-to-building-an-rpg-with-gameplay-ability-system'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/talks-and-demos/raDl/unreal-engine-unreal-fest-2025-modular-metahumans-materials'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/5XYd/mythen-aufdecken-best-practices-in-der-unreal-engine'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/oWda/unreal-engine-current-graphics-considerations-in-ue5-ue5-3'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/oWRa/unreal-engine-blueprint-pass-by-reference-a-brief-summary'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/DBLR/unreal-engine-tech-note-errors-when-compiling-the-unreal-automation-tool-in-5-6'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/talks-and-demos/DBL1/unreal-engine-unreal-fest-2025-heads-tails-with-sequencer'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/WD6y/unreal-engine-fortnite-introduction-to-game-design-and-development'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/xBvk/unreal-engine-experimental-an-introduction-to-the-multiserver-replication-plugin'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/ywD1/unreal-engine-best-practices-for-networked-movement-abilities-cmc'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/9Xjd/unreal-engine-chaos-cloth-outfit-asset-resizing-addendum'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/a6lz/unreal-engine-chaos-destruction-optimizations'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/lydy/unreal-engine-using-chaos-callbacks-for-a-custom-gravity-system-working-with-round-worlds'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/ra15/unreal-engine-fortnite-importing-blender-grease-pencil-sketches-into-the-epic-ecosystem'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/epLR/unreal-engine-how-to-merge-a-metahuman-animator-head-onto-a-body-using-a-custom-anim-blueprint'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/GjnV/unreal-engine-epic-games-store-ecommerce'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/talks-and-demos/XYDP/unreal-engine-unreal-fest-2025-control-rig-tips-tricks-for-games'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/raPD/unreal-engine-blueprint-module-controlling-niagara-particles-part-2'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/m6JM/unreal-engine-blueprint-module-controlling-niagara-effects-part-3'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/vaEw/unreal-engine-blueprint-module-controlling-niagara-particles-part-1'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/Zmdv/unreal-engine-niagara-module-smoke-effect'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/0zRx/unreal-engine-niagara-module-fire-explosion'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/1beo/unreal-engine-5-6-behaviortree-crash-when-recompiling-bt-node-bps-during-pie'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/raKx/unreal-engine-import-customization-with-interchange'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/qBx7/unreal-engine-fortnite-nanite-compute-material-optimizations'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/raq5/materials-quality-of-life-updates-in-unreal-engine-5-6'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/knowledge-base/DB00/unreal-engine-realityscan-a-handy-workaround-for-organizing-teams-in-the-dev-portal'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/RZwB/unreal-engine-chaos-flesh-muscle-simulation-tutorial-5-6'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/talks-and-demos/wPrj/unreal-engine-fortnite-epic-secondary-educator-summit-may-17-2025'
-New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/ep4k/unreal-engine-handling-ui-navigation-with-mvvm-and-common-activatable-widgets'
+
+# foreach ($L in (cat 'dump\learning-08.11.25.txt'))
+# {
+# 	New-MakrdownLinkFromLearningUrl $L
+# }
