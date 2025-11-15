@@ -10,6 +10,7 @@ for (var i = 0; i < btns.length; ++i) {
     var btn = btns[i];  
     btn.click()
 }
+console.log('done')
 ```
 
 2. Clear console, run:

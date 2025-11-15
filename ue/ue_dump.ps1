@@ -80,7 +80,15 @@ function New-DumpInMarkdown($old, $old_version, $new, $new_version)
 	foreach ($link in $added_links)
 	{
 		$url = New-MakrdownLinkFromUrl $link
-		" * $($url)" >> $file_name
+		if ($link.Contains('/node-reference/ControlRig/') -or `
+			$link.Contains('/node-reference/Dataflow/'))
+		{
+			"    - $($url)" >> $file_name
+		}
+		else
+		{
+			" * $($url)" >> $file_name
+		}
 	}
 
 	$new_file = "ue_diff_$($old_title)_vs_$($new_title).md"
@@ -169,3 +177,7 @@ function New-DumpLearningLinksToMarkdown($links_file)
 # {
 # 	New-MakrdownLinkFromLearningUrl $L
 # }
+
+# New-DumpInMarkdown 15.11.25_ue5.4.txt '?application_version=5.4' 15.11.25_ue5.5.txt '?application_version=5.5'
+# New-DumpInMarkdown 15.11.25_ue5.5.txt '?application_version=5.5' 15.11.25_ue5.6.txt '?application_version=5.6'
+# New-DumpInMarkdown 15.11.25_ue5.6.txt '?application_version=5.6' 15.11.25_ue5.7.txt '?application_version=5.7'
