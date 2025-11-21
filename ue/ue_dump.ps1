@@ -77,19 +77,25 @@ function New-DumpInMarkdown($old, $old_version, $new, $new_version)
 
 	"## Added in $($new_title) (vs $($old_title)) = $($added_links.Count) links" >> $file_name
 	"" >> $file_name
+	$ControlRigCount = 0
+	$DataflowCount = 0
 	foreach ($link in $added_links)
 	{
 		$url = New-MakrdownLinkFromUrl $link
-		if ($link.Contains('/node-reference/ControlRig/') -or `
-			$link.Contains('/node-reference/Dataflow/'))
+		if ($link.Contains('/node-reference/ControlRig/'))
 		{
-			"    - $($url)" >> $file_name
+			$ControlRigCount += 1
+			continue
 		}
-		else
+		if ($link.Contains('/node-reference/Dataflow/'))
 		{
-			" * $($url)" >> $file_name
+			$DataflowCount += 1
+			continue
 		}
+		" * $($url)" >> $file_name
 	}
+	Write-Warning "ControlRig: $ControlRigCount"
+	Write-Warning "Dataflow: $DataflowCount"
 
 	$new_file = "ue_diff_$($old_title)_vs_$($new_title).md"
 	Get-Content $file_name | Set-Content -Encoding utf8 $new_file
