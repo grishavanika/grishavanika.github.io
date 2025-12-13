@@ -4403,19 +4403,19 @@ As of 2025/09/13 (September 13).
  * [adding a metahuman to the game animation sample project in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/adding-a-metahuman-to-the-game-animation-sample-project-in-unreal-engine?application_version=5.6)
  * [stack o bot sample game in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/stack-o-bot-sample-game-in-unreal-engine?application_version=5.6)
 
-## Removed in 5.7 (vs 5.6) = 4 links {#ue5.7-removed}
+## Removed in 5.7 (vs 5.6) = 5 links {#ue5.7-removed}
 
-As of 2025/09/13 (September 13).
+As of 2025/12/13 (December 13).
 
  * [unreal engine 5 6 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-6-release-notes?application_version=5.6)
  * [introduction to blueprints](https://dev.epicgames.com/documentation/en-us/unreal-engine/introduction-to-blueprints?application_version=5.6)
  * [combining collision effects in niagara data channels](https://dev.epicgames.com/documentation/en-us/unreal-engine/combining-collision-effects-in-niagara-data-channels?application_version=5.6)
  * [chaos destruction optimization](https://dev.epicgames.com/documentation/en-us/unreal-engine/chaos-destruction-optimization?application_version=5.6)
+ * [audioinsights](https://dev.epicgames.com/documentation/en-us/unreal-engine/audioinsights?application_version=5.6)
 
+## [Added in 5.7]{.mark} (vs 5.6) = 976 links {#ue5.7-added}
 
-## [Added in 5.7]{.mark} (vs 5.6) = 962 links {#ue5.7-added}
-
-As of 2025/09/13 (September 13).
+As of 2025/09/13 (December 13).
 
  - [Unreal Engine 5.7 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-7-documentation?application_version=5.7)
  - Unreal Engine [5.7 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/127-unreal-engine-5-7)
@@ -4426,23 +4426,37 @@ As of 2025/09/13 (September 13).
 -------------------------------------------------------
 
  * [unreal engine 5 7 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-7-release-notes?application_version=5.7)
+ * [07 adjust environment lighting features](https://dev.epicgames.com/documentation/en-us/unreal-engine/07-adjust-environment-lighting-features?application_version=5.7)
+ * [at12 adding visual effects to your game](https://dev.epicgames.com/documentation/en-us/unreal-engine/at12-adding-visual-effects-to-your-game?application_version=5.7)
+ * [first hour in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/first-hour-in-unreal-engine?application_version=5.7)
+ * [module 1 install ue and create your first project](https://dev.epicgames.com/documentation/en-us/unreal-engine/module-1-install-ue-and-create-your-first-project?application_version=5.7)
+ * [module 2 create a flashlight with enhanced input](https://dev.epicgames.com/documentation/en-us/unreal-engine/module-2-create-a-flashlight-with-enhanced-input?application_version=5.7)
+ * [module 3 create a coin pickup with modeling tools and blueprints](https://dev.epicgames.com/documentation/en-us/unreal-engine/module-3-create-a-coin-pickup-with-modeling-tools-and-blueprints?application_version=5.7)
+ * [module 4 build a hud with unreal motion graphics](https://dev.epicgames.com/documentation/en-us/unreal-engine/module-4-build-a-hud-with-unreal-motion-graphics?application_version=5.7)
+ * [module 5 create the game over screen](https://dev.epicgames.com/documentation/en-us/unreal-engine/module-5-create-the-game-over-screen?application_version=5.7)
+ * [module 6 package your project](https://dev.epicgames.com/documentation/en-us/unreal-engine/module-6-package-your-project?application_version=5.7)
  * [datasmith exporter plugin release notes for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/datasmith-exporter-plugin-release-notes-for-unreal-engine?application_version=5.7)
  * [landscape patch system](https://dev.epicgames.com/documentation/en-us/unreal-engine/landscape-patch-system?application_version=5.7)
+ * [celestial vault plugin for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/celestial-vault-plugin-for-unreal-engine?application_version=5.7)
  * [pcg editor mode in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/pcg-editor-mode-in-unreal-engine?application_version=5.7)
  * [procedural vegetation editor pve in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/procedural-vegetation-editor-pve-in-unreal-engine?application_version=5.7)
+ * [pcg runtime generation debugging in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/pcg-runtime-generation-debugging-in-unreal-engine?application_version=5.7)
+ * [ineditor testing play and simulate in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/ineditor-testing-play-and-simulate-in-unreal-engine?application_version=5.7)
  * [nanite in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-in-unreal-engine?application_version=5.7)
  * [nanite foliage](https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-foliage?application_version=5.7)
  * [nanite assemblies](https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-assemblies?application_version=5.7)
  * [programming with substrate gbuffer formats](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-with-substrate-gbuffer-formats?application_version=5.7)
  * [upgrading niagara tags in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/upgrading-niagara-tags-in-unreal-engine?application_version=5.7)
+ * [rider setup guide](https://dev.epicgames.com/documentation/en-us/unreal-engine/rider-setup-guide?application_version=5.7)
  * [scene state for unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/scene-state-for-unreal-engine?application_version=5.7)
+ * [audio insights in unreal engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/audio-insights-in-unreal-engine?application_version=5.7)
  * [composure](https://dev.epicgames.com/documentation/en-us/unreal-engine/composure?application_version=5.7)
  * [updating unreal engine on linux to sdl3](https://dev.epicgames.com/documentation/en-us/unreal-engine/updating-unreal-engine-on-linux-to-sdl3?application_version=5.7)
  * [node reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/node-reference?application_version=5.7)
  * [ControlRig](https://dev.epicgames.com/documentation/en-us/unreal-engine/node-reference/ControlRig?application_version=5.7)
     - [Absolute](https://dev.epicgames.com/documentation/en-us/unreal-engine/node-reference/ControlRig/Absolute?application_version=5.7) and 441 similar links
  * [Dataflow](https://dev.epicgames.com/documentation/en-us/unreal-engine/node-reference/Dataflow?application_version=5.7)
-    - [Abs](https://dev.epicgames.com/documentation/en-us/unreal-engine/node-reference/Dataflow/Abs?application_version=5.7) and 530 similar links
+    - [Abs](https://dev.epicgames.com/documentation/en-us/unreal-engine/node-reference/Dataflow/Abs?application_version=5.7) and 503 similar links
 
 -------------------------------------------------------
 
@@ -4450,8 +4464,25 @@ As of 2025/09/13 (September 13).
 
 From [Learn Unreal Engine](https://dev.epicgames.com/community/unreal-engine/learning?source=epic_games&sort_by=first_published_at)/Epic Games/Published On.
 
-As of 2025/11/15 = 1666 links.
+As of 2025/12/13 = 1683 links.
 
+ * |tutorials| [metahuman for mocap](https://dev.epicgames.com/community/learning/tutorials/abRR/unreal-engine-metahuman-for-mocap)
+ * |tutorials| [profiling with purpose performance lessons from a real unreal project](https://dev.epicgames.com/community/learning/tutorials/qEzo/unreal-engine-profiling-with-purpose-performance-lessons-from-a-real-unreal-project)
+ * |tutorials| [epic for indies setting up horde distribution for ci cd and more](https://dev.epicgames.com/community/learning/tutorials/ywPj/unreal-engine-epic-for-indies-setting-up-horde-distribution-for-ci-cd-and-more)
+ * |talks-and-demos| [workshop rigging in unreal engine](https://dev.epicgames.com/community/learning/talks-and-demos/jZ74/workshop-rigging-in-unreal-engine)
+ * |tutorials| [new gpu profiler and rhi submission pipeline](https://dev.epicgames.com/community/learning/tutorials/7Ox6/unreal-engine-new-gpu-profiler-and-rhi-submission-pipeline)
+ * |tutorials| [intro to the cinematic assembly tools](https://dev.epicgames.com/community/learning/tutorials/rvyd/unreal-engine-intro-to-the-cinematic-assembly-tools)
+ * |knowledge-base| [niagara data channels update new access contexts in unreal engine 5 7](https://dev.epicgames.com/community/learning/knowledge-base/6mKa/niagara-data-channels-update-new-access-contexts-in-unreal-engine-5-7)
+ * |tutorials| [creating a character navigation heatmap using render targets](https://dev.epicgames.com/community/learning/tutorials/JxeE/unreal-engine-creating-a-character-navigation-heatmap-using-render-targets)
+ * |tutorials| [rendering in layers with movie render graph](https://dev.epicgames.com/community/learning/tutorials/KWre/unreal-engine-rendering-in-layers-with-movie-render-graph)
+ * |tutorials| [live link hub tips](https://dev.epicgames.com/community/learning/tutorials/GWrj/unreal-engine-live-link-hub-tips)
+ * |tutorials| [metahuman realtime animator best practices](https://dev.epicgames.com/community/learning/tutorials/bEvv/unreal-engine-metahuman-realtime-animator-best-practices)
+ * |tutorials| [one file per actor for linear content](https://dev.epicgames.com/community/learning/tutorials/op5G/unreal-engine-one-file-per-actor-for-linear-content)
+ * |tutorials| [blueprint tutorial virtual incident light meter in unreal engine](https://dev.epicgames.com/community/learning/tutorials/Z2a2/blueprint-tutorial-virtual-incident-light-meter-in-unreal-engine)
+ * |knowledge-base| [psa unreal engine 5 7 0 greyed out cook content and package project buttons require a selected platform](https://dev.epicgames.com/community/learning/knowledge-base/jZ85/psa-unreal-engine-5-7-0-greyed-out-cook-content-and-package-project-buttons-require-a-selected-platform)
+ * |tutorials| [motion design getting started resources](https://dev.epicgames.com/community/learning/tutorials/qp2O/unreal-engine-motion-design-getting-started-resources)
+ * |tutorials| [fortnite ik retarget editor 5 6 deep dive](https://dev.epicgames.com/community/learning/tutorials/89L6/unreal-engine-fortnite-ik-retarget-editor-5-6-deep-dive)
+ * |paths| [animation hub](https://dev.epicgames.com/community/learning/paths/3K6/unreal-engine-animation-hub)
  * |tutorials| [chaos cloth updates 5 7](https://dev.epicgames.com/community/learning/tutorials/1o0R/unreal-engine-chaos-cloth-updates-5-7)
  * |talks-and-demos| [deep dive into customizations with mutable unreal fest orlando 2025](https://dev.epicgames.com/community/learning/talks-and-demos/89p6/unreal-engine-deep-dive-into-customizations-with-mutable-unreal-fest-orlando-2025)
  * |talks-and-demos| [supervised settings downloading under the hood with kws unreal fest orlando 2025](https://dev.epicgames.com/community/learning/talks-and-demos/GWqx/unreal-engine-supervised-settings-downloading-under-the-hood-with-kws-unreal-fest-orlando-2025)

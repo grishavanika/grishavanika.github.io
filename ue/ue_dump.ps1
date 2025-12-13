@@ -85,11 +85,19 @@ function New-DumpInMarkdown($old, $old_version, $new, $new_version)
 		if ($link.Contains('/node-reference/ControlRig/'))
 		{
 			$ControlRigCount += 1
+			if ($ControlRigCount -eq 1)
+			{
+				"    - $($url)" >> $file_name
+			}
 			continue
 		}
 		if ($link.Contains('/node-reference/Dataflow/'))
 		{
 			$DataflowCount += 1
+			if ($DataflowCount -eq 1)
+			{
+				"    - $($url)" >> $file_name
+			}
 			continue
 		}
 		" * $($url)" >> $file_name
@@ -179,6 +187,7 @@ function New-DumpLearningLinksToMarkdown($links_file)
 # New-DumpLearningLinksToMarkdown 04.04.25_ue_learnings.txt
 # New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/V1Y6/unreal-engine-mocap-manager-tutorial'
 
+# dump\learning-08.11.25.txt
 # foreach ($L in (cat 'dump\learning-08.11.25.txt'))
 # {
 # 	New-MakrdownLinkFromLearningUrl $L
@@ -187,3 +196,4 @@ function New-DumpLearningLinksToMarkdown($links_file)
 # New-DumpInMarkdown 15.11.25_ue5.4.txt '?application_version=5.4' 15.11.25_ue5.5.txt '?application_version=5.5'
 # New-DumpInMarkdown 15.11.25_ue5.5.txt '?application_version=5.5' 15.11.25_ue5.6.txt '?application_version=5.6'
 # New-DumpInMarkdown 15.11.25_ue5.6.txt '?application_version=5.6' 15.11.25_ue5.7.txt '?application_version=5.7'
+# New-DumpInMarkdown 15.11.25_ue5.6.txt '?application_version=5.6' 13.12.25_ue5.7.txt '?application_version=5.7'
