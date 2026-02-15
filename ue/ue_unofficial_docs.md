@@ -4278,10 +4278,11 @@ As of 2025/09/13 (September 13).
 
  - [Unreal Engine 5.6 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-6-documentation?application_version=5.6)
  - Unreal Engine [5.6 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/124-unreal-engine-5-6)
- - Unreal Engine [5.6.0 Preview 1 forum thread](https://forums.unrealengine.com/t/unreal-engine-5-6-preview/2508377) release notes
  - Unreal Engine [5.6 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-6-release-notes) (most detailed)
  - Unreal Engine [5.6 blog post](https://www.unrealengine.com/en-US/news/unreal-engine-5-6-is-now-available)
+ - Unreal Engine [5.6.0 Preview 1 forum thread](https://forums.unrealengine.com/t/unreal-engine-5-6-preview/2508377) release notes
  - Unreal Engine [5.6 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-6-released/2538952)
+ - Unreal Engine [5.6.1 forum thread](https://forums.unrealengine.com/t/5-6-1-hotfix-released/2639316) release notes
 
 -------------------------------------------------------
 
@@ -4421,7 +4422,11 @@ As of 2025/09/13 (December 13).
  - Unreal Engine [5.7 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/127-unreal-engine-5-7)
  - Unreal Engine [5.7 release notes](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-7-release-notes?application_version=5.7) (most detailed)
  - Unreal Engine [5.7 blog post](https://www.unrealengine.com/en-US/news/unreal-engine-5-7-is-now-available)
+ - Unreal Engine [5.7.0 Preview 1 forum thread](https://forums.unrealengine.com/t/unreal-engine-5-7-preview/2658958) release notes
  - Unreal Engine [5.7 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-7-released/2673913)
+ - Unreal Engine [5.7.1 forum thread](https://forums.unrealengine.com/t/5-7-1-hotfix-released/2681235) release notes
+ - Unreal Engine [5.7.2 forum thread](https://forums.unrealengine.com/t/5-7-2-hotfix-released/2693914) release notes
+ - Unreal Engine [5.7.3 forum thread](https://forums.unrealengine.com/t/5-7-3-hotfix-released/2698765) release notes
 
 -------------------------------------------------------
 
