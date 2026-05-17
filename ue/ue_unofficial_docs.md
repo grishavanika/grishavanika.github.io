@@ -4416,7 +4416,7 @@ As of 2025/12/13 (December 13).
 
 ## [Added in 5.7]{.mark} (vs 5.6) = 976 links {#ue5.7-added}
 
-As of 2025/09/13 (December 13).
+As of 2026/05/17 (May 17).
 
  - [Unreal Engine 5.7 Documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-7-documentation?application_version=5.7)
  - Unreal Engine [5.7 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/127-unreal-engine-5-7)
@@ -4427,6 +4427,7 @@ As of 2025/09/13 (December 13).
  - Unreal Engine [5.7.1 forum thread](https://forums.unrealengine.com/t/5-7-1-hotfix-released/2681235) release notes
  - Unreal Engine [5.7.2 forum thread](https://forums.unrealengine.com/t/5-7-2-hotfix-released/2693914) release notes
  - Unreal Engine [5.7.3 forum thread](https://forums.unrealengine.com/t/5-7-3-hotfix-released/2698765) release notes
+ - Unreal Engine [5.7.4 forum thread](https://forums.unrealengine.com/t/5-7-4-hotfix-released/2705041) release notes
 
 -------------------------------------------------------
 
@@ -4469,8 +4470,64 @@ As of 2025/09/13 (December 13).
 
 From [Learn Unreal Engine](https://dev.epicgames.com/community/unreal-engine/learning?source=epic_games&sort_by=first_published_at)/Epic Games/Published On.
 
-As of 2026/02/14 = 1724 links.
+As of 2026/05/17 (May 17) = 1779 links.
 
+ * |tutorials| [spectralight qc light booth plugin bringing classified lighting into unreal](https://dev.epicgames.com/community/learning/tutorials/abVl/unreal-engine-spectralight-qc-light-booth-plugin-bringing-classified-lighting-into-unreal)
+ * |knowledge-base| [blendable gbuffer bsdf](https://dev.epicgames.com/community/learning/knowledge-base/x1x1/unreal-engine-blendable-gbuffer-bsdf)
+ * |knowledge-base| [iris netserializers](https://dev.epicgames.com/community/learning/knowledge-base/L0ob/unreal-engine-iris-netserializers)
+ * |knowledge-base| [pcg blueprint elements in 5 7](https://dev.epicgames.com/community/learning/knowledge-base/l574/unreal-engine-pcg-blueprint-elements-in-5-7)
+ * |tutorials| [epic online services best practices tips tricks](https://dev.epicgames.com/community/learning/tutorials/kqx8/unreal-engine-epic-online-services-best-practices-tips-tricks)
+ * |tutorials| [using the x rite colorchecker classic in unreal validating light and color](https://dev.epicgames.com/community/learning/tutorials/b2Xn/unreal-engine-using-the-x-rite-colorchecker-classic-in-unreal-validating-light-and-color)
+ * |tutorials| [performance tuning for unreal engine mobile development](https://dev.epicgames.com/community/learning/tutorials/X7Me/performance-tuning-for-unreal-engine-mobile-development)
+ * |knowledge-base| [introduction to mesh terrain](https://dev.epicgames.com/community/learning/knowledge-base/nK7J/unreal-engine-introduction-to-mesh-terrain)
+ * |tutorials| [aftermath gpu crash debugging workflow](https://dev.epicgames.com/community/learning/tutorials/44oG/unreal-engine-aftermath-gpu-crash-debugging-workflow)
+ * |talks-and-demos| [the artistic and technical approach to lighting in fortnite battle royale](https://dev.epicgames.com/community/learning/talks-and-demos/L026/unreal-engine-the-artistic-and-technical-approach-to-lighting-in-fortnite-battle-royale)
+ * |talks-and-demos| [wingstar a bold leap into animating within unreal engine](https://dev.epicgames.com/community/learning/talks-and-demos/nKae/wingstar-a-bold-leap-into-animating-within-unreal-engine)
+ * |talks-and-demos| [upin ipin go global crafting an open world ue5 game from southeast asia](https://dev.epicgames.com/community/learning/talks-and-demos/6vOa/unreal-engine-upin-ipin-go-global-crafting-an-open-world-ue5-game-from-southeast-asia)
+ * |talks-and-demos| [unreal in the cloud building massively multiplayer browser experiences with xsolla metasites](https://dev.epicgames.com/community/learning/talks-and-demos/39lm/unreal-engine-unreal-in-the-cloud-building-massively-multiplayer-browser-experiences-with-xsolla-metasites)
+ * |talks-and-demos| [unlocking creative storytelling through cutting edge technology](https://dev.epicgames.com/community/learning/talks-and-demos/8G8D/unreal-engine-unlocking-creative-storytelling-through-cutting-edge-technology)
+ * |talks-and-demos| [unity to unreal engine transition workflows for mobile development](https://dev.epicgames.com/community/learning/talks-and-demos/GY2V/unity-to-unreal-engine-transition-workflows-for-mobile-development)
+ * |talks-and-demos| [ue5 graphics deep insights from japan](https://dev.epicgames.com/community/learning/talks-and-demos/Oxd0/unreal-engine-ue5-graphics-deep-insights-from-japan)
+ * |talks-and-demos| [tools frameworks and insights into rapid ui iteration](https://dev.epicgames.com/community/learning/talks-and-demos/v7qR/unreal-engine-tools-frameworks-and-insights-into-rapid-ui-iteration)
+ * |talks-and-demos| [to hell and back going rogue in unreal engine](https://dev.epicgames.com/community/learning/talks-and-demos/Ev24/to-hell-and-back-going-rogue-in-unreal-engine)
+ * |talks-and-demos| [tips and tricks for cloth dynamics](https://dev.epicgames.com/community/learning/talks-and-demos/l5kz/unreal-engine-tips-and-tricks-for-cloth-dynamics)
+ * |talks-and-demos| [the future of previz collaborative filmmaking in unreal engine](https://dev.epicgames.com/community/learning/talks-and-demos/9835/the-future-of-previz-collaborative-filmmaking-in-unreal-engine)
+ * |talks-and-demos| [the fast and the curious advanced materials for motion design](https://dev.epicgames.com/community/learning/talks-and-demos/Kx2d/unreal-engine-the-fast-and-the-curious-advanced-materials-for-motion-design)
+ * |talks-and-demos| [technical pre production fundamentals for unreal engine projects](https://dev.epicgames.com/community/learning/talks-and-demos/5EvK/technical-pre-production-fundamentals-for-unreal-engine-projects)
+ * |talks-and-demos| [supporting mods and ugc in your unreal engine game](https://dev.epicgames.com/community/learning/talks-and-demos/qEd7/supporting-mods-and-ugc-in-your-unreal-engine-game)
+ * |talks-and-demos| [smart ant building ai behavior with state tree and smart objects](https://dev.epicgames.com/community/learning/talks-and-demos/DEVE/unreal-engine-smart-ant-building-ai-behavior-with-state-tree-and-smart-objects)
+ * |talks-and-demos| [rolling shore waves in 2xko s scuttler s strand](https://dev.epicgames.com/community/learning/talks-and-demos/1mKo/unreal-engine-rolling-shore-waves-in-2xko-s-scuttler-s-strand)
+ * |talks-and-demos| [pushing visual boundaries without breaking the bank](https://dev.epicgames.com/community/learning/talks-and-demos/o92W/unreal-engine-pushing-visual-boundaries-without-breaking-the-bank)
+ * |talks-and-demos| [procedural roads and buildings in pcg](https://dev.epicgames.com/community/learning/talks-and-demos/7OGd/unreal-engine-procedural-roads-and-buildings-in-pcg)
+ * |talks-and-demos| [optimizing pre production to prevent costly pipelines](https://dev.epicgames.com/community/learning/talks-and-demos/Yowb/unreal-engine-optimizing-pre-production-to-prevent-costly-pipelines)
+ * |talks-and-demos| [network prediction replication s crystal ball](https://dev.epicgames.com/community/learning/talks-and-demos/rv7K/unreal-engine-network-prediction-replication-s-crystal-ball)
+ * |talks-and-demos| [megascans vegetation what s new and what s coming soon](https://dev.epicgames.com/community/learning/talks-and-demos/jDz5/unreal-engine-megascans-vegetation-what-s-new-and-what-s-coming-soon)
+ * |talks-and-demos| [mastering performance analysis with unreal insights](https://dev.epicgames.com/community/learning/talks-and-demos/bEka/unreal-engine-mastering-performance-analysis-with-unreal-insights)
+ * |talks-and-demos| [lighting in ue5 scaling for quality performance](https://dev.epicgames.com/community/learning/talks-and-demos/alkD/unreal-engine-lighting-in-ue5-scaling-for-quality-performance)
+ * |talks-and-demos| [leveraging pcg for building and city creation](https://dev.epicgames.com/community/learning/talks-and-demos/Z1wa/unreal-engine-leveraging-pcg-for-building-and-city-creation)
+ * |talks-and-demos| [levelling up advanced perforce techniques for unreal engine projects and teams](https://dev.epicgames.com/community/learning/talks-and-demos/dOja/levelling-up-advanced-perforce-techniques-for-unreal-engine-projects-and-teams)
+ * |talks-and-demos| [learning to walk run and deliver our journey from 5 0 to 5 5 and beyond](https://dev.epicgames.com/community/learning/talks-and-demos/Jx2b/unreal-engine-learning-to-walk-run-and-deliver-our-journey-from-5-0-to-5-5-and-beyond)
+ * |talks-and-demos| [introduction to horde a technical primer](https://dev.epicgames.com/community/learning/talks-and-demos/pYJ0/unreal-engine-introduction-to-horde-a-technical-primer)
+ * |talks-and-demos| [inside project titan making an open world game with 4 000 people](https://dev.epicgames.com/community/learning/talks-and-demos/eGkJ/unreal-engine-inside-project-titan-making-an-open-world-game-with-4-000-people)
+ * |talks-and-demos| [how to create grooms for metahumans](https://dev.epicgames.com/community/learning/talks-and-demos/PewW/unreal-engine-how-to-create-grooms-for-metahumans)
+ * |talks-and-demos| [horde on a budget cost effective infrastructure for small teams](https://dev.epicgames.com/community/learning/talks-and-demos/Vxeq/unreal-engine-horde-on-a-budget-cost-effective-infrastructure-for-small-teams)
+ * |talks-and-demos| [exploring substrate materials basic to advanced techniques](https://dev.epicgames.com/community/learning/talks-and-demos/zqpW/unreal-engine-exploring-substrate-materials-basic-to-advanced-techniques)
+ * |talks-and-demos| [enhanced validation lessons from a custom aaa implementation](https://dev.epicgames.com/community/learning/talks-and-demos/2Kqx/unreal-engine-enhanced-validation-lessons-from-a-custom-aaa-implementation)
+ * |talks-and-demos| [embracing motion matching using a little to get a lot](https://dev.epicgames.com/community/learning/talks-and-demos/WbKG/unreal-engine-embracing-motion-matching-using-a-little-to-get-a-lot)
+ * |talks-and-demos| [dealing with localized keywords in card games](https://dev.epicgames.com/community/learning/talks-and-demos/051w/unreal-engine-dealing-with-localized-keywords-in-card-games)
+ * |talks-and-demos| [customize anything embracing mutable](https://dev.epicgames.com/community/learning/talks-and-demos/M48M/unreal-engine-customize-anything-embracing-mutable)
+ * |talks-and-demos| [creating performant metahuman characters in unreal engine](https://dev.epicgames.com/community/learning/talks-and-demos/4lmj/creating-performant-metahuman-characters-in-unreal-engine)
+ * |talks-and-demos| [carving reality from chainsaws to digital landscapes](https://dev.epicgames.com/community/learning/talks-and-demos/X79P/unreal-engine-carving-reality-from-chainsaws-to-digital-landscapes)
+ * |talks-and-demos| [building real time cinematics at m2 animation](https://dev.epicgames.com/community/learning/talks-and-demos/woL7/unreal-engine-building-real-time-cinematics-at-m2-animation)
+ * |talks-and-demos| [bringing unreal engine into a classic cg pipeline with python](https://dev.epicgames.com/community/learning/talks-and-demos/x1wb/bringing-unreal-engine-into-a-classic-cg-pipeline-with-python)
+ * |talks-and-demos| [breaking and fixing unreal an engineer s guide to problem solving](https://dev.epicgames.com/community/learning/talks-and-demos/Rx1X/unreal-engine-breaking-and-fixing-unreal-an-engineer-s-guide-to-problem-solving)
+ * |talks-and-demos| [beyond scalability multi platform insights from japan](https://dev.epicgames.com/community/learning/talks-and-demos/kqzK/unreal-engine-beyond-scalability-multi-platform-insights-from-japan)
+ * |talks-and-demos| [animation editing in unreal engine](https://dev.epicgames.com/community/learning/talks-and-demos/yDLB/animation-editing-in-unreal-engine)
+ * |talks-and-demos| [animation authoring in unreal engine](https://dev.epicgames.com/community/learning/talks-and-demos/B9YO/animation-authoring-in-unreal-engine)
+ * |talks-and-demos| [5 minute operations to improve your ui](https://dev.epicgames.com/community/learning/talks-and-demos/nKRe/unreal-engine-5-minute-operations-to-improve-your-ui)
+ * |talks-and-demos| [2025 tech designers toolkit](https://dev.epicgames.com/community/learning/talks-and-demos/6v9a/unreal-engine-2025-tech-designers-toolkit)
+ * |talks-and-demos| [lessons from a plugin developer how to extend ue when you re not epic](https://dev.epicgames.com/community/learning/talks-and-demos/395m/unreal-engine-lessons-from-a-plugin-developer-how-to-extend-ue-when-you-re-not-epic)
+ * |tutorials| [rendering setting for automotive substrate materials](https://dev.epicgames.com/community/learning/tutorials/L07n/unreal-engine-rendering-setting-for-automotive-substrate-materials)
  * |courses| [odyssey 2d animation in unreal engine](https://dev.epicgames.com/community/learning/courses/zrG/odyssey-2d-animation-in-unreal-engine)
  * |talks-and-demos| [odyssey 2d animation in unreal engine day 5](https://dev.epicgames.com/community/learning/talks-and-demos/GYOq/odyssey-2d-animation-in-unreal-engine-day-5)
  * |talks-and-demos| [odyssey 2d animation in unreal engine day 4](https://dev.epicgames.com/community/learning/talks-and-demos/Ox1l/odyssey-2d-animation-in-unreal-engine-day-4)
