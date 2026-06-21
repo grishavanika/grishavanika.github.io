@@ -52,28 +52,83 @@ function New-DumpInMarkdown($old, $old_version, $new, $new_version)
 {
 	$old_title = $old_version.Substring($old_version.IndexOf('=') + 1)
 	$new_title = $new_version.Substring($new_version.IndexOf('=') + 1)
+
 	$links_old=cat $old
+	$has_enus_old = $False
+	foreach ($link in $links_old)
+	{
+		if ($link.Contains("/en-us/"))
+		{
+			$has_enus_old = $True
+			break
+		}
+	}
 	$links_old=$links_old | % {$_.Replace($old_version, "")}
+	$links_old=$links_old | % {$_.Replace("/en-us/", "/")}
+
 	$links_new=cat $new
+	$has_enus_new = $False
+	foreach ($link in $links_new)
+	{
+		if ($link.Contains("/en-us/"))
+		{
+			$has_enus_new = $True
+			break
+		}
+	}
 	$links_new=$links_new | % {$_.Replace($new_version, "")}
+	$links_new=$links_new | % {$_.Replace("/en-us/", "/")}
+
 	$diff = Compare-Object -ReferenceObject $links_old -DifferenceObject $links_new
 	$removed_links=@($diff | Where {$_.SideIndicator -eq '<='})
 	$added_links=@($diff | Where {$_.SideIndicator -eq '=>'})
-	$removed_links = $removed_links | % {$_.InputObject + $old_version}
-	$added_links = $added_links | % {$_.InputObject + $new_version}
 
+	$removed_links = $removed_links | % {$_.InputObject + $old_version}
+	if ($has_enus_old)
+	{
+		Write-Warning "Old: re-add /en-us/"
+		$removed_links=$removed_links | % {$_.Replace("/documentation/unreal-engine/", "/documentation/en-us/unreal-engine/")}
+	}
+	$added_links = $added_links | % {$_.InputObject + $new_version}
+	if ($has_enus_new)
+	{
+		Write-Warning "New: re-add /en-us/"
+		$added_links=$added_links | % {$_.Replace("/documentation/unreal-engine/", "/documentation/en-us/unreal-engine/")}
+	}
 	$file_name = "utf16-ue_diff_$($old_title)_vs_$($new_title).md"
 
 	"## Removed in $($new_title) (vs $($old_title)) = $($removed_links.Count) links" > $file_name
 	"" >> $file_name
+	$ControlRigCount_Removed = 0
+	$DataflowCount_Removed = 0
 	foreach ($link in $removed_links)
 	{
 		$url = New-MakrdownLinkFromUrl $link
+		if ($link.Contains('/node-reference/ControlRig/'))
+		{
+			$ControlRigCount_Removed += 1
+			if ($ControlRigCount_Removed -eq 1)
+			{
+				"    - $($url)" >> $file_name
+			}
+			continue
+		}
+		if ($link.Contains('/node-reference/Dataflow/'))
+		{
+			$DataflowCount_Removed += 1
+			if ($DataflowCount_Removed -eq 1)
+			{
+				"    - $($url)" >> $file_name
+			}
+			continue
+		}
 		" * $($url)" >> $file_name
 	}
 	"" >> $file_name
 	"" >> $file_name
 
+	Write-Warning "ControlRig_Removed: $ControlRigCount_Removed"
+	Write-Warning "Dataflow_Removed: $DataflowCount_Removed"
 
 	"## Added in $($new_title) (vs $($old_title)) = $($added_links.Count) links" >> $file_name
 	"" >> $file_name
@@ -187,7 +242,7 @@ function New-DumpLearningLinksToMarkdown($links_file)
 # New-DumpLearningLinksToMarkdown 04.04.25_ue_learnings.txt
 # New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/V1Y6/unreal-engine-mocap-manager-tutorial'
 
-# foreach ($L in (cat 'dev.epicgames.com-1779021851327.log'))
+# foreach ($L in (cat 'dev.epicgames.com-1782031690024.log'))
 # {
 # 	New-MakrdownLinkFromLearningUrl $L
 # }
@@ -196,3 +251,4 @@ function New-DumpLearningLinksToMarkdown($links_file)
 # New-DumpInMarkdown 15.11.25_ue5.5.txt '?application_version=5.5' 15.11.25_ue5.6.txt '?application_version=5.6'
 # New-DumpInMarkdown 15.11.25_ue5.6.txt '?application_version=5.6' 15.11.25_ue5.7.txt '?application_version=5.7'
 # New-DumpInMarkdown 15.11.25_ue5.6.txt '?application_version=5.6' 13.12.25_ue5.7.txt '?application_version=5.7'
+# New-DumpInMarkdown '15.11.25_ue5.7.txt' '?application_version=5.7' '21.06.25_ue5.8.txt' '?application_version=5.8'
