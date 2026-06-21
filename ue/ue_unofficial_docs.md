@@ -4543,7 +4543,7 @@ As of 2026/06/21 (June 21).
 
  - [Unreal Engine 5.8 Documentation](https://dev.epicgames.com/documentation/unreal-engine/unreal-engine-5-8-documentation?application_version=5.8)
  - Unreal Engine [5.8 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/129-unreal-engine-5-8)
- - Unreal Engine [5.8 release notes]( * [unreal engine 5 8 release notes](https://dev.epicgames.com/documentation/unreal-engine/unreal-engine-5-8-release-notes?application_version=5.8) (most detailed)
+ - Unreal Engine [5.8 release notes](https://dev.epicgames.com/documentation/unreal-engine/unreal-engine-5-8-release-notes?application_version=5.8) (most detailed)
  - Unreal Engine [5.8 blog post](https://www.unrealengine.com/news/unreal-engine-5-8-is-now-available)
  - Unreal Engine [5.8.0 Preview 1 forum thread](https://forums.unrealengine.com/t/unreal-engine-5-8-preview/2721597) release notes
  - Unreal Engine [5.8 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-8-released/2729274)
