@@ -242,7 +242,7 @@ function New-DumpLearningLinksToMarkdown($links_file)
 # New-DumpLearningLinksToMarkdown 04.04.25_ue_learnings.txt
 # New-MakrdownLinkFromLearningUrl 'https://dev.epicgames.com/community/learning/tutorials/V1Y6/unreal-engine-mocap-manager-tutorial'
 
-# foreach ($L in (cat 'dev.epicgames.com-1782031690024.log'))
+# foreach ($L in (cat 'C:\Users\ID33774\Downloads\dev.epicgames.com-1788255890731.log'))
 # {
 # 	New-MakrdownLinkFromLearningUrl $L
 # }

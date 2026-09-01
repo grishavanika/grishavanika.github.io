@@ -4539,7 +4539,7 @@ As of 2026/05/17 (May 17).
 
 ## [Added in 5.8]{.mark} (vs 5.7) = 255 links {#ue5.8-added}
 
-As of 2026/06/21 (June 21).
+As of 2026/09/01 (September 01).
 
  - [Unreal Engine 5.8 Documentation](https://dev.epicgames.com/documentation/unreal-engine/unreal-engine-5-8-documentation?application_version=5.8)
  - Unreal Engine [5.8 Public Roadmap](https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/tabs/129-unreal-engine-5-8)
@@ -4547,6 +4547,8 @@ As of 2026/06/21 (June 21).
  - Unreal Engine [5.8 blog post](https://www.unrealengine.com/news/unreal-engine-5-8-is-now-available)
  - Unreal Engine [5.8.0 Preview 1 forum thread](https://forums.unrealengine.com/t/unreal-engine-5-8-preview/2721597) release notes
  - Unreal Engine [5.8 annoucement](https://forums.unrealengine.com/t/unreal-engine-5-8-released/2729274)
+ - Unreal Engine [5.8.1 forum thread](https://forums.unrealengine.com/t/5-8-1-hotfix-released/2738864) release notes
+ - Unreal Engine [5.8.2 forum thread](https://forums.unrealengine.com/t/5-8-2-hotfix-released/2746335) release notes
 
 -------------------------------------------------------
 
@@ -4631,6 +4633,29 @@ As of 2026/06/21 (June 21).
  * [windows arm64 support in unreal engine 5 8](https://dev.epicgames.com/documentation/unreal-engine/windows-arm64-support-in-unreal-engine-5-8?application_version=5.8)
  * [microsoft gdk plugins for unreal engine](https://dev.epicgames.com/documentation/unreal-engine/microsoft-gdk-plugins-for-unreal-engine?application_version=5.8)
  * [epic staffcreated resources for unreal engine](https://dev.epicgames.com/documentation/unreal-engine/epic-staffcreated-resources-for-unreal-engine?application_version=5.8)
+ * [semantic search in unreal enigne](https://dev.epicgames.com/documentation/unreal-engine/semantic-search-in-unreal-enigne?application_version=5.8)
+ * [procedural vegetation editor in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/procedural-vegetation-editor-in-unreal-engine?application_version=5.8)
+ * [shader library selection for apple in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/shader-library-selection-for-apple-in-unreal-engine?application_version=5.8)
+ * [xrite axf as substrate materials in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/xrite-axf-as-substrate-materials-in-unreal-engine?application_version=5.8)
+ * [working with pcg and llms using unreal mcp in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/working-with-pcg-and-llms-using-unreal-mcp-in-unreal-engine?application_version=5.8)
+ * [profiling ios projects with platformnative tools](https://dev.epicgames.com/documentation/unreal-engine/profiling-ios-projects-with-platformnative-tools?application_version=5.8)
+ * [cptake reference in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/cptake-reference-in-unreal-engine?application_version=5.8)
+ * [python scripting for capture manager in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/python-scripting-for-capture-manager-in-unreal-engine?application_version=5.8)
+ * [time warp track in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/time-warp-track-in-unreal-engine?application_version=5.8)
+ * [getting started with audio insights in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/getting-started-with-audio-insights-in-unreal-engine?application_version=5.8)
+ * [connecting to builds in audio insights in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/connecting-to-builds-in-audio-insights-in-unreal-engine?application_version=5.8)
+ * [audio insights controls and event log in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/audio-insights-controls-and-event-log-in-unreal-engine?application_version=5.8)
+ * [sounds virtual loops and plots in audio insights in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/sounds-virtual-loops-and-plots-in-audio-insights-in-unreal-engine?application_version=5.8)
+ * [routing mixing in metering with audio insights in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/routing-mixing-in-metering-with-audio-insights-in-unreal-engine?application_version=5.8)
+ * [analyzers and output metering in audio insights in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/analyzers-and-output-metering-in-audio-insights-in-unreal-engine?application_version=5.8)
+ * [modulation in audio insights in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/modulation-in-audio-insights-in-unreal-engine?application_version=5.8)
+ * [metasound templates quick start in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/metasound-templates-quick-start-in-unreal-engine?application_version=5.8)
+ * [anc timecode in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/anc-timecode-in-unreal-engine?application_version=5.8)
+ * [smpte 2110 on unreal engine for linux](https://dev.epicgames.com/documentation/unreal-engine/smpte-2110-on-unreal-engine-for-linux?application_version=5.8)
+ * [remote windows deployment in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/remote-windows-deployment-in-unreal-engine?application_version=5.8)
+ * [cplusplus cooking development reference](https://dev.epicgames.com/documentation/unreal-engine/cplusplus-cooking-development-reference?application_version=5.8)
+ * [city sample pcg for unreal engine](https://dev.epicgames.com/documentation/unreal-engine/city-sample-pcg-for-unreal-engine?application_version=5.8)
+ * [city sample pcg and mcp server interaction in unreal engine](https://dev.epicgames.com/documentation/unreal-engine/city-sample-pcg-and-mcp-server-interaction-in-unreal-engine?application_version=5.8)
  * [ControlRig](https://dev.epicgames.com/documentation/unreal-engine/node-reference/ControlRig?application_version=5.8)
     - [AbsoluteTime](https://dev.epicgames.com/documentation/unreal-engine/node-reference/ControlRig/AbsoluteTime?application_version=5.8) and 56 similar links
  * [Dataflow](https://dev.epicgames.com/documentation/unreal-engine/node-reference/Dataflow?application_version=5.8)
@@ -4642,8 +4667,38 @@ As of 2026/06/21 (June 21).
 
 From [Learn Unreal Engine](https://dev.epicgames.com/community/unreal-engine/learning?source=epic_games&sort_by=first_published_at)/Epic Games/Published On.
 
-As of 2026/06/21 (June 21) = 1819 links.
+As of 2026/09/01 (September 02) = 1849 links.
 
+ * |tutorials| [markerless mocap with metahumans](https://dev.epicgames.com/community/learning/tutorials/317o/unreal-engine-markerless-mocap-with-metahumans)
+ * |knowledge-base| [tech note fix for crash on linux with licensed vulkan drivers due to openssl abi mismatch](https://dev.epicgames.com/community/learning/knowledge-base/RxpX/unreal-engine-tech-note-fix-for-crash-on-linux-with-licensed-vulkan-drivers-due-to-openssl-abi-mismatch)
+ * |tutorials| [dataflow variables](https://dev.epicgames.com/community/learning/tutorials/9805/unreal-engine-dataflow-variables)
+ * |tutorials| [accumulation depth of field plugin deep dive](https://dev.epicgames.com/community/learning/tutorials/v5yb/unreal-engine-accumulation-depth-of-field-plugin-deep-dive)
+ * |tutorials| [profiling unreal engine on mobile with platform native tools](https://dev.epicgames.com/community/learning/tutorials/q7zK/profiling-unreal-engine-on-mobile-with-platform-native-tools)
+ * |paths| [rigging with unreal engine](https://dev.epicgames.com/community/learning/paths/nLa/rigging-with-unreal-engine)
+ * |tutorials| [networked physics fundamentals](https://dev.epicgames.com/community/learning/tutorials/5E4w/unreal-engine-networked-physics-fundamentals)
+ * |knowledge-base| [tech note critical bug when creating subsequent releases](https://dev.epicgames.com/community/learning/knowledge-base/PemG/unreal-engine-tech-note-critical-bug-when-creating-subsequent-releases)
+ * |tutorials| [mutable merging skeletal meshes](https://dev.epicgames.com/community/learning/tutorials/VxO6/unreal-engine-mutable-merging-skeletal-meshes)
+ * |tutorials| [mutable simple customizable object](https://dev.epicgames.com/community/learning/tutorials/WbGX/unreal-engine-mutable-simple-customizable-object)
+ * |tutorials| [profiling with pirates performance plundered from a real game](https://dev.epicgames.com/community/learning/tutorials/pYx6/unreal-engine-profiling-with-pirates-performance-plundered-from-a-real-game)
+ * |paths| [animation essentials](https://dev.epicgames.com/community/learning/paths/5ep/unreal-engine-animation-essentials)
+ * |courses| [motion design dynamic content creation](https://dev.epicgames.com/community/learning/courses/OAy/unreal-engine-motion-design-dynamic-content-creation)
+ * |courses| [motion design materials and compositional lighting](https://dev.epicgames.com/community/learning/courses/vZO/unreal-engine-motion-design-materials-and-compositional-lighting)
+ * |courses| [motion design introduction](https://dev.epicgames.com/community/learning/courses/GnO/unreal-engine-motion-design-introduction)
+ * |courses| [control rig modular rigging](https://dev.epicgames.com/community/learning/courses/b0y/unreal-engine-control-rig-modular-rigging)
+ * |courses| [control rig biped spine and reverse foot](https://dev.epicgames.com/community/learning/courses/eNm/unreal-engine-control-rig-biped-spine-and-reverse-foot)
+ * |courses| [animation mixer in sequencer deep dive](https://dev.epicgames.com/community/learning/courses/Jo9/unreal-engine-animation-mixer-in-sequencer-deep-dive)
+ * |tutorials| [animation mixer in sequencer gameplay transitions](https://dev.epicgames.com/community/learning/tutorials/rvXw/unreal-engine-animation-mixer-in-sequencer-gameplay-transitions)
+ * |tutorials| [animation mixer in sequencer intro](https://dev.epicgames.com/community/learning/tutorials/jDne/unreal-engine-animation-mixer-in-sequencer-intro)
+ * |tutorials| [animation mixer in sequencer motion editing](https://dev.epicgames.com/community/learning/tutorials/bEly/unreal-engine-animation-mixer-in-sequencer-motion-editing)
+ * |courses| [control rig biped ik fk limb setup](https://dev.epicgames.com/community/learning/courses/qve/unreal-engine-control-rig-biped-ik-fk-limb-setup)
+ * |courses| [skeleton creation and body rigging](https://dev.epicgames.com/community/learning/courses/Q04/unreal-engine-skeleton-creation-and-body-rigging)
+ * |courses| [introduction for gameplay animation](https://dev.epicgames.com/community/learning/courses/AbW/unreal-engine-introduction-for-gameplay-animation)
+ * |courses| [sequencer introduction for linear content](https://dev.epicgames.com/community/learning/courses/Mzd/unreal-engine-sequencer-introduction-for-linear-content)
+ * |courses| [quickstart sequencer shot creation](https://dev.epicgames.com/community/learning/courses/yZ0/unreal-engine-quickstart-sequencer-shot-creation)
+ * |courses| [transitioning from legacy production to unreal engine](https://dev.epicgames.com/community/learning/courses/xEA/transitioning-from-legacy-production-to-unreal-engine)
+ * |tutorials| [performance capture with metahumans recommended workflow tutorial](https://dev.epicgames.com/community/learning/tutorials/Jxwz/unreal-engine-performance-capture-with-metahumans-recommended-workflow-tutorial)
+ * |knowledge-base| [tech note various issues with posesearchcolumn in choosers in 5 8](https://dev.epicgames.com/community/learning/knowledge-base/WbdK/unreal-engine-tech-note-various-issues-with-posesearchcolumn-in-choosers-in-5-8)
+ * |knowledge-base| [tech note behaviour change with root motion and notify generation in sequencer in 5 8](https://dev.epicgames.com/community/learning/knowledge-base/05dx/unreal-engine-tech-note-behaviour-change-with-root-motion-and-notify-generation-in-sequencer-in-5-8)
  * |tutorials| [metahuman optimizing next gen features for mobile game development](https://dev.epicgames.com/community/learning/tutorials/eGEV/unreal-engine-metahuman-optimizing-next-gen-features-for-mobile-game-development)
  * |knowledge-base| [project health in unreal engine the technical indicators that matter](https://dev.epicgames.com/community/learning/knowledge-base/l5de/project-health-in-unreal-engine-the-technical-indicators-that-matter)
  * |tutorials| [dataflow templates](https://dev.epicgames.com/community/learning/tutorials/bEMy/unreal-engine-dataflow-templates)
