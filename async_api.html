@@ -353,6 +353,10 @@ class="toc-section-number">14.3</span> # tasks for Fibers</a></li>
 id="toc-cancellable-fiber-task-with-a-generic-callback"><span
 class="toc-section-number">14.4</span> # cancellable Fiber task with a
 generic callback</a></li>
+<li><a href="#basic-fiberpool" id="toc-basic-fiberpool"><span
+class="toc-section-number">14.5</span> # basic FiberPool</a></li>
+<li><a href="#fibertask" id="toc-fibertask"><span
+class="toc-section-number">14.6</span> # FiberTask</a></li>
 </ul></li>
 <li><a href="#fibers-win32-app_fibers"
 id="toc-fibers-win32-app_fibers"><span
@@ -2238,6 +2242,440 @@ printed:</p>
 fiber1
 main2
 main3</code></pre>
+<h2 data-number="14.5" id="basic-fiberpool"><span
+class="header-section-number">14.5</span> <a href="#basic-fiberpool">#
+</a>basic FiberPool</h2>
+<p>CODE: CH0x_fiber_task</p>
+<p>The idea is simple: fiber task can be small and short-lived, there is
+no point allocating (and dealocating) a system Fiber every time task is
+created. Hence, we preallocate a pool of N (=128) system Fibers that are
+always alive and reuse them. That means:</p>
+<ul>
+<li>there can be up to N Fiber(s) alive; and</li>
+<li>all system resources are allocated once and never released</li>
+</ul>
+<p><code>FiberPool</code> interface may look like this:</p>
+<div class="sourceCode" id="cb94"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb94-1"><a href="#cb94-1" aria-label="1"></a><span class="kw">struct</span> FiberPool</span>
+<span id="cb94-2"><a href="#cb94-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb94-3"><a href="#cb94-3" aria-label="3"></a>    <span class="kw">using</span> Handle <span class="op">=</span> <span class="bu">std::</span>size_t<span class="op">;</span></span>
+<span id="cb94-4"><a href="#cb94-4" aria-label="4"></a>    <span class="kw">explicit</span> FiberPool<span class="op">(</span><span class="bu">std::</span>size_t size<span class="op">)</span> <span class="kw">noexcept</span></span>
+<span id="cb94-5"><a href="#cb94-5" aria-label="5"></a></span>
+<span id="cb94-6"><a href="#cb94-6" aria-label="6"></a>    Handle allocate<span class="op">(</span>FiberCallbackBase<span class="op">&amp;</span> callback<span class="op">);</span></span>
+<span id="cb94-7"><a href="#cb94-7" aria-label="7"></a>    <span class="dt">void</span> free<span class="op">(</span>Handle handle<span class="op">);</span></span>
+<span id="cb94-8"><a href="#cb94-8" aria-label="8"></a></span>
+<span id="cb94-9"><a href="#cb94-9" aria-label="9"></a>    <span class="dt">void</span> suspend<span class="op">(</span>Handle handle<span class="op">);</span></span>
+<span id="cb94-10"><a href="#cb94-10" aria-label="10"></a>    <span class="dt">void</span> resume<span class="op">(</span>Handle handle<span class="op">);</span></span>
+<span id="cb94-11"><a href="#cb94-11" aria-label="11"></a>    <span class="dt">bool</span> is_busy<span class="op">(</span>Handle handle<span class="op">)</span> <span class="at">const</span><span class="op">;</span></span>
+<span id="cb94-12"><a href="#cb94-12" aria-label="12"></a></span>
+<span id="cb94-13"><a href="#cb94-13" aria-label="13"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb94-14"><a href="#cb94-14" aria-label="14"></a>    <span class="bu">std::</span>unique_ptr<span class="op">&lt;</span>Fiber<span class="op">[]&gt;</span> _fibers<span class="op">;</span></span>
+<span id="cb94-15"><a href="#cb94-15" aria-label="15"></a>    <span class="bu">std::</span>size_t _size <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb94-16"><a href="#cb94-16" aria-label="16"></a><span class="op">};</span></span></code></pre></div>
+<p>where <code>Fiber</code> instance is hidden from a user and exposed
+only with a <code>Handle</code>. So we can manage an array of fixed size
+internally:</p>
+<div class="sourceCode" id="cb95"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb95-1"><a href="#cb95-1" aria-label="1"></a><span class="kw">explicit</span> FiberPool<span class="op">::</span>FiberPool<span class="op">(</span><span class="bu">std::</span>size_t size<span class="op">)</span> <span class="kw">noexcept</span></span>
+<span id="cb95-2"><a href="#cb95-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb95-3"><a href="#cb95-3" aria-label="3"></a>    <span class="ot">assert</span><span class="op">(</span>size <span class="op">&gt;</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb95-4"><a href="#cb95-4" aria-label="4"></a>    _fibers<span class="op">.</span>reset<span class="op">(</span><span class="kw">new</span><span class="op">(</span><span class="bu">std::</span>nothrow<span class="op">)</span> Fiber<span class="op">[</span>size<span class="op">]);</span></span>
+<span id="cb95-5"><a href="#cb95-5" aria-label="5"></a>    <span class="ot">assert</span><span class="op">(</span>_fibers<span class="op">.</span>get<span class="op">());</span></span>
+<span id="cb95-6"><a href="#cb95-6" aria-label="6"></a>    _size <span class="op">=</span> size<span class="op">;</span></span>
+<span id="cb95-7"><a href="#cb95-7" aria-label="7"></a><span class="op">}</span></span></code></pre></div>
+<p>To create a Fiber is to invoke an <code>allocate()</code>. Note, we
+go as dumb and as simple as possible - doing linear search to find first
+free Fiber. It all could be made better, having basic freelist allocator
+for indices as one way to go about it:</p>
+<div class="sourceCode" id="cb96"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb96-1"><a href="#cb96-1" aria-label="1"></a>Handle FiberPool<span class="op">::</span>allocate<span class="op">(</span>FiberCallbackBase<span class="op">&amp;</span> callback<span class="op">)</span></span>
+<span id="cb96-2"><a href="#cb96-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb96-3"><a href="#cb96-3" aria-label="3"></a>    <span class="kw">auto</span> find_first_free_handle <span class="op">=</span> <span class="op">[</span><span class="kw">this</span><span class="op">]()</span></span>
+<span id="cb96-4"><a href="#cb96-4" aria-label="4"></a>    <span class="op">{</span></span>
+<span id="cb96-5"><a href="#cb96-5" aria-label="5"></a>        <span class="cf">for</span> <span class="op">(</span><span class="bu">std::</span>size_t i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> _size<span class="op">;</span> <span class="op">++</span>i<span class="op">)</span></span>
+<span id="cb96-6"><a href="#cb96-6" aria-label="6"></a>        <span class="op">{</span></span>
+<span id="cb96-7"><a href="#cb96-7" aria-label="7"></a>            <span class="cf">if</span> <span class="op">(</span>_fibers<span class="op">[</span>i<span class="op">].</span>_callback <span class="op">==</span> <span class="kw">nullptr</span><span class="op">)</span></span>
+<span id="cb96-8"><a href="#cb96-8" aria-label="8"></a>            <span class="op">{</span></span>
+<span id="cb96-9"><a href="#cb96-9" aria-label="9"></a>                <span class="cf">return</span> Handle<span class="op">(</span>i<span class="op">);</span></span>
+<span id="cb96-10"><a href="#cb96-10" aria-label="10"></a>            <span class="op">}</span></span>
+<span id="cb96-11"><a href="#cb96-11" aria-label="11"></a>        <span class="op">}</span></span>
+<span id="cb96-12"><a href="#cb96-12" aria-label="12"></a>        <span class="ot">assert</span><span class="op">(</span><span class="kw">false</span><span class="op">);</span></span>
+<span id="cb96-13"><a href="#cb96-13" aria-label="13"></a>        <span class="cf">return</span> Handle<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb96-14"><a href="#cb96-14" aria-label="14"></a>    <span class="op">};</span></span>
+<span id="cb96-15"><a href="#cb96-15" aria-label="15"></a>    <span class="at">const</span> Handle handle <span class="op">=</span> find_first_free_handle<span class="op">();</span></span>
+<span id="cb96-16"><a href="#cb96-16" aria-label="16"></a>    Fiber<span class="op">&amp;</span> fiber <span class="op">=</span> _fibers<span class="op">[</span>handle<span class="op">];</span></span>
+<span id="cb96-17"><a href="#cb96-17" aria-label="17"></a>    fiber<span class="op">.</span>set_callback<span class="op">(</span>callback<span class="op">);</span></span>
+<span id="cb96-18"><a href="#cb96-18" aria-label="18"></a>    <span class="cf">return</span> handle<span class="op">;</span></span>
+<span id="cb96-19"><a href="#cb96-19" aria-label="19"></a><span class="op">}</span></span></code></pre></div>
+<p><code>FiberPool::free()</code> is, basically, no-op. We asset
+<code>Fiber</code> returned is in “complete” state - finished
+execution:</p>
+<div class="sourceCode" id="cb97"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb97-1"><a href="#cb97-1" aria-label="1"></a><span class="dt">void</span> FiberPool<span class="op">::</span>free<span class="op">(</span>Handle handle<span class="op">)</span></span>
+<span id="cb97-2"><a href="#cb97-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb97-3"><a href="#cb97-3" aria-label="3"></a>    <span class="ot">assert</span><span class="op">(</span>handle <span class="op">&lt;</span> _size<span class="op">);</span></span>
+<span id="cb97-4"><a href="#cb97-4" aria-label="4"></a>    <span class="ot">assert</span><span class="op">(</span>_fibers<span class="op">[</span>handle<span class="op">].</span>_callback <span class="op">==</span> <span class="kw">nullptr</span><span class="op">);</span></span>
+<span id="cb97-5"><a href="#cb97-5" aria-label="5"></a><span class="op">}</span></span></code></pre></div>
+<p>Next, <code>suspend()</code>, resume() and is_busy() are just a
+wrappers around Fiber API, but for a <code>Handle</code>:</p>
+<div class="sourceCode" id="cb98"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb98-1"><a href="#cb98-1" aria-label="1"></a><span class="dt">void</span> FiberPool<span class="op">::</span>suspend<span class="op">(</span>Handle handle<span class="op">)</span></span>
+<span id="cb98-2"><a href="#cb98-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb98-3"><a href="#cb98-3" aria-label="3"></a>    <span class="ot">assert</span><span class="op">(</span>handle <span class="op">&lt;</span> _size<span class="op">);</span></span>
+<span id="cb98-4"><a href="#cb98-4" aria-label="4"></a>    _fibers<span class="op">[</span>handle<span class="op">].</span>suspend<span class="op">();</span></span>
+<span id="cb98-5"><a href="#cb98-5" aria-label="5"></a><span class="op">}</span></span></code></pre></div>
+<p>With all this, our previous example running fiber task becomes:</p>
+<div class="sourceCode" id="cb99"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb99-1"><a href="#cb99-1" aria-label="1"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb99-2"><a href="#cb99-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb99-3"><a href="#cb99-3" aria-label="3"></a>    Fiber<span class="op">::</span>Boot _<span class="op">;</span></span>
+<span id="cb99-4"><a href="#cb99-4" aria-label="4"></a>    FiberPool fiber_pool<span class="op">{</span><span class="dv">128</span><span class="op">};</span></span>
+<span id="cb99-5"><a href="#cb99-5" aria-label="5"></a></span>
+<span id="cb99-6"><a href="#cb99-6" aria-label="6"></a>    MyFiberTask task<span class="op">;</span></span>
+<span id="cb99-7"><a href="#cb99-7" aria-label="7"></a>    FiberPool<span class="op">::</span>Handle fiber <span class="op">=</span> fiber_pool<span class="op">.</span>allocate<span class="op">(</span>task<span class="op">);</span></span>
+<span id="cb99-8"><a href="#cb99-8" aria-label="8"></a>    fiber_pool<span class="op">.</span>resume<span class="op">(</span>fiber<span class="op">);</span></span>
+<span id="cb99-9"><a href="#cb99-9" aria-label="9"></a>    fiber_pool<span class="op">.</span>free<span class="op">(</span>fiber<span class="op">);</span></span>
+<span id="cb99-10"><a href="#cb99-10" aria-label="10"></a><span class="op">}</span></span></code></pre></div>
+<p>Now, lets get rid of manually created MyFiberTask and make
+<code>FiberTask&lt;T&gt;</code> possible.</p>
+<h2 data-number="14.6" id="fibertask"><span
+class="header-section-number">14.6</span> <a href="#fibertask">#
+</a>FiberTask</h2>
+<p>CODE: CH0x_fiber_task</p>
+<p>We’d like to be able to write something like this:</p>
+<div class="sourceCode" id="cb100"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb100-1"><a href="#cb100-1" aria-label="1"></a><span class="dt">int</span> MyFiber<span class="op">()</span></span>
+<span id="cb100-2"><a href="#cb100-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb100-3"><a href="#cb100-3" aria-label="3"></a>    this_fiber<span class="op">::</span>suspend<span class="op">();</span></span>
+<span id="cb100-4"><a href="#cb100-4" aria-label="4"></a>    <span class="cf">return</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb100-5"><a href="#cb100-5" aria-label="5"></a><span class="op">}</span></span>
+<span id="cb100-6"><a href="#cb100-6" aria-label="6"></a></span>
+<span id="cb100-7"><a href="#cb100-7" aria-label="7"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb100-8"><a href="#cb100-8" aria-label="8"></a><span class="op">{</span></span>
+<span id="cb100-9"><a href="#cb100-9" aria-label="9"></a>    FiberTaskScheduler scheduler<span class="op">;</span></span>
+<span id="cb100-10"><a href="#cb100-10" aria-label="10"></a>    FiberTask<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> task <span class="op">=</span> FF_async<span class="op">(</span>scheduler<span class="op">,</span> <span class="op">[]</span> <span class="op">{</span> <span class="cf">return</span> MyFiber<span class="op">();</span> <span class="op">});</span></span>
+<span id="cb100-11"><a href="#cb100-11" aria-label="11"></a>    <span class="co">// ...</span></span>
+<span id="cb100-12"><a href="#cb100-12" aria-label="12"></a>    <span class="co">// scheduler.schedule();</span></span>
+<span id="cb100-13"><a href="#cb100-13" aria-label="13"></a><span class="op">}</span></span></code></pre></div>
+<p>There are several moving parts:</p>
+<ol type="1">
+<li>we need type-erased implementation of FiberTask that can consume any
+user-defined lambda/callback, work with any return type <code>T</code>;
+and</li>
+<li>we need a scheduler that knows how to drive tasks/fibers
+execution</li>
+</ol>
+<p><code>FiberTask&lt;T&gt;</code> allocates a Fiber, runs a given
+callable/lambda and stores the result. Given FiberTask can be destroyed
+by a user any time, the way we handle this is to ensure that actual
+FiberTask state is owned by <code>FiberTaskScheduler</code>: if
+FiberTask is destroyed while still running, we cancel <code>Fiber</code>
+and free it later, once the execution is done.</p>
+<p>Interestingly, there could be up to N active Fibers (FiberPool
+capacity), but FiberTasks count owned by a user can be larger. Consider
+next code:</p>
+<div class="sourceCode" id="cb101"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb101-1"><a href="#cb101-1" aria-label="1"></a>FiberTask<span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span> <span class="va">m_tasks</span><span class="op">[</span>N<span class="op">];</span></span>
+<span id="cb101-2"><a href="#cb101-2" aria-label="2"></a><span class="cf">for</span> <span class="op">(...)</span> <span class="op">{</span> <span class="va">m_tasks</span><span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> FF_async<span class="op">(...)</span> <span class="op">}</span></span>
+<span id="cb101-3"><a href="#cb101-3" aria-label="3"></a><span class="co">// N Fiber tasks completes</span></span>
+<span id="cb101-4"><a href="#cb101-4" aria-label="4"></a><span class="co">// </span></span>
+<span id="cb101-5"><a href="#cb101-5" aria-label="5"></a><span class="co">// User still owns N m_tasks and may query</span></span>
+<span id="cb101-6"><a href="#cb101-6" aria-label="6"></a><span class="co">// the status and result - any time later.</span></span></code></pre></div>
+<p>Going with more optimized implementation, we could:</p>
+<ul>
+<li>preallocate N system Fibers</li>
+<li>preallocate a memory for up to M (&gt;=N) fiber Tasks</li>
+<li>each fiber Task could be limited in size (let 256 bytes); and</li>
+<li>each Task could free Fiber as soon as task ends</li>
+</ul>
+<p>i.e., Fiber and Task lifetime could be different and everything is
+preallocated; meaning no allocations at runtime.</p>
+<p>For simpler implementation, we (a) bind Fiber lifetime to a Task
+lifetime: Fiber is released only when Task is destroyed; and (b) Task
+allocates on creation, going with more standard code for type-erased
+implementation.</p>
+<p>With this in mind, we start with FiberTask_Any:</p>
+<div class="sourceCode" id="cb102"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb102-1"><a href="#cb102-1" aria-label="1"></a><span class="kw">struct</span> FiberTask_Any <span class="op">:</span> <span class="kw">public</span> FiberCallbackBase</span>
+<span id="cb102-2"><a href="#cb102-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb102-3"><a href="#cb102-3" aria-label="3"></a>    <span class="kw">explicit</span> FiberTask_Any<span class="op">(</span>FiberPool<span class="op">&amp;</span> fiber_pool<span class="op">);</span></span>
+<span id="cb102-4"><a href="#cb102-4" aria-label="4"></a>    <span class="kw">virtual</span> <span class="op">~</span>FiberTask_Any<span class="op">()</span> <span class="kw">noexcept</span><span class="op">;</span></span>
+<span id="cb102-5"><a href="#cb102-5" aria-label="5"></a></span>
+<span id="cb102-6"><a href="#cb102-6" aria-label="6"></a>    <span class="dt">bool</span> is_completed<span class="op">()</span> <span class="at">const</span><span class="op">;</span></span>
+<span id="cb102-7"><a href="#cb102-7" aria-label="7"></a>    <span class="dt">void</span> execute<span class="op">();</span></span>
+<span id="cb102-8"><a href="#cb102-8" aria-label="8"></a>    <span class="dt">void</span> cancel<span class="op">();</span></span>
+<span id="cb102-9"><a href="#cb102-9" aria-label="9"></a></span>
+<span id="cb102-10"><a href="#cb102-10" aria-label="10"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb102-11"><a href="#cb102-11" aria-label="11"></a>    <span class="kw">virtual</span> <span class="dt">void</span> do_resume<span class="op">()</span> <span class="kw">override</span><span class="op">;</span></span>
+<span id="cb102-12"><a href="#cb102-12" aria-label="12"></a></span>
+<span id="cb102-13"><a href="#cb102-13" aria-label="13"></a><span class="kw">protected</span><span class="op">:</span></span>
+<span id="cb102-14"><a href="#cb102-14" aria-label="14"></a>    FiberPool<span class="op">&amp;</span> _fiber_pool<span class="op">;</span></span>
+<span id="cb102-15"><a href="#cb102-15" aria-label="15"></a>    FiberPool<span class="op">::</span>Handle _fiber<span class="op">;</span></span>
+<span id="cb102-16"><a href="#cb102-16" aria-label="16"></a>    <span class="dt">bool</span> _cancelled <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb102-17"><a href="#cb102-17" aria-label="17"></a><span class="op">};</span></span></code></pre></div>
+<p>that implements FiberCallbackBase interface and can be cancelled, but
+knows nothing on how to store the result of execution:</p>
+<div class="sourceCode" id="cb103"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb103-1"><a href="#cb103-1" aria-label="1"></a>FiberTask_Any<span class="op">::</span>FiberTask_Any<span class="op">(</span>FiberPool<span class="op">&amp;</span> fiber_pool<span class="op">)</span></span>
+<span id="cb103-2"><a href="#cb103-2" aria-label="2"></a>    <span class="op">:</span> _fiber_pool<span class="op">(</span>fiber_pool<span class="op">)</span></span>
+<span id="cb103-3"><a href="#cb103-3" aria-label="3"></a>    <span class="op">,</span> _fiber<span class="op">(</span>fiber_pool<span class="op">.</span>allocate<span class="op">(*</span><span class="kw">this</span><span class="op">))</span></span>
+<span id="cb103-4"><a href="#cb103-4" aria-label="4"></a><span class="op">{</span></span>
+<span id="cb103-5"><a href="#cb103-5" aria-label="5"></a><span class="op">}</span></span>
+<span id="cb103-6"><a href="#cb103-6" aria-label="6"></a>FiberTask_Any<span class="op">::~</span>FiberTask_Any<span class="op">()</span> <span class="kw">noexcept</span></span>
+<span id="cb103-7"><a href="#cb103-7" aria-label="7"></a><span class="op">{</span></span>
+<span id="cb103-8"><a href="#cb103-8" aria-label="8"></a>    <span class="ot">assert</span><span class="op">(</span>is_completed<span class="op">());</span></span>
+<span id="cb103-9"><a href="#cb103-9" aria-label="9"></a>    _fiber_pool<span class="op">.</span>free<span class="op">(</span>_fiber<span class="op">);</span></span>
+<span id="cb103-10"><a href="#cb103-10" aria-label="10"></a><span class="op">}</span></span></code></pre></div>
+<p>For cancellation, we throw an exception when Fiber is resumed:</p>
+<div class="sourceCode" id="cb104"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb104-1"><a href="#cb104-1" aria-label="1"></a><span class="kw">class</span> Exception_FiberTaskCancelled <span class="op">:</span> <span class="kw">public</span> <span class="bu">std::</span>exception</span>
+<span id="cb104-2"><a href="#cb104-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb104-3"><a href="#cb104-3" aria-label="3"></a><span class="op">};</span></span>
+<span id="cb104-4"><a href="#cb104-4" aria-label="4"></a></span>
+<span id="cb104-5"><a href="#cb104-5" aria-label="5"></a><span class="dt">void</span> FiberTask_Any<span class="op">::</span>cancel<span class="op">()</span></span>
+<span id="cb104-6"><a href="#cb104-6" aria-label="6"></a><span class="op">{</span></span>
+<span id="cb104-7"><a href="#cb104-7" aria-label="7"></a>    <span class="ot">assert</span><span class="op">(</span>_cancelled <span class="op">==</span> <span class="kw">false</span><span class="op">);</span></span>
+<span id="cb104-8"><a href="#cb104-8" aria-label="8"></a>    _cancelled <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb104-9"><a href="#cb104-9" aria-label="9"></a><span class="op">}</span></span>
+<span id="cb104-10"><a href="#cb104-10" aria-label="10"></a></span>
+<span id="cb104-11"><a href="#cb104-11" aria-label="11"></a><span class="dt">void</span> FiberTask_Any<span class="op">::</span>do_resume<span class="op">()</span></span>
+<span id="cb104-12"><a href="#cb104-12" aria-label="12"></a><span class="op">{</span></span>
+<span id="cb104-13"><a href="#cb104-13" aria-label="13"></a>    <span class="cf">if</span> <span class="op">(</span>_cancelled<span class="op">)</span></span>
+<span id="cb104-14"><a href="#cb104-14" aria-label="14"></a>    <span class="op">{</span></span>
+<span id="cb104-15"><a href="#cb104-15" aria-label="15"></a>        _cancelled <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb104-16"><a href="#cb104-16" aria-label="16"></a>        <span class="cf">throw</span> Exception_FiberTaskCancelled<span class="op">{};</span></span>
+<span id="cb104-17"><a href="#cb104-17" aria-label="17"></a>    <span class="op">}</span></span>
+<span id="cb104-18"><a href="#cb104-18" aria-label="18"></a><span class="op">}</span></span></code></pre></div>
+<p>To execute task is to resume a Fiber:</p>
+<div class="sourceCode" id="cb105"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb105-1"><a href="#cb105-1" aria-label="1"></a><span class="dt">void</span> FiberTask_Any<span class="op">::</span>execute<span class="op">()</span></span>
+<span id="cb105-2"><a href="#cb105-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb105-3"><a href="#cb105-3" aria-label="3"></a>    <span class="ot">assert</span><span class="op">(</span>is_completed<span class="op">()</span> <span class="op">==</span> <span class="kw">false</span><span class="op">);</span></span>
+<span id="cb105-4"><a href="#cb105-4" aria-label="4"></a>    _fiber_pool<span class="op">.</span>resume<span class="op">(</span>_fiber<span class="op">);</span></span>
+<span id="cb105-5"><a href="#cb105-5" aria-label="5"></a><span class="op">}</span></span></code></pre></div>
+<p>Finally, <code>is_completed()</code> check looks for a Fiber that
+ended the execution and/or has an exception thrown:</p>
+<div class="sourceCode" id="cb106"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb106-1"><a href="#cb106-1" aria-label="1"></a><span class="dt">bool</span> FiberTask_Any<span class="op">::</span>is_completed<span class="op">()</span> <span class="at">const</span></span>
+<span id="cb106-2"><a href="#cb106-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb106-3"><a href="#cb106-3" aria-label="3"></a>    <span class="cf">try</span></span>
+<span id="cb106-4"><a href="#cb106-4" aria-label="4"></a>    <span class="op">{</span></span>
+<span id="cb106-5"><a href="#cb106-5" aria-label="5"></a>        <span class="cf">return</span> <span class="op">(</span>_fiber_pool<span class="op">.</span>is_busy<span class="op">(</span>_fiber<span class="op">)</span> <span class="op">==</span> <span class="kw">false</span><span class="op">);</span></span>
+<span id="cb106-6"><a href="#cb106-6" aria-label="6"></a>    <span class="op">}</span></span>
+<span id="cb106-7"><a href="#cb106-7" aria-label="7"></a>    <span class="cf">catch</span> <span class="op">(...)</span></span>
+<span id="cb106-8"><a href="#cb106-8" aria-label="8"></a>    <span class="op">{</span></span>
+<span id="cb106-9"><a href="#cb106-9" aria-label="9"></a>    <span class="op">}</span></span>
+<span id="cb106-10"><a href="#cb106-10" aria-label="10"></a>    <span class="cf">return</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb106-11"><a href="#cb106-11" aria-label="11"></a><span class="op">}</span></span></code></pre></div>
+<p>To handle void and non-void return types, we introduce
+FiberTask_WithResult:</p>
+<div class="sourceCode" id="cb107"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb107-1"><a href="#cb107-1" aria-label="1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> R<span class="op">&gt;</span></span>
+<span id="cb107-2"><a href="#cb107-2" aria-label="2"></a><span class="kw">struct</span> FiberTask_WithResult <span class="op">:</span> <span class="kw">public</span> FiberTask_Any</span>
+<span id="cb107-3"><a href="#cb107-3" aria-label="3"></a><span class="op">{</span></span>
+<span id="cb107-4"><a href="#cb107-4" aria-label="4"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb107-5"><a href="#cb107-5" aria-label="5"></a>    <span class="kw">using</span> FiberTask_Any<span class="op">::</span>FiberTask_Any<span class="op">;</span></span>
+<span id="cb107-6"><a href="#cb107-6" aria-label="6"></a>    <span class="at">const</span> R<span class="op">&amp;</span> get<span class="op">()</span> <span class="at">const</span><span class="op">;</span></span>
+<span id="cb107-7"><a href="#cb107-7" aria-label="7"></a>    R<span class="op">&amp;&amp;</span> get_once<span class="op">()</span></span>
+<span id="cb107-8"><a href="#cb107-8" aria-label="8"></a>    <span class="op">{</span></span>
+<span id="cb107-9"><a href="#cb107-9" aria-label="9"></a>        <span class="at">const</span> R<span class="op">&amp;</span> r <span class="op">=</span> <span class="kw">static_cast</span><span class="op">&lt;</span><span class="at">const</span> FiberTask_WithResult<span class="op">&amp;&gt;(*</span><span class="kw">this</span><span class="op">).</span>get<span class="op">();</span></span>
+<span id="cb107-10"><a href="#cb107-10" aria-label="10"></a>        <span class="cf">return</span> <span class="bu">std::</span>move<span class="op">(</span><span class="kw">const_cast</span><span class="op">&lt;</span>R<span class="op">&amp;&gt;(</span>r<span class="op">));</span></span>
+<span id="cb107-11"><a href="#cb107-11" aria-label="11"></a>    <span class="op">}</span></span>
+<span id="cb107-12"><a href="#cb107-12" aria-label="12"></a><span class="kw">protected</span><span class="op">:</span></span>
+<span id="cb107-13"><a href="#cb107-13" aria-label="13"></a>    <span class="co">// In case return type is not DefaultConstructiable.</span></span>
+<span id="cb107-14"><a href="#cb107-14" aria-label="14"></a>    <span class="bu">std::</span>variant<span class="op">&lt;</span><span class="bu">std::</span>monostate<span class="op">,</span> R<span class="op">&gt;</span> _storage<span class="op">;</span></span>
+<span id="cb107-15"><a href="#cb107-15" aria-label="15"></a><span class="op">};</span></span>
+<span id="cb107-16"><a href="#cb107-16" aria-label="16"></a></span>
+<span id="cb107-17"><a href="#cb107-17" aria-label="17"></a><span class="kw">template</span><span class="op">&lt;&gt;</span></span>
+<span id="cb107-18"><a href="#cb107-18" aria-label="18"></a><span class="kw">struct</span> FiberTask_WithResult<span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span> <span class="op">:</span> <span class="kw">public</span> FiberTask_Any</span>
+<span id="cb107-19"><a href="#cb107-19" aria-label="19"></a><span class="op">{</span></span>
+<span id="cb107-20"><a href="#cb107-20" aria-label="20"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb107-21"><a href="#cb107-21" aria-label="21"></a>    <span class="kw">using</span> FiberTask_Any<span class="op">::</span>FiberTask_Any<span class="op">;</span></span>
+<span id="cb107-22"><a href="#cb107-22" aria-label="22"></a>    <span class="dt">void</span> get<span class="op">()</span> <span class="at">const</span><span class="op">;</span></span>
+<span id="cb107-23"><a href="#cb107-23" aria-label="23"></a>    <span class="dt">void</span> get_once<span class="op">()</span></span>
+<span id="cb107-24"><a href="#cb107-24" aria-label="24"></a>    <span class="op">{</span></span>
+<span id="cb107-25"><a href="#cb107-25" aria-label="25"></a>        <span class="cf">return</span> <span class="kw">static_cast</span><span class="op">&lt;</span><span class="at">const</span> FiberTask_WithResult<span class="op">&amp;&gt;(*</span><span class="kw">this</span><span class="op">).</span>get<span class="op">();</span></span>
+<span id="cb107-26"><a href="#cb107-26" aria-label="26"></a>    <span class="op">}</span></span>
+<span id="cb107-27"><a href="#cb107-27" aria-label="27"></a><span class="op">};</span></span></code></pre></div>
+<p>where non-void FiberTask places the result in the
+<code>_storage</code> data member. <code>get_once()</code> is just a
+<code>get()</code> that give rvalue reference back so it could be moved
+from. <code>get()</code> implementation is just:</p>
+<div class="sourceCode" id="cb108"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb108-1"><a href="#cb108-1" aria-label="1"></a><span class="at">const</span> R<span class="op">&amp;</span> get<span class="op">()</span> <span class="at">const</span></span>
+<span id="cb108-2"><a href="#cb108-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb108-3"><a href="#cb108-3" aria-label="3"></a>    <span class="co">// Populate exception, if any.</span></span>
+<span id="cb108-4"><a href="#cb108-4" aria-label="4"></a>    <span class="at">const</span> <span class="dt">bool</span> running <span class="op">=</span> _fiber_pool<span class="op">.</span>is_busy<span class="op">(</span>_fiber<span class="op">);</span></span>
+<span id="cb108-5"><a href="#cb108-5" aria-label="5"></a>    <span class="ot">assert</span><span class="op">(</span>running <span class="op">==</span> <span class="kw">false</span><span class="op">);</span></span>
+<span id="cb108-6"><a href="#cb108-6" aria-label="6"></a>    <span class="ot">assert</span><span class="op">(</span>_storage<span class="op">.</span>index<span class="op">()</span> <span class="op">==</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb108-7"><a href="#cb108-7" aria-label="7"></a>    <span class="cf">return</span> <span class="bu">std::</span>get<span class="op">&lt;</span><span class="dv">1</span><span class="op">&gt;(</span>_storage<span class="op">);</span></span>
+<span id="cb108-8"><a href="#cb108-8" aria-label="8"></a><span class="op">}</span></span></code></pre></div>
+<p>Note how we must check Fiber’s <code>is_busy()</code> to populate any
+exception to the user if something was throws during Fiber
+execution.</p>
+<p>Finally, to run a lambda, we go with FiberTask_Callable:</p>
+<div class="sourceCode" id="cb109"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb109-1"><a href="#cb109-1" aria-label="1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> R<span class="op">,</span> <span class="kw">typename</span> C<span class="op">&gt;</span></span>
+<span id="cb109-2"><a href="#cb109-2" aria-label="2"></a><span class="kw">struct</span> FiberTask_Callable <span class="op">:</span> <span class="kw">public</span> FiberTask_WithResult<span class="op">&lt;</span>R<span class="op">&gt;</span></span>
+<span id="cb109-3"><a href="#cb109-3" aria-label="3"></a><span class="op">{</span></span>
+<span id="cb109-4"><a href="#cb109-4" aria-label="4"></a>    <span class="kw">using</span> Base <span class="op">=</span> FiberTask_WithResult<span class="op">&lt;</span>R<span class="op">&gt;;</span></span>
+<span id="cb109-5"><a href="#cb109-5" aria-label="5"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb109-6"><a href="#cb109-6" aria-label="6"></a>    <span class="kw">explicit</span> FiberTask_Callable<span class="op">(</span>C<span class="op">&amp;&amp;</span> callable<span class="op">,</span> FiberPool<span class="op">&amp;</span> fiber_pool<span class="op">)</span></span>
+<span id="cb109-7"><a href="#cb109-7" aria-label="7"></a>        <span class="op">:</span> Base<span class="op">(</span>fiber_pool<span class="op">)</span></span>
+<span id="cb109-8"><a href="#cb109-8" aria-label="8"></a>        <span class="op">,</span> _callable<span class="op">(</span><span class="bu">std::</span>move<span class="op">(</span>callable<span class="op">))</span></span>
+<span id="cb109-9"><a href="#cb109-9" aria-label="9"></a>    <span class="op">{</span></span>
+<span id="cb109-10"><a href="#cb109-10" aria-label="10"></a>    <span class="op">}</span></span>
+<span id="cb109-11"><a href="#cb109-11" aria-label="11"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb109-12"><a href="#cb109-12" aria-label="12"></a>    <span class="kw">virtual</span> <span class="dt">void</span> do_run<span class="op">()</span> <span class="kw">override</span></span>
+<span id="cb109-13"><a href="#cb109-13" aria-label="13"></a>    <span class="op">{</span></span>
+<span id="cb109-14"><a href="#cb109-14" aria-label="14"></a>        <span class="cf">if</span> <span class="kw">constexpr</span> <span class="op">(</span><span class="bu">std::</span>is_same_v<span class="op">&lt;</span><span class="dt">void</span><span class="op">,</span> R<span class="op">&gt;)</span></span>
+<span id="cb109-15"><a href="#cb109-15" aria-label="15"></a>        <span class="op">{</span></span>
+<span id="cb109-16"><a href="#cb109-16" aria-label="16"></a>            _callable<span class="op">();</span></span>
+<span id="cb109-17"><a href="#cb109-17" aria-label="17"></a>        <span class="op">}</span></span>
+<span id="cb109-18"><a href="#cb109-18" aria-label="18"></a>        <span class="cf">else</span></span>
+<span id="cb109-19"><a href="#cb109-19" aria-label="19"></a>        <span class="op">{</span></span>
+<span id="cb109-20"><a href="#cb109-20" aria-label="20"></a>            <span class="kw">this</span><span class="op">-&gt;</span>_storage<span class="op">.</span><span class="kw">template</span> emplace<span class="op">&lt;</span><span class="dv">1</span><span class="op">&gt;(</span>_callable<span class="op">());</span></span>
+<span id="cb109-21"><a href="#cb109-21" aria-label="21"></a>        <span class="op">}</span></span>
+<span id="cb109-22"><a href="#cb109-22" aria-label="22"></a>    <span class="op">}</span></span>
+<span id="cb109-23"><a href="#cb109-23" aria-label="23"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb109-24"><a href="#cb109-24" aria-label="24"></a>    C _callable<span class="op">;</span></span>
+<span id="cb109-25"><a href="#cb109-25" aria-label="25"></a><span class="op">};</span></span></code></pre></div>
+<p>FiberTask_Callable is what’s going to be allocated on every
+<code>FF_async()</code> call that creates a
+<code>FiberTask&lt;T&gt;</code>:</p>
+<div class="sourceCode" id="cb110"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb110-1"><a href="#cb110-1" aria-label="1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> R<span class="op">&gt;</span></span>
+<span id="cb110-2"><a href="#cb110-2" aria-label="2"></a><span class="kw">struct</span> FiberTask</span>
+<span id="cb110-3"><a href="#cb110-3" aria-label="3"></a><span class="op">{</span></span>
+<span id="cb110-4"><a href="#cb110-4" aria-label="4"></a>    <span class="kw">using</span> Task <span class="op">=</span> FiberTask_WithResult<span class="op">&lt;</span>R<span class="op">&gt;;</span></span>
+<span id="cb110-5"><a href="#cb110-5" aria-label="5"></a></span>
+<span id="cb110-6"><a href="#cb110-6" aria-label="6"></a>    <span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> C<span class="op">&gt;</span></span>
+<span id="cb110-7"><a href="#cb110-7" aria-label="7"></a>    <span class="kw">explicit</span> FiberTask<span class="op">(</span>C<span class="op">&amp;&amp;</span> callable<span class="op">,</span> FiberTaskScheduler<span class="op">&amp;</span> scheduler<span class="op">)</span> <span class="kw">noexcept</span></span>
+<span id="cb110-8"><a href="#cb110-8" aria-label="8"></a>        <span class="op">:</span> _scheduler<span class="op">(&amp;</span>scheduler<span class="op">)</span></span>
+<span id="cb110-9"><a href="#cb110-9" aria-label="9"></a>    <span class="op">{</span></span>
+<span id="cb110-10"><a href="#cb110-10" aria-label="10"></a>        <span class="kw">using</span> TaskCallable <span class="op">=</span> FiberTask_Callable<span class="op">&lt;</span>R<span class="op">,</span> <span class="bu">std::</span>remove_cvref_t<span class="op">&lt;</span>C<span class="op">&gt;&gt;;</span></span>
+<span id="cb110-11"><a href="#cb110-11" aria-label="11"></a>        TaskCallable<span class="op">*</span> task <span class="op">=</span> <span class="kw">new</span><span class="op">(</span><span class="bu">std::</span>nothrow<span class="op">)</span> TaskCallable<span class="op">(</span><span class="bu">std::</span>forward<span class="op">&lt;</span>C<span class="op">&gt;(</span>callable<span class="op">),</span> scheduler<span class="op">.</span>_fiber_pool<span class="op">);</span></span>
+<span id="cb110-12"><a href="#cb110-12" aria-label="12"></a>        <span class="ot">assert</span><span class="op">(</span>task<span class="op">);</span></span>
+<span id="cb110-13"><a href="#cb110-13" aria-label="13"></a>        scheduler<span class="op">.</span>add_fiber_task<span class="op">(</span><span class="bu">std::</span>unique_ptr<span class="op">&lt;</span>FiberTask_Any<span class="op">&gt;(</span>task<span class="op">));</span></span>
+<span id="cb110-14"><a href="#cb110-14" aria-label="14"></a>        _task <span class="op">=</span> task<span class="op">;</span></span>
+<span id="cb110-15"><a href="#cb110-15" aria-label="15"></a>    <span class="op">}</span></span>
+<span id="cb110-16"><a href="#cb110-16" aria-label="16"></a>    <span class="op">~</span>FiberTask<span class="op">()</span> <span class="kw">noexcept</span></span>
+<span id="cb110-17"><a href="#cb110-17" aria-label="17"></a>    <span class="op">{</span></span>
+<span id="cb110-18"><a href="#cb110-18" aria-label="18"></a>        destroy_once<span class="op">();</span></span>
+<span id="cb110-19"><a href="#cb110-19" aria-label="19"></a>    <span class="op">}</span></span>
+<span id="cb110-20"><a href="#cb110-20" aria-label="20"></a>    <span class="dt">void</span> destroy_once<span class="op">()</span> <span class="kw">noexcept</span></span>
+<span id="cb110-21"><a href="#cb110-21" aria-label="21"></a>    <span class="op">{</span></span>
+<span id="cb110-22"><a href="#cb110-22" aria-label="22"></a>        <span class="cf">if</span> <span class="op">(</span>_scheduler<span class="op">)</span></span>
+<span id="cb110-23"><a href="#cb110-23" aria-label="23"></a>        <span class="op">{</span></span>
+<span id="cb110-24"><a href="#cb110-24" aria-label="24"></a>            <span class="ot">assert</span><span class="op">(</span>_task<span class="op">);</span></span>
+<span id="cb110-25"><a href="#cb110-25" aria-label="25"></a>            _scheduler<span class="op">-&gt;</span>remove_fiber_task<span class="op">(*</span>_task<span class="op">);</span></span>
+<span id="cb110-26"><a href="#cb110-26" aria-label="26"></a>            _scheduler <span class="op">=</span> <span class="kw">nullptr</span><span class="op">;</span></span>
+<span id="cb110-27"><a href="#cb110-27" aria-label="27"></a>            _task <span class="op">=</span> <span class="kw">nullptr</span><span class="op">;</span></span>
+<span id="cb110-28"><a href="#cb110-28" aria-label="28"></a>        <span class="op">}</span></span>
+<span id="cb110-29"><a href="#cb110-29" aria-label="29"></a>    <span class="op">}</span></span>
+<span id="cb110-30"><a href="#cb110-30" aria-label="30"></a>    <span class="kw">decltype</span><span class="op">(</span><span class="kw">auto</span><span class="op">)</span> get<span class="op">()</span> <span class="at">const</span><span class="op">;</span></span>
+<span id="cb110-31"><a href="#cb110-31" aria-label="31"></a>    <span class="kw">decltype</span><span class="op">(</span><span class="kw">auto</span><span class="op">)</span> get_once<span class="op">();</span></span>
+<span id="cb110-32"><a href="#cb110-32" aria-label="32"></a><span class="co">// ...</span></span>
+<span id="cb110-33"><a href="#cb110-33" aria-label="33"></a>    FiberTaskScheduler<span class="op">*</span> _scheduler <span class="op">=</span> <span class="kw">nullptr</span><span class="op">;</span></span>
+<span id="cb110-34"><a href="#cb110-34" aria-label="34"></a>    Task<span class="op">*</span> _task <span class="op">=</span> <span class="kw">nullptr</span><span class="op">;</span></span>
+<span id="cb110-35"><a href="#cb110-35" aria-label="35"></a><span class="op">};</span></span>
+<span id="cb110-36"><a href="#cb110-36" aria-label="36"></a></span>
+<span id="cb110-37"><a href="#cb110-37" aria-label="37"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> C<span class="op">&gt;</span></span>
+<span id="cb110-38"><a href="#cb110-38" aria-label="38"></a><span class="kw">auto</span> FF_async<span class="op">(</span>FiberTaskScheduler<span class="op">&amp;</span> scheduler<span class="op">,</span> C<span class="op">&amp;&amp;</span> callable<span class="op">)</span></span>
+<span id="cb110-39"><a href="#cb110-39" aria-label="39"></a><span class="op">{</span></span>
+<span id="cb110-40"><a href="#cb110-40" aria-label="40"></a>    <span class="kw">using</span> Task <span class="op">=</span> FiberTask<span class="op">&lt;</span><span class="bu">std::</span>invoke_result_t<span class="op">&lt;</span>C<span class="op">&gt;&gt;;</span></span>
+<span id="cb110-41"><a href="#cb110-41" aria-label="41"></a>    <span class="cf">return</span> Task<span class="op">{</span><span class="bu">std::</span>forward<span class="op">&lt;</span>C<span class="op">&gt;(</span>callable<span class="op">),</span> scheduler<span class="op">};</span></span>
+<span id="cb110-42"><a href="#cb110-42" aria-label="42"></a><span class="op">}</span></span></code></pre></div>
+<p><code>_task</code> itself is owned by a FiberTaskScheduler:</p>
+<div class="sourceCode" id="cb111"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb111-1"><a href="#cb111-1" aria-label="1"></a><span class="kw">struct</span> FiberTaskScheduler</span>
+<span id="cb111-2"><a href="#cb111-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb111-3"><a href="#cb111-3" aria-label="3"></a>    FiberPool<span class="op">&amp;</span> _fiber_pool<span class="op">;</span></span>
+<span id="cb111-4"><a href="#cb111-4" aria-label="4"></a>    <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>unique_ptr<span class="op">&lt;</span>FiberTask_Any<span class="op">&gt;&gt;</span> _tasks<span class="op">;</span></span>
+<span id="cb111-5"><a href="#cb111-5" aria-label="5"></a>    <span class="bu">std::</span>vector<span class="op">&lt;</span>FiberTask_Any<span class="op">*&gt;</span> _tasks_to_remove<span class="op">;</span></span>
+<span id="cb111-6"><a href="#cb111-6" aria-label="6"></a></span>
+<span id="cb111-7"><a href="#cb111-7" aria-label="7"></a>    <span class="dt">void</span> add_fiber_task<span class="op">(</span><span class="bu">std::</span>unique_ptr<span class="op">&lt;</span>FiberTask_Any<span class="op">&gt;&amp;&amp;</span> task<span class="op">)</span></span>
+<span id="cb111-8"><a href="#cb111-8" aria-label="8"></a>    <span class="op">{</span></span>
+<span id="cb111-9"><a href="#cb111-9" aria-label="9"></a>        <span class="ot">assert</span><span class="op">(</span>task<span class="op">.</span>get<span class="op">());</span></span>
+<span id="cb111-10"><a href="#cb111-10" aria-label="10"></a>        _tasks<span class="op">.</span>push_back<span class="op">(</span><span class="bu">std::</span>move<span class="op">(</span>task<span class="op">));</span></span>
+<span id="cb111-11"><a href="#cb111-11" aria-label="11"></a>    <span class="op">}</span></span>
+<span id="cb111-12"><a href="#cb111-12" aria-label="12"></a>    <span class="dt">void</span> remove_fiber_task<span class="op">(</span>FiberTask_Any<span class="op">&amp;</span> task<span class="op">)</span></span>
+<span id="cb111-13"><a href="#cb111-13" aria-label="13"></a>    <span class="op">{</span></span>
+<span id="cb111-14"><a href="#cb111-14" aria-label="14"></a>        <span class="cf">if</span> <span class="op">(</span>task<span class="op">.</span>is_completed<span class="op">()</span> <span class="op">==</span> <span class="kw">false</span><span class="op">)</span></span>
+<span id="cb111-15"><a href="#cb111-15" aria-label="15"></a>        <span class="op">{</span></span>
+<span id="cb111-16"><a href="#cb111-16" aria-label="16"></a>            task<span class="op">.</span>cancel<span class="op">();</span></span>
+<span id="cb111-17"><a href="#cb111-17" aria-label="17"></a>        <span class="op">}</span></span>
+<span id="cb111-18"><a href="#cb111-18" aria-label="18"></a>        _tasks_to_remove<span class="op">.</span>push_back<span class="op">(&amp;</span>task<span class="op">);</span></span>
+<span id="cb111-19"><a href="#cb111-19" aria-label="19"></a>    <span class="op">}</span></span></code></pre></div>
+<p>Note how removing a task is also a cancel if needed.</p>
+<p>We are left with <code>FiberTaskScheduler</code> execution, which is
+its <code>schedule()</code>:</p>
+<div class="sourceCode" id="cb112"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb112-1"><a href="#cb112-1" aria-label="1"></a><span class="dt">void</span> FiberTaskScheduler<span class="op">::</span>schedule<span class="op">()</span></span>
+<span id="cb112-2"><a href="#cb112-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb112-3"><a href="#cb112-3" aria-label="3"></a>    <span class="cf">while</span> <span class="op">(</span>schedule_once<span class="op">())</span> <span class="op">{}</span></span>
+<span id="cb112-4"><a href="#cb112-4" aria-label="4"></a><span class="op">}</span></span>
+<span id="cb112-5"><a href="#cb112-5" aria-label="5"></a></span>
+<span id="cb112-6"><a href="#cb112-6" aria-label="6"></a><span class="dt">bool</span> FiberTaskScheduler<span class="op">::</span>schedule_once<span class="op">()</span></span>
+<span id="cb112-7"><a href="#cb112-7" aria-label="7"></a><span class="op">{</span></span>
+<span id="cb112-8"><a href="#cb112-8" aria-label="8"></a>    <span class="dt">bool</span> repeat <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb112-9"><a href="#cb112-9" aria-label="9"></a>    <span class="kw">auto</span> tasks <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>_tasks<span class="op">);</span></span>
+<span id="cb112-10"><a href="#cb112-10" aria-label="10"></a>    <span class="cf">for</span> <span class="op">(</span><span class="kw">auto</span> it <span class="op">=</span> tasks<span class="op">.</span>rbegin<span class="op">();</span> it <span class="op">!=</span> tasks<span class="op">.</span>rend<span class="op">();</span> <span class="op">++</span>it<span class="op">)</span></span>
+<span id="cb112-11"><a href="#cb112-11" aria-label="11"></a>    <span class="op">{</span></span>
+<span id="cb112-12"><a href="#cb112-12" aria-label="12"></a>        <span class="bu">std::</span>unique_ptr<span class="op">&lt;</span>FiberTask_Any<span class="op">&gt;&amp;</span> task <span class="op">=</span> <span class="op">*</span>it<span class="op">;</span></span>
+<span id="cb112-13"><a href="#cb112-13" aria-label="13"></a>        <span class="ot">assert</span><span class="op">(</span>task<span class="op">);</span></span>
+<span id="cb112-14"><a href="#cb112-14" aria-label="14"></a>        <span class="cf">if</span> <span class="op">(</span>task<span class="op">-&gt;</span>is_completed<span class="op">()</span> <span class="op">==</span> <span class="kw">false</span><span class="op">)</span></span>
+<span id="cb112-15"><a href="#cb112-15" aria-label="15"></a>        <span class="op">{</span></span>
+<span id="cb112-16"><a href="#cb112-16" aria-label="16"></a>            task<span class="op">-&gt;</span>execute<span class="op">();</span></span>
+<span id="cb112-17"><a href="#cb112-17" aria-label="17"></a>            repeat <span class="op">|=</span> task<span class="op">-&gt;</span>is_completed<span class="op">();</span></span>
+<span id="cb112-18"><a href="#cb112-18" aria-label="18"></a>            <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb112-19"><a href="#cb112-19" aria-label="19"></a>        <span class="op">}</span></span>
+<span id="cb112-20"><a href="#cb112-20" aria-label="20"></a>        <span class="kw">auto</span> it_remove <span class="op">=</span> <span class="bu">std::</span>find<span class="op">(</span>_tasks_to_remove<span class="op">.</span>begin<span class="op">(),</span> _tasks_to_remove<span class="op">.</span>end<span class="op">(),</span> task<span class="op">.</span>get<span class="op">());</span></span>
+<span id="cb112-21"><a href="#cb112-21" aria-label="21"></a>        <span class="cf">if</span> <span class="op">(</span>it_remove <span class="op">==</span> _tasks_to_remove<span class="op">.</span>end<span class="op">())</span></span>
+<span id="cb112-22"><a href="#cb112-22" aria-label="22"></a>        <span class="op">{</span></span>
+<span id="cb112-23"><a href="#cb112-23" aria-label="23"></a>            <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb112-24"><a href="#cb112-24" aria-label="24"></a>        <span class="op">}</span></span>
+<span id="cb112-25"><a href="#cb112-25" aria-label="25"></a>        task<span class="op">.</span>reset<span class="op">();</span></span>
+<span id="cb112-26"><a href="#cb112-26" aria-label="26"></a>    <span class="op">}</span></span>
+<span id="cb112-27"><a href="#cb112-27" aria-label="27"></a>    <span class="cf">for</span> <span class="op">(</span><span class="bu">std::</span>unique_ptr<span class="op">&lt;</span>FiberTask_Any<span class="op">&gt;&amp;</span> task <span class="op">:</span> tasks<span class="op">)</span></span>
+<span id="cb112-28"><a href="#cb112-28" aria-label="28"></a>    <span class="op">{</span></span>
+<span id="cb112-29"><a href="#cb112-29" aria-label="29"></a>        <span class="cf">if</span> <span class="op">(</span>task<span class="op">)</span></span>
+<span id="cb112-30"><a href="#cb112-30" aria-label="30"></a>        <span class="op">{</span></span>
+<span id="cb112-31"><a href="#cb112-31" aria-label="31"></a>            _tasks<span class="op">.</span>push_back<span class="op">(</span><span class="bu">std::</span>move<span class="op">(</span>task<span class="op">));</span></span>
+<span id="cb112-32"><a href="#cb112-32" aria-label="32"></a>        <span class="op">}</span></span>
+<span id="cb112-33"><a href="#cb112-33" aria-label="33"></a>    <span class="op">}</span></span>
+<span id="cb112-34"><a href="#cb112-34" aria-label="34"></a>    <span class="cf">return</span> repeat<span class="op">;</span></span>
+<span id="cb112-35"><a href="#cb112-35" aria-label="35"></a><span class="op">}</span></span></code></pre></div>
+<p>There are 2 moments worth mentioning:</p>
+<ol type="1">
+<li>tasks are executed from the end - this is needed to execute child
+tasks first so parent tasks that wait can have progress</li>
+<li>if any task is completed, we schedule a loop again - again so any
+parent tasks can complete if child tasks complete</li>
+</ol>
+<p>Other then that, we just <code>.execute()</code> every task and
+remove it when completed and was removed.</p>
+<p>Finally, running a FiberTask is:</p>
+<div class="sourceCode" id="cb113"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb113-1"><a href="#cb113-1" aria-label="1"></a><span class="dt">int</span> MyFiber<span class="op">()</span></span>
+<span id="cb113-2"><a href="#cb113-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb113-3"><a href="#cb113-3" aria-label="3"></a>    this_fiber<span class="op">::</span>suspend<span class="op">();</span></span>
+<span id="cb113-4"><a href="#cb113-4" aria-label="4"></a>    <span class="cf">return</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb113-5"><a href="#cb113-5" aria-label="5"></a><span class="op">}</span></span>
+<span id="cb113-6"><a href="#cb113-6" aria-label="6"></a></span>
+<span id="cb113-7"><a href="#cb113-7" aria-label="7"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb113-8"><a href="#cb113-8" aria-label="8"></a><span class="op">{</span></span>
+<span id="cb113-9"><a href="#cb113-9" aria-label="9"></a>    Fiber<span class="op">::</span>Boot _<span class="op">;</span></span>
+<span id="cb113-10"><a href="#cb113-10" aria-label="10"></a>    FiberPool fiber_pool<span class="op">{</span><span class="dv">128</span><span class="op">};</span></span>
+<span id="cb113-11"><a href="#cb113-11" aria-label="11"></a>    FiberTaskScheduler fibers_scheduler<span class="op">{</span>fiber_pool<span class="op">};</span></span>
+<span id="cb113-12"><a href="#cb113-12" aria-label="12"></a></span>
+<span id="cb113-13"><a href="#cb113-13" aria-label="13"></a>    FiberTask<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> task <span class="op">=</span> FF_async<span class="op">(</span>fibers_scheduler<span class="op">,</span> <span class="op">&amp;</span>MyFiber<span class="op">);</span></span>
+<span id="cb113-14"><a href="#cb113-14" aria-label="14"></a>    <span class="cf">while</span> <span class="op">(</span>task<span class="op">.</span>is_completed<span class="op">()</span> <span class="op">==</span> <span class="kw">false</span><span class="op">)</span></span>
+<span id="cb113-15"><a href="#cb113-15" aria-label="15"></a>    <span class="op">{</span></span>
+<span id="cb113-16"><a href="#cb113-16" aria-label="16"></a>        fibers_scheduler<span class="op">.</span>schedule<span class="op">();</span></span>
+<span id="cb113-17"><a href="#cb113-17" aria-label="17"></a>    <span class="op">}</span></span>
+<span id="cb113-18"><a href="#cb113-18" aria-label="18"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> task<span class="op">.</span>get<span class="op">());</span> <span class="co">// prints &quot;1&quot;</span></span>
+<span id="cb113-19"><a href="#cb113-19" aria-label="19"></a><span class="op">}</span></span></code></pre></div>
 <h1 data-number="15" id="fibers-win32-app_fibers"><span
 class="header-section-number">15</span> <a
 href="#fibers-win32-app_fibers"># </a>fibers (WIN32) (App_Fibers)</h1>
