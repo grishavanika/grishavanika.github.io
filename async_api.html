@@ -250,7 +250,8 @@ of coroutines or fibers with multithreading. Some parts are deliberately
 simple, while still presenting as much details as possible.</p>
 <p>Jump to examples for <a href="#app_blocking">blocking</a>, <a
 href="#app_callbacks">callbacks</a>, tasks, std::future, <a
-href="#app_coroutines">coroutines</a>, fibers, senders code.</p>
+href="#app_coroutines">coroutines</a>, <a href="#app_fibers">fibers</a>,
+senders code.</p>
 <p><mark>Work In Progress</mark>.</p>
 <header id="title-block-header">
 <h1 class="title">Asynchronous API</h1>
@@ -284,81 +285,96 @@ multi</a></li>
 <li><a href="#building-stdfuture-api"
 id="toc-building-stdfuture-api"><span
 class="toc-section-number">5</span> # building std::future API</a></li>
+<li><a
+href="#building-future-like-task-api-with-continuation-support-.then"
+id="toc-building-future-like-task-api-with-continuation-support-.then"><span
+class="toc-section-number">6</span> # building future-like task API with
+continuation support (.then())</a></li>
 <li><a href="#building-c20-coroutines-api"
 id="toc-building-c20-coroutines-api"><span
-class="toc-section-number">6</span> # building C++20 coroutines API</a>
+class="toc-section-number">7</span> # building C++20 coroutines API</a>
 <ul>
 <li><a href="#c-coroutines-basic-task-type"
 id="toc-c-coroutines-basic-task-type"><span
-class="toc-section-number">6.1</span> # C++ coroutines, basic task
+class="toc-section-number">7.1</span> # C++ coroutines, basic task
 type</a></li>
 <li><a href="#c-coroutines-basic-await"
 id="toc-c-coroutines-basic-await"><span
-class="toc-section-number">6.2</span> # C++ coroutines, basic
+class="toc-section-number">7.2</span> # C++ coroutines, basic
 await</a></li>
 <li><a href="#c-coroutines-await-callback-with-a-crash"
 id="toc-c-coroutines-await-callback-with-a-crash"><span
-class="toc-section-number">6.3</span> # C++ coroutines, await callback
+class="toc-section-number">7.3</span> # C++ coroutines, await callback
 with a crash</a></li>
 <li><a href="#c-coroutines-await-callback"
 id="toc-c-coroutines-await-callback"><span
-class="toc-section-number">6.4</span> # C++ coroutines, await
+class="toc-section-number">7.4</span> # C++ coroutines, await
 callback</a></li>
 <li><a href="#coroutine-task-that-holds-a-return-value"
 id="toc-coroutine-task-that-holds-a-return-value"><span
-class="toc-section-number">6.5</span> # coroutine task that holds a
+class="toc-section-number">7.5</span> # coroutine task that holds a
 return value</a></li>
 <li><a href="#awaiting-coroutine-task"
 id="toc-awaiting-coroutine-task"><span
-class="toc-section-number">6.6</span> # awaiting coroutine task</a></li>
+class="toc-section-number">7.6</span> # awaiting coroutine task</a></li>
 <li><a href="#waiting-for-multiple-coroutines"
 id="toc-waiting-for-multiple-coroutines"><span
-class="toc-section-number">6.7</span> # waiting for multiple
+class="toc-section-number">7.7</span> # waiting for multiple
 coroutines</a></li>
 <li><a href="#waiting-for-multiple-curl-requests-with-tasks"
 id="toc-waiting-for-multiple-curl-requests-with-tasks"><span
-class="toc-section-number">6.8</span> # waiting for multiple CURL
+class="toc-section-number">7.8</span> # waiting for multiple CURL
 requests with tasks</a></li>
 <li><a href="#waiting-for-multiple-curl-request-with-custom-awaitable"
 id="toc-waiting-for-multiple-curl-request-with-custom-awaitable"><span
-class="toc-section-number">6.9</span> # waiting for multiple CURL
+class="toc-section-number">7.9</span> # waiting for multiple CURL
 request with custom awaitable</a></li>
 </ul></li>
 <li><a href="#building-fibers-api" id="toc-building-fibers-api"><span
-class="toc-section-number">7</span> # building Fibers API</a>
+class="toc-section-number">8</span> # building Fibers API</a>
 <ul>
 <li><a href="#basic-fiber" id="toc-basic-fiber"><span
-class="toc-section-number">7.1</span> # basic Fiber</a></li>
+class="toc-section-number">8.1</span> # basic Fiber</a></li>
 <li><a href="#switching-between-fibers"
 id="toc-switching-between-fibers"><span
-class="toc-section-number">7.2</span> # switching between
+class="toc-section-number">8.2</span> # switching between
 Fibers</a></li>
 <li><a href="#tasks-for-fibers" id="toc-tasks-for-fibers"><span
-class="toc-section-number">7.3</span> # tasks for Fibers</a></li>
+class="toc-section-number">8.3</span> # tasks for Fibers</a></li>
 <li><a href="#cancellable-fiber-task-with-a-generic-callback"
 id="toc-cancellable-fiber-task-with-a-generic-callback"><span
-class="toc-section-number">7.4</span> # cancellable Fiber task with a
+class="toc-section-number">8.4</span> # cancellable Fiber task with a
 generic callback</a></li>
 <li><a href="#basic-fiberpool" id="toc-basic-fiberpool"><span
-class="toc-section-number">7.5</span> # basic FiberPool</a></li>
+class="toc-section-number">8.5</span> # basic FiberPool</a></li>
 <li><a href="#fibertask" id="toc-fibertask"><span
-class="toc-section-number">7.6</span> # FiberTask</a></li>
+class="toc-section-number">8.6</span> # FiberTask</a></li>
+<li><a href="#waiting-for-a-curl-request-with-a-fiber"
+id="toc-waiting-for-a-curl-request-with-a-fiber"><span
+class="toc-section-number">8.7</span> # waiting for a CURL request with
+a Fiber</a></li>
+<li><a href="#waiting-for-multiple-a-fibertasks"
+id="toc-waiting-for-multiple-a-fibertasks"><span
+class="toc-section-number">8.8</span> # waiting for multiple a
+FiberTasks</a></li>
 </ul></li>
 <li><a href="#senders" id="toc-senders"><span
-class="toc-section-number">8</span> # senders</a></li>
+class="toc-section-number">9</span> # senders</a></li>
 <li><a href="#reactive-streams" id="toc-reactive-streams"><span
-class="toc-section-number">9</span> # reactive streams</a></li>
+class="toc-section-number">10</span> # reactive streams</a></li>
 <li><a href="#samples" id="toc-samples"><span
-class="toc-section-number">10</span> # SAMPLES</a>
+class="toc-section-number">11</span> # SAMPLES</a>
 <ul>
 <li><a href="#app_blocking" id="toc-app_blocking"><span
-class="toc-section-number">10.1</span> # synchronous requests</a></li>
+class="toc-section-number">11.1</span> # synchronous requests</a></li>
 <li><a href="#app_callbacks" id="toc-app_callbacks"><span
-class="toc-section-number">10.2</span> # requests with
+class="toc-section-number">11.2</span> # requests with
 callbacks</a></li>
 <li><a href="#app_coroutines" id="toc-app_coroutines"><span
-class="toc-section-number">10.3</span> # requests with
+class="toc-section-number">11.3</span> # requests with
 coroutines</a></li>
+<li><a href="#app_fibers" id="toc-app_fibers"><span
+class="toc-section-number">11.4</span> # requests with fibers</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -959,6 +975,12 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <h1 data-number="5" id="building-stdfuture-api"><span
 class="header-section-number">5</span> <a
 href="#building-stdfuture-api"># </a>building std::future API</h1>
+<h1 data-number="6"
+id="building-future-like-task-api-with-continuation-support-.then"><span
+class="header-section-number">6</span> <a
+href="#building-future-like-task-api-with-continuation-support-.then">#
+</a>building future-like task API with continuation support
+(.then())</h1>
 <p>CODE: CH0x_future</p>
 <p>Having CURL_async_get() leads to the next implementation that wraps
 everything into a std::future:</p>
@@ -1073,8 +1095,8 @@ id="async-with-statefullimplicit-callback-state.on_x.subscribedelegates"><a
 href="#async-with-statefullimplicit-callback-state.on_x.subscribedelegates">#
 </a>async with statefull/implicit callback
 (state.on_X.subscribe/delegates)</h1>
-<h1 data-number="6" id="building-c20-coroutines-api"><span
-class="header-section-number">6</span> <a
+<h1 data-number="7" id="building-c20-coroutines-api"><span
+class="header-section-number">7</span> <a
 href="#building-c20-coroutines-api"># </a>building C++20 coroutines
 API</h1>
 <p>Coroutines materials:</p>
@@ -1110,8 +1132,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>And, finally, there are some challenges to have a code that has
 several GET requests on the fly, with coroutines.</p>
 <p>Lets start with basics.</p>
-<h2 data-number="6.1" id="c-coroutines-basic-task-type"><span
-class="header-section-number">6.1</span> <a
+<h2 data-number="7.1" id="c-coroutines-basic-task-type"><span
+class="header-section-number">7.1</span> <a
 href="#c-coroutines-basic-task-type"># </a>C++ coroutines, basic task
 type</h2>
 <p>CODE: CH0x_coro_basic_task</p>
@@ -1362,8 +1384,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 -- after coro_work()
 inside coro_work
 -- after resume()</code></pre>
-<h2 data-number="6.2" id="c-coroutines-basic-await"><span
-class="header-section-number">6.2</span> <a
+<h2 data-number="7.2" id="c-coroutines-basic-await"><span
+class="header-section-number">7.2</span> <a
 href="#c-coroutines-basic-await"># </a>C++ coroutines, basic await</h2>
 <p>CODE: CH0x_coro_basic_await</p>
 <p>Given that we can have simplest coroutine, what does it take to
@@ -1443,9 +1465,9 @@ after co_await</code></pre>
 <p>Now, on suspend, we did nothing, but immediately resumed coroutine.
 But we also could start an async operation and, on finish, resume the
 coroutine.</p>
-<h2 data-number="6.3"
+<h2 data-number="7.3"
 id="c-coroutines-await-callback-with-a-crash"><span
-class="header-section-number">6.3</span> <a
+class="header-section-number">7.3</span> <a
 href="#c-coroutines-await-callback-with-a-crash"># </a>C++ coroutines,
 await callback with a crash</h2>
 <p>CODE: CH0x_coro_curl0</p>
@@ -1592,8 +1614,8 @@ we assume we can’t do (since, otherwise, the interface is more
 advanced).</p>
 <p>4th solution is the most inefficient and requires no changes neither
 in Co_Task nor in callback API.</p>
-<h2 data-number="6.4" id="c-coroutines-await-callback"><span
-class="header-section-number">6.4</span> <a
+<h2 data-number="7.4" id="c-coroutines-await-callback"><span
+class="header-section-number">7.4</span> <a
 href="#c-coroutines-await-callback"># </a>C++ coroutines, await
 callback</h2>
 <p>CODE: CH0x_coro_curl</p>
@@ -1738,9 +1760,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb69-22"><a href="#cb69-22" aria-label="22"></a><span class="op">}</span></span></code></pre></div>
 <p>Note, however, we run 2 requests one after another: second request
 starts when first co_await ends. There is no concurrency..</p>
-<h2 data-number="6.5"
+<h2 data-number="7.5"
 id="coroutine-task-that-holds-a-return-value"><span
-class="header-section-number">6.5</span> <a
+class="header-section-number">7.5</span> <a
 href="#coroutine-task-that-holds-a-return-value"># </a>coroutine task
 that holds a return value</h2>
 <p>CODE: CH0x_coro_task</p>
@@ -1858,8 +1880,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb73-2"><a href="#cb73-2" aria-label="2"></a><span class="op">{</span></span>
 <span id="cb73-3"><a href="#cb73-3" aria-label="3"></a>    <span class="cf">co_return</span> <span class="dv">3</span><span class="op">;</span></span>
 <span id="cb73-4"><a href="#cb73-4" aria-label="4"></a><span class="op">}</span></span></code></pre></div>
-<h2 data-number="6.6" id="awaiting-coroutine-task"><span
-class="header-section-number">6.6</span> <a
+<h2 data-number="7.6" id="awaiting-coroutine-task"><span
+class="header-section-number">7.6</span> <a
 href="#awaiting-coroutine-task"># </a>awaiting coroutine task</h2>
 <p>CODE: CH0x_coro_await_task</p>
 <p>Now, given <code>Co_Task&lt;T&gt;</code>, we need to await for it
@@ -2077,8 +2099,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb84-3"><a href="#cb84-3" aria-label="3"></a>    <span class="kw">auto</span> <span class="op">[</span>v1<span class="op">,</span> v2<span class="op">]</span> <span class="op">=</span> <span class="cf">co_await</span> CO_await_all<span class="op">(</span>coro_get<span class="op">(</span><span class="dv">2</span><span class="op">),</span> coro_get<span class="op">(</span><span class="dv">3</span><span class="op">));</span></span>
 <span id="cb84-4"><a href="#cb84-4" aria-label="4"></a>    <span class="cf">co_return</span> <span class="op">(</span>v1 <span class="op">+</span> v2<span class="op">);</span></span>
 <span id="cb84-5"><a href="#cb84-5" aria-label="5"></a><span class="op">}</span></span></code></pre></div>
-<h2 data-number="6.7" id="waiting-for-multiple-coroutines"><span
-class="header-section-number">6.7</span> <a
+<h2 data-number="7.7" id="waiting-for-multiple-coroutines"><span
+class="header-section-number">7.7</span> <a
 href="#waiting-for-multiple-coroutines"># </a>waiting for multiple
 coroutines</h2>
 <p>Lets implement awaiting for multiple Co_Tasks:</p>
@@ -2230,9 +2252,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb93-15"><a href="#cb93-15" aria-label="15"></a>    task<span class="op">.</span>resume<span class="op">();</span></span>
 <span id="cb93-16"><a href="#cb93-16" aria-label="16"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> task<span class="op">.</span>get_once<span class="op">());</span></span>
 <span id="cb93-17"><a href="#cb93-17" aria-label="17"></a><span class="op">}</span></span></code></pre></div>
-<h2 data-number="6.8"
+<h2 data-number="7.8"
 id="waiting-for-multiple-curl-requests-with-tasks"><span
-class="header-section-number">6.8</span> <a
+class="header-section-number">7.8</span> <a
 href="#waiting-for-multiple-curl-requests-with-tasks"># </a>waiting for
 multiple CURL requests with tasks</h2>
 <p>CODE: CH0x_coro_await_curl</p>
@@ -2258,9 +2280,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>That’s.. all. Note, however, 3 separate coroutines are allocated (one
 for coro_main and two for CURL_coro_get). We can do less generic
 coroutine awaiter that skips intermediate coroutines.</p>
-<h2 data-number="6.9"
+<h2 data-number="7.9"
 id="waiting-for-multiple-curl-request-with-custom-awaitable"><span
-class="header-section-number">6.9</span> <a
+class="header-section-number">7.9</span> <a
 href="#waiting-for-multiple-curl-request-with-custom-awaitable">#
 </a>waiting for multiple CURL request with custom awaitable</h2>
 <p>CODE: CH0x_coro_await_many</p>
@@ -2442,8 +2464,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <h1 class="unlisted unnumbered" id="coroutines-on-top-polling-tasks"><a
 href="#coroutines-on-top-polling-tasks"># </a>coroutines on top polling
 tasks</h1>
-<h1 data-number="7" id="building-fibers-api"><span
-class="header-section-number">7</span> <a href="#building-fibers-api">#
+<h1 data-number="8" id="building-fibers-api"><span
+class="header-section-number">8</span> <a href="#building-fibers-api">#
 </a>building Fibers API</h1>
 <p>CODE: CH0x_fiber_basic</p>
 <p>(Win32) Fibers materials:</p>
@@ -2522,8 +2544,8 @@ class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="c
 <span id="cb105-3"><a href="#cb105-3" aria-label="3"></a>main2</span>
 <span id="cb105-4"><a href="#cb105-4" aria-label="4"></a>fiber2</span>
 <span id="cb105-5"><a href="#cb105-5" aria-label="5"></a>main3</span></code></pre></div>
-<h2 data-number="7.1" id="basic-fiber"><span
-class="header-section-number">7.1</span> <a href="#basic-fiber">#
+<h2 data-number="8.1" id="basic-fiber"><span
+class="header-section-number">8.1</span> <a href="#basic-fiber">#
 </a>basic Fiber</h2>
 <p>CODE: CH0x_fiber_basic</p>
 <p>We start with a <code>Fiber</code> class that allocates a fiber:</p>
@@ -2680,8 +2702,8 @@ fiber1
 main2
 fiber2
 main3</code></pre>
-<h2 data-number="7.2" id="switching-between-fibers"><span
-class="header-section-number">7.2</span> <a
+<h2 data-number="8.2" id="switching-between-fibers"><span
+class="header-section-number">8.2</span> <a
 href="#switching-between-fibers"># </a>switching between Fibers</h2>
 <p>CODE: CH0x_fiber_switch</p>
 <p>Section above shows how we can switch from a main to a different
@@ -2793,8 +2815,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb119-5"><a href="#cb119-5" aria-label="5"></a>    <span class="co">// ... from main</span></span>
 <span id="cb119-6"><a href="#cb119-6" aria-label="6"></a>    self<span class="op">-&gt;</span>suspend<span class="op">();</span> <span class="co">// switch to main (=our parent)</span></span>
 <span id="cb119-7"><a href="#cb119-7" aria-label="7"></a><span class="op">};</span></span></code></pre></div>
-<h2 data-number="7.3" id="tasks-for-fibers"><span
-class="header-section-number">7.3</span> <a href="#tasks-for-fibers">#
+<h2 data-number="8.3" id="tasks-for-fibers"><span
+class="header-section-number">8.3</span> <a href="#tasks-for-fibers">#
 </a>tasks for Fibers</h2>
 <p>C++20 coroutines allow for a function to return a value:</p>
 <div class="sourceCode" id="cb120"><pre
@@ -2839,9 +2861,9 @@ is no need to mark every coroutine with task-like return type.</li>
 </ul>
 <p>Last one is presented just to showcase one of the possibilities; not
 required for CURL_async_get() Fiber wrapper.</p>
-<h2 data-number="7.4"
+<h2 data-number="8.4"
 id="cancellable-fiber-task-with-a-generic-callback"><span
-class="header-section-number">7.4</span> <a
+class="header-section-number">8.4</span> <a
 href="#cancellable-fiber-task-with-a-generic-callback"># </a>cancellable
 Fiber task with a generic callback</h2>
 <p>CODE: CH0x_fiber_callback</p>
@@ -3039,8 +3061,8 @@ printed:</p>
 fiber1
 main2
 main3</code></pre>
-<h2 data-number="7.5" id="basic-fiberpool"><span
-class="header-section-number">7.5</span> <a href="#basic-fiberpool">#
+<h2 data-number="8.5" id="basic-fiberpool"><span
+class="header-section-number">8.5</span> <a href="#basic-fiberpool">#
 </a>basic FiberPool</h2>
 <p>CODE: CH0x_fiber_task</p>
 <p>The idea is simple: fiber task can be small and short-lived, there is
@@ -3135,8 +3157,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb136-10"><a href="#cb136-10" aria-label="10"></a><span class="op">}</span></span></code></pre></div>
 <p>Now, lets get rid of manually created MyFiberTask and make
 <code>FiberTask&lt;T&gt;</code> possible.</p>
-<h2 data-number="7.6" id="fibertask"><span
-class="header-section-number">7.6</span> <a href="#fibertask">#
+<h2 data-number="8.6" id="fibertask"><span
+class="header-section-number">8.6</span> <a href="#fibertask">#
 </a>FiberTask</h2>
 <p>CODE: CH0x_fiber_task</p>
 <p>We’d like to be able to write something like this:</p>
@@ -3475,228 +3497,445 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb150-17"><a href="#cb150-17" aria-label="17"></a>    <span class="op">}</span></span>
 <span id="cb150-18"><a href="#cb150-18" aria-label="18"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> task<span class="op">.</span>get<span class="op">());</span> <span class="co">// prints &quot;1&quot;</span></span>
 <span id="cb150-19"><a href="#cb150-19" aria-label="19"></a><span class="op">}</span></span></code></pre></div>
-<h1 class="unlisted unnumbered" id="fibers-win32-app_fibers"><a
-href="#fibers-win32-app_fibers"># </a>fibers (WIN32) (App_Fibers)</h1>
-<h1 data-number="8" id="senders"><span
-class="header-section-number">8</span> <a href="#senders">#
+<h2 data-number="8.7" id="waiting-for-a-curl-request-with-a-fiber"><span
+class="header-section-number">8.7</span> <a
+href="#waiting-for-a-curl-request-with-a-fiber"># </a>waiting for a CURL
+request with a Fiber</h2>
+<p>CODE: CH0x_fiber_await_curl</p>
+<p>Assuming we are withing a Fiber context already:</p>
+<div class="sourceCode" id="cb151"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb151-1"><a href="#cb151-1" aria-label="1"></a><span class="dt">void</span> Fiber_Main<span class="op">(</span>CURL_Async curl_async<span class="op">)</span></span>
+<span id="cb151-2"><a href="#cb151-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb151-3"><a href="#cb151-3" aria-label="3"></a>    <span class="at">const</span> <span class="bu">std::</span>string r <span class="op">=</span> CURL_fiber_get_V1<span class="op">(</span>curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">);</span></span>
+<span id="cb151-4"><a href="#cb151-4" aria-label="4"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> r<span class="op">);</span></span>
+<span id="cb151-5"><a href="#cb151-5" aria-label="5"></a><span class="op">}</span></span></code></pre></div>
+<p>Lets write our CURL_fiber_get_V1():</p>
+<div class="sourceCode" id="cb152"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb152-1"><a href="#cb152-1" aria-label="1"></a><span class="bu">std::</span>string CURL_fiber_get_V1<span class="op">(</span>CURL_Async curl_async<span class="op">,</span> <span class="at">const</span> <span class="bu">std::</span>string<span class="op">&amp;</span> url<span class="op">)</span></span>
+<span id="cb152-2"><a href="#cb152-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb152-3"><a href="#cb152-3" aria-label="3"></a>    <span class="bu">std::</span>optional<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> response<span class="op">;</span></span>
+<span id="cb152-4"><a href="#cb152-4" aria-label="4"></a>    CURL_async_get<span class="op">(</span>curl_async<span class="op">,</span> url<span class="op">,</span> <span class="op">&amp;</span>response</span>
+<span id="cb152-5"><a href="#cb152-5" aria-label="5"></a>        <span class="op">,</span> <span class="op">[](</span><span class="dt">void</span><span class="op">*</span> user_data<span class="op">,</span> <span class="bu">std::</span>string response<span class="op">)</span></span>
+<span id="cb152-6"><a href="#cb152-6" aria-label="6"></a>    <span class="op">{</span></span>
+<span id="cb152-7"><a href="#cb152-7" aria-label="7"></a>        <span class="kw">auto</span><span class="op">&amp;</span> state <span class="op">=</span> <span class="op">*</span><span class="kw">static_cast</span><span class="op">&lt;</span><span class="bu">std::</span>optional<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;*&gt;(</span>user_data<span class="op">);</span></span>
+<span id="cb152-8"><a href="#cb152-8" aria-label="8"></a>        state<span class="op">.</span>emplace<span class="op">(</span><span class="bu">std::</span>move<span class="op">(</span>response<span class="op">));</span></span>
+<span id="cb152-9"><a href="#cb152-9" aria-label="9"></a>    <span class="op">});</span></span>
+<span id="cb152-10"><a href="#cb152-10" aria-label="10"></a>    <span class="cf">while</span> <span class="op">(</span>response<span class="op">.</span>has_value<span class="op">()</span> <span class="op">==</span> <span class="kw">false</span><span class="op">)</span></span>
+<span id="cb152-11"><a href="#cb152-11" aria-label="11"></a>    <span class="op">{</span></span>
+<span id="cb152-12"><a href="#cb152-12" aria-label="12"></a>        this_fiber<span class="op">::</span>suspend<span class="op">();</span></span>
+<span id="cb152-13"><a href="#cb152-13" aria-label="13"></a>    <span class="op">}</span></span>
+<span id="cb152-14"><a href="#cb152-14" aria-label="14"></a>    <span class="cf">return</span> <span class="bu">std::</span>move<span class="op">(</span>response<span class="op">.</span>value<span class="op">());</span></span>
+<span id="cb152-15"><a href="#cb152-15" aria-label="15"></a><span class="op">}</span></span></code></pre></div>
+<p>In a way - it’s trivial:</p>
+<ol type="1">
+<li>we start a GET request</li>
+<li>we wait for a data in a while loop</li>
+<li>while loop suspends itself if no data yet</li>
+<li>we use a pointer to local <code>response</code> variable since it’s
+valid until Fiber end</li>
+</ol>
+<p>Note: compiler can’t see or prove that local variable
+<code>response</code> is NOT modified externally, hence the loop is not
+an infinite loop. There is no need to use volatile/atomic to sidestep
+the compiler.</p>
+<p>Given this - all good… Until someone CANCELS our Fiber Task.
+Remember, user has a reference to a FiberTask:</p>
+<div class="sourceCode" id="cb153"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb153-1"><a href="#cb153-1" aria-label="1"></a>FiberTask<span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span> task <span class="op">=</span> FF_async<span class="op">(</span>fibers_scheduler<span class="op">,</span> <span class="op">&amp;</span>Fiber_Main<span class="op">,</span> curl_async<span class="op">);</span></span></code></pre></div>
+<p>What if user drops/destroys a task while GET request is still in
+progress?</p>
+<div class="sourceCode" id="cb154"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb154-1"><a href="#cb154-1" aria-label="1"></a>FiberTask<span class="op">::~</span>FiberTask<span class="op">()</span></span>
+<span id="cb154-2"><a href="#cb154-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb154-3"><a href="#cb154-3" aria-label="3"></a>    <span class="ot">assert</span><span class="op">(</span>_task<span class="op">);</span></span>
+<span id="cb154-4"><a href="#cb154-4" aria-label="4"></a>    _scheduler<span class="op">-&gt;</span>remove_fiber_task<span class="op">(*</span>_task<span class="op">);</span></span>
+<span id="cb154-5"><a href="#cb154-5" aria-label="5"></a></span>
+<span id="cb154-6"><a href="#cb154-6" aria-label="6"></a><span class="op">}</span></span></code></pre></div>
+<p>And remove_fiber_task() just cancels the Task in progress:</p>
+<div class="sourceCode" id="cb155"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb155-1"><a href="#cb155-1" aria-label="1"></a><span class="dt">void</span> FiberTaskScheduler<span class="op">::</span>remove_fiber_task<span class="op">(</span>FiberTask_Any<span class="op">&amp;</span> task<span class="op">)</span></span>
+<span id="cb155-2"><a href="#cb155-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb155-3"><a href="#cb155-3" aria-label="3"></a>    <span class="cf">if</span> <span class="op">(</span>task<span class="op">.</span>is_completed<span class="op">()</span> <span class="op">==</span> <span class="kw">false</span><span class="op">)</span></span>
+<span id="cb155-4"><a href="#cb155-4" aria-label="4"></a>    <span class="op">{</span></span>
+<span id="cb155-5"><a href="#cb155-5" aria-label="5"></a>        task<span class="op">.</span>cancel<span class="op">();</span></span>
+<span id="cb155-6"><a href="#cb155-6" aria-label="6"></a>    <span class="op">}</span></span>
+<span id="cb155-7"><a href="#cb155-7" aria-label="7"></a>    _tasks_to_remove<span class="op">.</span>push_back<span class="op">(&amp;</span>task<span class="op">);</span></span>
+<span id="cb155-8"><a href="#cb155-8" aria-label="8"></a><span class="op">}</span></span></code></pre></div>
+<p>What happens to cancelled Fiber? There are 2 options:</p>
+<ol type="1">
+<li>we destroy a Fiber, deallocating a memory/system Fiber; and</li>
+<li>we keep a Fiber in a pool, leaving the memory alive.</li>
+</ol>
+<p>Since we have a FiberPool, cancelling a Task/Fiber does not
+deallocate the memory since system Fiber is still alive. So, here:</p>
+<div class="sourceCode" id="cb156"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb156-1"><a href="#cb156-1" aria-label="1"></a><span class="bu">std::</span>optional<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> response<span class="op">;</span></span>
+<span id="cb156-2"><a href="#cb156-2" aria-label="2"></a>CURL_async_get<span class="op">(</span>curl_async<span class="op">,</span> url<span class="op">,</span> <span class="op">&amp;</span>response</span>
+<span id="cb156-3"><a href="#cb156-3" aria-label="3"></a>    <span class="op">,</span> <span class="op">[](</span><span class="dt">void</span><span class="op">*</span> user_data<span class="op">,</span> <span class="bu">std::</span>string response<span class="op">)</span></span>
+<span id="cb156-4"><a href="#cb156-4" aria-label="4"></a><span class="op">{</span></span>
+<span id="cb156-5"><a href="#cb156-5" aria-label="5"></a>    <span class="kw">auto</span><span class="op">&amp;</span> state <span class="op">=</span> <span class="op">*</span><span class="kw">static_cast</span><span class="op">&lt;</span><span class="bu">std::</span>optional<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;*&gt;(</span>user_data<span class="op">);</span></span>
+<span id="cb156-6"><a href="#cb156-6" aria-label="6"></a>    state<span class="op">.</span>emplace<span class="op">(</span><span class="bu">std::</span>move<span class="op">(</span>response<span class="op">));</span></span>
+<span id="cb156-7"><a href="#cb156-7" aria-label="7"></a><span class="op">});</span></span></code></pre></div>
+<p>when callback is invoked and Fiber was/is cancelled, our
+<code>response</code> local variable is still alive and there is no
+access error to deallocated memory. So.. no issue?</p>
+<p>Still, while the memory/Fiber is not deallocated, logically, it’s an
+access to released resource and in practice, in our case - someone else
+could start another Fiber task that so happens gets the same Fiber.
+Hence, our CURL_async_get() callback overrides and corrupts the memory
+of some other task!</p>
+<p>Sadly, cancellation is a problem at the end. To handle that - since
+CURL_async_get() is not cancellable, we need to allocate a flag/state on
+a heap so it can outlive cancelled Fiber:</p>
+<div class="sourceCode" id="cb157"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb157-1"><a href="#cb157-1" aria-label="1"></a><span class="bu">std::</span>string CURL_fiber_get<span class="op">(</span>CURL_Async curl_async<span class="op">,</span> <span class="at">const</span> <span class="bu">std::</span>string<span class="op">&amp;</span> url<span class="op">)</span></span>
+<span id="cb157-2"><a href="#cb157-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb157-3"><a href="#cb157-3" aria-label="3"></a>    <span class="bu">std::</span>optional<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> response<span class="op">;</span></span>
+<span id="cb157-4"><a href="#cb157-4" aria-label="4"></a></span>
+<span id="cb157-5"><a href="#cb157-5" aria-label="5"></a>    CancelToken<span class="op">*</span> cancel_token <span class="op">=</span> CancelToken<span class="op">::</span>Make<span class="op">(&amp;</span>response<span class="op">);</span></span>
+<span id="cb157-6"><a href="#cb157-6" aria-label="6"></a>    cancel_token<span class="op">-&gt;</span>add_ref<span class="op">();</span></span>
+<span id="cb157-7"><a href="#cb157-7" aria-label="7"></a></span>
+<span id="cb157-8"><a href="#cb157-8" aria-label="8"></a>    CURL_async_get<span class="op">(</span>curl_async<span class="op">,</span> url<span class="op">,</span> cancel_token</span>
+<span id="cb157-9"><a href="#cb157-9" aria-label="9"></a>        <span class="op">,</span> <span class="op">[](</span><span class="dt">void</span><span class="op">*</span> user_data<span class="op">,</span> <span class="bu">std::</span>string response<span class="op">)</span></span>
+<span id="cb157-10"><a href="#cb157-10" aria-label="10"></a>    <span class="op">{</span></span>
+<span id="cb157-11"><a href="#cb157-11" aria-label="11"></a>        CancelToken<span class="op">&amp;</span> cancel_token <span class="op">=</span> <span class="op">*</span><span class="kw">static_cast</span><span class="op">&lt;</span>CancelToken<span class="op">*&gt;(</span>user_data<span class="op">);</span></span>
+<span id="cb157-12"><a href="#cb157-12" aria-label="12"></a>        <span class="cf">if</span> <span class="op">(</span><span class="kw">auto</span><span class="op">*</span> state <span class="op">=</span> cancel_token<span class="op">.</span>as<span class="op">&lt;</span><span class="bu">std::</span>optional<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;&gt;())</span></span>
+<span id="cb157-13"><a href="#cb157-13" aria-label="13"></a>        <span class="op">{</span></span>
+<span id="cb157-14"><a href="#cb157-14" aria-label="14"></a>            state<span class="op">-&gt;</span>emplace<span class="op">(</span><span class="bu">std::</span>move<span class="op">(</span>response<span class="op">));</span></span>
+<span id="cb157-15"><a href="#cb157-15" aria-label="15"></a>        <span class="op">}</span></span>
+<span id="cb157-16"><a href="#cb157-16" aria-label="16"></a>        cancel_token<span class="op">.</span>release<span class="op">();</span></span>
+<span id="cb157-17"><a href="#cb157-17" aria-label="17"></a>    <span class="op">});</span></span>
+<span id="cb157-18"><a href="#cb157-18" aria-label="18"></a></span>
+<span id="cb157-19"><a href="#cb157-19" aria-label="19"></a>    <span class="cf">try</span></span>
+<span id="cb157-20"><a href="#cb157-20" aria-label="20"></a>    <span class="op">{</span></span>
+<span id="cb157-21"><a href="#cb157-21" aria-label="21"></a>        <span class="cf">while</span> <span class="op">(</span>response<span class="op">.</span>has_value<span class="op">()</span> <span class="op">==</span> <span class="kw">false</span><span class="op">)</span></span>
+<span id="cb157-22"><a href="#cb157-22" aria-label="22"></a>        <span class="op">{</span></span>
+<span id="cb157-23"><a href="#cb157-23" aria-label="23"></a>            this_fiber<span class="op">::</span>suspend<span class="op">();</span></span>
+<span id="cb157-24"><a href="#cb157-24" aria-label="24"></a>        <span class="op">}</span></span>
+<span id="cb157-25"><a href="#cb157-25" aria-label="25"></a>        cancel_token<span class="op">-&gt;</span>release<span class="op">();</span></span>
+<span id="cb157-26"><a href="#cb157-26" aria-label="26"></a>    <span class="op">}</span></span>
+<span id="cb157-27"><a href="#cb157-27" aria-label="27"></a>    <span class="cf">catch</span> <span class="op">(...)</span> <span class="co">// including Exception_FiberTaskCancelled</span></span>
+<span id="cb157-28"><a href="#cb157-28" aria-label="28"></a>    <span class="op">{</span></span>
+<span id="cb157-29"><a href="#cb157-29" aria-label="29"></a>        cancel_token<span class="op">-&gt;</span>reset<span class="op">();</span></span>
+<span id="cb157-30"><a href="#cb157-30" aria-label="30"></a>        cancel_token<span class="op">-&gt;</span>release<span class="op">();</span></span>
+<span id="cb157-31"><a href="#cb157-31" aria-label="31"></a>        <span class="cf">throw</span><span class="op">;</span></span>
+<span id="cb157-32"><a href="#cb157-32" aria-label="32"></a>    <span class="op">}</span></span>
+<span id="cb157-33"><a href="#cb157-33" aria-label="33"></a></span>
+<span id="cb157-34"><a href="#cb157-34" aria-label="34"></a>    <span class="cf">return</span> <span class="bu">std::</span>move<span class="op">(</span>response<span class="op">.</span>value<span class="op">());</span></span>
+<span id="cb157-35"><a href="#cb157-35" aria-label="35"></a><span class="op">}</span></span></code></pre></div>
+<p>Logically, we:</p>
+<ol type="1">
+<li>allocate CancelToken, which is ref-counted and there are 2 users:
+callback and the task itself</li>
+<li>remember a pointer to a local variable <code>response</code></li>
+<li>when task is cancelled (exception thrown) - we reset the reference
+to <code>response</code></li>
+<li>when callback is invoked, we check if <code>response</code> is still
+alive; CancelToken is guaranteed to be valid since it’s
+ref-counted.</li>
+</ol>
+<p>CancelToken implementation is just:</p>
+<div class="sourceCode" id="cb158"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb158-1"><a href="#cb158-1" aria-label="1"></a><span class="kw">struct</span> CancelToken</span>
+<span id="cb158-2"><a href="#cb158-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb158-3"><a href="#cb158-3" aria-label="3"></a>    <span class="bu">std::</span>int64_t _ref_count <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb158-4"><a href="#cb158-4" aria-label="4"></a>    <span class="dt">void</span><span class="op">*</span> _user_data <span class="op">=</span> <span class="kw">nullptr</span><span class="op">;</span></span>
+<span id="cb158-5"><a href="#cb158-5" aria-label="5"></a>    <span class="at">static</span> CancelToken<span class="op">*</span> Make<span class="op">(</span><span class="dt">void</span><span class="op">*</span> user_data<span class="op">)</span></span>
+<span id="cb158-6"><a href="#cb158-6" aria-label="6"></a>    <span class="op">{</span></span>
+<span id="cb158-7"><a href="#cb158-7" aria-label="7"></a>        CancelToken<span class="op">*</span> token <span class="op">=</span> <span class="kw">new</span><span class="op">(</span><span class="bu">std::</span>nothrow<span class="op">)</span> CancelToken<span class="op">;</span></span>
+<span id="cb158-8"><a href="#cb158-8" aria-label="8"></a>        <span class="ot">assert</span><span class="op">(</span>token<span class="op">);</span></span>
+<span id="cb158-9"><a href="#cb158-9" aria-label="9"></a>        token<span class="op">-&gt;</span>_ref_count <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb158-10"><a href="#cb158-10" aria-label="10"></a>        token<span class="op">-&gt;</span>_user_data <span class="op">=</span> user_data<span class="op">;</span></span>
+<span id="cb158-11"><a href="#cb158-11" aria-label="11"></a>        <span class="cf">return</span> token<span class="op">;</span></span>
+<span id="cb158-12"><a href="#cb158-12" aria-label="12"></a>    <span class="op">}</span></span>
+<span id="cb158-13"><a href="#cb158-13" aria-label="13"></a>    <span class="dt">void</span> add_ref<span class="op">()</span></span>
+<span id="cb158-14"><a href="#cb158-14" aria-label="14"></a>    <span class="op">{</span></span>
+<span id="cb158-15"><a href="#cb158-15" aria-label="15"></a>        _ref_count <span class="op">+=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb158-16"><a href="#cb158-16" aria-label="16"></a>    <span class="op">}</span></span>
+<span id="cb158-17"><a href="#cb158-17" aria-label="17"></a>    <span class="dt">void</span> release<span class="op">()</span></span>
+<span id="cb158-18"><a href="#cb158-18" aria-label="18"></a>    <span class="op">{</span></span>
+<span id="cb158-19"><a href="#cb158-19" aria-label="19"></a>        _ref_count <span class="op">-=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb158-20"><a href="#cb158-20" aria-label="20"></a>        <span class="ot">assert</span><span class="op">(</span>_ref_count <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb158-21"><a href="#cb158-21" aria-label="21"></a>        <span class="cf">if</span> <span class="op">(</span>_ref_count <span class="op">==</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb158-22"><a href="#cb158-22" aria-label="22"></a>        <span class="op">{</span></span>
+<span id="cb158-23"><a href="#cb158-23" aria-label="23"></a>            Destroy<span class="op">(</span><span class="kw">this</span><span class="op">);</span></span>
+<span id="cb158-24"><a href="#cb158-24" aria-label="24"></a>        <span class="op">}</span></span>
+<span id="cb158-25"><a href="#cb158-25" aria-label="25"></a>    <span class="op">}</span></span>
+<span id="cb158-26"><a href="#cb158-26" aria-label="26"></a>    <span class="at">static</span> <span class="dt">void</span> Destroy<span class="op">(</span>CancelToken<span class="op">*</span> token<span class="op">)</span></span>
+<span id="cb158-27"><a href="#cb158-27" aria-label="27"></a>    <span class="op">{</span></span>
+<span id="cb158-28"><a href="#cb158-28" aria-label="28"></a>        <span class="ot">assert</span><span class="op">(</span>token<span class="op">);</span></span>
+<span id="cb158-29"><a href="#cb158-29" aria-label="29"></a>        <span class="kw">delete</span> token<span class="op">;</span></span>
+<span id="cb158-30"><a href="#cb158-30" aria-label="30"></a>    <span class="op">}</span></span>
+<span id="cb158-31"><a href="#cb158-31" aria-label="31"></a>    <span class="dt">void</span> reset<span class="op">()</span></span>
+<span id="cb158-32"><a href="#cb158-32" aria-label="32"></a>    <span class="op">{</span></span>
+<span id="cb158-33"><a href="#cb158-33" aria-label="33"></a>        _user_data <span class="op">=</span> <span class="kw">nullptr</span><span class="op">;</span></span>
+<span id="cb158-34"><a href="#cb158-34" aria-label="34"></a>    <span class="op">}</span></span>
+<span id="cb158-35"><a href="#cb158-35" aria-label="35"></a>    <span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb158-36"><a href="#cb158-36" aria-label="36"></a>    T<span class="op">*</span> as<span class="op">()</span> <span class="at">const</span></span>
+<span id="cb158-37"><a href="#cb158-37" aria-label="37"></a>    <span class="op">{</span></span>
+<span id="cb158-38"><a href="#cb158-38" aria-label="38"></a>        <span class="cf">return</span> <span class="kw">static_cast</span><span class="op">&lt;</span>T<span class="op">*&gt;(</span>_user_data<span class="op">);</span></span>
+<span id="cb158-39"><a href="#cb158-39" aria-label="39"></a>    <span class="op">}</span></span>
+<span id="cb158-40"><a href="#cb158-40" aria-label="40"></a><span class="op">};</span></span></code></pre></div>
+<p>With that in mind, complete CURL_fiber_get() within a FiberTask
+is:</p>
+<div class="sourceCode" id="cb159"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb159-1"><a href="#cb159-1" aria-label="1"></a><span class="dt">void</span> Fiber_Main<span class="op">(</span>CURL_Async curl_async<span class="op">)</span></span>
+<span id="cb159-2"><a href="#cb159-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb159-3"><a href="#cb159-3" aria-label="3"></a>    <span class="at">const</span> <span class="bu">std::</span>string r1 <span class="op">=</span> CURL_fiber_get<span class="op">(</span>curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">);</span></span>
+<span id="cb159-4"><a href="#cb159-4" aria-label="4"></a>    <span class="at">const</span> <span class="bu">std::</span>string r2 <span class="op">=</span> CURL_fiber_get<span class="op">(</span>curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file2.txt&quot;</span><span class="op">);</span></span>
+<span id="cb159-5"><a href="#cb159-5" aria-label="5"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> r1<span class="op">);</span></span>
+<span id="cb159-6"><a href="#cb159-6" aria-label="6"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> r2<span class="op">);</span></span>
+<span id="cb159-7"><a href="#cb159-7" aria-label="7"></a><span class="op">}</span></span>
+<span id="cb159-8"><a href="#cb159-8" aria-label="8"></a></span>
+<span id="cb159-9"><a href="#cb159-9" aria-label="9"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb159-10"><a href="#cb159-10" aria-label="10"></a><span class="op">{</span></span>
+<span id="cb159-11"><a href="#cb159-11" aria-label="11"></a>    Fiber<span class="op">::</span>Boot _<span class="op">;</span></span>
+<span id="cb159-12"><a href="#cb159-12" aria-label="12"></a>    FiberPool fiber_pool<span class="op">{</span><span class="dv">8</span><span class="op">};</span></span>
+<span id="cb159-13"><a href="#cb159-13" aria-label="13"></a>    FiberTaskScheduler fibers_scheduler<span class="op">{</span>fiber_pool<span class="op">};</span></span>
+<span id="cb159-14"><a href="#cb159-14" aria-label="14"></a>    CURL_Async curl_async <span class="op">=</span> CURL_async_create<span class="op">();</span></span>
+<span id="cb159-15"><a href="#cb159-15" aria-label="15"></a>    FiberTask<span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span> task <span class="op">=</span> FF_async<span class="op">(</span>fibers_scheduler<span class="op">,</span> <span class="op">&amp;</span>Fiber_Main<span class="op">,</span> curl_async<span class="op">);</span></span>
+<span id="cb159-16"><a href="#cb159-16" aria-label="16"></a>    <span class="cf">while</span> <span class="op">(</span>task<span class="op">.</span>is_completed<span class="op">()</span> <span class="op">==</span> <span class="kw">false</span><span class="op">)</span></span>
+<span id="cb159-17"><a href="#cb159-17" aria-label="17"></a>    <span class="op">{</span></span>
+<span id="cb159-18"><a href="#cb159-18" aria-label="18"></a>        CURL_async_tick<span class="op">(</span>curl_async<span class="op">);</span></span>
+<span id="cb159-19"><a href="#cb159-19" aria-label="19"></a>        fibers_scheduler<span class="op">.</span>schedule<span class="op">();</span></span>
+<span id="cb159-20"><a href="#cb159-20" aria-label="20"></a>    <span class="op">}</span></span>
+<span id="cb159-21"><a href="#cb159-21" aria-label="21"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
+<span id="cb159-22"><a href="#cb159-22" aria-label="22"></a><span class="op">}</span></span></code></pre></div>
+<p>Note, FF_async() was extended to accept extra arguments. Complete
+code is in CH0x_fiber_await_curl.</p>
+<h2 data-number="8.8" id="waiting-for-multiple-a-fibertasks"><span
+class="header-section-number">8.8</span> <a
+href="#waiting-for-multiple-a-fibertasks"># </a>waiting for multiple a
+FiberTasks</h2>
+<p>CODE: CH0x_fiber_await_many</p>
+<h1 data-number="9" id="senders"><span
+class="header-section-number">9</span> <a href="#senders">#
 </a>senders</h1>
-<h1 data-number="9" id="reactive-streams"><span
-class="header-section-number">9</span> <a href="#reactive-streams">#
+<h1 data-number="10" id="reactive-streams"><span
+class="header-section-number">10</span> <a href="#reactive-streams">#
 </a>reactive streams</h1>
-<h1 data-number="10" id="samples"><span
-class="header-section-number">10</span> <a href="#samples">#
+<h1 data-number="11" id="samples"><span
+class="header-section-number">11</span> <a href="#samples">#
 </a>SAMPLES</h1>
-<h2 data-number="10.1" id="app_blocking"><span
-class="header-section-number">10.1</span> <a href="#app_blocking">#
+<h2 data-number="11.1" id="app_blocking"><span
+class="header-section-number">11.1</span> <a href="#app_blocking">#
 </a>synchronous requests</h2>
 <p>CODE: App_Blocking</p>
 <p>For completeness, our trivial case - doing 2 GET requests one after
 another:</p>
-<div class="sourceCode" id="cb151"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb151-1"><a href="#cb151-1" aria-label="1"></a><span class="at">static</span> <span class="dt">void</span> App01_Blocking<span class="op">()</span></span>
-<span id="cb151-2"><a href="#cb151-2" aria-label="2"></a><span class="op">{</span></span>
-<span id="cb151-3"><a href="#cb151-3" aria-label="3"></a>    <span class="at">const</span> <span class="bu">std::</span>string r1 <span class="op">=</span> CURL_get<span class="op">(</span><span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">);</span></span>
-<span id="cb151-4"><a href="#cb151-4" aria-label="4"></a>    <span class="at">const</span> <span class="bu">std::</span>string r2 <span class="op">=</span> CURL_get<span class="op">(</span><span class="st">&quot;localhost:5001/file2.txt&quot;</span><span class="op">);</span></span>
-<span id="cb151-5"><a href="#cb151-5" aria-label="5"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> r1<span class="op">);</span></span>
-<span id="cb151-6"><a href="#cb151-6" aria-label="6"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> r2<span class="op">);</span></span>
-<span id="cb151-7"><a href="#cb151-7" aria-label="7"></a><span class="op">}</span></span>
-<span id="cb151-8"><a href="#cb151-8" aria-label="8"></a></span>
-<span id="cb151-9"><a href="#cb151-9" aria-label="9"></a><span class="dt">int</span> main<span class="op">()</span></span>
-<span id="cb151-10"><a href="#cb151-10" aria-label="10"></a><span class="op">{</span></span>
-<span id="cb151-11"><a href="#cb151-11" aria-label="11"></a>    App01_Blocking<span class="op">();</span></span>
-<span id="cb151-12"><a href="#cb151-12" aria-label="12"></a><span class="op">}</span></span></code></pre></div>
-<h2 data-number="10.2" id="app_callbacks"><span
-class="header-section-number">10.2</span> <a href="#app_callbacks">#
+<div class="sourceCode" id="cb160"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb160-1"><a href="#cb160-1" aria-label="1"></a><span class="at">static</span> <span class="dt">void</span> App01_Blocking<span class="op">()</span></span>
+<span id="cb160-2"><a href="#cb160-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb160-3"><a href="#cb160-3" aria-label="3"></a>    <span class="at">const</span> <span class="bu">std::</span>string r1 <span class="op">=</span> CURL_get<span class="op">(</span><span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">);</span></span>
+<span id="cb160-4"><a href="#cb160-4" aria-label="4"></a>    <span class="at">const</span> <span class="bu">std::</span>string r2 <span class="op">=</span> CURL_get<span class="op">(</span><span class="st">&quot;localhost:5001/file2.txt&quot;</span><span class="op">);</span></span>
+<span id="cb160-5"><a href="#cb160-5" aria-label="5"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> r1<span class="op">);</span></span>
+<span id="cb160-6"><a href="#cb160-6" aria-label="6"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> r2<span class="op">);</span></span>
+<span id="cb160-7"><a href="#cb160-7" aria-label="7"></a><span class="op">}</span></span>
+<span id="cb160-8"><a href="#cb160-8" aria-label="8"></a></span>
+<span id="cb160-9"><a href="#cb160-9" aria-label="9"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb160-10"><a href="#cb160-10" aria-label="10"></a><span class="op">{</span></span>
+<span id="cb160-11"><a href="#cb160-11" aria-label="11"></a>    App01_Blocking<span class="op">();</span></span>
+<span id="cb160-12"><a href="#cb160-12" aria-label="12"></a><span class="op">}</span></span></code></pre></div>
+<h2 data-number="11.2" id="app_callbacks"><span
+class="header-section-number">11.2</span> <a href="#app_callbacks">#
 </a>requests with callbacks</h2>
 <p>CODE: App_Callbacks</p>
 <p>With callbacks API, there are 2 variations:</p>
 <ol type="1">
-<li>doing 2 requests one after another: see
-<code>App01_Callbacks()</code></li>
+<li>doing 2 sequential requests, one after another: see
+<code>App_CallbacksV0()</code></li>
 <li>doing 2 requests concurrently: see
-<code>App00_Callbacks()</code></li>
+<code>App_CallbacksV1()</code></li>
 </ol>
-<div class="sourceCode" id="cb152"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb152-1"><a href="#cb152-1" aria-label="1"></a><span class="dt">int</span> main<span class="op">()</span></span>
-<span id="cb152-2"><a href="#cb152-2" aria-label="2"></a><span class="op">{</span></span>
-<span id="cb152-3"><a href="#cb152-3" aria-label="3"></a>    App00_Callbacks<span class="op">();</span></span>
-<span id="cb152-4"><a href="#cb152-4" aria-label="4"></a>    App01_Callbacks<span class="op">();</span></span>
-<span id="cb152-5"><a href="#cb152-5" aria-label="5"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb161"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb161-1"><a href="#cb161-1" aria-label="1"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb161-2"><a href="#cb161-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb161-3"><a href="#cb161-3" aria-label="3"></a>    App_CallbacksV0<span class="op">();</span> <span class="co">// sequential</span></span>
+<span id="cb161-4"><a href="#cb161-4" aria-label="4"></a>    App_CallbacksV1<span class="op">();</span> <span class="co">// concurrent</span></span>
+<span id="cb161-5"><a href="#cb161-5" aria-label="5"></a><span class="op">}</span></span></code></pre></div>
 <p>All the other sections have the same naming convention and the same
 main().</p>
-<p>2 requests one after another:</p>
-<div class="sourceCode" id="cb153"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb153-1"><a href="#cb153-1" aria-label="1"></a><span class="kw">struct</span> App01_State</span>
-<span id="cb153-2"><a href="#cb153-2" aria-label="2"></a><span class="op">{</span></span>
-<span id="cb153-3"><a href="#cb153-3" aria-label="3"></a>    CURL_Async _curl_async<span class="op">{};</span></span>
-<span id="cb153-4"><a href="#cb153-4" aria-label="4"></a>    <span class="dt">bool</span> _finished <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb153-5"><a href="#cb153-5" aria-label="5"></a>    <span class="bu">std::</span>string _r1<span class="op">;</span></span>
-<span id="cb153-6"><a href="#cb153-6" aria-label="6"></a>    <span class="bu">std::</span>string _r2<span class="op">;</span></span>
-<span id="cb153-7"><a href="#cb153-7" aria-label="7"></a></span>
-<span id="cb153-8"><a href="#cb153-8" aria-label="8"></a>    <span class="kw">explicit</span> App01_State<span class="op">(</span>CURL_Async curl_async<span class="op">)</span> <span class="kw">noexcept</span></span>
-<span id="cb153-9"><a href="#cb153-9" aria-label="9"></a>        <span class="op">:</span> _curl_async<span class="op">(</span>curl_async<span class="op">)</span></span>
-<span id="cb153-10"><a href="#cb153-10" aria-label="10"></a>    <span class="op">{</span></span>
-<span id="cb153-11"><a href="#cb153-11" aria-label="11"></a>    <span class="op">}</span></span>
-<span id="cb153-12"><a href="#cb153-12" aria-label="12"></a>    App01_State<span class="op">(</span><span class="at">const</span> App01_State<span class="op">&amp;)</span> <span class="op">=</span> <span class="kw">delete</span><span class="op">;</span></span>
-<span id="cb153-13"><a href="#cb153-13" aria-label="13"></a>    <span class="op">~</span>App01_State<span class="op">()</span> <span class="kw">noexcept</span></span>
-<span id="cb153-14"><a href="#cb153-14" aria-label="14"></a>    <span class="op">{</span></span>
-<span id="cb153-15"><a href="#cb153-15" aria-label="15"></a>        <span class="ot">assert</span><span class="op">(</span>_finished<span class="op">);</span></span>
-<span id="cb153-16"><a href="#cb153-16" aria-label="16"></a>    <span class="op">}</span></span>
-<span id="cb153-17"><a href="#cb153-17" aria-label="17"></a></span>
-<span id="cb153-18"><a href="#cb153-18" aria-label="18"></a>    <span class="dt">void</span> start<span class="op">()</span></span>
-<span id="cb153-19"><a href="#cb153-19" aria-label="19"></a>    <span class="op">{</span></span>
-<span id="cb153-20"><a href="#cb153-20" aria-label="20"></a>        CURL_async_get<span class="op">(</span>_curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">,</span> <span class="kw">this</span></span>
-<span id="cb153-21"><a href="#cb153-21" aria-label="21"></a>            <span class="op">,</span> <span class="op">[](</span><span class="dt">void</span><span class="op">*</span> user_data<span class="op">,</span> <span class="bu">std::</span>string response1<span class="op">)</span></span>
-<span id="cb153-22"><a href="#cb153-22" aria-label="22"></a>        <span class="op">{</span></span>
-<span id="cb153-23"><a href="#cb153-23" aria-label="23"></a>            App01_State<span class="op">&amp;</span> state <span class="op">=</span> <span class="op">*</span><span class="kw">static_cast</span><span class="op">&lt;</span>App01_State<span class="op">*&gt;(</span>user_data<span class="op">);</span></span>
-<span id="cb153-24"><a href="#cb153-24" aria-label="24"></a>            state<span class="op">.</span>_r1 <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>response1<span class="op">);</span></span>
-<span id="cb153-25"><a href="#cb153-25" aria-label="25"></a></span>
-<span id="cb153-26"><a href="#cb153-26" aria-label="26"></a>            CURL_async_get<span class="op">(</span>state<span class="op">.</span>_curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file2.txt&quot;</span><span class="op">,</span> user_data</span>
-<span id="cb153-27"><a href="#cb153-27" aria-label="27"></a>                <span class="op">,</span> <span class="op">[](</span><span class="dt">void</span><span class="op">*</span> user_data<span class="op">,</span> <span class="bu">std::</span>string response2<span class="op">)</span></span>
-<span id="cb153-28"><a href="#cb153-28" aria-label="28"></a>            <span class="op">{</span></span>
-<span id="cb153-29"><a href="#cb153-29" aria-label="29"></a>                App01_State<span class="op">&amp;</span> state <span class="op">=</span> <span class="op">*</span><span class="kw">static_cast</span><span class="op">&lt;</span>App01_State<span class="op">*&gt;(</span>user_data<span class="op">);</span></span>
-<span id="cb153-30"><a href="#cb153-30" aria-label="30"></a>                state<span class="op">.</span>_r2 <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>response2<span class="op">);</span></span>
-<span id="cb153-31"><a href="#cb153-31" aria-label="31"></a>                state<span class="op">.</span>_finished <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb153-32"><a href="#cb153-32" aria-label="32"></a>                state<span class="op">.</span>done<span class="op">();</span></span>
-<span id="cb153-33"><a href="#cb153-33" aria-label="33"></a>            <span class="op">});</span></span>
-<span id="cb153-34"><a href="#cb153-34" aria-label="34"></a>        <span class="op">});</span></span>
-<span id="cb153-35"><a href="#cb153-35" aria-label="35"></a>    <span class="op">}</span></span>
-<span id="cb153-36"><a href="#cb153-36" aria-label="36"></a></span>
-<span id="cb153-37"><a href="#cb153-37" aria-label="37"></a>    <span class="dt">void</span> done<span class="op">()</span></span>
-<span id="cb153-38"><a href="#cb153-38" aria-label="38"></a>    <span class="op">{</span></span>
-<span id="cb153-39"><a href="#cb153-39" aria-label="39"></a>        <span class="ot">assert</span><span class="op">(</span>_finished<span class="op">);</span></span>
-<span id="cb153-40"><a href="#cb153-40" aria-label="40"></a>        <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> _r1<span class="op">);</span></span>
-<span id="cb153-41"><a href="#cb153-41" aria-label="41"></a>        <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> _r2<span class="op">);</span></span>
-<span id="cb153-42"><a href="#cb153-42" aria-label="42"></a>    <span class="op">}</span></span>
-<span id="cb153-43"><a href="#cb153-43" aria-label="43"></a><span class="op">};</span></span>
-<span id="cb153-44"><a href="#cb153-44" aria-label="44"></a></span>
-<span id="cb153-45"><a href="#cb153-45" aria-label="45"></a><span class="at">static</span> <span class="dt">void</span> App01_Callbacks<span class="op">()</span></span>
-<span id="cb153-46"><a href="#cb153-46" aria-label="46"></a><span class="op">{</span></span>
-<span id="cb153-47"><a href="#cb153-47" aria-label="47"></a>    CURL_Async curl_async <span class="op">=</span> CURL_async_create<span class="op">();</span></span>
-<span id="cb153-48"><a href="#cb153-48" aria-label="48"></a>    App01_State app<span class="op">{</span>curl_async<span class="op">};</span></span>
-<span id="cb153-49"><a href="#cb153-49" aria-label="49"></a>    app<span class="op">.</span>start<span class="op">();</span></span>
-<span id="cb153-50"><a href="#cb153-50" aria-label="50"></a>    <span class="cf">while</span> <span class="op">(!</span>app<span class="op">.</span>_finished<span class="op">)</span></span>
-<span id="cb153-51"><a href="#cb153-51" aria-label="51"></a>    <span class="op">{</span></span>
-<span id="cb153-52"><a href="#cb153-52" aria-label="52"></a>        CURL_async_tick<span class="op">(</span>curl_async<span class="op">);</span></span>
-<span id="cb153-53"><a href="#cb153-53" aria-label="53"></a>    <span class="op">}</span></span>
-<span id="cb153-54"><a href="#cb153-54" aria-label="54"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
-<span id="cb153-55"><a href="#cb153-55" aria-label="55"></a><span class="op">}</span></span></code></pre></div>
-<p>2 concurrent requests:</p>
-<div class="sourceCode" id="cb154"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb154-1"><a href="#cb154-1" aria-label="1"></a><span class="kw">struct</span> App00_State</span>
-<span id="cb154-2"><a href="#cb154-2" aria-label="2"></a><span class="op">{</span></span>
-<span id="cb154-3"><a href="#cb154-3" aria-label="3"></a>    CURL_Async _curl_async<span class="op">{};</span></span>
-<span id="cb154-4"><a href="#cb154-4" aria-label="4"></a>    <span class="bu">std::</span>int32_t _requests <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb154-5"><a href="#cb154-5" aria-label="5"></a>    <span class="dt">bool</span> _finished <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb154-6"><a href="#cb154-6" aria-label="6"></a>    <span class="bu">std::</span>string _r1<span class="op">;</span></span>
-<span id="cb154-7"><a href="#cb154-7" aria-label="7"></a>    <span class="bu">std::</span>string _r2<span class="op">;</span></span>
-<span id="cb154-8"><a href="#cb154-8" aria-label="8"></a></span>
-<span id="cb154-9"><a href="#cb154-9" aria-label="9"></a>    <span class="kw">explicit</span> App00_State<span class="op">(</span>CURL_Async curl_async<span class="op">)</span> <span class="kw">noexcept</span></span>
-<span id="cb154-10"><a href="#cb154-10" aria-label="10"></a>        <span class="op">:</span> _curl_async<span class="op">(</span>curl_async<span class="op">)</span></span>
-<span id="cb154-11"><a href="#cb154-11" aria-label="11"></a>    <span class="op">{</span></span>
-<span id="cb154-12"><a href="#cb154-12" aria-label="12"></a>    <span class="op">}</span></span>
-<span id="cb154-13"><a href="#cb154-13" aria-label="13"></a>    App00_State<span class="op">(</span><span class="at">const</span> App00_State<span class="op">&amp;)</span> <span class="op">=</span> <span class="kw">delete</span><span class="op">;</span></span>
-<span id="cb154-14"><a href="#cb154-14" aria-label="14"></a>    <span class="op">~</span>App00_State<span class="op">()</span> <span class="kw">noexcept</span></span>
-<span id="cb154-15"><a href="#cb154-15" aria-label="15"></a>    <span class="op">{</span></span>
-<span id="cb154-16"><a href="#cb154-16" aria-label="16"></a>        <span class="ot">assert</span><span class="op">(</span>_finished<span class="op">);</span></span>
-<span id="cb154-17"><a href="#cb154-17" aria-label="17"></a>    <span class="op">}</span></span>
-<span id="cb154-18"><a href="#cb154-18" aria-label="18"></a></span>
-<span id="cb154-19"><a href="#cb154-19" aria-label="19"></a>    <span class="dt">void</span> start<span class="op">()</span></span>
-<span id="cb154-20"><a href="#cb154-20" aria-label="20"></a>    <span class="op">{</span></span>
-<span id="cb154-21"><a href="#cb154-21" aria-label="21"></a>        _requests <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
-<span id="cb154-22"><a href="#cb154-22" aria-label="22"></a>        CURL_async_get<span class="op">(</span>_curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">,</span> <span class="kw">this</span></span>
-<span id="cb154-23"><a href="#cb154-23" aria-label="23"></a>            <span class="op">,</span> <span class="op">[](</span><span class="dt">void</span><span class="op">*</span> user_data<span class="op">,</span> <span class="bu">std::</span>string response<span class="op">)</span></span>
-<span id="cb154-24"><a href="#cb154-24" aria-label="24"></a>        <span class="op">{</span></span>
-<span id="cb154-25"><a href="#cb154-25" aria-label="25"></a>            App00_State<span class="op">&amp;</span> state <span class="op">=</span> <span class="op">*</span><span class="kw">static_cast</span><span class="op">&lt;</span>App00_State<span class="op">*&gt;(</span>user_data<span class="op">);</span></span>
-<span id="cb154-26"><a href="#cb154-26" aria-label="26"></a>            state<span class="op">.</span>_r1 <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>response<span class="op">);</span></span>
-<span id="cb154-27"><a href="#cb154-27" aria-label="27"></a>            state<span class="op">.</span>try_finish<span class="op">();</span></span>
-<span id="cb154-28"><a href="#cb154-28" aria-label="28"></a>        <span class="op">});</span></span>
-<span id="cb154-29"><a href="#cb154-29" aria-label="29"></a>        CURL_async_get<span class="op">(</span>_curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file2.txt&quot;</span><span class="op">,</span> <span class="kw">this</span></span>
-<span id="cb154-30"><a href="#cb154-30" aria-label="30"></a>            <span class="op">,</span> <span class="op">[](</span><span class="dt">void</span><span class="op">*</span> user_data<span class="op">,</span> <span class="bu">std::</span>string response<span class="op">)</span></span>
-<span id="cb154-31"><a href="#cb154-31" aria-label="31"></a>        <span class="op">{</span></span>
-<span id="cb154-32"><a href="#cb154-32" aria-label="32"></a>            App00_State<span class="op">&amp;</span> state <span class="op">=</span> <span class="op">*</span><span class="kw">static_cast</span><span class="op">&lt;</span>App00_State<span class="op">*&gt;(</span>user_data<span class="op">);</span></span>
-<span id="cb154-33"><a href="#cb154-33" aria-label="33"></a>            state<span class="op">.</span>_r2 <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>response<span class="op">);</span></span>
-<span id="cb154-34"><a href="#cb154-34" aria-label="34"></a>            state<span class="op">.</span>try_finish<span class="op">();</span></span>
-<span id="cb154-35"><a href="#cb154-35" aria-label="35"></a>        <span class="op">});</span></span>
-<span id="cb154-36"><a href="#cb154-36" aria-label="36"></a>    <span class="op">}</span></span>
-<span id="cb154-37"><a href="#cb154-37" aria-label="37"></a></span>
-<span id="cb154-38"><a href="#cb154-38" aria-label="38"></a>    <span class="dt">void</span> try_finish<span class="op">()</span></span>
-<span id="cb154-39"><a href="#cb154-39" aria-label="39"></a>    <span class="op">{</span></span>
-<span id="cb154-40"><a href="#cb154-40" aria-label="40"></a>        <span class="ot">assert</span><span class="op">(</span>_requests <span class="op">&gt;</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb154-41"><a href="#cb154-41" aria-label="41"></a>        _requests <span class="op">-=</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb154-42"><a href="#cb154-42" aria-label="42"></a>        <span class="cf">if</span> <span class="op">(</span>_requests <span class="op">==</span> <span class="dv">0</span><span class="op">)</span></span>
-<span id="cb154-43"><a href="#cb154-43" aria-label="43"></a>        <span class="op">{</span></span>
-<span id="cb154-44"><a href="#cb154-44" aria-label="44"></a>            _finished <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb154-45"><a href="#cb154-45" aria-label="45"></a>            done<span class="op">();</span></span>
-<span id="cb154-46"><a href="#cb154-46" aria-label="46"></a>        <span class="op">}</span></span>
-<span id="cb154-47"><a href="#cb154-47" aria-label="47"></a>    <span class="op">}</span></span>
-<span id="cb154-48"><a href="#cb154-48" aria-label="48"></a></span>
-<span id="cb154-49"><a href="#cb154-49" aria-label="49"></a>    <span class="dt">void</span> done<span class="op">()</span></span>
-<span id="cb154-50"><a href="#cb154-50" aria-label="50"></a>    <span class="op">{</span></span>
-<span id="cb154-51"><a href="#cb154-51" aria-label="51"></a>        <span class="ot">assert</span><span class="op">(</span>_finished<span class="op">);</span></span>
-<span id="cb154-52"><a href="#cb154-52" aria-label="52"></a>        <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> _r1<span class="op">);</span></span>
-<span id="cb154-53"><a href="#cb154-53" aria-label="53"></a>        <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> _r2<span class="op">);</span></span>
-<span id="cb154-54"><a href="#cb154-54" aria-label="54"></a>    <span class="op">}</span></span>
-<span id="cb154-55"><a href="#cb154-55" aria-label="55"></a><span class="op">};</span></span>
-<span id="cb154-56"><a href="#cb154-56" aria-label="56"></a></span>
-<span id="cb154-57"><a href="#cb154-57" aria-label="57"></a><span class="at">static</span> <span class="dt">void</span> App00_Callbacks<span class="op">()</span></span>
-<span id="cb154-58"><a href="#cb154-58" aria-label="58"></a><span class="op">{</span></span>
-<span id="cb154-59"><a href="#cb154-59" aria-label="59"></a>    CURL_Async curl_async <span class="op">=</span> CURL_async_create<span class="op">();</span></span>
-<span id="cb154-60"><a href="#cb154-60" aria-label="60"></a>    App00_State app<span class="op">{</span>curl_async<span class="op">};</span></span>
-<span id="cb154-61"><a href="#cb154-61" aria-label="61"></a>    app<span class="op">.</span>start<span class="op">();</span></span>
-<span id="cb154-62"><a href="#cb154-62" aria-label="62"></a>    <span class="cf">while</span> <span class="op">(!</span>app<span class="op">.</span>_finished<span class="op">)</span></span>
-<span id="cb154-63"><a href="#cb154-63" aria-label="63"></a>    <span class="op">{</span></span>
-<span id="cb154-64"><a href="#cb154-64" aria-label="64"></a>        CURL_async_tick<span class="op">(</span>curl_async<span class="op">);</span></span>
-<span id="cb154-65"><a href="#cb154-65" aria-label="65"></a>    <span class="op">}</span></span>
-<span id="cb154-66"><a href="#cb154-66" aria-label="66"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
-<span id="cb154-67"><a href="#cb154-67" aria-label="67"></a><span class="op">}</span></span></code></pre></div>
-<h2 data-number="10.3" id="app_coroutines"><span
-class="header-section-number">10.3</span> <a href="#app_coroutines">#
+<p>SEQUENTIAL requests:</p>
+<div class="sourceCode" id="cb162"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb162-1"><a href="#cb162-1" aria-label="1"></a><span class="kw">struct</span> App_StateV0 <span class="co">// sequential</span></span>
+<span id="cb162-2"><a href="#cb162-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb162-3"><a href="#cb162-3" aria-label="3"></a>    CURL_Async _curl_async<span class="op">{};</span></span>
+<span id="cb162-4"><a href="#cb162-4" aria-label="4"></a>    <span class="dt">bool</span> _finished <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb162-5"><a href="#cb162-5" aria-label="5"></a>    <span class="bu">std::</span>string _r1<span class="op">;</span></span>
+<span id="cb162-6"><a href="#cb162-6" aria-label="6"></a>    <span class="bu">std::</span>string _r2<span class="op">;</span></span>
+<span id="cb162-7"><a href="#cb162-7" aria-label="7"></a></span>
+<span id="cb162-8"><a href="#cb162-8" aria-label="8"></a>    <span class="kw">explicit</span> App_StateV0<span class="op">(</span>CURL_Async curl_async<span class="op">)</span> <span class="kw">noexcept</span></span>
+<span id="cb162-9"><a href="#cb162-9" aria-label="9"></a>        <span class="op">:</span> _curl_async<span class="op">(</span>curl_async<span class="op">)</span></span>
+<span id="cb162-10"><a href="#cb162-10" aria-label="10"></a>    <span class="op">{</span></span>
+<span id="cb162-11"><a href="#cb162-11" aria-label="11"></a>    <span class="op">}</span></span>
+<span id="cb162-12"><a href="#cb162-12" aria-label="12"></a>    App_StateV0<span class="op">(</span><span class="at">const</span> App_StateV0<span class="op">&amp;)</span> <span class="op">=</span> <span class="kw">delete</span><span class="op">;</span></span>
+<span id="cb162-13"><a href="#cb162-13" aria-label="13"></a>    <span class="op">~</span>App_StateV0<span class="op">()</span> <span class="kw">noexcept</span></span>
+<span id="cb162-14"><a href="#cb162-14" aria-label="14"></a>    <span class="op">{</span></span>
+<span id="cb162-15"><a href="#cb162-15" aria-label="15"></a>        <span class="ot">assert</span><span class="op">(</span>_finished<span class="op">);</span></span>
+<span id="cb162-16"><a href="#cb162-16" aria-label="16"></a>    <span class="op">}</span></span>
+<span id="cb162-17"><a href="#cb162-17" aria-label="17"></a></span>
+<span id="cb162-18"><a href="#cb162-18" aria-label="18"></a>    <span class="dt">void</span> start<span class="op">()</span></span>
+<span id="cb162-19"><a href="#cb162-19" aria-label="19"></a>    <span class="op">{</span></span>
+<span id="cb162-20"><a href="#cb162-20" aria-label="20"></a>        CURL_async_get<span class="op">(</span>_curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">,</span> <span class="kw">this</span></span>
+<span id="cb162-21"><a href="#cb162-21" aria-label="21"></a>            <span class="op">,</span> <span class="op">[](</span><span class="dt">void</span><span class="op">*</span> user_data<span class="op">,</span> <span class="bu">std::</span>string response1<span class="op">)</span></span>
+<span id="cb162-22"><a href="#cb162-22" aria-label="22"></a>        <span class="op">{</span></span>
+<span id="cb162-23"><a href="#cb162-23" aria-label="23"></a>            App_StateV0<span class="op">&amp;</span> state <span class="op">=</span> <span class="op">*</span><span class="kw">static_cast</span><span class="op">&lt;</span>App_StateV0<span class="op">*&gt;(</span>user_data<span class="op">);</span></span>
+<span id="cb162-24"><a href="#cb162-24" aria-label="24"></a>            state<span class="op">.</span>_r1 <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>response1<span class="op">);</span></span>
+<span id="cb162-25"><a href="#cb162-25" aria-label="25"></a></span>
+<span id="cb162-26"><a href="#cb162-26" aria-label="26"></a>            CURL_async_get<span class="op">(</span>state<span class="op">.</span>_curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file2.txt&quot;</span><span class="op">,</span> user_data</span>
+<span id="cb162-27"><a href="#cb162-27" aria-label="27"></a>                <span class="op">,</span> <span class="op">[](</span><span class="dt">void</span><span class="op">*</span> user_data<span class="op">,</span> <span class="bu">std::</span>string response2<span class="op">)</span></span>
+<span id="cb162-28"><a href="#cb162-28" aria-label="28"></a>            <span class="op">{</span></span>
+<span id="cb162-29"><a href="#cb162-29" aria-label="29"></a>                App_StateV0<span class="op">&amp;</span> state <span class="op">=</span> <span class="op">*</span><span class="kw">static_cast</span><span class="op">&lt;</span>App_StateV0<span class="op">*&gt;(</span>user_data<span class="op">);</span></span>
+<span id="cb162-30"><a href="#cb162-30" aria-label="30"></a>                state<span class="op">.</span>_r2 <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>response2<span class="op">);</span></span>
+<span id="cb162-31"><a href="#cb162-31" aria-label="31"></a>                state<span class="op">.</span>_finished <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb162-32"><a href="#cb162-32" aria-label="32"></a>                state<span class="op">.</span>done<span class="op">();</span></span>
+<span id="cb162-33"><a href="#cb162-33" aria-label="33"></a>            <span class="op">});</span></span>
+<span id="cb162-34"><a href="#cb162-34" aria-label="34"></a>        <span class="op">});</span></span>
+<span id="cb162-35"><a href="#cb162-35" aria-label="35"></a>    <span class="op">}</span></span>
+<span id="cb162-36"><a href="#cb162-36" aria-label="36"></a></span>
+<span id="cb162-37"><a href="#cb162-37" aria-label="37"></a>    <span class="dt">void</span> done<span class="op">()</span></span>
+<span id="cb162-38"><a href="#cb162-38" aria-label="38"></a>    <span class="op">{</span></span>
+<span id="cb162-39"><a href="#cb162-39" aria-label="39"></a>        <span class="ot">assert</span><span class="op">(</span>_finished<span class="op">);</span></span>
+<span id="cb162-40"><a href="#cb162-40" aria-label="40"></a>        <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> _r1<span class="op">);</span></span>
+<span id="cb162-41"><a href="#cb162-41" aria-label="41"></a>        <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> _r2<span class="op">);</span></span>
+<span id="cb162-42"><a href="#cb162-42" aria-label="42"></a>    <span class="op">}</span></span>
+<span id="cb162-43"><a href="#cb162-43" aria-label="43"></a><span class="op">};</span></span>
+<span id="cb162-44"><a href="#cb162-44" aria-label="44"></a></span>
+<span id="cb162-45"><a href="#cb162-45" aria-label="45"></a><span class="at">static</span> <span class="dt">void</span> App_CallbacksV0<span class="op">()</span></span>
+<span id="cb162-46"><a href="#cb162-46" aria-label="46"></a><span class="op">{</span></span>
+<span id="cb162-47"><a href="#cb162-47" aria-label="47"></a>    CURL_Async curl_async <span class="op">=</span> CURL_async_create<span class="op">();</span></span>
+<span id="cb162-48"><a href="#cb162-48" aria-label="48"></a>    App_StateV0 app<span class="op">{</span>curl_async<span class="op">};</span></span>
+<span id="cb162-49"><a href="#cb162-49" aria-label="49"></a>    app<span class="op">.</span>start<span class="op">();</span></span>
+<span id="cb162-50"><a href="#cb162-50" aria-label="50"></a>    <span class="cf">while</span> <span class="op">(!</span>app<span class="op">.</span>_finished<span class="op">)</span></span>
+<span id="cb162-51"><a href="#cb162-51" aria-label="51"></a>    <span class="op">{</span></span>
+<span id="cb162-52"><a href="#cb162-52" aria-label="52"></a>        CURL_async_tick<span class="op">(</span>curl_async<span class="op">);</span></span>
+<span id="cb162-53"><a href="#cb162-53" aria-label="53"></a>    <span class="op">}</span></span>
+<span id="cb162-54"><a href="#cb162-54" aria-label="54"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
+<span id="cb162-55"><a href="#cb162-55" aria-label="55"></a><span class="op">}</span></span></code></pre></div>
+<p>CONCURRENT requests:</p>
+<div class="sourceCode" id="cb163"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb163-1"><a href="#cb163-1" aria-label="1"></a><span class="kw">struct</span> App_StateV1 <span class="co">// concurrent</span></span>
+<span id="cb163-2"><a href="#cb163-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb163-3"><a href="#cb163-3" aria-label="3"></a>    CURL_Async _curl_async<span class="op">{};</span></span>
+<span id="cb163-4"><a href="#cb163-4" aria-label="4"></a>    <span class="bu">std::</span>int32_t _requests <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb163-5"><a href="#cb163-5" aria-label="5"></a>    <span class="dt">bool</span> _finished <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb163-6"><a href="#cb163-6" aria-label="6"></a>    <span class="bu">std::</span>string _r1<span class="op">;</span></span>
+<span id="cb163-7"><a href="#cb163-7" aria-label="7"></a>    <span class="bu">std::</span>string _r2<span class="op">;</span></span>
+<span id="cb163-8"><a href="#cb163-8" aria-label="8"></a></span>
+<span id="cb163-9"><a href="#cb163-9" aria-label="9"></a>    <span class="kw">explicit</span> App_StateV1<span class="op">(</span>CURL_Async curl_async<span class="op">)</span> <span class="kw">noexcept</span></span>
+<span id="cb163-10"><a href="#cb163-10" aria-label="10"></a>        <span class="op">:</span> _curl_async<span class="op">(</span>curl_async<span class="op">)</span></span>
+<span id="cb163-11"><a href="#cb163-11" aria-label="11"></a>    <span class="op">{</span></span>
+<span id="cb163-12"><a href="#cb163-12" aria-label="12"></a>    <span class="op">}</span></span>
+<span id="cb163-13"><a href="#cb163-13" aria-label="13"></a>    App_StateV1<span class="op">(</span><span class="at">const</span> App_StateV1<span class="op">&amp;)</span> <span class="op">=</span> <span class="kw">delete</span><span class="op">;</span></span>
+<span id="cb163-14"><a href="#cb163-14" aria-label="14"></a>    <span class="op">~</span>App_StateV1<span class="op">()</span> <span class="kw">noexcept</span></span>
+<span id="cb163-15"><a href="#cb163-15" aria-label="15"></a>    <span class="op">{</span></span>
+<span id="cb163-16"><a href="#cb163-16" aria-label="16"></a>        <span class="ot">assert</span><span class="op">(</span>_finished<span class="op">);</span></span>
+<span id="cb163-17"><a href="#cb163-17" aria-label="17"></a>    <span class="op">}</span></span>
+<span id="cb163-18"><a href="#cb163-18" aria-label="18"></a></span>
+<span id="cb163-19"><a href="#cb163-19" aria-label="19"></a>    <span class="dt">void</span> start<span class="op">()</span></span>
+<span id="cb163-20"><a href="#cb163-20" aria-label="20"></a>    <span class="op">{</span></span>
+<span id="cb163-21"><a href="#cb163-21" aria-label="21"></a>        _requests <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb163-22"><a href="#cb163-22" aria-label="22"></a>        CURL_async_get<span class="op">(</span>_curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">,</span> <span class="kw">this</span></span>
+<span id="cb163-23"><a href="#cb163-23" aria-label="23"></a>            <span class="op">,</span> <span class="op">[](</span><span class="dt">void</span><span class="op">*</span> user_data<span class="op">,</span> <span class="bu">std::</span>string response<span class="op">)</span></span>
+<span id="cb163-24"><a href="#cb163-24" aria-label="24"></a>        <span class="op">{</span></span>
+<span id="cb163-25"><a href="#cb163-25" aria-label="25"></a>            App_StateV1<span class="op">&amp;</span> state <span class="op">=</span> <span class="op">*</span><span class="kw">static_cast</span><span class="op">&lt;</span>App_StateV1<span class="op">*&gt;(</span>user_data<span class="op">);</span></span>
+<span id="cb163-26"><a href="#cb163-26" aria-label="26"></a>            state<span class="op">.</span>_r1 <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>response<span class="op">);</span></span>
+<span id="cb163-27"><a href="#cb163-27" aria-label="27"></a>            state<span class="op">.</span>try_finish<span class="op">();</span></span>
+<span id="cb163-28"><a href="#cb163-28" aria-label="28"></a>        <span class="op">});</span></span>
+<span id="cb163-29"><a href="#cb163-29" aria-label="29"></a>        CURL_async_get<span class="op">(</span>_curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file2.txt&quot;</span><span class="op">,</span> <span class="kw">this</span></span>
+<span id="cb163-30"><a href="#cb163-30" aria-label="30"></a>            <span class="op">,</span> <span class="op">[](</span><span class="dt">void</span><span class="op">*</span> user_data<span class="op">,</span> <span class="bu">std::</span>string response<span class="op">)</span></span>
+<span id="cb163-31"><a href="#cb163-31" aria-label="31"></a>        <span class="op">{</span></span>
+<span id="cb163-32"><a href="#cb163-32" aria-label="32"></a>            App_StateV1<span class="op">&amp;</span> state <span class="op">=</span> <span class="op">*</span><span class="kw">static_cast</span><span class="op">&lt;</span>App_StateV1<span class="op">*&gt;(</span>user_data<span class="op">);</span></span>
+<span id="cb163-33"><a href="#cb163-33" aria-label="33"></a>            state<span class="op">.</span>_r2 <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>response<span class="op">);</span></span>
+<span id="cb163-34"><a href="#cb163-34" aria-label="34"></a>            state<span class="op">.</span>try_finish<span class="op">();</span></span>
+<span id="cb163-35"><a href="#cb163-35" aria-label="35"></a>        <span class="op">});</span></span>
+<span id="cb163-36"><a href="#cb163-36" aria-label="36"></a>    <span class="op">}</span></span>
+<span id="cb163-37"><a href="#cb163-37" aria-label="37"></a></span>
+<span id="cb163-38"><a href="#cb163-38" aria-label="38"></a>    <span class="dt">void</span> try_finish<span class="op">()</span></span>
+<span id="cb163-39"><a href="#cb163-39" aria-label="39"></a>    <span class="op">{</span></span>
+<span id="cb163-40"><a href="#cb163-40" aria-label="40"></a>        <span class="ot">assert</span><span class="op">(</span>_requests <span class="op">&gt;</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb163-41"><a href="#cb163-41" aria-label="41"></a>        _requests <span class="op">-=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb163-42"><a href="#cb163-42" aria-label="42"></a>        <span class="cf">if</span> <span class="op">(</span>_requests <span class="op">==</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb163-43"><a href="#cb163-43" aria-label="43"></a>        <span class="op">{</span></span>
+<span id="cb163-44"><a href="#cb163-44" aria-label="44"></a>            _finished <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb163-45"><a href="#cb163-45" aria-label="45"></a>            done<span class="op">();</span></span>
+<span id="cb163-46"><a href="#cb163-46" aria-label="46"></a>        <span class="op">}</span></span>
+<span id="cb163-47"><a href="#cb163-47" aria-label="47"></a>    <span class="op">}</span></span>
+<span id="cb163-48"><a href="#cb163-48" aria-label="48"></a></span>
+<span id="cb163-49"><a href="#cb163-49" aria-label="49"></a>    <span class="dt">void</span> done<span class="op">()</span></span>
+<span id="cb163-50"><a href="#cb163-50" aria-label="50"></a>    <span class="op">{</span></span>
+<span id="cb163-51"><a href="#cb163-51" aria-label="51"></a>        <span class="ot">assert</span><span class="op">(</span>_finished<span class="op">);</span></span>
+<span id="cb163-52"><a href="#cb163-52" aria-label="52"></a>        <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> _r1<span class="op">);</span></span>
+<span id="cb163-53"><a href="#cb163-53" aria-label="53"></a>        <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> _r2<span class="op">);</span></span>
+<span id="cb163-54"><a href="#cb163-54" aria-label="54"></a>    <span class="op">}</span></span>
+<span id="cb163-55"><a href="#cb163-55" aria-label="55"></a><span class="op">};</span></span>
+<span id="cb163-56"><a href="#cb163-56" aria-label="56"></a></span>
+<span id="cb163-57"><a href="#cb163-57" aria-label="57"></a><span class="at">static</span> <span class="dt">void</span> App_CallbacksV1<span class="op">()</span></span>
+<span id="cb163-58"><a href="#cb163-58" aria-label="58"></a><span class="op">{</span></span>
+<span id="cb163-59"><a href="#cb163-59" aria-label="59"></a>    CURL_Async curl_async <span class="op">=</span> CURL_async_create<span class="op">();</span></span>
+<span id="cb163-60"><a href="#cb163-60" aria-label="60"></a>    App_StateV1 app<span class="op">{</span>curl_async<span class="op">};</span></span>
+<span id="cb163-61"><a href="#cb163-61" aria-label="61"></a>    app<span class="op">.</span>start<span class="op">();</span></span>
+<span id="cb163-62"><a href="#cb163-62" aria-label="62"></a>    <span class="cf">while</span> <span class="op">(!</span>app<span class="op">.</span>_finished<span class="op">)</span></span>
+<span id="cb163-63"><a href="#cb163-63" aria-label="63"></a>    <span class="op">{</span></span>
+<span id="cb163-64"><a href="#cb163-64" aria-label="64"></a>        CURL_async_tick<span class="op">(</span>curl_async<span class="op">);</span></span>
+<span id="cb163-65"><a href="#cb163-65" aria-label="65"></a>    <span class="op">}</span></span>
+<span id="cb163-66"><a href="#cb163-66" aria-label="66"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
+<span id="cb163-67"><a href="#cb163-67" aria-label="67"></a><span class="op">}</span></span></code></pre></div>
+<h2 data-number="11.3" id="app_coroutines"><span
+class="header-section-number">11.3</span> <a href="#app_coroutines">#
 </a>requests with coroutines</h2>
-<p>2 requests one after another:</p>
-<div class="sourceCode" id="cb155"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb155-1"><a href="#cb155-1" aria-label="1"></a><span class="at">static</span> Co_Task<span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span> App01_Run<span class="op">(</span>CURL_Async curl_async<span class="op">)</span></span>
-<span id="cb155-2"><a href="#cb155-2" aria-label="2"></a><span class="op">{</span></span>
-<span id="cb155-3"><a href="#cb155-3" aria-label="3"></a>    <span class="at">const</span> <span class="bu">std::</span>string r1 <span class="op">=</span> <span class="cf">co_await</span> CURL_await_get<span class="op">(</span>curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">);</span></span>
-<span id="cb155-4"><a href="#cb155-4" aria-label="4"></a>    <span class="at">const</span> <span class="bu">std::</span>string r2 <span class="op">=</span> <span class="cf">co_await</span> CURL_await_get<span class="op">(</span>curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file2.txt&quot;</span><span class="op">);</span></span>
-<span id="cb155-5"><a href="#cb155-5" aria-label="5"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> r1<span class="op">);</span></span>
-<span id="cb155-6"><a href="#cb155-6" aria-label="6"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> r2<span class="op">);</span></span>
-<span id="cb155-7"><a href="#cb155-7" aria-label="7"></a><span class="op">}</span></span>
-<span id="cb155-8"><a href="#cb155-8" aria-label="8"></a></span>
-<span id="cb155-9"><a href="#cb155-9" aria-label="9"></a><span class="at">static</span> <span class="dt">void</span> App01_Coroutines<span class="op">()</span></span>
-<span id="cb155-10"><a href="#cb155-10" aria-label="10"></a><span class="op">{</span></span>
-<span id="cb155-11"><a href="#cb155-11" aria-label="11"></a>    CURL_Async curl_async <span class="op">=</span> CURL_async_create<span class="op">();</span></span>
-<span id="cb155-12"><a href="#cb155-12" aria-label="12"></a>    Co_Task task <span class="op">=</span> App01_Run<span class="op">(</span>curl_async<span class="op">);</span></span>
-<span id="cb155-13"><a href="#cb155-13" aria-label="13"></a>    task<span class="op">.</span>resume<span class="op">();</span></span>
-<span id="cb155-14"><a href="#cb155-14" aria-label="14"></a>    <span class="cf">while</span> <span class="op">(</span>task<span class="op">.</span>is_in_progress<span class="op">())</span></span>
-<span id="cb155-15"><a href="#cb155-15" aria-label="15"></a>    <span class="op">{</span></span>
-<span id="cb155-16"><a href="#cb155-16" aria-label="16"></a>        CURL_async_tick<span class="op">(</span>curl_async<span class="op">);</span></span>
-<span id="cb155-17"><a href="#cb155-17" aria-label="17"></a>    <span class="op">}</span></span>
-<span id="cb155-18"><a href="#cb155-18" aria-label="18"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
-<span id="cb155-19"><a href="#cb155-19" aria-label="19"></a><span class="op">}</span></span></code></pre></div>
+<p>CODE: App_Coroutines</p>
+<p>SEQUENTIAL requests:</p>
+<div class="sourceCode" id="cb164"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb164-1"><a href="#cb164-1" aria-label="1"></a><span class="at">static</span> Co_Task<span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span> Coro_MainV0<span class="op">(</span>CURL_Async curl_async<span class="op">)</span> <span class="co">// sequential</span></span>
+<span id="cb164-2"><a href="#cb164-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb164-3"><a href="#cb164-3" aria-label="3"></a>    <span class="at">const</span> <span class="bu">std::</span>string r1 <span class="op">=</span> <span class="cf">co_await</span> CURL_await_get<span class="op">(</span>curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">);</span></span>
+<span id="cb164-4"><a href="#cb164-4" aria-label="4"></a>    <span class="at">const</span> <span class="bu">std::</span>string r2 <span class="op">=</span> <span class="cf">co_await</span> CURL_await_get<span class="op">(</span>curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file2.txt&quot;</span><span class="op">);</span></span>
+<span id="cb164-5"><a href="#cb164-5" aria-label="5"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> r1<span class="op">);</span></span>
+<span id="cb164-6"><a href="#cb164-6" aria-label="6"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> r2<span class="op">);</span></span>
+<span id="cb164-7"><a href="#cb164-7" aria-label="7"></a><span class="op">}</span></span>
+<span id="cb164-8"><a href="#cb164-8" aria-label="8"></a></span>
+<span id="cb164-9"><a href="#cb164-9" aria-label="9"></a><span class="at">static</span> <span class="dt">void</span> App_CoroutinesV0<span class="op">()</span></span>
+<span id="cb164-10"><a href="#cb164-10" aria-label="10"></a><span class="op">{</span></span>
+<span id="cb164-11"><a href="#cb164-11" aria-label="11"></a>    CURL_Async curl_async <span class="op">=</span> CURL_async_create<span class="op">();</span></span>
+<span id="cb164-12"><a href="#cb164-12" aria-label="12"></a>    Co_Task<span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span> task <span class="op">=</span> Coro_MainV0<span class="op">(</span>curl_async<span class="op">);</span></span>
+<span id="cb164-13"><a href="#cb164-13" aria-label="13"></a>    task<span class="op">.</span>resume<span class="op">();</span></span>
+<span id="cb164-14"><a href="#cb164-14" aria-label="14"></a>    <span class="cf">while</span> <span class="op">(</span>task<span class="op">.</span>is_in_progress<span class="op">())</span></span>
+<span id="cb164-15"><a href="#cb164-15" aria-label="15"></a>    <span class="op">{</span></span>
+<span id="cb164-16"><a href="#cb164-16" aria-label="16"></a>        CURL_async_tick<span class="op">(</span>curl_async<span class="op">);</span></span>
+<span id="cb164-17"><a href="#cb164-17" aria-label="17"></a>    <span class="op">}</span></span>
+<span id="cb164-18"><a href="#cb164-18" aria-label="18"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
+<span id="cb164-19"><a href="#cb164-19" aria-label="19"></a><span class="op">}</span></span></code></pre></div>
 <p>main() loop takes a bit of space, but the actual business logic is
 almost the same as regular synchronous code.</p>
-<p>2 concurrent requests:</p>
-<div class="sourceCode" id="cb156"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb156-1"><a href="#cb156-1" aria-label="1"></a><span class="at">static</span> Co_Task<span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span> App00_Run<span class="op">(</span>CURL_Async curl_async<span class="op">)</span></span>
-<span id="cb156-2"><a href="#cb156-2" aria-label="2"></a><span class="op">{</span></span>
-<span id="cb156-3"><a href="#cb156-3" aria-label="3"></a>    <span class="kw">auto</span> <span class="op">[</span>r1<span class="op">,</span> r2<span class="op">]</span> <span class="op">=</span> <span class="cf">co_await</span> CO_await_all<span class="op">(</span></span>
-<span id="cb156-4"><a href="#cb156-4" aria-label="4"></a>        CURL_coro_get<span class="op">(</span>curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">),</span></span>
-<span id="cb156-5"><a href="#cb156-5" aria-label="5"></a>        CURL_coro_get<span class="op">(</span>curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file2.txt&quot;</span><span class="op">));</span></span>
-<span id="cb156-6"><a href="#cb156-6" aria-label="6"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> r1<span class="op">);</span></span>
-<span id="cb156-7"><a href="#cb156-7" aria-label="7"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> r2<span class="op">);</span></span>
-<span id="cb156-8"><a href="#cb156-8" aria-label="8"></a><span class="op">}</span></span>
-<span id="cb156-9"><a href="#cb156-9" aria-label="9"></a></span>
-<span id="cb156-10"><a href="#cb156-10" aria-label="10"></a><span class="at">static</span> <span class="dt">void</span> App00_Coroutines<span class="op">()</span></span>
-<span id="cb156-11"><a href="#cb156-11" aria-label="11"></a><span class="op">{</span></span>
-<span id="cb156-12"><a href="#cb156-12" aria-label="12"></a>    CURL_Async curl_async <span class="op">=</span> CURL_async_create<span class="op">();</span></span>
-<span id="cb156-13"><a href="#cb156-13" aria-label="13"></a>    Co_Task task <span class="op">=</span> App00_Run<span class="op">(</span>curl_async<span class="op">);</span></span>
-<span id="cb156-14"><a href="#cb156-14" aria-label="14"></a>    task<span class="op">.</span>resume<span class="op">();</span></span>
-<span id="cb156-15"><a href="#cb156-15" aria-label="15"></a>    <span class="cf">while</span> <span class="op">(</span>task<span class="op">.</span>is_in_progress<span class="op">())</span></span>
-<span id="cb156-16"><a href="#cb156-16" aria-label="16"></a>    <span class="op">{</span></span>
-<span id="cb156-17"><a href="#cb156-17" aria-label="17"></a>        CURL_async_tick<span class="op">(</span>curl_async<span class="op">);</span></span>
-<span id="cb156-18"><a href="#cb156-18" aria-label="18"></a>    <span class="op">}</span></span>
-<span id="cb156-19"><a href="#cb156-19" aria-label="19"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
-<span id="cb156-20"><a href="#cb156-20" aria-label="20"></a><span class="op">}</span></span></code></pre></div>
+<p>CONCURRENT requests:</p>
+<div class="sourceCode" id="cb165"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb165-1"><a href="#cb165-1" aria-label="1"></a><span class="at">static</span> Co_Task<span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span> Coro_MainV1<span class="op">(</span>CURL_Async curl_async<span class="op">)</span> <span class="co">// concurrent</span></span>
+<span id="cb165-2"><a href="#cb165-2" aria-label="2"></a><span class="op">{</span></span>
+<span id="cb165-3"><a href="#cb165-3" aria-label="3"></a>    <span class="kw">auto</span> <span class="op">[</span>r1<span class="op">,</span> r2<span class="op">]</span> <span class="op">=</span> <span class="cf">co_await</span> CO_await_all<span class="op">(</span></span>
+<span id="cb165-4"><a href="#cb165-4" aria-label="4"></a>        CURL_coro_get<span class="op">(</span>curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">),</span></span>
+<span id="cb165-5"><a href="#cb165-5" aria-label="5"></a>        CURL_coro_get<span class="op">(</span>curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file2.txt&quot;</span><span class="op">));</span></span>
+<span id="cb165-6"><a href="#cb165-6" aria-label="6"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> r1<span class="op">);</span></span>
+<span id="cb165-7"><a href="#cb165-7" aria-label="7"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> r2<span class="op">);</span></span>
+<span id="cb165-8"><a href="#cb165-8" aria-label="8"></a><span class="op">}</span></span>
+<span id="cb165-9"><a href="#cb165-9" aria-label="9"></a></span>
+<span id="cb165-10"><a href="#cb165-10" aria-label="10"></a><span class="at">static</span> <span class="dt">void</span> App_CoroutinesV1<span class="op">()</span></span>
+<span id="cb165-11"><a href="#cb165-11" aria-label="11"></a><span class="op">{</span></span>
+<span id="cb165-12"><a href="#cb165-12" aria-label="12"></a>    CURL_Async curl_async <span class="op">=</span> CURL_async_create<span class="op">();</span></span>
+<span id="cb165-13"><a href="#cb165-13" aria-label="13"></a>    Co_Task<span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span> task <span class="op">=</span> Coro_MainV1<span class="op">(</span>curl_async<span class="op">);</span></span>
+<span id="cb165-14"><a href="#cb165-14" aria-label="14"></a>    task<span class="op">.</span>resume<span class="op">();</span></span>
+<span id="cb165-15"><a href="#cb165-15" aria-label="15"></a>    <span class="cf">while</span> <span class="op">(</span>task<span class="op">.</span>is_in_progress<span class="op">())</span></span>
+<span id="cb165-16"><a href="#cb165-16" aria-label="16"></a>    <span class="op">{</span></span>
+<span id="cb165-17"><a href="#cb165-17" aria-label="17"></a>        CURL_async_tick<span class="op">(</span>curl_async<span class="op">);</span></span>
+<span id="cb165-18"><a href="#cb165-18" aria-label="18"></a>    <span class="op">}</span></span>
+<span id="cb165-19"><a href="#cb165-19" aria-label="19"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
+<span id="cb165-20"><a href="#cb165-20" aria-label="20"></a><span class="op">}</span></span></code></pre></div>
+<h2 data-number="11.4" id="app_fibers"><span
+class="header-section-number">11.4</span> <a href="#app_fibers">#
+</a>requests with fibers</h2>
+<p>CODE: App_Fibers</p>
+<p>SEQUENTIAL requests:</p>
+<div class="sourceCode" id="cb166"><pre
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"></code></pre></div>
 </body>
 </html>
