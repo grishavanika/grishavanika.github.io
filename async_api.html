@@ -265,152 +265,146 @@ code</a>.</p>
 <nav id="TOC" role="doc-toc">
 <ul>
 <li><a href="#intro" id="toc-intro"><span
-class="toc-section-number">1</span> # introduction</a></li>
+class="toc-section-number">1</span> #introduction</a></li>
 <li><a href="#cmake" id="toc-cmake"><span
-class="toc-section-number">2</span> # setup with CMake +
-libcurl</a></li>
+class="toc-section-number">2</span> #setup with CMake + libcurl</a></li>
 <li><a href="#libcurl_easy" id="toc-libcurl_easy"><span
-class="toc-section-number">3</span> # building blocking API</a>
+class="toc-section-number">3</span> #building blocking API</a>
 <ul>
 <li><a href="#serve" id="toc-serve"><span
-class="toc-section-number">3.1</span> # run simple http server for
+class="toc-section-number">3.1</span> #run simple http server for
 tests</a></li>
 </ul></li>
 <li><a href="#libcurl_multi" id="toc-libcurl_multi"><span
-class="toc-section-number">4</span> # building C-style callbacks API</a>
+class="toc-section-number">4</span> #building C-style callbacks API</a>
 <ul>
 <li><a href="#libcurl_multi_design" id="toc-libcurl_multi_design"><span
-class="toc-section-number">4.1</span> # thoughts on the design</a></li>
+class="toc-section-number">4.1</span> #thoughts on the design</a></li>
 <li><a href="#libcurl_c_style" id="toc-libcurl_c_style"><span
-class="toc-section-number">4.2</span> # note on C-style API (vs
+class="toc-section-number">4.2</span> #note on C-style API (vs
 C++)</a></li>
 <li><a href="#libcurl_multi_impl" id="toc-libcurl_multi_impl"><span
-class="toc-section-number">4.3</span> # implementing with libcurl
+class="toc-section-number">4.3</span> #implementing with libcurl
 multi</a></li>
 </ul></li>
-<li><a href="#building-c20-coroutines-api"
-id="toc-building-c20-coroutines-api"><span
-class="toc-section-number">5</span> # building C++20 coroutines API</a>
+<li><a href="#coro_api" id="toc-coro_api"><span
+class="toc-section-number">5</span> #building C++20 coroutines API</a>
 <ul>
 <li><a href="#c-coroutines-basic-task-type"
 id="toc-c-coroutines-basic-task-type"><span
-class="toc-section-number">5.1</span> # C++ coroutines, basic task
+class="toc-section-number">5.1</span> #C++ coroutines, basic task
 type</a></li>
 <li><a href="#c-coroutines-basic-await"
 id="toc-c-coroutines-basic-await"><span
-class="toc-section-number">5.2</span> # C++ coroutines, basic
+class="toc-section-number">5.2</span> #C++ coroutines, basic
 await</a></li>
 <li><a href="#c-coroutines-await-callback-with-a-crash"
 id="toc-c-coroutines-await-callback-with-a-crash"><span
-class="toc-section-number">5.3</span> # C++ coroutines, await callback
+class="toc-section-number">5.3</span> #C++ coroutines, await callback
 with a crash</a></li>
 <li><a href="#c-coroutines-await-callback"
 id="toc-c-coroutines-await-callback"><span
-class="toc-section-number">5.4</span> # C++ coroutines, await
+class="toc-section-number">5.4</span> #C++ coroutines, await
 callback</a></li>
 <li><a href="#coroutine-task-that-holds-a-return-value"
 id="toc-coroutine-task-that-holds-a-return-value"><span
-class="toc-section-number">5.5</span> # coroutine task that holds a
+class="toc-section-number">5.5</span> #coroutine task that holds a
 return value</a></li>
 <li><a href="#awaiting-coroutine-task"
 id="toc-awaiting-coroutine-task"><span
-class="toc-section-number">5.6</span> # awaiting coroutine task</a></li>
+class="toc-section-number">5.6</span> #awaiting coroutine task</a></li>
 <li><a href="#waiting-for-multiple-coroutines"
 id="toc-waiting-for-multiple-coroutines"><span
-class="toc-section-number">5.7</span> # waiting for multiple
+class="toc-section-number">5.7</span> #waiting for multiple
 coroutines</a></li>
 <li><a href="#waiting-for-multiple-curl-requests-with-tasks"
 id="toc-waiting-for-multiple-curl-requests-with-tasks"><span
-class="toc-section-number">5.8</span> # waiting for multiple CURL
+class="toc-section-number">5.8</span> #waiting for multiple CURL
 requests with tasks</a></li>
 <li><a href="#waiting-for-multiple-curl-request-with-custom-awaitable"
 id="toc-waiting-for-multiple-curl-request-with-custom-awaitable"><span
-class="toc-section-number">5.9</span> # waiting for multiple CURL
-request with custom awaitable</a></li>
+class="toc-section-number">5.9</span> #waiting for multiple CURL request
+with custom awaitable</a></li>
 </ul></li>
-<li><a href="#building-fibers-api" id="toc-building-fibers-api"><span
-class="toc-section-number">6</span> # building Fibers API</a>
+<li><a href="#fibers_api" id="toc-fibers_api"><span
+class="toc-section-number">6</span> #building Fibers API</a>
 <ul>
 <li><a href="#basic-fiber" id="toc-basic-fiber"><span
-class="toc-section-number">6.1</span> # basic Fiber</a></li>
+class="toc-section-number">6.1</span> #basic Fiber</a></li>
 <li><a href="#switching-between-fibers"
 id="toc-switching-between-fibers"><span
-class="toc-section-number">6.2</span> # switching between
-Fibers</a></li>
+class="toc-section-number">6.2</span> #switching between Fibers</a></li>
 <li><a href="#tasks-for-fibers" id="toc-tasks-for-fibers"><span
-class="toc-section-number">6.3</span> # tasks for Fibers</a></li>
+class="toc-section-number">6.3</span> #tasks for Fibers</a></li>
 <li><a href="#cancellable-fiber-task-with-a-generic-callback"
 id="toc-cancellable-fiber-task-with-a-generic-callback"><span
-class="toc-section-number">6.4</span> # cancellable Fiber task with a
+class="toc-section-number">6.4</span> #cancellable Fiber task with a
 generic callback</a></li>
 <li><a href="#basic-fiberpool" id="toc-basic-fiberpool"><span
-class="toc-section-number">6.5</span> # basic FiberPool</a></li>
+class="toc-section-number">6.5</span> #basic FiberPool</a></li>
 <li><a href="#fibertask" id="toc-fibertask"><span
-class="toc-section-number">6.6</span> # FiberTask</a></li>
+class="toc-section-number">6.6</span> #FiberTask</a></li>
 <li><a href="#waiting-for-a-curl-request-with-a-fiber"
 id="toc-waiting-for-a-curl-request-with-a-fiber"><span
-class="toc-section-number">6.7</span> # waiting for a CURL request with
-a Fiber</a></li>
+class="toc-section-number">6.7</span> #waiting for a CURL request with a
+Fiber</a></li>
 <li><a href="#waiting-for-multiple-a-fibertasks"
 id="toc-waiting-for-multiple-a-fibertasks"><span
-class="toc-section-number">6.8</span> # waiting for multiple a
+class="toc-section-number">6.8</span> #waiting for multiple a
 FiberTasks</a></li>
 </ul></li>
-<li><a href="#building-stdfuture-api"
-id="toc-building-stdfuture-api"><span
-class="toc-section-number">7</span> # building std::future API</a></li>
-<li><a href="#building-task-api-with-.then-support"
-id="toc-building-task-api-with-.then-support"><span
-class="toc-section-number">8</span> # building task API with .then()
+<li><a href="#futures_api" id="toc-futures_api"><span
+class="toc-section-number">7</span> #building std::future API</a></li>
+<li><a href="#then_api" id="toc-then_api"><span
+class="toc-section-number">8</span> #building task API with .then()
 support</a>
 <ul>
 <li><a href="#wrapping-curl-get-into-a-task"
 id="toc-wrapping-curl-get-into-a-task"><span
-class="toc-section-number">8.1</span> # wrapping CURL get into a
+class="toc-section-number">8.1</span> #wrapping CURL get into a
 Task</a></li>
 <li><a href="#waiting-for-multiple-task-requests"
 id="toc-waiting-for-multiple-task-requests"><span
-class="toc-section-number">8.2</span> # waiting for multiple Task
+class="toc-section-number">8.2</span> #waiting for multiple Task
 requests</a></li>
 </ul></li>
-<li><a href="#building-c26-senders" id="toc-building-c26-senders"><span
-class="toc-section-number">9</span> # building C++26 senders</a>
+<li><a href="#senders_api" id="toc-senders_api"><span
+class="toc-section-number">9</span> #building C++26 senders</a>
 <ul>
 <li><a href="#sender-for-a-curl-get"
 id="toc-sender-for-a-curl-get"><span
-class="toc-section-number">9.1</span> # sender for a CURL get</a></li>
+class="toc-section-number">9.1</span> #sender for a CURL get</a></li>
 </ul></li>
 <li><a href="#reactive-streams" id="toc-reactive-streams"><span
-class="toc-section-number">10</span> # reactive streams</a></li>
+class="toc-section-number">10</span> #reactive streams</a></li>
 <li><a href="#samples" id="toc-samples"><span
-class="toc-section-number">11</span> # SAMPLES</a>
+class="toc-section-number">11</span> #SAMPLES</a>
 <ul>
 <li><a href="#app_blocking" id="toc-app_blocking"><span
-class="toc-section-number">11.1</span> # synchronous requests</a></li>
+class="toc-section-number">11.1</span> #synchronous requests</a></li>
 <li><a href="#app_callbacks" id="toc-app_callbacks"><span
-class="toc-section-number">11.2</span> # requests with
-callbacks</a></li>
+class="toc-section-number">11.2</span> #requests with callbacks</a></li>
 <li><a href="#app_coroutines" id="toc-app_coroutines"><span
-class="toc-section-number">11.3</span> # requests with
+class="toc-section-number">11.3</span> #requests with
 coroutines</a></li>
 <li><a href="#app_fibers" id="toc-app_fibers"><span
-class="toc-section-number">11.4</span> # requests with fibers</a></li>
+class="toc-section-number">11.4</span> #requests with fibers</a></li>
 <li><a href="#app_futures" id="toc-app_futures"><span
-class="toc-section-number">11.5</span> # polling requests with
+class="toc-section-number">11.5</span> #polling requests with
 std::futures</a></li>
 <li><a href="#app_tasks" id="toc-app_tasks"><span
-class="toc-section-number">11.6</span> # requests with Tasks
+class="toc-section-number">11.6</span> #requests with Tasks
 .then()</a></li>
 <li><a href="#app_senders" id="toc-app_senders"><span
-class="toc-section-number">11.7</span> # requests with
+class="toc-section-number">11.7</span> #requests with
 senders/std::execution</a></li>
 </ul></li>
 </ul>
 </nav>
 <hr />
 <h1 data-number="1" id="intro"><span
-class="header-section-number">1</span> <a href="#intro">#
-</a>introduction</h1>
+class="header-section-number">1</span> <a
+href="#intro">#</a>introduction</h1>
 <p>We start with a simple C-style API on top of <a
 href="https://curl.se/libcurl/c/">libcurl C API</a> and have a code that
 may look like this:</p>
@@ -515,9 +509,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 href="https://curl.se/libcurl/c/">libcurl C API</a> for our needs.</p>
 <hr />
 <h1 data-number="2" id="cmake"><span
-class="header-section-number">2</span> <a href="#cmake"># </a>setup with
+class="header-section-number">2</span> <a href="#cmake">#</a>setup with
 CMake + libcurl</h1>
-<p>CODE: CH00_cmake</p>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH00_cmake">source
+code</a>.</p>
 <p>For <a href="https://github.com/microsoft/vcpkg">vcpkg</a>, there is
 an extensive <a
 href="https://learn.microsoft.com/en-us/vcpkg/get_started/get-started">documentation</a>
@@ -586,9 +582,11 @@ class="sourceCode numberSource bash numberLines"><code class="sourceCode bash"><
 <p>This assumes <code>cmake.exe</code> is in your <code>PATH</code>, see
 <code>build.cmd</code>.</p>
 <h1 data-number="3" id="libcurl_easy"><span
-class="header-section-number">3</span> <a href="#libcurl_easy">#
-</a>building blocking API</h1>
-<p>CODE: CH01_libcurl_easy</p>
+class="header-section-number">3</span> <a
+href="#libcurl_easy">#</a>building blocking API</h1>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH01_libcurl_easy">source
+code</a>, <a href="#app_blocking">sample app</a>.</p>
 <p>Blocking, synchronous API for a GET request is straightforward. We go
 with a function that looks like this:</p>
 <div class="sourceCode" id="cb12"><pre
@@ -668,34 +666,40 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb15-3"><a href="#cb15-3" aria-label="3"></a><span class="dt">int</span> main<span class="op">()</span></span>
 <span id="cb15-4"><a href="#cb15-4" aria-label="4"></a><span class="op">{</span></span>
 <span id="cb15-5"><a href="#cb15-5" aria-label="5"></a>    <span class="at">const</span> <span class="bu">std::</span>string r <span class="op">=</span> CURL_get<span class="op">(</span><span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">);</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-label="6"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;CURL_get(file1.txt): &#39;</span><span class="sc">{}</span><span class="st">&#39;&quot;</span><span class="op">,</span> r<span class="op">);</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-label="6"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> r<span class="op">);</span></span>
 <span id="cb15-7"><a href="#cb15-7" aria-label="7"></a><span class="op">}</span></span></code></pre></div>
 <p>that.. should crash since we don’t have local HTTP server running to
 serve <code>localhost:5001/file1.txt</code>. See the <a
 href="#serve">next section on how to make it happen</a>.</p>
 <p>Once done, we should see the sample file1.txt content in the console
 output:</p>
-<pre><code>CURL_get(file1.txt): &#39;content 1&#39;
-</code></pre>
+<pre><code>Fox</code></pre>
 <h2 data-number="3.1" id="serve"><span
-class="header-section-number">3.1</span> <a href="#serve"># </a>run
+class="header-section-number">3.1</span> <a href="#serve">#</a>run
 simple http server for tests</h2>
-<p>CODE: CH01_libcurl_easy</p>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH01_libcurl_easy">source
+code</a>.</p>
 <p>To run sample code, lets use Python to have simple HTTP server that
 hosts files in the current directory, see <code>serve.cmd</code>:</p>
 <div class="sourceCode" id="cb17"><pre
 class="sourceCode numberSource bash numberLines"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-label="1"></a><span class="ex">python</span> <span class="at">-m</span> http.server 5001</span></code></pre></div>
-<p>Given the directory that has file1.txt and file2.txt,
+<p>Given the directory that has <a
+href="https://raw.githubusercontent.com/grishavanika/async_api_styles/refs/heads/main/CH01_libcurl_easy/file1.txt">file1.txt</a>
+and <a
+href="https://raw.githubusercontent.com/grishavanika/async_api_styles/refs/heads/main/CH01_libcurl_easy/file2.txt">file2.txt</a>
 <code>CURL_get("localhost:5001/file1.txt")</code> should work and return
 the content of the file, see <a href="#libcurl_easy">blocking libcurl
 section</a>.</p>
 <h1 data-number="4" id="libcurl_multi"><span
-class="header-section-number">4</span> <a href="#libcurl_multi">#
-</a>building C-style callbacks API</h1>
-<p>CODE: CH02_libcurl_multi</p>
+class="header-section-number">4</span> <a
+href="#libcurl_multi">#</a>building C-style callbacks API</h1>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH02_libcurl_multi">source
+code</a>, <a href="#app_callbacks">sample app</a>.</p>
 <h2 data-number="4.1" id="libcurl_multi_design"><span
 class="header-section-number">4.1</span> <a
-href="#libcurl_multi_design"># </a>thoughts on the design</h2>
+href="#libcurl_multi_design">#</a>thoughts on the design</h2>
 <p>Now, lets imagine simplest possible asynchronous API. The difference
 to <a href="#libcurl_easy">blocking API</a> is that we ask the system to
 start a GET request and the response could arrive some time later. The
@@ -772,8 +776,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb23-10"><a href="#cb23-10" aria-label="10"></a>    <span class="op">,</span> <span class="dt">void</span><span class="op">*</span> user_data</span>
 <span id="cb23-11"><a href="#cb23-11" aria-label="11"></a>    <span class="op">,</span> <span class="dt">void</span> <span class="op">(*</span>callback<span class="op">)(</span><span class="dt">void</span><span class="op">*</span> user_data<span class="op">,</span> <span class="bu">std::</span>string response<span class="op">));</span></span></code></pre></div>
 <h2 data-number="4.2" id="libcurl_c_style"><span
-class="header-section-number">4.2</span> <a href="#libcurl_c_style">#
-</a>note on C-style API (vs C++)</h2>
+class="header-section-number">4.2</span> <a
+href="#libcurl_c_style">#</a>note on C-style API (vs C++)</h2>
 <p>For <a href="#libcurl_multi_design">C-style API above</a>, with C++,
 “the system” could be a class, callback could be
 <code>std::function&lt;&gt;</code> to accept anything, generally making
@@ -800,9 +804,11 @@ recognized for asynchronous APIs with callbacks (citation needed).</p>
 of C-style callback API, as a basic building block to cover similar
 callbacks-based APIs.</p>
 <h2 data-number="4.3" id="libcurl_multi_impl"><span
-class="header-section-number">4.3</span> <a href="#libcurl_multi_impl">#
-</a>implementing with libcurl multi</h2>
-<p>CODE: CH02_libcurl_multi</p>
+class="header-section-number">4.3</span> <a
+href="#libcurl_multi_impl">#</a>implementing with libcurl multi</h2>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH02_libcurl_multi">source
+code</a>, <a href="#app_callbacks">sample app</a>.</p>
 <p>For our callbacks <a href="#libcurl_multi_design">API</a>:</p>
 <div class="sourceCode" id="cb25"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb25-1"><a href="#cb25-1" aria-label="1"></a><span class="kw">using</span> CURL_Async <span class="op">=</span> <span class="dt">void</span><span class="op">*;</span></span>
@@ -1026,56 +1032,37 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>If <a href="#serve">python HTTP server</a> is running, our program
 should print:</p>
 <div class="sourceCode" id="cb33"><pre
-class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb33-1"><a href="#cb33-1" aria-label="1"></a>async response<span class="op">:</span> <span class="ch">&#39;c</span><span class="er">ontent 1</span><span class="ch">&#39;</span></span></code></pre></div>
-<h1 class="unlisted unnumbered" id="sync"><a href="#sync">#
-</a>blocking, synchronous (App_Blocking)</h1>
+class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb33-1"><a href="#cb33-1" aria-label="1"></a>Fox</span></code></pre></div>
 <h2 class="unlisted unnumbered" id="error_handling"><a
-href="#error_handling"># </a>on error handling</h2>
+href="#error_handling">#</a>on error handling</h2>
 <h3 class="unlisted unnumbered" id="assume-success-always-tooling"><a
-href="#assume-success-always-tooling"># </a>assume success always
+href="#assume-success-always-tooling">#</a>assume success always
 (tooling)</h3>
 <h3 class="unlisted unnumbered" id="implicit-return-empty-string"><a
-href="#implicit-return-empty-string"># </a>implicit, return empty
+href="#implicit-return-empty-string">#</a>implicit, return empty
 string</h3>
 <h3 class="unlisted unnumbered"
 id="status-code-out-parameter-stdfilesystem-style"><a
-href="#status-code-out-parameter-stdfilesystem-style"># </a>status code,
+href="#status-code-out-parameter-stdfilesystem-style">#</a>status code,
 out parameter (std::filesystem-style)</h3>
-<h3 class="unlisted unnumbered" id="optional"><a href="#optional">#
-</a>optional</h3>
-<h3 class="unlisted unnumbered" id="exceptions"><a href="#exceptions">#
-</a>exceptions</h3>
+<h3 class="unlisted unnumbered" id="optional"><a
+href="#optional">#</a>optional</h3>
+<h3 class="unlisted unnumbered" id="exceptions"><a
+href="#exceptions">#</a>exceptions</h3>
 <h3 class="unlisted unnumbered" id="resultvariant-like"><a
-href="#resultvariant-like"># </a>result/variant-like</h3>
+href="#resultvariant-like">#</a>result/variant-like</h3>
 <h3 class="unlisted unnumbered" id="resulttuple-like"><a
-href="#resulttuple-like"># </a>result/tuple-like</h3>
+href="#resulttuple-like">#</a>result/tuple-like</h3>
 <h3 class="unlisted unnumbered" id="resultspecialized"><a
-href="#resultspecialized"># </a>result/specialized</h3>
-<h1 class="unlisted unnumbered" id="async-polling-tasks-app_tasks"><a
-href="#async-polling-tasks-app_tasks"># </a>async polling, tasks
-(App_Tasks)</h1>
-<h1 class="unlisted unnumbered" id="blocking-stdfuturepromise"><a
-href="#blocking-stdfuturepromise"># </a>blocking
-std::future/promise</h1>
-<h1 class="unlisted unnumbered" id="async-polling-stdfuturepromise"><a
-href="#async-polling-stdfuturepromise"># </a>async polling,
-std::future/promise</h1>
-<h1 class="unlisted unnumbered" id="async-callbacks-app_callbacks"><a
-href="#async-callbacks-app_callbacks"># </a>async, callbacks
-(App_Callbacks)</h1>
-<h1 class="unlisted unnumbered"
-id="async-callbacks-polling-tasks-handle"><a
-href="#async-callbacks-polling-tasks-handle"># </a>async, callbacks +
-polling (tasks, handle)</h1>
+href="#resultspecialized">#</a>result/specialized</h3>
 <h1 class="unlisted unnumbered"
 id="async-with-statefullimplicit-callback-state.on_x.subscribedelegates"><a
-href="#async-with-statefullimplicit-callback-state.on_x.subscribedelegates">#
-</a>async with statefull/implicit callback
-(state.on_X.subscribe/delegates)</h1>
-<h1 data-number="5" id="building-c20-coroutines-api"><span
-class="header-section-number">5</span> <a
-href="#building-c20-coroutines-api"># </a>building C++20 coroutines
-API</h1>
+href="#async-with-statefullimplicit-callback-state.on_x.subscribedelegates">#</a>async
+with statefull/implicit callback (state.on_X.subscribe/delegates)</h1>
+<h1 data-number="5" id="coro_api"><span
+class="header-section-number">5</span> <a href="#coro_api">#</a>building
+C++20 coroutines API</h1>
+<p><a href="#app_coroutines">sample app</a>.</p>
 <p>Coroutines materials:</p>
 <ul>
 <li><a href="https://kirit.com/How%20C%2B%2B%20coroutines%20work">How
@@ -1111,9 +1098,11 @@ several GET requests on the fly, with coroutines.</p>
 <p>Lets start with basics.</p>
 <h2 data-number="5.1" id="c-coroutines-basic-task-type"><span
 class="header-section-number">5.1</span> <a
-href="#c-coroutines-basic-task-type"># </a>C++ coroutines, basic task
+href="#c-coroutines-basic-task-type">#</a>C++ coroutines, basic task
 type</h2>
-<p>CODE: CH0x_coro_basic_task</p>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH051_coro_basic_task">source
+code</a>.</p>
 <p>There is a trick to writing some basic C++20 coroutines code -
 <strong>listen to the compiler</strong>. Lets see what it takes to make
 the next code “work”:</p>
@@ -1363,8 +1352,10 @@ inside coro_work
 -- after resume()</code></pre>
 <h2 data-number="5.2" id="c-coroutines-basic-await"><span
 class="header-section-number">5.2</span> <a
-href="#c-coroutines-basic-await"># </a>C++ coroutines, basic await</h2>
-<p>CODE: CH0x_coro_basic_await</p>
+href="#c-coroutines-basic-await">#</a>C++ coroutines, basic await</h2>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH052_coro_basic_await">source
+code</a>.</p>
 <p>Given that we can have simplest coroutine, what does it take to
 co_await? Lets try to compile:</p>
 <div class="sourceCode" id="cb53"><pre
@@ -1445,9 +1436,11 @@ coroutine.</p>
 <h2 data-number="5.3"
 id="c-coroutines-await-callback-with-a-crash"><span
 class="header-section-number">5.3</span> <a
-href="#c-coroutines-await-callback-with-a-crash"># </a>C++ coroutines,
+href="#c-coroutines-await-callback-with-a-crash">#</a>C++ coroutines,
 await callback with a crash</h2>
-<p>CODE: CH0x_coro_curl0</p>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH053_coro_curl0">source
+code</a>.</p>
 <p>Lets continue implementing <code>Co_CurlAsync</code> above, in
 short:</p>
 <div class="sourceCode" id="cb57"><pre
@@ -1513,7 +1506,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb58-3"><a href="#cb58-3" aria-label="3"></a>    <span class="at">const</span> <span class="bu">std::</span>string response <span class="op">=</span> <span class="cf">co_await</span> CURL_await_get<span class="op">(</span></span>
 <span id="cb58-4"><a href="#cb58-4" aria-label="4"></a>        curl_async<span class="op">,</span> <span class="st">&quot;localhost:5001/file1.txt&quot;</span><span class="op">);</span></span>
 <span id="cb58-5"><a href="#cb58-5" aria-label="5"></a></span>
-<span id="cb58-6"><a href="#cb58-6" aria-label="6"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;coro_main response: &#39;</span><span class="sc">{}</span><span class="st">&#39;&quot;</span><span class="op">,</span> response<span class="op">);</span></span>
+<span id="cb58-6"><a href="#cb58-6" aria-label="6"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> response<span class="op">);</span></span>
 <span id="cb58-7"><a href="#cb58-7" aria-label="7"></a>    <span class="cf">co_return</span><span class="op">;</span></span>
 <span id="cb58-8"><a href="#cb58-8" aria-label="8"></a><span class="op">}</span></span>
 <span id="cb58-9"><a href="#cb58-9" aria-label="9"></a></span>
@@ -1537,8 +1530,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb59-4"><a href="#cb59-4" aria-label="4"></a>    <span class="cf">return</span> <span class="op">!</span>_coro<span class="op">.</span>done<span class="op">();</span></span>
 <span id="cb59-5"><a href="#cb59-5" aria-label="5"></a><span class="op">}</span></span></code></pre></div>
 <p>Running the sample should print:</p>
-<pre><code>coro_main response: &#39;content 1&#39;
-</code></pre>
+<pre><code>Fox</code></pre>
 <p>However, that works because we wait for coroutine until full
 complete. If we discard Co_Task too early, there is going to be a
 crash:</p>
@@ -1593,9 +1585,11 @@ advanced).</p>
 in Co_Task nor in callback API.</p>
 <h2 data-number="5.4" id="c-coroutines-await-callback"><span
 class="header-section-number">5.4</span> <a
-href="#c-coroutines-await-callback"># </a>C++ coroutines, await
+href="#c-coroutines-await-callback">#</a>C++ coroutines, await
 callback</h2>
-<p>CODE: CH0x_coro_curl</p>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH054_coro_curl">source
+code</a>.</p>
 <p>Lets fix the problematic part in a simple way:</p>
 <div class="sourceCode" id="cb62"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb62-1"><a href="#cb62-1" aria-label="1"></a><span class="co">// struct Co_CurlAsync ...</span></span>
@@ -1740,9 +1734,11 @@ starts when first co_await ends. There is no concurrency..</p>
 <h2 data-number="5.5"
 id="coroutine-task-that-holds-a-return-value"><span
 class="header-section-number">5.5</span> <a
-href="#coroutine-task-that-holds-a-return-value"># </a>coroutine task
+href="#coroutine-task-that-holds-a-return-value">#</a>coroutine task
 that holds a return value</h2>
-<p>CODE: CH0x_coro_task</p>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH055_coro_task">source
+code</a>.</p>
 <p>To be more useful, we’d like to be able return something out of
 coroutine:</p>
 <div class="sourceCode" id="cb68"><pre
@@ -1755,7 +1751,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb68-7"><a href="#cb68-7" aria-label="7"></a><span class="op">{</span></span>
 <span id="cb68-8"><a href="#cb68-8" aria-label="8"></a>    Co_Task<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> task <span class="op">=</span> coro_main<span class="op">();</span></span>
 <span id="cb68-9"><a href="#cb68-9" aria-label="9"></a>    task<span class="op">.</span>resume<span class="op">();</span></span>
-<span id="cb68-10"><a href="#cb68-10" aria-label="10"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;coro main: </span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> task<span class="op">.</span>get_once<span class="op">());</span></span>
+<span id="cb68-10"><a href="#cb68-10" aria-label="10"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> task<span class="op">.</span>get_once<span class="op">());</span></span>
 <span id="cb68-11"><a href="#cb68-11" aria-label="11"></a><span class="op">}</span></span></code></pre></div>
 <p>It requires implementing promise_type <code>return_value()</code> and
 <code>return_void()</code> customization points. The only complication
@@ -1859,8 +1855,10 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb71-4"><a href="#cb71-4" aria-label="4"></a><span class="op">}</span></span></code></pre></div>
 <h2 data-number="5.6" id="awaiting-coroutine-task"><span
 class="header-section-number">5.6</span> <a
-href="#awaiting-coroutine-task"># </a>awaiting coroutine task</h2>
-<p>CODE: CH0x_coro_await_task</p>
+href="#awaiting-coroutine-task">#</a>awaiting coroutine task</h2>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH056_coro_await_task">source
+code</a>.</p>
 <p>Now, given <code>Co_Task&lt;T&gt;</code>, we need to await for it
 somehow:</p>
 <div class="sourceCode" id="cb72"><pre
@@ -2065,7 +2063,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb81-14"><a href="#cb81-14" aria-label="14"></a><span class="op">{</span></span>
 <span id="cb81-15"><a href="#cb81-15" aria-label="15"></a>    Co_Task<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> task <span class="op">=</span> coro_main<span class="op">();</span></span>
 <span id="cb81-16"><a href="#cb81-16" aria-label="16"></a>    task<span class="op">.</span>resume<span class="op">();</span></span>
-<span id="cb81-17"><a href="#cb81-17" aria-label="17"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;coro main: </span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> task<span class="op">.</span>get_once<span class="op">());</span></span>
+<span id="cb81-17"><a href="#cb81-17" aria-label="17"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> task<span class="op">.</span>get_once<span class="op">());</span></span>
 <span id="cb81-18"><a href="#cb81-18" aria-label="18"></a><span class="op">}</span></span></code></pre></div>
 <p>Note, how we still execute <code>coro_get(2)</code> first then
 <code>coro_get(3)</code> second. There is still no way to launch those 2
@@ -2078,8 +2076,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb82-5"><a href="#cb82-5" aria-label="5"></a><span class="op">}</span></span></code></pre></div>
 <h2 data-number="5.7" id="waiting-for-multiple-coroutines"><span
 class="header-section-number">5.7</span> <a
-href="#waiting-for-multiple-coroutines"># </a>waiting for multiple
+href="#waiting-for-multiple-coroutines">#</a>waiting for multiple
 coroutines</h2>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH057_coro_await_all">source
+code</a>.</p>
 <p>Lets implement awaiting for multiple Co_Tasks:</p>
 <div class="sourceCode" id="cb83"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb83-1"><a href="#cb83-1" aria-label="1"></a><span class="at">static</span> Co_Task<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> coro_main<span class="op">()</span></span>
@@ -2232,9 +2233,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <h2 data-number="5.8"
 id="waiting-for-multiple-curl-requests-with-tasks"><span
 class="header-section-number">5.8</span> <a
-href="#waiting-for-multiple-curl-requests-with-tasks"># </a>waiting for
+href="#waiting-for-multiple-curl-requests-with-tasks">#</a>waiting for
 multiple CURL requests with tasks</h2>
-<p>CODE: CH0x_coro_await_curl</p>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH058_coro_await_curl">source
+code</a>.</p>
 <p>We already built CURL_await_get() that awaits CURL request within a
 coroutine. With CO_await_all() API, we can await for multiple concurrent
 CURL requests by wrapping every request into a separate coroutine
@@ -2260,9 +2263,11 @@ coroutine awaiter that skips intermediate coroutines.</p>
 <h2 data-number="5.9"
 id="waiting-for-multiple-curl-request-with-custom-awaitable"><span
 class="header-section-number">5.9</span> <a
-href="#waiting-for-multiple-curl-request-with-custom-awaitable">#
-</a>waiting for multiple CURL request with custom awaitable</h2>
-<p>CODE: CH0x_coro_await_many</p>
+href="#waiting-for-multiple-curl-request-with-custom-awaitable">#</a>waiting
+for multiple CURL request with custom awaitable</h2>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH059_coro_await_many">source
+code</a>.</p>
 <p>Instead of CURL_coro_get() + CO_await_all():</p>
 <div class="sourceCode" id="cb93"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb93-1"><a href="#cb93-1" aria-label="1"></a>Co_Task<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> CURL_coro_get<span class="op">(</span>CURL_Async curl_async<span class="op">,</span> <span class="bu">std::</span>string url<span class="op">)</span></span>
@@ -2439,12 +2444,14 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>For the rest of the sample code, we’ll go using
 <code>CO_await_all()</code> version.</p>
 <h1 class="unlisted unnumbered" id="coroutines-on-top-polling-tasks"><a
-href="#coroutines-on-top-polling-tasks"># </a>coroutines on top polling
+href="#coroutines-on-top-polling-tasks">#</a>coroutines on top polling
 tasks</h1>
-<h1 data-number="6" id="building-fibers-api"><span
-class="header-section-number">6</span> <a href="#building-fibers-api">#
-</a>building Fibers API</h1>
-<p>CODE: CH0x_fiber_basic</p>
+<h1 data-number="6" id="fibers_api"><span
+class="header-section-number">6</span> <a
+href="#fibers_api">#</a>building Fibers API</h1>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH060_fiber_basic">source
+code</a>, <a href="#app_fibers">sample app</a>.</p>
 <p>(Win32) Fibers materials:</p>
 <ul>
 <li><a
@@ -2522,9 +2529,11 @@ class="sourceCode numberSource numberLines"><code class="sourceCode"><span id="c
 <span id="cb103-4"><a href="#cb103-4" aria-label="4"></a>fiber2</span>
 <span id="cb103-5"><a href="#cb103-5" aria-label="5"></a>main3</span></code></pre></div>
 <h2 data-number="6.1" id="basic-fiber"><span
-class="header-section-number">6.1</span> <a href="#basic-fiber">#
-</a>basic Fiber</h2>
-<p>CODE: CH0x_fiber_basic</p>
+class="header-section-number">6.1</span> <a
+href="#basic-fiber">#</a>basic Fiber</h2>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH060_fiber_basic">source
+code</a>.</p>
 <p>We start with a <code>Fiber</code> class that allocates a fiber:</p>
 <div class="sourceCode" id="cb104"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb104-1"><a href="#cb104-1" aria-label="1"></a><span class="kw">struct</span> Fiber</span>
@@ -2681,8 +2690,10 @@ fiber2
 main3</code></pre>
 <h2 data-number="6.2" id="switching-between-fibers"><span
 class="header-section-number">6.2</span> <a
-href="#switching-between-fibers"># </a>switching between Fibers</h2>
-<p>CODE: CH0x_fiber_switch</p>
+href="#switching-between-fibers">#</a>switching between Fibers</h2>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH062_fiber_switch">source
+code</a>.</p>
 <p>Section above shows how we can switch from a main to a different
 Fiber. Fiber on it’s own, when suspended, switches back to its
 invoker/resumer. However, instead of suspend, Fiber can switch execution
@@ -2793,8 +2804,8 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb117-6"><a href="#cb117-6" aria-label="6"></a>    self<span class="op">-&gt;</span>suspend<span class="op">();</span> <span class="co">// switch to main (=our parent)</span></span>
 <span id="cb117-7"><a href="#cb117-7" aria-label="7"></a><span class="op">};</span></span></code></pre></div>
 <h2 data-number="6.3" id="tasks-for-fibers"><span
-class="header-section-number">6.3</span> <a href="#tasks-for-fibers">#
-</a>tasks for Fibers</h2>
+class="header-section-number">6.3</span> <a
+href="#tasks-for-fibers">#</a>tasks for Fibers</h2>
 <p>C++20 coroutines allow for a function to return a value:</p>
 <div class="sourceCode" id="cb118"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb118-1"><a href="#cb118-1" aria-label="1"></a>co<span class="op">::</span>Tast<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> MyCoroutine<span class="op">()</span></span>
@@ -2841,9 +2852,11 @@ required for CURL_async_get() Fiber wrapper.</p>
 <h2 data-number="6.4"
 id="cancellable-fiber-task-with-a-generic-callback"><span
 class="header-section-number">6.4</span> <a
-href="#cancellable-fiber-task-with-a-generic-callback"># </a>cancellable
+href="#cancellable-fiber-task-with-a-generic-callback">#</a>cancellable
 Fiber task with a generic callback</h2>
-<p>CODE: CH0x_fiber_callback</p>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH064_fiber_callback">source
+code</a>.</p>
 <p>First, we start with replacing hardcoded <code>Fiber::run()</code>
 with a generic version that uses next interface:</p>
 <div class="sourceCode" id="cb120"><pre
@@ -3039,9 +3052,11 @@ fiber1
 main2
 main3</code></pre>
 <h2 data-number="6.5" id="basic-fiberpool"><span
-class="header-section-number">6.5</span> <a href="#basic-fiberpool">#
-</a>basic FiberPool</h2>
-<p>CODE: CH0x_fiber_task</p>
+class="header-section-number">6.5</span> <a
+href="#basic-fiberpool">#</a>basic FiberPool</h2>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH065_fiber_task">source
+code</a>.</p>
 <p>The idea is simple: fiber task can be small and short-lived, there is
 no point allocating (and dealocating) a system Fiber every time task is
 created. Hence, we preallocate a pool of N (=128) system Fibers that are
@@ -3135,9 +3150,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <p>Now, lets get rid of manually created MyFiberTask and make
 <code>FiberTask&lt;T&gt;</code> possible.</p>
 <h2 data-number="6.6" id="fibertask"><span
-class="header-section-number">6.6</span> <a href="#fibertask">#
-</a>FiberTask</h2>
-<p>CODE: CH0x_fiber_task</p>
+class="header-section-number">6.6</span> <a
+href="#fibertask">#</a>FiberTask</h2>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH065_fiber_task">source
+code</a>.</p>
 <p>We’d like to be able to write something like this:</p>
 <div class="sourceCode" id="cb135"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb135-1"><a href="#cb135-1" aria-label="1"></a><span class="dt">int</span> MyFiber<span class="op">()</span></span>
@@ -3476,9 +3493,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb148-19"><a href="#cb148-19" aria-label="19"></a><span class="op">}</span></span></code></pre></div>
 <h2 data-number="6.7" id="waiting-for-a-curl-request-with-a-fiber"><span
 class="header-section-number">6.7</span> <a
-href="#waiting-for-a-curl-request-with-a-fiber"># </a>waiting for a CURL
+href="#waiting-for-a-curl-request-with-a-fiber">#</a>waiting for a CURL
 request with a Fiber</h2>
-<p>CODE: CH0x_fiber_await_curl</p>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH067_fiber_await_curl">source
+code</a>.</p>
 <p>Assuming we are withing a Fiber context already:</p>
 <div class="sourceCode" id="cb149"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb149-1"><a href="#cb149-1" aria-label="1"></a><span class="dt">void</span> Fiber_Main<span class="op">(</span>CURL_Async curl_async<span class="op">)</span></span>
@@ -3678,13 +3697,14 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb157-20"><a href="#cb157-20" aria-label="20"></a>    <span class="op">}</span></span>
 <span id="cb157-21"><a href="#cb157-21" aria-label="21"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
 <span id="cb157-22"><a href="#cb157-22" aria-label="22"></a><span class="op">}</span></span></code></pre></div>
-<p>Note, FF_async() was extended to accept extra arguments. Complete
-code is in CH0x_fiber_await_curl.</p>
+<p>Note, FF_async() was extended to accept extra arguments.</p>
 <h2 data-number="6.8" id="waiting-for-multiple-a-fibertasks"><span
 class="header-section-number">6.8</span> <a
-href="#waiting-for-multiple-a-fibertasks"># </a>waiting for multiple a
+href="#waiting-for-multiple-a-fibertasks">#</a>waiting for multiple a
 FiberTasks</h2>
-<p>CODE: CH0x_fiber_await_many</p>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH068_fiber_await_many">source
+code</a>.</p>
 <p>Given a list of FiberTasks, we just wait for completion in the
 loop:</p>
 <div class="sourceCode" id="cb158"><pre
@@ -3740,10 +3760,12 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb161-3"><a href="#cb161-3" aria-label="3"></a>    <span class="op">,</span> <span class="at">const</span> <span class="bu">std::</span>string<span class="op">&amp;</span> url</span>
 <span id="cb161-4"><a href="#cb161-4" aria-label="4"></a>    <span class="op">,</span> FiberTaskScheduler<span class="op">&amp;</span> fiber_scheduler <span class="op">=</span> FiberTaskScheduler<span class="op">::</span>get_current<span class="op">())</span></span></code></pre></div>
 <p>However, that’s mostly irrelevant in our context.</p>
-<h1 data-number="7" id="building-stdfuture-api"><span
+<h1 data-number="7" id="futures_api"><span
 class="header-section-number">7</span> <a
-href="#building-stdfuture-api"># </a>building std::future API</h1>
-<p>CODE: CH0x_future</p>
+href="#futures_api">#</a>building std::future API</h1>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH070_future">source
+code</a>, <a href="#app_futures">sample app</a>.</p>
 <p>Having CURL_async_get() leads to the next implementation that wraps
 everything into a std::future:</p>
 <div class="sourceCode" id="cb162"><pre
@@ -3806,17 +3828,17 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb164-8"><a href="#cb164-8" aria-label="8"></a>        CURL_async_tick<span class="op">(</span>curl_async<span class="op">);</span></span>
 <span id="cb164-9"><a href="#cb164-9" aria-label="9"></a>    <span class="op">}</span></span>
 <span id="cb164-10"><a href="#cb164-10" aria-label="10"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
-<span id="cb164-11"><a href="#cb164-11" aria-label="11"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;async future response: &#39;</span><span class="sc">{}</span><span class="st">&#39;&quot;</span><span class="op">,</span> result<span class="op">.</span>get<span class="op">());</span></span>
+<span id="cb164-11"><a href="#cb164-11" aria-label="11"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;</span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> result<span class="op">.</span>get<span class="op">());</span></span>
 <span id="cb164-12"><a href="#cb164-12" aria-label="12"></a><span class="op">}</span></span></code></pre></div>
 <p>Missing std::future features makes it not composable; waiting 2 tasks
 to finish is the same as checking 2 flags to become true; giving not
 much of a win compared to direct use of CURL_async_get().</p>
-<p>See App_Futures, App_Callbacks.</p>
-<h1 data-number="8" id="building-task-api-with-.then-support"><span
-class="header-section-number">8</span> <a
-href="#building-task-api-with-.then-support"># </a>building task API
-with .then() support</h1>
-<p>CODE: CH0x_task_basic</p>
+<h1 data-number="8" id="then_api"><span
+class="header-section-number">8</span> <a href="#then_api">#</a>building
+task API with .then() support</h1>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH080_task_basic">source
+code</a>, <a href="#app_tasks">sample app</a>.</p>
 <p>Lets build std::future-like Task type that supports
 <code>.then()</code> continuations.</p>
 <p>Everything is the same as std::future, but there is a support to
@@ -4199,7 +4221,9 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb181-26"><a href="#cb181-26" aria-label="26"></a>    <span class="op">}</span></span>
 <span id="cb181-27"><a href="#cb181-27" aria-label="27"></a><span class="op">};</span></span></code></pre></div>
 <p>There are nuances of handling the case when callable returns
-<code>void</code>. Full code is in CH0x_task_basic.</p>
+<code>void</code> (see <a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH080_task_basic">source
+code</a>).</p>
 <p>With that in mind, we can use Tasks like this:</p>
 <div class="sourceCode" id="cb182"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb182-1"><a href="#cb182-1" aria-label="1"></a>Task<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> task<span class="op">;</span></span>
@@ -4229,9 +4253,11 @@ returns Task is invoked instead of dummy inner task. Lets wrap
 CURL_async_get() to return a Task.</p>
 <h2 data-number="8.1" id="wrapping-curl-get-into-a-task"><span
 class="header-section-number">8.1</span> <a
-href="#wrapping-curl-get-into-a-task"># </a>wrapping CURL get into a
+href="#wrapping-curl-get-into-a-task">#</a>wrapping CURL get into a
 Task</h2>
-<p>CODE: CH0x_task_curl</p>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH081_task_curl">source
+code</a>.</p>
 <p>Implementing <code>CURL_task_get()</code> is trivial:</p>
 <div class="sourceCode" id="cb184"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb184-1"><a href="#cb184-1" aria-label="1"></a>Task<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> CURL_task_get<span class="op">(</span>CURL_Async curl_async<span class="op">,</span> <span class="at">const</span> <span class="bu">std::</span>string<span class="op">&amp;</span> url<span class="op">)</span></span>
@@ -4294,9 +4320,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb186-24"><a href="#cb186-24" aria-label="24"></a><span class="op">}</span></span></code></pre></div>
 <h2 data-number="8.2" id="waiting-for-multiple-task-requests"><span
 class="header-section-number">8.2</span> <a
-href="#waiting-for-multiple-task-requests"># </a>waiting for multiple
+href="#waiting-for-multiple-task-requests">#</a>waiting for multiple
 Task requests</h2>
-<p>CODE: CH0x_task_many</p>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH082_task_many">source
+code</a>.</p>
 <p>Lets wait for N Tasks - Tasks_WhenAll():</p>
 <div class="sourceCode" id="cb187"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb187-1"><a href="#cb187-1" aria-label="1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span><span class="op">...</span> Ts<span class="op">&gt;</span></span>
@@ -4437,11 +4465,13 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb192-21"><a href="#cb192-21" aria-label="21"></a><span class="op">}</span></span></code></pre></div>
 <p>The limitations (no <code>Task&lt;void&gt;</code> or
 <code>Task&lt;T&amp;&gt;</code>) could be implemented, but do no change
-the point. See the full code in CH0x_task_many.</p>
-<h1 data-number="9" id="building-c26-senders"><span
-class="header-section-number">9</span> <a href="#building-c26-senders">#
-</a>building C++26 senders</h1>
-<p>CODE: CH0x_senders_basic</p>
+the point.</p>
+<h1 data-number="9" id="senders_api"><span
+class="header-section-number">9</span> <a
+href="#senders_api">#</a>building C++26 senders</h1>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH090_senders_basic">source
+code</a>, <a href="#app_senders">sample app</a>.</p>
 <p>Required read: <a
 href="https://ericniebler.com/2024/02/04/what-are-senders-good-for-anyway/">What
 are Senders Good For, Anyway?</a>.</p>
@@ -4581,8 +4611,10 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb199-15"><a href="#cb199-15" aria-label="15"></a><span class="op">}</span></span></code></pre></div>
 <h2 data-number="9.1" id="sender-for-a-curl-get"><span
 class="header-section-number">9.1</span> <a
-href="#sender-for-a-curl-get"># </a>sender for a CURL get</h2>
-<p>CODE: CH0x_senders_curl</p>
+href="#sender-for-a-curl-get">#</a>sender for a CURL get</h2>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/CH091_senders_curl">source
+code</a>.</p>
 <p>Lets adapt our simple Sender to return (“send”) a std::string - i.e.,
 what CURL_async_get() returns:</p>
 <div class="sourceCode" id="cb200"><pre
@@ -4838,15 +4870,17 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb210-13"><a href="#cb210-13" aria-label="13"></a>        <span class="op">}));</span></span>
 <span id="cb210-14"><a href="#cb210-14" aria-label="14"></a><span class="op">}</span></span></code></pre></div>
 <h1 data-number="10" id="reactive-streams"><span
-class="header-section-number">10</span> <a href="#reactive-streams">#
-</a>reactive streams</h1>
+class="header-section-number">10</span> <a
+href="#reactive-streams">#</a>reactive streams</h1>
 <h1 data-number="11" id="samples"><span
-class="header-section-number">11</span> <a href="#samples">#
-</a>SAMPLES</h1>
+class="header-section-number">11</span> <a
+href="#samples">#</a>SAMPLES</h1>
 <h2 data-number="11.1" id="app_blocking"><span
-class="header-section-number">11.1</span> <a href="#app_blocking">#
-</a>synchronous requests</h2>
-<p>CODE: App_Blocking</p>
+class="header-section-number">11.1</span> <a
+href="#app_blocking">#</a>synchronous requests</h2>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/App_Blocking">source
+code</a>, <a href="#libcurl_easy">API section</a>.</p>
 <p>For completeness, our trivial case - doing 2 GET requests
 sequentially:</p>
 <div class="sourceCode" id="cb211"><pre
@@ -4863,9 +4897,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb211-11"><a href="#cb211-11" aria-label="11"></a>    App_Blocking<span class="op">();</span></span>
 <span id="cb211-12"><a href="#cb211-12" aria-label="12"></a><span class="op">}</span></span></code></pre></div>
 <h2 data-number="11.2" id="app_callbacks"><span
-class="header-section-number">11.2</span> <a href="#app_callbacks">#
-</a>requests with callbacks</h2>
-<p>CODE: App_Callbacks</p>
+class="header-section-number">11.2</span> <a
+href="#app_callbacks">#</a>requests with callbacks</h2>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/App_Callbacks">source
+code</a>, <a href="#libcurl_multi">API section</a>.</p>
 <p>With callbacks API, there are 2 variations:</p>
 <ol type="1">
 <li>doing 2 sequential requests, one after another: see
@@ -5008,9 +5044,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb214-66"><a href="#cb214-66" aria-label="66"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
 <span id="cb214-67"><a href="#cb214-67" aria-label="67"></a><span class="op">}</span></span></code></pre></div>
 <h2 data-number="11.3" id="app_coroutines"><span
-class="header-section-number">11.3</span> <a href="#app_coroutines">#
-</a>requests with coroutines</h2>
-<p>CODE: App_Coroutines</p>
+class="header-section-number">11.3</span> <a
+href="#app_coroutines">#</a>requests with coroutines</h2>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/App_Coroutines">source
+code</a>, <a href="#coro_api">API section</a>.</p>
 <p>SEQUENTIAL requests:</p>
 <div class="sourceCode" id="cb215"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb215-1"><a href="#cb215-1" aria-label="1"></a><span class="at">static</span> Co_Task<span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span> Coro_MainV0<span class="op">(</span>CURL_Async curl_async<span class="op">)</span> <span class="co">// sequential</span></span>
@@ -5057,9 +5095,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb216-19"><a href="#cb216-19" aria-label="19"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
 <span id="cb216-20"><a href="#cb216-20" aria-label="20"></a><span class="op">}</span></span></code></pre></div>
 <h2 data-number="11.4" id="app_fibers"><span
-class="header-section-number">11.4</span> <a href="#app_fibers">#
-</a>requests with fibers</h2>
-<p>CODE: App_Fibers</p>
+class="header-section-number">11.4</span> <a
+href="#app_fibers">#</a>requests with fibers</h2>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/App_Fibers">source
+code</a>, <a href="#fibers_api">API section</a>.</p>
 <p>SEQUENTIAL requests:</p>
 <div class="sourceCode" id="cb217"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb217-1"><a href="#cb217-1" aria-label="1"></a><span class="at">static</span> <span class="dt">void</span> Fiber_MainV0<span class="op">(</span>CURL_Async curl_async<span class="op">)</span> <span class="co">// sequential</span></span>
@@ -5114,9 +5154,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb218-25"><a href="#cb218-25" aria-label="25"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
 <span id="cb218-26"><a href="#cb218-26" aria-label="26"></a><span class="op">}</span></span></code></pre></div>
 <h2 data-number="11.5" id="app_futures"><span
-class="header-section-number">11.5</span> <a href="#app_futures">#
-</a>polling requests with std::futures</h2>
-<p>CODE: App_Polling</p>
+class="header-section-number">11.5</span> <a
+href="#app_futures">#</a>polling requests with std::futures</h2>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/App_Polling">source
+code</a>, <a href="#futures_api">API section</a>.</p>
 <p>SEQUENTIAL requests:</p>
 <div class="sourceCode" id="cb219"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb219-1"><a href="#cb219-1" aria-label="1"></a><span class="co">///////////////////////////////////////////////////////////</span></span>
@@ -5251,9 +5293,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb220-58"><a href="#cb220-58" aria-label="58"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
 <span id="cb220-59"><a href="#cb220-59" aria-label="59"></a><span class="op">}</span></span></code></pre></div>
 <h2 data-number="11.6" id="app_tasks"><span
-class="header-section-number">11.6</span> <a href="#app_tasks">#
-</a>requests with Tasks .then()</h2>
-<p>CODE: App_Tasks</p>
+class="header-section-number">11.6</span> <a
+href="#app_tasks">#</a>requests with Tasks .then()</h2>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/App_Tasks">source
+code</a>, <a href="#then_api">API section</a>.</p>
 <p>SEQUENTIAL requests:</p>
 <div class="sourceCode" id="cb221"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb221-1"><a href="#cb221-1" aria-label="1"></a><span class="at">static</span> Task<span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span> Task_MainV0<span class="op">(</span>CURL_Async curl_async<span class="op">)</span> <span class="co">// sequential</span></span>
@@ -5307,9 +5351,11 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb222-23"><a href="#cb222-23" aria-label="23"></a>    CURL_async_destroy<span class="op">(</span>curl_async<span class="op">);</span></span>
 <span id="cb222-24"><a href="#cb222-24" aria-label="24"></a><span class="op">}</span></span></code></pre></div>
 <h2 data-number="11.7" id="app_senders"><span
-class="header-section-number">11.7</span> <a href="#app_senders">#
-</a>requests with senders/std::execution</h2>
-<p>CODE: App_Senders</p>
+class="header-section-number">11.7</span> <a
+href="#app_senders">#</a>requests with senders/std::execution</h2>
+<p><a
+href="https://github.com/grishavanika/async_api_styles/tree/main/App_Senders">source
+code</a>, <a href="#senders_api">API section</a>.</p>
 <p>SEQUENTIAL requests:</p>
 <div class="sourceCode" id="cb223"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb223-1"><a href="#cb223-1" aria-label="1"></a><span class="kw">auto</span> Sender_MainV0<span class="op">(</span>CURL_Async curl_async<span class="op">)</span> <span class="co">// sequential</span></span>
