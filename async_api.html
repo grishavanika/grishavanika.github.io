@@ -4934,7 +4934,7 @@ clutters the details; we simplify:</p>
 <div class="sourceCode" id="cb212"><pre
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb212-1"><a href="#cb212-1" aria-label="1"></a><span class="pp">#define FWD</span><span class="op">(...)</span><span class="pp"> </span><span class="op">::</span><span class="bu">std::</span>forward<span class="op">&lt;</span><span class="kw">decltype</span><span class="op">(</span><span class="ot">__VA_ARGS__</span><span class="op">)&gt;(</span><span class="ot">__VA_ARGS__</span><span class="op">)</span></span>
 <span id="cb212-2"><a href="#cb212-2" aria-label="2"></a><span class="pp">#define MOV</span><span class="op">(...)</span><span class="pp"> </span><span class="op">::</span><span class="bu">std::</span>move<span class="op">(</span><span class="ot">__VA_ARGS__</span><span class="op">)</span></span>
-<span id="cb212-3"><a href="#cb212-3" aria-label="3"></a><span class="pp">#define REMOVE_CV</span><span class="op">(...)</span><span class="pp"> </span><span class="bu">std::</span>remove_cv_t<span class="op">&lt;</span><span class="ot">__VA_ARGS__</span><span class="op">&gt;</span></span>
+<span id="cb212-3"><a href="#cb212-3" aria-label="3"></a><span class="pp">#define REMOVE_CVR</span><span class="op">(...)</span><span class="pp"> </span><span class="bu">std::</span>remove_cvref_t<span class="op">&lt;</span><span class="ot">__VA_ARGS__</span><span class="op">&gt;</span></span>
 <span id="cb212-4"><a href="#cb212-4" aria-label="4"></a><span class="kw">using</span> <span class="dt">void_t</span> <span class="op">=</span> <span class="bu">std::</span>monostate<span class="op">;</span></span></code></pre></div>
 <p>For Sender, we define next API:</p>
 <div class="sourceCode" id="cb213"><pre
@@ -4946,10 +4946,10 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb213-6"><a href="#cb213-6" aria-label="6"></a><span class="op">}</span></span>
 <span id="cb213-7"><a href="#cb213-7" aria-label="7"></a></span>
 <span id="cb213-8"><a href="#cb213-8" aria-label="8"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> Sender<span class="op">&gt;</span></span>
-<span id="cb213-9"><a href="#cb213-9" aria-label="9"></a><span class="kw">using</span> <span class="dt">sender_value_t</span> <span class="op">=</span> <span class="kw">typename</span> REMOVE_CV<span class="op">(</span>Sender<span class="op">)::</span><span class="dt">value_t</span><span class="op">;</span></span>
+<span id="cb213-9"><a href="#cb213-9" aria-label="9"></a><span class="kw">using</span> <span class="dt">sender_value_t</span> <span class="op">=</span> <span class="kw">typename</span> REMOVE_CVR<span class="op">(</span>Sender<span class="op">)::</span><span class="dt">value_t</span><span class="op">;</span></span>
 <span id="cb213-10"><a href="#cb213-10" aria-label="10"></a></span>
 <span id="cb213-11"><a href="#cb213-11" aria-label="11"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> Sender<span class="op">&gt;</span></span>
-<span id="cb213-12"><a href="#cb213-12" aria-label="12"></a><span class="kw">using</span> <span class="dt">sender_error_t</span> <span class="op">=</span> <span class="kw">typename</span> REMOVE_CV<span class="op">(</span>Sender<span class="op">)::</span><span class="dt">error_t</span><span class="op">;</span></span></code></pre></div>
+<span id="cb213-12"><a href="#cb213-12" aria-label="12"></a><span class="kw">using</span> <span class="dt">sender_error_t</span> <span class="op">=</span> <span class="kw">typename</span> REMOVE_CVR<span class="op">(</span>Sender<span class="op">)::</span><span class="dt">error_t</span><span class="op">;</span></span></code></pre></div>
 <p>Again, for Sender, we can only (a) connect() it to a Receiver and (b)
 query the types we would eventually send.</p>
 <p>Finishing with Operation API, we can only start():</p>
@@ -4966,7 +4966,7 @@ Sender:</p>
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb215-1"><a href="#cb215-1" aria-label="1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
 <span id="cb215-2"><a href="#cb215-2" aria-label="2"></a><span class="kw">auto</span> just<span class="op">(</span>T<span class="op">&amp;&amp;</span> v<span class="op">)</span> <span class="kw">noexcept</span></span>
 <span id="cb215-3"><a href="#cb215-3" aria-label="3"></a><span class="op">{</span></span>
-<span id="cb215-4"><a href="#cb215-4" aria-label="4"></a>    <span class="cf">return</span> Sender_Just<span class="op">&lt;</span>REMOVE_CV<span class="op">(</span>T<span class="op">)&gt;{.</span>_v <span class="op">=</span> FWD<span class="op">(</span>v<span class="op">)};</span></span>
+<span id="cb215-4"><a href="#cb215-4" aria-label="4"></a>    <span class="cf">return</span> Sender_Just<span class="op">&lt;</span>REMOVE_CVR<span class="op">(</span>T<span class="op">)&gt;{.</span>_v <span class="op">=</span> FWD<span class="op">(</span>v<span class="op">)};</span></span>
 <span id="cb215-5"><a href="#cb215-5" aria-label="5"></a><span class="op">}</span></span></code></pre></div>
 <p>so… just() only returns a wrapper (Sender_Just) that remembers a
 value <code>v</code> we would set later. No actual work done or started.
@@ -4981,7 +4981,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb216-7"><a href="#cb216-7" aria-label="7"></a>    <span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> Receiver<span class="op">&gt;</span></span>
 <span id="cb216-8"><a href="#cb216-8" aria-label="8"></a>    <span class="kw">auto</span> <span class="fu">connect</span><span class="op">(</span>Receiver<span class="op">&amp;&amp;</span> r<span class="op">)</span> <span class="kw">noexcept</span></span>
 <span id="cb216-9"><a href="#cb216-9" aria-label="9"></a>    <span class="op">{</span></span>
-<span id="cb216-10"><a href="#cb216-10" aria-label="10"></a>        <span class="cf">return</span> State_Just<span class="op">&lt;</span>REMOVE_CV<span class="op">(</span>Receiver<span class="op">),</span> T<span class="op">&gt;{.</span>_r <span class="op">=</span> FWD<span class="op">(</span>r<span class="op">),</span> <span class="op">.</span>_v <span class="op">=</span> MOV<span class="op">(</span>_v<span class="op">)};</span></span>
+<span id="cb216-10"><a href="#cb216-10" aria-label="10"></a>        <span class="cf">return</span> State_Just<span class="op">&lt;</span>REMOVE_CVR<span class="op">(</span>Receiver<span class="op">),</span> T<span class="op">&gt;{.</span>_r <span class="op">=</span> FWD<span class="op">(</span>r<span class="op">),</span> <span class="op">.</span>_v <span class="op">=</span> MOV<span class="op">(</span>_v<span class="op">)};</span></span>
 <span id="cb216-11"><a href="#cb216-11" aria-label="11"></a>    <span class="op">}</span></span>
 <span id="cb216-12"><a href="#cb216-12" aria-label="12"></a><span class="op">};</span></span></code></pre></div>
 <p>where we signal that our operation would set_value() of a type T;
@@ -5164,7 +5164,7 @@ then() transforms another Sender’s value.</p>
 class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb227-1"><a href="#cb227-1" aria-label="1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> Sender<span class="op">,</span> <span class="kw">typename</span> Lambda<span class="op">&gt;</span></span>
 <span id="cb227-2"><a href="#cb227-2" aria-label="2"></a><span class="kw">auto</span> then<span class="op">(</span>Sender<span class="op">&amp;&amp;</span> s<span class="op">,</span> Lambda<span class="op">&amp;&amp;</span> f<span class="op">)</span> <span class="kw">noexcept</span></span>
 <span id="cb227-3"><a href="#cb227-3" aria-label="3"></a><span class="op">{</span></span>
-<span id="cb227-4"><a href="#cb227-4" aria-label="4"></a>    <span class="cf">return</span> Sender_Then<span class="op">&lt;</span>REMOVE_CV<span class="op">(</span>Sender<span class="op">),</span> REMOVE_CV<span class="op">(</span>Lambda<span class="op">)&gt;</span></span>
+<span id="cb227-4"><a href="#cb227-4" aria-label="4"></a>    <span class="cf">return</span> Sender_Then<span class="op">&lt;</span>REMOVE_CVR<span class="op">(</span>Sender<span class="op">),</span> REMOVE_CVR<span class="op">(</span>Lambda<span class="op">)&gt;</span></span>
 <span id="cb227-5"><a href="#cb227-5" aria-label="5"></a>        <span class="op">{.</span>_s <span class="op">=</span> FWD<span class="op">(</span>s<span class="op">),</span> <span class="op">.</span>_f <span class="op">=</span> FWD<span class="op">(</span>f<span class="op">)};</span></span>
 <span id="cb227-6"><a href="#cb227-6" aria-label="6"></a><span class="op">}</span></span></code></pre></div>
 <p>See, we return Sender_Then that remembers inner sender that we would
@@ -5181,7 +5181,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb228-9"><a href="#cb228-9" aria-label="9"></a>    <span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> Receiver<span class="op">&gt;</span></span>
 <span id="cb228-10"><a href="#cb228-10" aria-label="10"></a>    <span class="kw">auto</span> <span class="fu">connect</span><span class="op">(</span>Receiver<span class="op">&amp;&amp;</span> r<span class="op">)</span> <span class="kw">noexcept</span></span>
 <span id="cb228-11"><a href="#cb228-11" aria-label="11"></a>    <span class="op">{</span></span>
-<span id="cb228-12"><a href="#cb228-12" aria-label="12"></a>        <span class="kw">using</span> Receiver_ <span class="op">=</span> Receiver_Then<span class="op">&lt;</span>REMOVE_CV<span class="op">(</span>Receiver<span class="op">),</span> Lambda<span class="op">&gt;;</span></span>
+<span id="cb228-12"><a href="#cb228-12" aria-label="12"></a>        <span class="kw">using</span> Receiver_ <span class="op">=</span> Receiver_Then<span class="op">&lt;</span>REMOVE_CVR<span class="op">(</span>Receiver<span class="op">),</span> Lambda<span class="op">&gt;;</span></span>
 <span id="cb228-13"><a href="#cb228-13" aria-label="13"></a>        <span class="cf">return</span> <span class="op">::</span><span class="fu">connect</span><span class="op">(</span>MOV<span class="op">(</span>_s<span class="op">),</span> Receiver_<span class="op">{.</span>_r <span class="op">=</span> FWD<span class="op">(</span>r<span class="op">),</span> <span class="op">.</span>_f <span class="op">=</span> MOV<span class="op">(</span>_f<span class="op">)});</span></span>
 <span id="cb228-14"><a href="#cb228-14" aria-label="14"></a>    <span class="op">}</span></span>
 <span id="cb228-15"><a href="#cb228-15" aria-label="15"></a><span class="op">};</span></span></code></pre></div>
@@ -5255,7 +5255,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb231-20"><a href="#cb231-20" aria-label="20"></a>    <span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> Receiver<span class="op">&gt;</span></span>
 <span id="cb231-21"><a href="#cb231-21" aria-label="21"></a>    <span class="kw">auto</span> <span class="fu">connect</span><span class="op">(</span>Receiver<span class="op">&amp;&amp;</span> r<span class="op">)</span> <span class="kw">noexcept</span></span>
 <span id="cb231-22"><a href="#cb231-22" aria-label="22"></a>    <span class="op">{</span></span>
-<span id="cb231-23"><a href="#cb231-23" aria-label="23"></a>        <span class="cf">return</span> State_Async<span class="op">&lt;</span>REMOVE_CV<span class="op">(</span>Receiver<span class="op">)&gt;{.</span>_r <span class="op">=</span> FWD<span class="op">(</span>r<span class="op">)};</span></span>
+<span id="cb231-23"><a href="#cb231-23" aria-label="23"></a>        <span class="cf">return</span> State_Async<span class="op">&lt;</span>REMOVE_CVR<span class="op">(</span>Receiver<span class="op">)&gt;{.</span>_r <span class="op">=</span> FWD<span class="op">(</span>r<span class="op">)};</span></span>
 <span id="cb231-24"><a href="#cb231-24" aria-label="24"></a>    <span class="op">}</span></span>
 <span id="cb231-25"><a href="#cb231-25" aria-label="25"></a><span class="op">};</span></span>
 <span id="cb231-26"><a href="#cb231-26" aria-label="26"></a></span>
@@ -5336,7 +5336,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb234-2"><a href="#cb234-2" aria-label="2"></a><span class="kw">auto</span> when_all<span class="op">(</span>Senders<span class="op">&amp;&amp;...</span> ss<span class="op">)</span></span>
 <span id="cb234-3"><a href="#cb234-3" aria-label="3"></a><span class="op">{</span></span>
 <span id="cb234-4"><a href="#cb234-4" aria-label="4"></a>    <span class="kw">static_assert</span><span class="op">(</span><span class="kw">sizeof</span><span class="op">...(</span>Senders<span class="op">)</span> <span class="op">&gt;=</span> <span class="dv">1</span><span class="op">);</span></span>
-<span id="cb234-5"><a href="#cb234-5" aria-label="5"></a>    <span class="cf">return</span> Sender_When_All<span class="op">&lt;</span>REMOVE_CV<span class="op">(</span>Senders<span class="op">)...&gt;{</span>FWD<span class="op">(</span>ss<span class="op">)...};</span></span>
+<span id="cb234-5"><a href="#cb234-5" aria-label="5"></a>    <span class="cf">return</span> Sender_When_All<span class="op">&lt;</span>REMOVE_CVR<span class="op">(</span>Senders<span class="op">)...&gt;{</span>FWD<span class="op">(</span>ss<span class="op">)...};</span></span>
 <span id="cb234-6"><a href="#cb234-6" aria-label="6"></a><span class="op">}</span></span></code></pre></div>
 <p>where we accept one or more Senders, construct our Sender wrapper -
 Sender_When_All - which remembers all the Senders, since we need to
@@ -5360,7 +5360,7 @@ class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><sp
 <span id="cb235-16"><a href="#cb235-16" aria-label="16"></a>    <span class="kw">auto</span> <span class="fu">connect</span><span class="op">(</span>Receiver<span class="op">&amp;&amp;</span> r<span class="op">)</span> <span class="kw">noexcept</span></span>
 <span id="cb235-17"><a href="#cb235-17" aria-label="17"></a>    <span class="op">{</span></span>
 <span id="cb235-18"><a href="#cb235-18" aria-label="18"></a>        <span class="kw">using</span> State <span class="op">=</span> State_When_All<span class="op">&lt;</span></span>
-<span id="cb235-19"><a href="#cb235-19" aria-label="19"></a>              REMOVE_CV<span class="op">(</span>Receiver<span class="op">)</span></span>
+<span id="cb235-19"><a href="#cb235-19" aria-label="19"></a>              REMOVE_CVR<span class="op">(</span>Receiver<span class="op">)</span></span>
 <span id="cb235-20"><a href="#cb235-20" aria-label="20"></a>            <span class="op">,</span> <span class="bu">std::</span>tuple<span class="op">&lt;</span>Senders<span class="op">...&gt;</span></span>
 <span id="cb235-21"><a href="#cb235-21" aria-label="21"></a>            <span class="op">,</span> <span class="bu">std::</span>index_sequence_for<span class="op">&lt;</span>Senders<span class="op">...&gt;</span></span>
 <span id="cb235-22"><a href="#cb235-22" aria-label="22"></a>            <span class="op">&gt;;</span></span>
